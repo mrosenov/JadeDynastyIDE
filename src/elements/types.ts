@@ -73,6 +73,8 @@ export interface FieldNode {
   cond?: string;
   /** Path ID of the item icon this value points at. */
   icon?: number;
+  /** Key of the enum or mask naming this value. */
+  set?: string;
 }
 
 export interface RecordDetail {
@@ -205,4 +207,52 @@ export interface SettingsView {
   clientError: string | null;
   /** Part of icon URLs; changes when the client changes. */
   iconGeneration: number;
+}
+
+// ---------------------------------------------------------------- enums and masks
+
+export type SetKind = "enum" | "mask";
+
+/** builtin: shipped with the app; override: a built-in set you changed; user: created by you. */
+export type SetOrigin = "builtin" | "override" | "user";
+
+export interface EnumValue {
+  value: number;
+  label: string;
+  description?: string;
+}
+
+export interface MaskFlag {
+  /** Bit index 0…63 (value 1 << bit). */
+  bit: number;
+  label: string;
+  description?: string;
+}
+
+export interface NamedSet {
+  key: string;
+  label: string;
+  values?: EnumValue[];
+  flags?: MaskFlag[];
+}
+
+export interface SetSummary {
+  key: string;
+  label: string;
+  kind: SetKind;
+  origin: SetOrigin;
+  count: number;
+}
+
+export interface SetDetail {
+  kind: SetKind;
+  set: NamedSet;
+  origin: SetOrigin;
+  builtin: NamedSet | null;
+  usage: string[];
+}
+
+export interface SetsChanged {
+  sets: SetSummary[];
+  summary: FileSummary | null;
 }

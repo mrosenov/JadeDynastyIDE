@@ -1,0 +1,166 @@
+{
+  "key": "combined_services",
+  "label": "NPC Services",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Taming",
+      "description": "驯化服务"
+    },
+    {
+      "bit": 1,
+      "label": "Cross-server PK sign-up (Yinxian)",
+      "description": "跨服PK隐仙阁报名"
+    },
+    {
+      "bit": 2,
+      "label": "Item lock",
+      "description": "物品锁定"
+    },
+    {
+      "bit": 3,
+      "label": "Waypoint discovery",
+      "description": "驿站发现服务"
+    },
+    {
+      "bit": 4,
+      "label": "Guild",
+      "description": "帮派服务"
+    },
+    {
+      "bit": 5,
+      "label": "Repair damaged items",
+      "description": "修复破损物品"
+    },
+    {
+      "bit": 6,
+      "label": "Mail",
+      "description": "邮寄服务"
+    },
+    {
+      "bit": 7,
+      "label": "Auction",
+      "description": "拍卖服务"
+    },
+    {
+      "bit": 8,
+      "label": "Double EXP check-in",
+      "description": "双倍经验打卡服务"
+    },
+    {
+      "bit": 9,
+      "label": "Hatch pet egg",
+      "description": "孵化宠物蛋服务"
+    },
+    {
+      "bit": 10,
+      "label": "Restore pet egg",
+      "description": "还原宠物蛋服务"
+    },
+    {
+      "bit": 11,
+      "label": "City war management",
+      "description": "城战管理服务"
+    },
+    {
+      "bit": 12,
+      "label": "Leave battlefield",
+      "description": "离开战场服务"
+    },
+    {
+      "bit": 13,
+      "label": "Point card consignment",
+      "description": "点卡寄售服务"
+    },
+    {
+      "bit": 14,
+      "label": "Guild storage",
+      "description": "帮派仓库服务"
+    },
+    {
+      "bit": 15,
+      "label": "Talisman",
+      "description": "法宝相关服务"
+    },
+    {
+      "bit": 16,
+      "label": "City war sign-up",
+      "description": "城战报名服务"
+    },
+    {
+      "bit": 17,
+      "label": "Battlefield entry",
+      "description": "战场入场服务"
+    },
+    {
+      "bit": 18,
+      "label": "City war construction",
+      "description": "城战日常建设服务"
+    },
+    {
+      "bit": 19,
+      "label": "Pet training",
+      "description": "宠物驯养"
+    },
+    {
+      "bit": 20,
+      "label": "Pet release",
+      "description": "宠物放生"
+    },
+    {
+      "bit": 21,
+      "label": "Pet cultivation",
+      "description": "宠物修炼"
+    },
+    {
+      "bit": 22,
+      "label": "Pet rename",
+      "description": "宠物改名"
+    },
+    {
+      "bit": 23,
+      "label": "Blood bind",
+      "description": "滴血认主"
+    },
+    {
+      "bit": 24,
+      "label": "Qipo embed",
+      "description": "器魄镶嵌"
+    },
+    {
+      "bit": 25,
+      "label": "Qipo removal",
+      "description": "器魄拆除"
+    },
+    {
+      "bit": 26,
+      "label": "Restore soul power",
+      "description": "恢复魄力"
+    },
+    {
+      "bit": 27,
+      "label": "Equipment dismantle",
+      "description": "装备拆解"
+    },
+    {
+      "bit": 28,
+      "label": "Ascension battlefield management",
+      "description": "飞升战场管理服务"
+    },
+    {
+      "bit": 29,
+      "label": "Song-Jin battlefield sign-up",
+      "description": "宋金战场报名服务"
+    },
+    {
+      "bit": 30,
+      "label": "Arena sign-up",
+      "description": "竞技场报名服务"
+    },
+    {
+      "bit": 31,
+      "label": "Online promotion",
+      "description": "线上推广服务"
+    }
+  ]
+}

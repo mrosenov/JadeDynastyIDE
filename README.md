@@ -87,7 +87,21 @@ layouts/v165/
 ```
 
 At startup only `layout.json` and each list's name, struct and size are read. A list's fields
-are parsed the first time it is used. `enums.json` holds the shared value and bit-flag sets.
+are parsed the first time it is used.
+
+Enums and masks are shared by every layout, one file per set:
+
+```
+formats/enums/gender.json          { key, label, values: [{ value, label, description? }] }
+formats/masks/trade_behavior.json  { key, label, flags:  [{ bit, label, description? }] }   bit = 0…63
+```
+
+A field refers to a set by key (`"e": "trade_behavior"`). The v112 Jade Editor sets are
+`v112_*`. Edit them with **Enums & masks** in the schema editor, or with the pencil in a
+field's value popover. Your changes go to `%APPDATA%\com.jdide.app\enums\` and `masks\`.
+There, a file overrides the built-in set with the same key or adds a new one. Deleting
+the file reverts the set. In the inspector, clicking a mask field's labels opens a
+calculator: tick bits to get the resulting value in decimal and hex.
 Each list definition is `{ name, struct, size, fields }`, and fields are `{ name, off, t, c?, e?, display?, refs?, g?, when? }`.
 Here `t` is a type tree (scalars, `wstr`/`str`/`bytes`, nested `array` and `struct`), and
 `refs` names the target lists by struct, so a definition can be shared between versions.

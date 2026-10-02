@@ -1,0 +1,75 @@
+{
+  "key": "trade_behavior",
+  "label": "Trade Behavior",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Cannot be dropped",
+      "description": "The item cannot be dropped on the ground."
+    },
+    {
+      "bit": 1,
+      "label": "Cannot be discarded",
+      "description": "The item cannot be destroyed or thrown away."
+    },
+    {
+      "bit": 2,
+      "label": "Cannot be sold to NPC",
+      "description": "The item cannot be sold to NPC vendors for gold."
+    },
+    {
+      "bit": 3,
+      "label": "ITEM_PROC_TYPE_CASHITEM",
+      "description": "The item is from marketplace"
+    },
+    {
+      "bit": 4,
+      "label": "Cannot be traded",
+      "description": "The item cannot be traded with other players."
+    },
+    {
+      "bit": 5,
+      "label": "Quest item",
+      "description": "是任务相关物品 — quest related item"
+    },
+    {
+      "bit": 6,
+      "label": "Bind on Equip",
+      "description": "The item will become Bound to the character once equipped."
+    },
+    {
+      "bit": 7,
+      "label": "Bound",
+      "description": "The item is bound to the character and cannot be traded, stashed in the account vault, or sold."
+    },
+    {
+      "bit": 8,
+      "label": "GUID Item"
+    },
+    {
+      "bit": 9,
+      "label": "Recyclable",
+      "description": "可以回收 — can be recycled"
+    },
+    {
+      "bit": 10,
+      "label": "Tradeable cross-server",
+      "description": "跨服可交易 — can be traded on cross-server"
+    },
+    {
+      "bit": 11,
+      "label": "Cross-server only",
+      "description": "仅在跨服可用 — usable only on cross-server"
+    },
+    {
+      "bit": 12,
+      "label": "Unusable cross-server",
+      "description": "跨服无法使用 — cannot be used on cross-server"
+    },
+    {
+      "bit": 13,
+      "label": "Bank Protected",
+      "description": "The item is protected by the player's bank password."
+    }
+  ]
+}

@@ -9,6 +9,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { writeLayout } from "./lib/layouts.mjs";
+import { clearSets, snake, writeSet } from "./lib/sets.mjs";
 
 const [formatsDir, layoutId = "v112"] = process.argv.slice(2);
 if (!formatsDir) {
@@ -40,7 +41,8 @@ for (const file of fs.readdirSync(path.join(formatsDir, "schemas"))) {
     const toType = TYPES[f.type];
     if (!toType) throw new Error(`${file}: unsupported field type ${f.type}`);
     const field = { name: f.name, off: f.offset, t: toType(f) };
-    if (f.enum) field.e = f.enum;
+    // Sets are shared by all layouts: prefix them, e.g. TradeBehavior → v112_trade_behavior.
+    if (f.enum) field.e = `v${VERSION}_${snake(f.enum)}`;
     if (f.flags) flagEnums.add(f.enum);
     return field;
   });
@@ -48,9 +50,18 @@ for (const file of fs.readdirSync(path.join(formatsDir, "schemas"))) {
   schemas.set(schema.list_type, { size: schema.item_size, fields });
 }
 
-const enums = Object.fromEntries(
-  Object.entries(enumSets).map(([key, items]) => [key, { label: key, flags: flagEnums.has(key), items }]),
-);
+// The Jade Editor's sets become shared enum and mask files.
+clearSets(`v${VERSION}_`);
+for (const [name, items] of Object.entries(enumSets)) {
+  const key = `v${VERSION}_${snake(name)}`;
+  const label = `${name.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ")} (v${VERSION})`;
+  const entries = Object.entries(items).map(([value, text]) => [Number(value), text.replace(/_/g, " ")]);
+  if (flagEnums.has(name)) {
+    writeSet({ key, label, flags: entries.map(([v, l]) => ({ bit: Math.log2(v), label: l })) });
+  } else {
+    writeSet({ key, label, values: entries.map(([v, l]) => ({ value: v, label: l })) });
+  }
+}
 
 const layout = {
   id: layoutId,
@@ -60,7 +71,6 @@ const layout = {
     { before: 23, kind: "exporter" },
     { before: 56, kind: "tag" },
   ],
-  enums,
   lists: names.map((name) => ({ name, ...(schemas.get(name) ?? {}) })),
 };
 

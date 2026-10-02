@@ -1,0 +1,101 @@
+{
+  "key": "sect_mask",
+  "label": "Sects",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Novice",
+      "description": "少侠"
+    },
+    {
+      "bit": 1,
+      "label": "Guiwang",
+      "description": "鬼王宗"
+    },
+    {
+      "bit": 2,
+      "label": "Hehuan",
+      "description": "合欢派"
+    },
+    {
+      "bit": 3,
+      "label": "Qingyun",
+      "description": "青云门"
+    },
+    {
+      "bit": 4,
+      "label": "Tianyin",
+      "description": "天音寺"
+    },
+    {
+      "bit": 5,
+      "label": "Guidao",
+      "description": "鬼道"
+    },
+    {
+      "bit": 6,
+      "label": "Fenxiang",
+      "description": "焚香"
+    },
+    {
+      "bit": 7,
+      "label": "Reserved 3",
+      "description": "保留3"
+    },
+    {
+      "bit": 8,
+      "label": "Divine novice",
+      "description": "神裔少侠"
+    },
+    {
+      "bit": 9,
+      "label": "Jiuli",
+      "description": "九黎"
+    },
+    {
+      "bit": 10,
+      "label": "Lieshan",
+      "description": "烈山"
+    },
+    {
+      "bit": 11,
+      "label": "Taihao",
+      "description": "太昊"
+    },
+    {
+      "bit": 12,
+      "label": "Huaiguang",
+      "description": "怀光"
+    },
+    {
+      "bit": 13,
+      "label": "Dongyi",
+      "description": "东夷"
+    },
+    {
+      "bit": 14,
+      "label": "Tianhua",
+      "description": "天华"
+    },
+    {
+      "bit": 15,
+      "label": "Loli body",
+      "description": "萝莉"
+    },
+    {
+      "bit": 16,
+      "label": "Quadruped",
+      "description": "四足"
+    },
+    {
+      "bit": 17,
+      "label": "Hydran",
+      "description": "四足"
+    },
+    {
+      "bit": 18,
+      "label": "Seira",
+      "description": "四足"
+    }
+  ]
+}

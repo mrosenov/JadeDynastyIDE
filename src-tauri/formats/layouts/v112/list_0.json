@@ -23,7 +23,7 @@
       "t": {
         "k": "i32"
       },
-      "e": "AttribType"
+      "e": "v112_attrib_type"
     },
     {
       "name": "ValueCount",

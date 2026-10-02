@@ -1,0 +1,21 @@
+{
+  "key": "gender",
+  "label": "Gender",
+  "values": [
+    {
+      "value": 0,
+      "label": "Male",
+      "description": "男"
+    },
+    {
+      "value": 1,
+      "label": "Female",
+      "description": "女"
+    },
+    {
+      "value": 2,
+      "label": "Any",
+      "description": "男女都可 — either gender (client source)"
+    }
+  ]
+}

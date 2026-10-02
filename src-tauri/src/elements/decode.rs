@@ -45,6 +45,9 @@ pub struct Node {
     /// Path ID of the item icon this value points at (client icons).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub icon: Option<u32>,
+    /// Key of the enum or mask naming this value.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub set: Option<String>,
 }
 
 fn group_node(name: String, members: Vec<Node>) -> Node {
@@ -66,6 +69,7 @@ fn group_node(name: String, members: Vec<Node>) -> Node {
         group: true,
         cond: None,
         icon: None,
+        set: None,
     }
 }
 
@@ -171,6 +175,7 @@ pub struct Annotation {
     pub hint: Option<String>,
     pub link: Option<(usize, usize)>,
     pub icon: Option<u32>,
+    pub set: Option<String>,
 }
 
 pub type Annotator<'a> = dyn Fn(&Field, i64) -> Annotation + 'a;
@@ -198,6 +203,7 @@ impl Ctx<'_> {
             group: false,
             cond: None,
             icon: None,
+            set: None,
         };
         if off + size > self.bytes.len() {
             node.value = Some("(past end of record)".into());
@@ -228,6 +234,7 @@ impl Ctx<'_> {
                     node.hint = a.hint;
                     node.link = a.link;
                     node.icon = a.icon;
+                    node.set = a.set;
                 }
                 if node.hint.is_none() && matches!(ty, Ty::I32 | Ty::U32) {
                     node.hint = float_hint(u32::from_le_bytes(fixed(self.bytes, off)));
@@ -297,6 +304,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
                     group: false,
                     cond: None,
                     icon: None,
+                    set: None,
                 }
             })
             .collect()
@@ -317,6 +325,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
         group: false,
         cond: None,
         icon: None,
+        set: None,
     }
 }
 

@@ -1,0 +1,58 @@
+{
+  "key": "v112_trade_behavior",
+  "label": "Trade Behavior (v112)",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "No PVP Drop"
+    },
+    {
+      "bit": 1,
+      "label": "No Discard"
+    },
+    {
+      "bit": 2,
+      "label": "Unknown4"
+    },
+    {
+      "bit": 3,
+      "label": "Unknown8"
+    },
+    {
+      "bit": 4,
+      "label": "No Trade"
+    },
+    {
+      "bit": 5,
+      "label": "Unknown32"
+    },
+    {
+      "bit": 6,
+      "label": "Bind When Equip"
+    },
+    {
+      "bit": 7,
+      "label": "Unknown128"
+    },
+    {
+      "bit": 8,
+      "label": "No Sell NPC"
+    },
+    {
+      "bit": 9,
+      "label": "Unknown512"
+    },
+    {
+      "bit": 10,
+      "label": "Unknown1024"
+    },
+    {
+      "bit": 11,
+      "label": "Unknown2048"
+    },
+    {
+      "bit": 12,
+      "label": "Unknown4096"
+    }
+  ]
+}

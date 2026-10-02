@@ -1,0 +1,36 @@
+{
+  "key": "forbid_food",
+  "label": "Forbidden Food",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Instant HP",
+      "description": "瞬回HP"
+    },
+    {
+      "bit": 1,
+      "label": "Instant MP",
+      "description": "瞬回MP"
+    },
+    {
+      "bit": 2,
+      "label": "Instant HP & MP",
+      "description": "瞬回HP及MP"
+    },
+    {
+      "bit": 3,
+      "label": "HP over time",
+      "description": "持续回HP"
+    },
+    {
+      "bit": 4,
+      "label": "MP over time",
+      "description": "持续回MP"
+    },
+    {
+      "bit": 5,
+      "label": "HP & MP over time",
+      "description": "持续回HP及MP"
+    }
+  ]
+}

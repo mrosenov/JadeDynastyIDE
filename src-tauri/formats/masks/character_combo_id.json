@@ -1,0 +1,266 @@
+{
+  "key": "character_combo_id",
+  "label": "Classes",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Initiate",
+      "description": "c0: 人族少侠"
+    },
+    {
+      "bit": 1,
+      "label": "Vim Tier 1",
+      "description": "c1: 鬼王宗1"
+    },
+    {
+      "bit": 2,
+      "label": "Vim Tier 2",
+      "description": "c2: 鬼王宗2"
+    },
+    {
+      "bit": 3,
+      "label": "Vim Tier 3",
+      "description": "c3: 鬼王宗3"
+    },
+    {
+      "bit": 4,
+      "label": "Lupin Tier 1",
+      "description": "c4: 合欢派1"
+    },
+    {
+      "bit": 5,
+      "label": "Lupin Tier 2",
+      "description": "c5: 合欢派2"
+    },
+    {
+      "bit": 6,
+      "label": "Lupin Tier 3",
+      "description": "c6: 合欢派3"
+    },
+    {
+      "bit": 7,
+      "label": "Jadeon Tier 1",
+      "description": "c7: 青云门1"
+    },
+    {
+      "bit": 8,
+      "label": "Jadeon Tier 2",
+      "description": "c8: 青云门2"
+    },
+    {
+      "bit": 9,
+      "label": "Jadeon Tier 3",
+      "description": "c9: 青云门3"
+    },
+    {
+      "bit": 10,
+      "label": "Skysong Tier 1",
+      "description": "c10: 天音寺1"
+    },
+    {
+      "bit": 11,
+      "label": "Skysong Tier 2",
+      "description": "c11: 天音寺2"
+    },
+    {
+      "bit": 12,
+      "label": "Skysong Tier 3",
+      "description": "c12: 天音寺3"
+    },
+    {
+      "bit": 13,
+      "label": "Vim Tier 4",
+      "description": "c13: 鬼王宗4"
+    },
+    {
+      "bit": 14,
+      "label": "Vim Tier 5",
+      "description": "c14: 鬼王宗5"
+    },
+    {
+      "bit": 16,
+      "label": "Lupin Tier 4",
+      "description": "c16: 合欢派4"
+    },
+    {
+      "bit": 17,
+      "label": "Lupin Tier 5",
+      "description": "c17: 合欢派5"
+    },
+    {
+      "bit": 19,
+      "label": "Jadeon Tier 4",
+      "description": "c19: 青云门4"
+    },
+    {
+      "bit": 20,
+      "label": "Jadeon Tier 5",
+      "description": "c20: 青云门5"
+    },
+    {
+      "bit": 22,
+      "label": "Skysong Tier 4",
+      "description": "c22: 天音寺4"
+    },
+    {
+      "bit": 23,
+      "label": "Skysong Tier 5",
+      "description": "c23: 天音寺5"
+    },
+    {
+      "bit": 25,
+      "label": "Modo Tier 1",
+      "description": "c25: 鬼道1"
+    },
+    {
+      "bit": 26,
+      "label": "Modo Tier 2",
+      "description": "c26: 鬼道2"
+    },
+    {
+      "bit": 27,
+      "label": "Modo Tier 3",
+      "description": "c27: 鬼道3"
+    },
+    {
+      "bit": 28,
+      "label": "Modo Tier 4",
+      "description": "c28: 鬼道4"
+    },
+    {
+      "bit": 29,
+      "label": "Modo Tier 5",
+      "description": "c29: 鬼道5"
+    },
+    {
+      "bit": 32,
+      "label": "Divine novice",
+      "description": "c32: 神裔少侠"
+    },
+    {
+      "bit": 33,
+      "label": "Balo Tier 1",
+      "description": "c33: 九黎1"
+    },
+    {
+      "bit": 34,
+      "label": "Balo Tier 2",
+      "description": "c34: 九黎2"
+    },
+    {
+      "bit": 35,
+      "label": "Balo Tier 3",
+      "description": "c35: 九黎3"
+    },
+    {
+      "bit": 36,
+      "label": "Balo Tier 4",
+      "description": "c36: 九黎4"
+    },
+    {
+      "bit": 37,
+      "label": "Balo Tier 5",
+      "description": "c37: 九黎5"
+    },
+    {
+      "bit": 39,
+      "label": "Arden Tier 1",
+      "description": "c39: 烈山1"
+    },
+    {
+      "bit": 40,
+      "label": "Arden Tier 2",
+      "description": "c40: 烈山2"
+    },
+    {
+      "bit": 41,
+      "label": "Arden Tier 3",
+      "description": "c41: 烈山3"
+    },
+    {
+      "bit": 42,
+      "label": "Arden Tier 4",
+      "description": "c42: 烈山4"
+    },
+    {
+      "bit": 43,
+      "label": "Arden Tier 5",
+      "description": "c43: 烈山5"
+    },
+    {
+      "bit": 45,
+      "label": "Rayan Tier 1",
+      "description": "c45: 怀光1"
+    },
+    {
+      "bit": 46,
+      "label": "Rayan Tier 2",
+      "description": "c46: 怀光2"
+    },
+    {
+      "bit": 47,
+      "label": "Rayan Tier 3",
+      "description": "c47: 怀光3"
+    },
+    {
+      "bit": 48,
+      "label": "Rayan Tier 4",
+      "description": "c48: 怀光4"
+    },
+    {
+      "bit": 49,
+      "label": "Rayan Tier 5",
+      "description": "c49: 怀光5"
+    },
+    {
+      "bit": 51,
+      "label": "Celan Tier 1",
+      "description": "c51: 天华1"
+    },
+    {
+      "bit": 52,
+      "label": "Celan Tier 2",
+      "description": "c52: 天华2"
+    },
+    {
+      "bit": 53,
+      "label": "Celan Tier 3",
+      "description": "c53: 天华3"
+    },
+    {
+      "bit": 54,
+      "label": "Celan Tier 4",
+      "description": "c54: 天华4"
+    },
+    {
+      "bit": 55,
+      "label": "Celan Tier 5",
+      "description": "c55: 天华5"
+    },
+    {
+      "bit": 56,
+      "label": "Voida Tier 1",
+      "description": "c56"
+    },
+    {
+      "bit": 57,
+      "label": "Voida Tier 2",
+      "description": "c57"
+    },
+    {
+      "bit": 58,
+      "label": "Voida Tier 3",
+      "description": "c58"
+    },
+    {
+      "bit": 59,
+      "label": "Voida Tier 4",
+      "description": "c59"
+    },
+    {
+      "bit": 60,
+      "label": "Voida Tier 5",
+      "description": "c60"
+    }
+  ]
+}

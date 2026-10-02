@@ -447,6 +447,7 @@ impl Document {
         let mut a = Annotation::default();
         if let Some(set) = field.e.as_deref().and_then(|key| self.catalog.enum_set(layout, key)) {
             a.hint = set.label_for(value);
+            a.set = field.e.clone();
             return a;
         }
         // Path and icon fields hold path.data IDs: show the client's path.
@@ -740,7 +741,7 @@ mod tests {
         assert_eq!(row.name, "法宝技能_真山河扇");
         let detail = doc.record(0, row.index).unwrap();
         let ty = detail.nodes.iter().find(|n| n.name == "Type").unwrap();
-        assert_eq!(ty.hint.as_deref(), Some("Bonus_Skill"));
+        assert_eq!(ty.hint.as_deref(), Some("Bonus Skill"));
     }
 
     #[test]
@@ -785,8 +786,8 @@ mod tests {
 
         // Save into the user folder and reload: the edit wins over borrowing.
         let target = doc.edit_target();
-        format::save_user_list(&dir, &target, list, &def, doc.new_target_meta().as_ref()).unwrap();
-        let file = format::user_list_path(&dir, &target, list);
+        format::save_user_list(&dir.join("layouts"), &target, list, &def, doc.new_target_meta().as_ref()).unwrap();
+        let file = format::user_list_path(&dir.join("layouts"), &target, list);
         assert!(file.ends_with(format!("{target}/list_{list}.json")));
         assert!(file.exists());
         let doc = doc.reload(Arc::new(Catalog::load(Some(&dir)))).unwrap();
@@ -800,7 +801,7 @@ mod tests {
         assert!(!doc.summary().lists[0].custom);
 
         // Reverting removes the user file again.
-        format::delete_user_list(&dir, &target, list).unwrap();
+        format::delete_user_list(&dir.join("layouts"), &target, list).unwrap();
         assert!(!file.exists());
         let doc = doc.reload(Arc::new(Catalog::load(Some(&dir)))).unwrap();
         assert!(!doc.summary().lists[list].custom);
@@ -854,8 +855,8 @@ mod tests {
         let def = doc.list_schema(0).unwrap().def.unwrap();
         let meta = doc.new_target_meta().expect("a new layout");
         assert_eq!(meta.id, "v157");
-        format::save_user_list(&dir, "v157", 0, &def, Some(&meta)).unwrap();
-        assert!(dir.join("v157/layout.json").exists());
+        format::save_user_list(&dir.join("layouts"), "v157", 0, &def, Some(&meta)).unwrap();
+        assert!(dir.join("layouts/v157/layout.json").exists());
 
         // The new layout's marker table now reads the file as its own version.
         let doc = doc.reload(Arc::new(Catalog::load(Some(&dir)))).unwrap();
@@ -864,8 +865,8 @@ mod tests {
         assert!(doc.summary().layout_custom);
 
         // Removing its last list removes the user-only layout.
-        format::delete_user_list(&dir, "v157", 0).unwrap();
-        assert!(!dir.join("v157").exists());
+        format::delete_user_list(&dir.join("layouts"), "v157", 0).unwrap();
+        assert!(!dir.join("layouts/v157").exists());
         let _ = std::fs::remove_dir_all(&dir);
     }
 

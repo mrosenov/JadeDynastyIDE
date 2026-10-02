@@ -6,6 +6,8 @@ import { type Path, allPaths, nodeAt, pathAt } from "../elements/fieldPaths";
 import { HexView } from "./HexView";
 import { ArrowLeft, ChevronsDownUp, ChevronsUpDown } from "lucide-react";
 import { ReadingsCard } from "./ReadingsCard";
+import { SetPopover } from "./SetPopover";
+import type { FieldNode } from "../elements/types";
 import { isUndefinedNode, undefinedSpan } from "../elements/readings";
 import type { FieldSpec } from "../schema/model";
 
@@ -20,15 +22,19 @@ interface Props {
   onDefine: (list: number, offset: number, spec: FieldSpec) => void;
   /** Item icon URL for a path ID (when the client's icons are available). */
   icon?: (pathId?: number | null) => string | undefined;
+  /** Open the enums & masks editor at a set. */
+  onEditSet?: (key: string) => void;
 }
 
-export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon }: Props) {
+export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, onEditSet }: Props) {
   const [expanded, setExpanded] = useState<Set<Path>>(new Set());
   const [selected, setSelected] = useState<Path | null>(null);
   const [hovered, setHovered] = useState<Path | null>(null);
   // Offset whose possible readings are shown (undefined bytes only). It stays
   // while browsing records of the list, to compare readings between records.
   const [readOffset, setReadOffset] = useState<number | null>(null);
+  const [setPopover, setSetPopover] = useState<{ node: FieldNode; anchor: DOMRect } | null>(null);
+  useEffect(() => setSetPopover(null), [detail]);
 
   // Keep the expansion state while browsing records of the same list.
   useEffect(() => {
@@ -143,7 +149,19 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           onHover={setHovered}
           onFollow={onFollow}
           icon={icon}
+          onSet={(node, anchor) => setSetPopover({ node, anchor })}
         />
+        {setPopover && (
+          <SetPopover
+            node={setPopover.node}
+            anchor={setPopover.anchor}
+            onEdit={(key) => {
+              setSetPopover(null);
+              onEditSet?.(key);
+            }}
+            onClose={() => setSetPopover(null)}
+          />
+        )}
         <div className="readings-slot">
           {span && readOffset !== null && (
             <ReadingsCard

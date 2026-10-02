@@ -1,0 +1,98 @@
+{
+  "key": "v112_gear_slot_type",
+  "label": "Gear Slot Type (v112)",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Weapon"
+    },
+    {
+      "bit": 1,
+      "label": "Head Gear"
+    },
+    {
+      "bit": 2,
+      "label": "Armor"
+    },
+    {
+      "bit": 3,
+      "label": "Boots"
+    },
+    {
+      "bit": 4,
+      "label": "Necklace"
+    },
+    {
+      "bit": 5,
+      "label": "Ring 1"
+    },
+    {
+      "bit": 6,
+      "label": "Ring 2"
+    },
+    {
+      "bit": 7,
+      "label": "Mask"
+    },
+    {
+      "bit": 8,
+      "label": "Unknown 256"
+    },
+    {
+      "bit": 9,
+      "label": "Essence"
+    },
+    {
+      "bit": 10,
+      "label": "Hair"
+    },
+    {
+      "bit": 11,
+      "label": "Clothing"
+    },
+    {
+      "bit": 12,
+      "label": "Unknown 4096"
+    },
+    {
+      "bit": 13,
+      "label": "Shoes"
+    },
+    {
+      "bit": 14,
+      "label": "Charm"
+    },
+    {
+      "bit": 15,
+      "label": "Skyblade"
+    },
+    {
+      "bit": 16,
+      "label": "Esper"
+    },
+    {
+      "bit": 17,
+      "label": "Esper Accessory"
+    },
+    {
+      "bit": 18,
+      "label": "Esper Tome"
+    },
+    {
+      "bit": 19,
+      "label": "Unknown 524288"
+    },
+    {
+      "bit": 20,
+      "label": "Trinket"
+    },
+    {
+      "bit": 21,
+      "label": "Insignia"
+    },
+    {
+      "bit": 22,
+      "label": "Chi"
+    }
+  ]
+}

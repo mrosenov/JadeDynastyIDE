@@ -1,0 +1,336 @@
+{
+  "key": "addon_type",
+  "label": "Addon Type",
+  "values": [
+    {
+      "value": 0,
+      "label": "None",
+      "description": "Not in the client source; used by test and placeholder addons."
+    },
+    {
+      "value": 1,
+      "label": "Health +N",
+      "description": "增加生命上限固定值 · param1 = integer"
+    },
+    {
+      "value": 2,
+      "label": "Spirit +N",
+      "description": "增加魔力上限固定值 · param1 = integer"
+    },
+    {
+      "value": 3,
+      "label": "Attack Power +N",
+      "description": "增加攻击力固定值 · param1 = integer"
+    },
+    {
+      "value": 4,
+      "label": "Defense +N",
+      "description": "增加防御力固定值 · param1 = integer"
+    },
+    {
+      "value": 5,
+      "label": "Accuracy +N",
+      "description": "增加命中固定值 · param1 = integer"
+    },
+    {
+      "value": 6,
+      "label": "Evasion +N",
+      "description": "增加闪避固定值 · param1 = integer"
+    },
+    {
+      "value": 7,
+      "label": "CritStrike Rate +N%",
+      "description": "增加致命一击率固定值 · param1 = float"
+    },
+    {
+      "value": 8,
+      "label": "CritStrike Bonus +N%",
+      "description": "增加致命一击伤害固定值 · param1 = float"
+    },
+    {
+      "value": 9,
+      "label": "Stun RES +N",
+      "description": "skill ext 0 · param1 = integer"
+    },
+    {
+      "value": 10,
+      "label": "Weaken RES +N",
+      "description": "skill ext 1 · param1 = integer"
+    },
+    {
+      "value": 11,
+      "label": "Paralyze RES +N",
+      "description": "skill ext 2 · param1 = integer"
+    },
+    {
+      "value": 12,
+      "label": "Silence RES +N",
+      "description": "skill ext 3 · param1 = integer"
+    },
+    {
+      "value": 13,
+      "label": "Sleep RES +N",
+      "description": "skill ext 4 · param1 = integer"
+    },
+    {
+      "value": 14,
+      "label": "Freeze RES +N%",
+      "description": "skill ext 5 · param1 = integer"
+    },
+    {
+      "value": 15,
+      "label": "Health +N%",
+      "description": "增加生命上限百分比 · param1 = float"
+    },
+    {
+      "value": 16,
+      "label": "Spirit +N%",
+      "description": "增加魔力上限百分比 · param1 = float"
+    },
+    {
+      "value": 17,
+      "label": "Attack Power +N%",
+      "description": "增加攻击力百分比 · param1 = float"
+    },
+    {
+      "value": 18,
+      "label": "Defense +N%",
+      "description": "增加防御力百分比 · param1 = float"
+    },
+    {
+      "value": 19,
+      "label": "Stun RES +N%",
+      "description": "skill percent 0 · param1 = float"
+    },
+    {
+      "value": 20,
+      "label": "Weaken RES +N%",
+      "description": "skill percent 1 · param1 = float"
+    },
+    {
+      "value": 21,
+      "label": "Paralyze RES +N%",
+      "description": "skill percent 2 · param1 = float"
+    },
+    {
+      "value": 22,
+      "label": "Silence RES +N%",
+      "description": "skill percent 3 · param1 = float"
+    },
+    {
+      "value": 23,
+      "label": "Sleep RES +N%",
+      "description": "skill percent 4 · param1 = float"
+    },
+    {
+      "value": 24,
+      "label": "Freeze RES +N%",
+      "description": "skill percent 5 · param1 = float"
+    },
+    {
+      "value": 25,
+      "label": "Movement speed +N%",
+      "description": "增加移动速度 · param1 = float"
+    },
+    {
+      "value": 26,
+      "label": "Health Recovery Rate +N%",
+      "description": "增加生命恢复速度百分比 · param1 = float"
+    },
+    {
+      "value": 27,
+      "label": "Spirit Recovery Rate +N%",
+      "description": "增加魔力恢复速度百分比 · param1 = float"
+    },
+    {
+      "value": 28,
+      "label": "EXP +N",
+      "description": "经验获得增加固定值 · param1 = integer"
+    },
+    {
+      "value": 29,
+      "label": "EXP +N%",
+      "description": "经验获得增加百分比 · param1 = float"
+    },
+    {
+      "value": 30,
+      "label": "Cash acquired +N",
+      "description": "金钱获得增加固定值 · param1 = integer"
+    },
+    {
+      "value": 31,
+      "label": "Cash acquired +N%",
+      "description": "金钱获得增加百分比 · param1 = float"
+    },
+    {
+      "value": 32,
+      "label": "Damage Reduction N",
+      "description": "减少伤害固定值 · param1 = integer"
+    },
+    {
+      "value": 33,
+      "label": "Damage Reduction N%",
+      "description": "减少伤害百分比 · param1 = float"
+    },
+    {
+      "value": 34,
+      "label": "<skill> Rank +N",
+      "description": "增加某某(全部)技能等级 · param1 = skill ID (0 = all skills), param2 = amount"
+    },
+    {
+      "value": 35,
+      "label": "<skill> Cooldown -N seconds",
+      "description": "降低某某（全部）全部技能冷却时间 · param1 = skill ID (0 = all skills), param2 = seconds (float)"
+    },
+    {
+      "value": 36,
+      "label": "Bonus Damage +N",
+      "description": "附加伤害 · param1 = integer"
+    },
+    {
+      "value": 37,
+      "label": "Riding speed +N m/s",
+      "description": "骑乘速度增加 · param1 = float"
+    },
+    {
+      "value": 38,
+      "label": "Bonus Skill: <skill> LVN",
+      "description": "增加一个某等级的技能 · param1 = skill ID, param2 = skill level"
+    },
+    {
+      "value": 39,
+      "label": "Buff / transformation effect (inferred)",
+      "description": "Not in the client source. Used by 法宝挂机buff and 血魂法身 addons (param1 = 3 params)."
+    },
+    {
+      "value": 40,
+      "label": "Flight Speed increased by N yards/second",
+      "description": "增加飞行速度 · param1 = float"
+    },
+    {
+      "value": 41,
+      "label": "CritNull +N%",
+      "description": "被致命一击的概率减少%.1f%% · param1 = float"
+    },
+    {
+      "value": 42,
+      "label": "CritShield +N%",
+      "description": "受到致命一击伤害减少%.1f%% · param1 = float"
+    },
+    {
+      "value": 43,
+      "label": "Skill Evasion +N",
+      "description": "增加技能躲闪%.1f · param1 = float"
+    },
+    {
+      "value": 44,
+      "label": "Skill Accuracy +N",
+      "description": "增加技能命中%.1f · param1 = float"
+    },
+    {
+      "value": 45,
+      "label": "Skill <skill> deals N points more damage",
+      "description": "%s技能造成的伤害增加%d点 · param1 = skill ID (0 = all skills), param2 = amount"
+    },
+    {
+      "value": 46,
+      "label": "Skill deals N more points",
+      "description": "技能造成的伤害增加%d点 · param1 = integer"
+    },
+    {
+      "value": 47,
+      "label": "Dagos RES +N%",
+      "description": "御仙+%.1f%% · param1 = float"
+    },
+    {
+      "value": 48,
+      "label": "Felkin RES +N%",
+      "description": "御魔+%.1f%% · param1 = float"
+    },
+    {
+      "value": 49,
+      "label": "Fuwa RES+N%",
+      "description": "御佛+%.1f%% · param1 = float"
+    },
+    {
+      "value": 50,
+      "label": "Reserved RES 1+N%",
+      "description": "御备选1+%.1f%% · param1 = float"
+    },
+    {
+      "value": 51,
+      "label": "Reserved RES 2+N%",
+      "description": "御备选2+%.1f%% · param1 = float"
+    },
+    {
+      "value": 52,
+      "label": "Reserved RES 3+N%",
+      "description": "御备选3+%.1f%% · param1 = float"
+    },
+    {
+      "value": 53,
+      "label": "Pet ATK +N%",
+      "description": "宠物伤害增加+%.1f%% · param1 = float"
+    },
+    {
+      "value": 54,
+      "label": "Damage taken by Pet -N%",
+      "description": "受到宠物伤害-%.1f%% · param1 = float"
+    },
+    {
+      "value": 55,
+      "label": "Fasting Chance is reduced by N%",
+      "description": "降低禁食概率%.1f%% · param1 = float"
+    },
+    {
+      "value": 56,
+      "label": "Anti-Damage Reduction +N%",
+      "description": "无视人物伤害减免百分比+%.1f%% · param1 = float"
+    },
+    {
+      "value": 57,
+      "label": "Damage +N%",
+      "description": "对人物伤害增加百分比+%.1f%% · param1 = float"
+    },
+    {
+      "value": 58,
+      "label": "Damage against Dagos +N%",
+      "description": "对仙阵营伤害增加百分比+%.1f%% · param1 = float"
+    },
+    {
+      "value": 59,
+      "label": "Damage against Felkin +N%",
+      "description": "对魔阵营伤害增加百分比+%.1f%% · param1 = float"
+    },
+    {
+      "value": 60,
+      "label": "Damage against Fuwa +N%",
+      "description": "对佛阵营伤害增加百分比+%.1f%% · param1 = float"
+    },
+    {
+      "value": 61,
+      "label": "(Bonus Permanent Skill) <skill> LVN",
+      "description": "增加一个附加永久技能 · param1 = skill ID, param2 = skill level"
+    },
+    {
+      "value": 62,
+      "label": "Bonus skill effect: <skill>",
+      "description": "附加技能效果 (e.g. fashion weapon freeze or stun) · param1 = skill ID"
+    },
+    {
+      "value": 63,
+      "label": "Yuanli +N (inferred)",
+      "description": "Not in the client source. Used by 元力 addons on fashion and cards · param1 = integer"
+    },
+    {
+      "value": 64,
+      "label": "Spirit power +N (inferred)",
+      "description": "Not in the client source. Used by 元神威能 card addons · param1 = float"
+    },
+    {
+      "value": 71,
+      "label": "Stun tenacity +N (inferred)",
+      "description": "Not in the client source. Used by 时装附加眩晕韧性 · param1 = integer"
+    }
+  ]
+}

@@ -100,7 +100,7 @@
       "t": {
         "k": "i32"
       },
-      "e": "TradeBehavior"
+      "e": "v112_trade_behavior"
     }
   ]
 }

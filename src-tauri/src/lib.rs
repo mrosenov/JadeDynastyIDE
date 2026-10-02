@@ -9,7 +9,10 @@ use std::sync::{Arc, Mutex, RwLock};
 use client::{ClientInfo, Resources};
 use settings::Settings;
 
-use elements::format::{delete_user_list, save_user_list, Catalog, ListDef};
+use elements::format::{
+    builtin_set, delete_user_list, delete_user_set, save_user_list, save_user_set, Catalog, ListDef, NamedSet, SetKind,
+    SetOrigin,
+};
 use elements::{Document, FileSummary, ImportCandidate, ListSchema, RecordDetail, RecordRow};
 use serde::Serialize;
 use tauri::{Manager, State};
@@ -17,7 +20,7 @@ use tauri::{Manager, State};
 struct AppState {
     document: Mutex<Option<Document>>,
     catalog: RwLock<Arc<Catalog>>,
-    /// Folder holding the layouts written by the schema editor.
+    /// The user's data folder: `layouts/`, `enums/` and `masks/` written by the editors.
     user_dir: PathBuf,
     settings: Mutex<Settings>,
     settings_path: PathBuf,
@@ -83,15 +86,23 @@ impl AppState {
     /// Changes the user's schema files for the open document, then reloads
     /// the catalog and re-reads the document with it.
     fn change_schemas(&self, change: impl FnOnce(&Document) -> Result<(), String>) -> Result<FileSummary, String> {
+        {
+            let guard = self.document.lock().map_err(|_| "State lock poisoned")?;
+            change(guard.as_ref().ok_or("No file is open")?)?;
+        }
+        self.reload_catalog()?.ok_or_else(|| "No file is open".into())
+    }
+
+    /// Reloads the catalog from disk; an open document is re-read with it.
+    fn reload_catalog(&self) -> Result<Option<FileSummary>, String> {
         let mut guard = self.document.lock().map_err(|_| "State lock poisoned")?;
-        let doc = guard.as_ref().ok_or("No file is open")?;
-        change(doc)?;
         let catalog = Arc::new(Catalog::load(Some(&self.user_dir)));
-        let reloaded = doc.reload(catalog.clone())?;
-        *self.catalog.write().map_err(|_| "State lock poisoned")? = catalog;
+        *self.catalog.write().map_err(|_| "State lock poisoned")? = catalog.clone();
+        let Some(doc) = guard.as_ref() else { return Ok(None) };
+        let reloaded = doc.reload(catalog)?;
         let summary = reloaded.summary();
         *guard = Some(reloaded);
-        Ok(summary)
+        Ok(Some(summary))
     }
 }
 
@@ -137,7 +148,7 @@ struct SchemaContext {
 
 #[tauri::command]
 async fn schema_context(state: State<'_, AppState>) -> Result<SchemaContext, String> {
-    let user_dir = state.user_dir.display().to_string();
+    let user_dir = state.user_dir.join("layouts").display().to_string();
     state.with_document(|doc| {
         let catalog = doc.catalog();
         let mut enums: Vec<EnumInfo> = catalog
@@ -168,7 +179,7 @@ async fn preview_list_schema(list: usize, index: usize, def: ListDef, state: Sta
 #[tauri::command]
 async fn save_list_schema(list: usize, def: ListDef, state: State<'_, AppState>) -> Result<FileSummary, String> {
     def.check()?;
-    let dir = state.user_dir.clone();
+    let dir = state.user_dir.join("layouts");
     state.change_schemas(|doc| {
         let item_size = doc.file.lists.get(list).ok_or("No such list")?.item_size;
         if let Some(size) = def.size.filter(|&s| s > item_size) {
@@ -185,7 +196,7 @@ async fn import_candidates(list: usize, state: State<'_, AppState>) -> Result<Ve
 
 #[tauri::command]
 async fn reset_list_schema(list: usize, state: State<'_, AppState>) -> Result<FileSummary, String> {
-    let dir = state.user_dir.clone();
+    let dir = state.user_dir.join("layouts");
     state.change_schemas(|doc| delete_user_list(&dir, &doc.edit_target(), list))
 }
 
@@ -250,6 +261,92 @@ fn icon_response(app: &tauri::AppHandle, uri_path: &str) -> tauri::http::Respons
     }
 }
 
+// ---------------------------------------------------------------- enums and masks
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct SetSummary {
+    key: String,
+    label: String,
+    kind: SetKind,
+    origin: SetOrigin,
+    /// Number of values or bits.
+    count: usize,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct SetDetail {
+    kind: SetKind,
+    set: NamedSet,
+    origin: SetOrigin,
+    /// The built-in definition, for sets that have one.
+    builtin: Option<NamedSet>,
+    /// Fields that use the set, across all layouts.
+    usage: Vec<String>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct SetsChanged {
+    sets: Vec<SetSummary>,
+    /// The open file, re-read with the new sets.
+    summary: Option<FileSummary>,
+}
+
+fn set_summaries(catalog: &Catalog) -> Vec<SetSummary> {
+    let mut out: Vec<SetSummary> = catalog
+        .sets
+        .values()
+        .map(|e| SetSummary {
+            key: e.set.key.clone(),
+            label: if e.set.label.is_empty() { e.set.key.clone() } else { e.set.label.clone() },
+            kind: e.kind,
+            origin: e.origin,
+            count: e.set.values.len() + e.set.flags.len(),
+        })
+        .collect();
+    out.sort_by(|a, b| (a.kind as u8, a.label.to_lowercase()).cmp(&(b.kind as u8, b.label.to_lowercase())));
+    out
+}
+
+#[tauri::command]
+async fn named_sets(state: State<'_, AppState>) -> Result<Vec<SetSummary>, String> {
+    Ok(set_summaries(&state.catalog()))
+}
+
+#[tauri::command]
+async fn named_set(key: String, state: State<'_, AppState>) -> Result<SetDetail, String> {
+    let catalog = state.catalog();
+    let entry = catalog.sets.get(&key).ok_or_else(|| format!("No enum or mask named {key:?}"))?;
+    Ok(SetDetail {
+        kind: entry.kind,
+        set: entry.set.clone(),
+        origin: entry.origin,
+        builtin: builtin_set(&key).map(|b| b.set.clone()),
+        usage: catalog.set_usage(&key),
+    })
+}
+
+#[tauri::command]
+async fn save_named_set(kind: SetKind, set: NamedSet, state: State<'_, AppState>) -> Result<SetsChanged, String> {
+    if let Some(existing) = state.catalog().sets.get(&set.key) {
+        if existing.kind != kind {
+            return Err(format!("{:?} is already used by a {}", set.key, existing.kind.folder().trim_end_matches('s')));
+        }
+    }
+    save_user_set(&state.user_dir, kind, &set)?;
+    let summary = state.reload_catalog()?;
+    Ok(SetsChanged { sets: set_summaries(&state.catalog()), summary })
+}
+
+#[tauri::command]
+async fn delete_named_set(key: String, state: State<'_, AppState>) -> Result<SetsChanged, String> {
+    delete_user_set(&state.user_dir, &key)?;
+    let summary = state.reload_catalog()?;
+    Ok(SetsChanged { sets: set_summaries(&state.catalog()), summary })
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
@@ -267,7 +364,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
-            let user_dir = app.path().app_data_dir()?.join("layouts");
+            let user_dir = app.path().app_data_dir()?;
             let catalog = Arc::new(Catalog::load(Some(&user_dir)));
             for error in &catalog.errors {
                 eprintln!("user layout skipped: {error}");
@@ -307,7 +404,11 @@ pub fn run() {
             import_candidates,
             get_settings,
             inspect_client,
-            save_settings
+            save_settings,
+            named_sets,
+            named_set,
+            save_named_set,
+            delete_named_set
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

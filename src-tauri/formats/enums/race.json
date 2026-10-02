@@ -1,0 +1,25 @@
+{
+  "key": "race",
+  "label": "Race",
+  "values": [
+    {
+      "value": 0,
+      "label": "Human",
+      "description": "人族"
+    },
+    {
+      "value": 1,
+      "label": "Athan",
+      "description": "兽族"
+    },
+    {
+      "value": 2,
+      "label": "Any",
+      "description": "都可以 — any race (client source, from before Etherkin)"
+    },
+    {
+      "value": 3,
+      "label": "Etherkin"
+    }
+  ]
+}

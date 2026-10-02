@@ -13,9 +13,11 @@ interface Props {
   onFollow: (list: number, row: number, newTab?: boolean) => void;
   /** Item icon URL for a path ID (when the client's icons are available). */
   icon?: (pathId?: number | null) => string | undefined;
+  /** A value named by an enum or mask was clicked (shows all its values). */
+  onSet?: (node: FieldNode, anchor: DOMRect) => void;
 }
 
-export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon }: Props) {
+export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, onSet }: Props) {
   const rows = flatten(nodes, expanded);
   return (
     <div className="fields scroll" onMouseLeave={() => onHover(null)}>
@@ -75,6 +77,17 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
                       onFollow(node.link![0], node.link![1], true);
                     }}
                     onMouseDown={(e) => e.button === 1 && e.preventDefault()}
+                  >
+                    {node.hint}
+                  </button>
+                ) : node.set && onSet ? (
+                  <button
+                    className="hint set-hint"
+                    title="Show every value of this enum or mask"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSet(node, e.currentTarget.getBoundingClientRect());
+                    }}
                   >
                     {node.hint}
                   </button>

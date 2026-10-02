@@ -10,7 +10,7 @@
 //! may share a version number when server builds diverged; the reader picks
 //! the one that fits the file best.
 
-use std::collections::{HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, OnceLock};
 
@@ -130,7 +130,7 @@ pub struct Field {
     /// Comment (from the source header, or written in the schema editor).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub c: Option<String>,
-    /// Key of an enum/flag set (layout-local or in `enums.json`).
+    /// Key of an enum or mask (`formats/enums` or `formats/masks`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub e: Option<String>,
     /// How the value is meant to be read: "path", "icon" or "skill".
@@ -243,6 +243,141 @@ impl EnumSet {
             .collect();
         Some(parts.join(" | "))
     }
+}
+
+// ---------------------------------------------------------------- enums and masks
+
+/// Enums name single values; masks name the bits of a bit field.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum SetKind {
+    Enum,
+    Mask,
+}
+
+impl SetKind {
+    pub fn folder(self) -> &'static str {
+        match self {
+            SetKind::Enum => "enums",
+            SetKind::Mask => "masks",
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct EnumValue {
+    pub value: i64,
+    pub label: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub description: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct MaskFlag {
+    /// Bit index, 0 (value 1) … 63.
+    pub bit: u32,
+    pub label: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub description: String,
+}
+
+/// An enum or mask as stored in `formats/<enums|masks>/<key>.json`. Its kind
+/// comes from the folder.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct NamedSet {
+    pub key: String,
+    #[serde(default)]
+    pub label: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub values: Vec<EnumValue>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub flags: Vec<MaskFlag>,
+}
+
+/// Keys name files and are referenced from fields: lowercase letters,
+/// digits and underscores.
+pub fn valid_set_key(key: &str) -> bool {
+    !key.is_empty() && key.len() <= 64 && key.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_')
+}
+
+impl NamedSet {
+    pub fn check(&self, kind: SetKind) -> Result<(), String> {
+        if !valid_set_key(&self.key) {
+            return Err(format!("The key {:?} may only use lowercase letters, digits and _", self.key));
+        }
+        let mut seen = HashSet::new();
+        match kind {
+            SetKind::Enum => {
+                for v in &self.values {
+                    if v.label.trim().is_empty() {
+                        return Err(format!("Value {} needs a label", v.value));
+                    }
+                    if !seen.insert(v.value) {
+                        return Err(format!("Value {} is listed twice", v.value));
+                    }
+                }
+            }
+            SetKind::Mask => {
+                for f in &self.flags {
+                    if f.bit > 63 {
+                        return Err(format!("Bit {} is out of range (0–63)", f.bit));
+                    }
+                    if f.label.trim().is_empty() {
+                        return Err(format!("Bit {} needs a label", f.bit));
+                    }
+                    if !seen.insert(f.bit as i64) {
+                        return Err(format!("Bit {} is listed twice", f.bit));
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
+
+    /// The lookup form used when decoding.
+    pub fn to_enum_set(&self, kind: SetKind) -> EnumSet {
+        let mut items = HashMap::new();
+        let mut descriptions = HashMap::new();
+        match kind {
+            SetKind::Enum => {
+                for v in &self.values {
+                    items.insert(v.value.to_string(), v.label.clone());
+                    if !v.description.is_empty() {
+                        descriptions.insert(v.value.to_string(), v.description.clone());
+                    }
+                }
+            }
+            SetKind::Mask => {
+                for f in &self.flags {
+                    let bit = (1u64 << f.bit).to_string();
+                    items.insert(bit.clone(), f.label.clone());
+                    if !f.description.is_empty() {
+                        descriptions.insert(bit, f.description.clone());
+                    }
+                }
+            }
+        }
+        EnumSet { label: self.label.clone(), flags: kind == SetKind::Mask, items, descriptions }
+    }
+}
+
+/// Where a set in the catalog comes from.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum SetOrigin {
+    /// Built into the app.
+    Builtin,
+    /// A built-in set the user changed.
+    Override,
+    /// Created by the user.
+    User,
+}
+
+#[derive(Debug, Clone)]
+pub struct SetEntry {
+    pub kind: SetKind,
+    pub set: NamedSet,
+    pub origin: SetOrigin,
 }
 
 /// Everything the catalog needs about a list before its fields are parsed:
@@ -398,7 +533,10 @@ impl Layout {
 
 pub struct Catalog {
     pub layouts: Vec<Arc<Layout>>,
+    /// Enums and masks by key, for decoding.
     pub enums: HashMap<String, EnumSet>,
+    /// The enums and masks themselves, by key, for the editor.
+    pub sets: BTreeMap<String, SetEntry>,
     /// (layout id, list slot) pairs defined by the user's schema files.
     pub user: HashSet<(String, usize)>,
     /// Layouts that exist only in the user folder.
@@ -441,6 +579,26 @@ fn builtin_layouts() -> &'static [Arc<Layout>] {
     })
 }
 
+fn builtin_sets() -> &'static BTreeMap<String, SetEntry> {
+    static SETS: OnceLock<BTreeMap<String, SetEntry>> = OnceLock::new();
+    SETS.get_or_init(|| {
+        let mut sets = BTreeMap::new();
+        for kind in [SetKind::Enum, SetKind::Mask] {
+            let Some(dir) = FORMATS.get_dir(kind.folder()) else { continue };
+            for file in dir.files() {
+                let text = file.contents_utf8().expect("embedded set file is UTF-8");
+                let set: NamedSet = serde_json::from_str(text).expect("embedded set file is valid");
+                sets.insert(set.key.clone(), SetEntry { kind, set, origin: SetOrigin::Builtin });
+            }
+        }
+        sets
+    })
+}
+
+pub fn builtin_set(key: &str) -> Option<&'static SetEntry> {
+    builtin_sets().get(key)
+}
+
 pub fn builtin_layout(id: &str) -> Option<&'static Arc<Layout>> {
     builtin_layouts().iter().find(|l| l.id == id)
 }
@@ -451,10 +609,13 @@ pub fn valid_layout_id(id: &str) -> bool {
 }
 
 impl Catalog {
-    /// Built-in layouts with the user's schema files laid over them. In
-    /// `user_dir/<id>/`, each `list_<n>.json` replaces that list of layout
-    /// `<id>`; a `layout.json` there defines a layout with no built-in.
-    pub fn load(user_dir: Option<&Path>) -> Self {
+    /// Built-in layouts and sets with the user's files laid over them. In
+    /// `user_root/layouts/<id>/`, each `list_<n>.json` replaces that list of
+    /// layout `<id>`, and a `layout.json` defines a layout with no built-in.
+    /// `user_root/enums/<key>.json` and `masks/<key>.json` replace or add sets.
+    pub fn load(user_root: Option<&Path>) -> Self {
+        let user_dir = user_root.map(|r| r.join("layouts"));
+        let user_dir = user_dir.as_deref();
         let mut layouts: Vec<Arc<Layout>> = builtin_layouts().to_vec();
         let mut user = HashSet::new();
         let mut user_layouts = HashSet::new();
@@ -505,14 +666,73 @@ impl Catalog {
         }
 
         layouts.sort_by(|a, b| (a.version, &a.id).cmp(&(b.version, &b.id)));
-        let enums = FORMATS.get_file("enums.json").and_then(|f| f.contents_utf8()).expect("formats/enums.json is embedded");
-        Self {
-            layouts,
-            enums: serde_json::from_str(enums).expect("embedded enums are valid"),
-            user,
-            user_layouts,
-            errors,
+
+        // Enums and masks: built-in, then the user's files by key.
+        let mut sets = builtin_sets().clone();
+        for kind in [SetKind::Enum, SetKind::Mask] {
+            let Some(dir) = user_root.map(|r| r.join(kind.folder())) else { continue };
+            for file in std::fs::read_dir(&dir).into_iter().flatten().flatten() {
+                let path = file.path();
+                let Some(stem) = path.file_stem().and_then(|s| s.to_str()).filter(|_| path.extension().is_some_and(|e| e == "json")) else {
+                    continue;
+                };
+                let parsed = std::fs::read_to_string(&path)
+                    .map_err(|e| e.to_string())
+                    .and_then(|s| serde_json::from_str::<NamedSet>(&s).map_err(|e| e.to_string()))
+                    .and_then(|set| if set.key == stem { set.check(kind).map(|_| set) } else { Err(format!("key {:?} does not match the file name", set.key)) });
+                let set = match parsed {
+                    Ok(set) => set,
+                    Err(e) => {
+                        errors.push(format!("{}: {e}", path.display()));
+                        continue;
+                    }
+                };
+                let origin = match builtin_sets().get(&set.key) {
+                    Some(b) if b.kind != kind => {
+                        errors.push(format!("{}: {:?} is a built-in {}", path.display(), set.key, b.kind.folder().trim_end_matches('s')));
+                        continue;
+                    }
+                    Some(_) => SetOrigin::Override,
+                    None => SetOrigin::User,
+                };
+                sets.insert(set.key.clone(), SetEntry { kind, set, origin });
+            }
         }
+        let enums = sets.iter().map(|(k, e)| (k.clone(), e.set.to_enum_set(e.kind))).collect();
+
+        Self { layouts, enums, sets, user, user_layouts, errors }
+    }
+
+    /// Fields in all layouts that use a set, as "v160 · #3 Equipment Essence · proc_type".
+    pub fn set_usage(&self, key: &str) -> Vec<String> {
+        fn walk(fields: &[Field], prefix: &str, key: &str, out: &mut Vec<String>) {
+            for f in fields {
+                let name = if prefix.is_empty() { f.name.clone() } else { format!("{prefix}.{}", f.name) };
+                if f.e.as_deref() == Some(key) {
+                    out.push(name.clone());
+                }
+                let mut t = &f.t;
+                while let Ty::Array { t: inner, .. } = t {
+                    t = inner;
+                }
+                if let Ty::Struct { fields } = t {
+                    walk(fields, &name, key, out);
+                }
+            }
+        }
+        let mut out = Vec::new();
+        for layout in &self.layouts {
+            for (i, slot) in layout.lists.iter().enumerate() {
+                let Some(slot) = slot.as_ref().filter(|s| s.head.has_fields()) else { continue };
+                let Some(def) = slot.def() else { continue };
+                let mut names = Vec::new();
+                walk(&def.fields, "", key, &mut names);
+                for n in names {
+                    out.push(format!("{} · #{i} {} · {n}", layout.id, def.name));
+                }
+            }
+        }
+        out
     }
 
     pub fn find(&self, id: &str) -> Option<&Arc<Layout>> {
@@ -548,6 +768,43 @@ fn write_atomic(path: &Path, contents: &str) -> Result<(), String> {
     let tmp = path.with_extension("json.tmp");
     std::fs::write(&tmp, contents).map_err(|e| format!("Could not write {}: {e}", tmp.display()))?;
     std::fs::rename(&tmp, path).map_err(|e| format!("Could not write {}: {e}", path.display()))
+}
+
+pub fn user_set_path(root: &Path, kind: SetKind, key: &str) -> PathBuf {
+    root.join(kind.folder()).join(format!("{key}.json"))
+}
+
+/// Saves an enum or mask to `root/<enums|masks>/<key>.json`. A set identical
+/// to the built-in one removes the user file instead.
+pub fn save_user_set(root: &Path, kind: SetKind, set: &NamedSet) -> Result<(), String> {
+    set.check(kind)?;
+    if let Some(b) = builtin_set(&set.key) {
+        if b.kind != kind {
+            return Err(format!("{:?} is already a built-in {}", set.key, b.kind.folder().trim_end_matches('s')));
+        }
+        if b.set == *set {
+            return delete_user_set(root, &set.key);
+        }
+    }
+    let dir = root.join(kind.folder());
+    std::fs::create_dir_all(&dir).map_err(|e| format!("Could not create {}: {e}", dir.display()))?;
+    let json = serde_json::to_string_pretty(set).map_err(|e| e.to_string())? + "\n";
+    write_atomic(&user_set_path(root, kind, &set.key), &json)
+}
+
+/// Removes the user's file for a set: a built-in set returns to its built-in
+/// definition, a user set is deleted.
+pub fn delete_user_set(root: &Path, key: &str) -> Result<(), String> {
+    if !valid_set_key(key) {
+        return Err(format!("Invalid key {key:?}"));
+    }
+    for kind in [SetKind::Enum, SetKind::Mask] {
+        let path = user_set_path(root, kind, key);
+        if path.exists() {
+            std::fs::remove_file(&path).map_err(|e| format!("Could not remove {}: {e}", path.display()))?;
+        }
+    }
+    Ok(())
 }
 
 pub fn user_list_path(dir: &Path, id: &str, list: usize) -> PathBuf {
@@ -614,5 +871,40 @@ mod tests {
         assert!(slot.def.get().is_none(), "fields are not parsed until used");
         assert_eq!(v156.list(3).unwrap().size, Some(644));
         assert!(catalog.find("v66").unwrap().lists.iter().all(Option::is_none));
+        // Enums and masks come from their folders.
+        assert_eq!(catalog.sets["trade_behavior"].kind, SetKind::Mask);
+        assert_eq!(catalog.sets["gender"].kind, SetKind::Enum);
+        assert!(catalog.enums["v112_trade_behavior"].flags);
+    }
+
+    #[test]
+    fn user_sets_override_add_and_revert() {
+        let root = std::env::temp_dir().join(format!("jdide-sets-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
+        let mut gender = builtin_set("gender").unwrap().set.clone();
+        gender.values.push(EnumValue { value: 9, label: "Test".into(), description: String::new() });
+        save_user_set(&root, SetKind::Enum, &gender).unwrap();
+        let mine = NamedSet { key: "my_flags".into(), label: "Mine".into(), values: vec![], flags: vec![MaskFlag { bit: 3, label: "Eight".into(), description: String::new() }] };
+        save_user_set(&root, SetKind::Mask, &mine).unwrap();
+        // A key cannot change kind, and duplicates are rejected.
+        assert!(save_user_set(&root, SetKind::Mask, &gender).is_err());
+        let mut twice = mine.clone();
+        twice.flags.push(twice.flags[0].clone());
+        assert!(save_user_set(&root, SetKind::Mask, &twice).is_err());
+
+        let catalog = Catalog::load(Some(&root));
+        assert_eq!(catalog.sets["gender"].origin, SetOrigin::Override);
+        assert_eq!(catalog.enums["gender"].label_for(9).as_deref(), Some("Test"));
+        assert_eq!(catalog.sets["my_flags"].origin, SetOrigin::User);
+        assert_eq!(catalog.enums["my_flags"].label_for(8).as_deref(), Some("Eight"));
+        assert!(!catalog.set_usage("trade_behavior").is_empty());
+
+        // Saving the built-in definition again, or deleting, reverts.
+        save_user_set(&root, SetKind::Enum, &builtin_set("gender").unwrap().set).unwrap();
+        delete_user_set(&root, "my_flags").unwrap();
+        let catalog = Catalog::load(Some(&root));
+        assert_eq!(catalog.sets["gender"].origin, SetOrigin::Builtin);
+        assert!(!catalog.sets.contains_key("my_flags"));
+        let _ = std::fs::remove_dir_all(&root);
     }
 }

@@ -1,0 +1,18 @@
+{
+  "key": "v112_gender",
+  "label": "Gender (v112)",
+  "values": [
+    {
+      "value": 0,
+      "label": "Male"
+    },
+    {
+      "value": 1,
+      "label": "Female"
+    },
+    {
+      "value": 2,
+      "label": "Either"
+    }
+  ]
+}

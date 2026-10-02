@@ -5,7 +5,7 @@
 //   node tools/import-laravel-structures.mjs <structures-dir> <formats-dir> [elements.data ...]
 //
 // - <structures-dir>/vNNN/list_N.json  → <formats-dir>/layouts/vNNN/
-// - <structures-dir>/masks.json        → <formats-dir>/enums.json
+// - <structures-dir>/masks.json        → <formats-dir>/masks/<key>.json and enums/<key>.json
 // - lists whose struct matches a source-generated layout already in
 //   <formats-dir>/layouts (same struct name and size) keep that richer
 //   definition, with the Laravel display/mask/ref hints merged into it.
@@ -17,6 +17,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { readListSizes, validateLayout } from "./lib/elements-file.mjs";
 import { readLayouts, writeLayout } from "./lib/layouts.mjs";
+import { writeSet } from "./lib/sets.mjs";
 
 const [structuresDir, formatsDir, ...samples] = process.argv.slice(2);
 if (!structuresDir || !formatsDir) {
@@ -48,21 +49,14 @@ const EXTRA_MARKERS = { 165: [{ before: 296, kind: "checksum" }], 176: [{ before
 
 // ---------------------------------------------------------------- enums
 
-function importEnums() {
+/** Laravel mask sets ("flags") become masks, value lists ("values") enums. */
+function importSets() {
   const sets = readJson(path.join(structuresDir, "masks.json"));
-  const enums = {};
   for (const set of sets) {
-    const flags = (set.type ?? "flags") === "flags";
-    const items = {};
-    const descriptions = {};
-    for (const item of flags ? set.flags : set.values) {
-      const value = flags ? (1n << BigInt(item.bit)).toString() : String(item.value);
-      items[value] = item.label;
-      if (item.description) descriptions[value] = item.description;
-    }
-    enums[set.key] = { label: set.label, flags, items, descriptions };
+    if ((set.type ?? "flags") === "flags") writeSet({ key: set.key, label: set.label, flags: set.flags }, formatsDir);
+    else writeSet({ key: set.key, label: set.label, values: set.values }, formatsDir);
   }
-  return enums;
+  return sets;
 }
 
 // ---------------------------------------------------------------- fields
@@ -148,10 +142,10 @@ function mergeHints(target, flat) {
 
 // ---------------------------------------------------------------- main
 
-const enums = importEnums();
+const sets = importSets();
 fs.mkdirSync(layoutsDir, { recursive: true });
-fs.writeFileSync(path.join(formatsDir, "enums.json"), JSON.stringify(enums, null, 1));
-console.log(`wrote enums.json: ${Object.keys(enums).length} sets`);
+const masks = sets.filter((s) => (s.type ?? "flags") === "flags").length;
+console.log(`wrote ${masks} masks and ${sets.length - masks} enums`);
 
 // Source-generated layouts, indexed by struct name, to prefer and enrich.
 const sourceLayouts = readLayouts(layoutsDir)

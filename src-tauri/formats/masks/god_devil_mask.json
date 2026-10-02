@@ -1,0 +1,36 @@
+{
+  "key": "god_devil_mask",
+  "label": "God / Devil",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Sage",
+      "description": "仙"
+    },
+    {
+      "bit": 1,
+      "label": "Demon",
+      "description": "魔"
+    },
+    {
+      "bit": 2,
+      "label": "Buddha",
+      "description": "佛"
+    },
+    {
+      "bit": 3,
+      "label": "Reserved 1",
+      "description": "备选1"
+    },
+    {
+      "bit": 4,
+      "label": "Reserved 2",
+      "description": "备选2"
+    },
+    {
+      "bit": 5,
+      "label": "Reserved 3",
+      "description": "备选3"
+    }
+  ]
+}

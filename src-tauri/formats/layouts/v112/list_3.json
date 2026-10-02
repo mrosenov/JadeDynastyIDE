@@ -37,7 +37,7 @@
       "t": {
         "k": "i32"
       },
-      "e": "GearSlotType"
+      "e": "v112_gear_slot_type"
     },
     {
       "name": "PathID1",
@@ -81,7 +81,7 @@
       "t": {
         "k": "i32"
       },
-      "e": "Gender"
+      "e": "v112_gender"
     },
     {
       "name": "RequiredLevel",
@@ -96,7 +96,7 @@
       "t": {
         "k": "i32"
       },
-      "e": "Factions"
+      "e": "v112_factions"
     },
     {
       "name": "RequiredLastFaction",
@@ -104,7 +104,7 @@
       "t": {
         "k": "i32"
       },
-      "e": "Factions"
+      "e": "v112_factions"
     },
     {
       "name": "RequiredLastLastFaction",
@@ -112,7 +112,7 @@
       "t": {
         "k": "i32"
       },
-      "e": "Factions"
+      "e": "v112_factions"
     },
     {
       "name": "RequiredLastLastLastFaction",
@@ -120,7 +120,7 @@
       "t": {
         "k": "i32"
       },
-      "e": "Factions"
+      "e": "v112_factions"
     },
     {
       "name": "RequiredTier",
@@ -135,7 +135,7 @@
       "t": {
         "k": "i32"
       },
-      "e": "YesNo"
+      "e": "v112_yes_no"
     },
     {
       "name": "Health",
@@ -262,7 +262,7 @@
       "t": {
         "k": "i32"
       },
-      "e": "TradeBehavior"
+      "e": "v112_trade_behavior"
     }
   ]
 }

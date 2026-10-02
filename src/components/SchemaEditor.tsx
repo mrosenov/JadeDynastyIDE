@@ -43,7 +43,7 @@ import { ReadingsCard } from "./ReadingsCard";
 import { ImportMenu } from "./ImportMenu";
 import { isUndefinedNode, undefinedSpan } from "../elements/readings";
 import { HexView } from "./HexView";
-import { ArrowDown, ArrowDownToLine, ArrowUp, BetweenHorizontalEnd, Check, ChevronLeft, ChevronRight, ChevronsDownUp, ChevronsUpDown, Copy, Eraser, FolderOpen, GitBranch, Group, ListPlus, Plus, Redo2, RotateCcw, Save, Trash2, Undo2, Ungroup, WandSparkles, X } from "lucide-react";
+import { ArrowDown, ArrowDownToLine, ArrowUp, BetweenHorizontalEnd, Check, ChevronLeft, ChevronRight, ChevronsDownUp, ChevronsUpDown, Copy, Eraser, FolderOpen, GitBranch, Group, ListOrdered, ListPlus, Plus, Redo2, RotateCcw, Save, Trash2, Undo2, Ungroup, WandSparkles, X } from "lucide-react";
 
 interface Props {
   summary: FileSummary;
@@ -51,6 +51,8 @@ interface Props {
   initialRow: number;
   /** A field to define when the editor opens (from the inspector's readings). */
   intent?: { list: number; offset: number; spec: FieldSpec } | null;
+  /** Open the enums & masks editor (at a set, if given). */
+  onEditSets?: (key: string | null) => void;
   onSaved: (summary: FileSummary) => void;
   onClose: (list: number) => void;
 }
@@ -110,7 +112,7 @@ function ancestorsOf(fields: EditField[], uid: number, chain: number[] = []): nu
   return null;
 }
 
-export function SchemaEditor({ summary, initialList, initialRow, intent, onSaved, onClose }: Props) {
+export function SchemaEditor({ summary, initialList, initialRow, intent, onEditSets, onSaved, onClose }: Props) {
   const [list, setList] = useState(initialList);
   const [schema, setSchema] = useState<ListSchema | null>(null);
   const [context, setContext] = useState<SchemaContext | null>(null);
@@ -605,6 +607,11 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onSaved
                 >
                   <WandSparkles size={14} /> Auto-group numbered
                 </button>
+                {onEditSets && (
+                  <button className="btn small" onClick={() => onEditSets(null)} title="Edit the shared enums and masks">
+                    <ListOrdered size={14} /> Enums &amp; masks
+                  </button>
+                )}
                 {notice && <span className="muted small">{notice}</span>}
                 <span className="spacer" />
                 <button className="link" onClick={() => undoRedo("undo")} disabled={!undo.current.past.length}>
@@ -807,16 +814,20 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onSaved
                         className="cell"
                         value={f.e}
                         disabled={!integer}
-                        onChange={(e) => patch(f.uid, { e: e.target.value }, "e")}
+                        onChange={(e) => {
+                          if (e.target.value === "__edit__") onEditSets?.(f.e || null);
+                          else patch(f.uid, { e: e.target.value }, "e");
+                        }}
                       >
                         <option value="">—</option>
                         {f.e && !context?.enums.some((x) => x.key === f.e) && <option value={f.e}>{f.e}</option>}
                         {context?.enums.map((x) => (
                           <option key={x.key} value={x.key}>
                             {x.label}
-                            {x.flags ? " (flags)" : ""}
+                            {x.flags ? " (mask)" : ""}
                           </option>
                         ))}
+                        {onEditSets && <option value="__edit__">Edit enums &amp; masks…</option>}
                       </select>
                       <select
                         className="cell"

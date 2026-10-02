@@ -1,0 +1,66 @@
+{
+  "key": "v112_factions",
+  "label": "Factions (v112)",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Initiate"
+    },
+    {
+      "bit": 1,
+      "label": "Vim"
+    },
+    {
+      "bit": 2,
+      "label": "Lupin"
+    },
+    {
+      "bit": 3,
+      "label": "Jadeon"
+    },
+    {
+      "bit": 4,
+      "label": "Skysong"
+    },
+    {
+      "bit": 5,
+      "label": "Modo"
+    },
+    {
+      "bit": 6,
+      "label": "Unknown64"
+    },
+    {
+      "bit": 7,
+      "label": "Unknown128"
+    },
+    {
+      "bit": 8,
+      "label": "Unknown256"
+    },
+    {
+      "bit": 9,
+      "label": "Balo"
+    },
+    {
+      "bit": 10,
+      "label": "Arden"
+    },
+    {
+      "bit": 11,
+      "label": "Unknown2048"
+    },
+    {
+      "bit": 12,
+      "label": "Rayan"
+    },
+    {
+      "bit": 13,
+      "label": "Unknown8196"
+    },
+    {
+      "bit": 14,
+      "label": "Celan"
+    }
+  ]
+}

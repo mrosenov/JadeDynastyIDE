@@ -1831,3 +1831,246 @@ svg.lucide {
   height: 20px;
   border-radius: 4px;
 }
+
+/* ---------- enums & masks editor ---------- */
+
+.sets-editor {
+  width: min(1040px, 100%);
+  height: min(760px, 100%);
+}
+.sets-editor .modal-head .muted {
+  margin-left: 4px;
+}
+
+.sets-body {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+}
+
+.sets-list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg-pane);
+}
+.sets-list .import-search {
+  padding: 10px 12px 6px;
+}
+.sets-new {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 8px;
+}
+.sets-group {
+  padding: 4px 0 8px;
+}
+.sets-group-title {
+  padding: 6px 14px 4px;
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+}
+.set-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 30px;
+  padding: 0 14px;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.set-item:hover {
+  background: var(--bg-hover);
+}
+.set-item.active {
+  background: var(--bg-active);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+.set-item .truncate {
+  flex: 1;
+}
+.set-origin {
+  flex: none;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  background: var(--bg-hover);
+  color: var(--text-dim);
+}
+.set-origin.override {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.set-origin.user {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.sets-detail {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.sets-meta {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 14px 16px 10px;
+}
+.sets-meta label {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.sets-meta label span {
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+}
+.sets-meta .tag {
+  margin-bottom: 9px;
+}
+.sets-meta input[readonly] {
+  color: var(--text-dim);
+  background: var(--bg-pane);
+}
+
+.sets-usage {
+  max-height: 140px;
+  margin: 0 16px 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-pane);
+}
+
+.sets-rows {
+  flex: 1;
+  border-top: 1px solid var(--border);
+}
+.sets-row {
+  display: grid;
+  grid-template-columns: 90px minmax(140px, 1fr) minmax(160px, 1.4fr) 34px;
+  gap: 8px;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+.sets-row.mask {
+  grid-template-columns: 70px 120px minmax(140px, 1fr) minmax(160px, 1.4fr) 34px;
+}
+.sets-row-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  min-height: 30px;
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.sets-row .se-actions {
+  opacity: 1;
+}
+.se-problems {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- set popover (mask calculator) ---------- */
+
+.set-hint {
+  border: 0;
+  cursor: pointer;
+}
+.set-hint:hover {
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.set-popover {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  width: 340px;
+  max-height: min(460px, 80vh);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-elev);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  font-family: var(--font);
+}
+.set-popover-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+}
+.set-popover-list {
+  padding: 4px;
+}
+.mask-bit,
+.enum-value {
+  display: grid;
+  grid-template-columns: 18px 84px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 26px;
+  padding: 0 8px;
+  border-radius: 5px;
+  font-size: 12.5px;
+}
+.enum-value {
+  grid-template-columns: 56px minmax(0, 1fr);
+}
+.mask-bit {
+  cursor: pointer;
+}
+.mask-bit:hover {
+  background: var(--bg-hover);
+}
+.mask-bit input {
+  accent-color: var(--accent);
+}
+.mask-bit.on,
+.enum-value.on {
+  background: var(--accent-soft);
+}
+.mask-bit.changed .truncate {
+  font-style: italic;
+  color: var(--warn);
+}
+.set-popover-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--border);
+}
+.mask-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

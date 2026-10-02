@@ -1,0 +1,41 @@
+{
+  "key": "nation_position_mask",
+  "label": "Nation Position",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "King",
+      "description": "国王"
+    },
+    {
+      "bit": 1,
+      "label": "Queen",
+      "description": "王后"
+    },
+    {
+      "bit": 2,
+      "label": "General",
+      "description": "将军"
+    },
+    {
+      "bit": 3,
+      "label": "Minister",
+      "description": "大臣"
+    },
+    {
+      "bit": 4,
+      "label": "Guild member",
+      "description": "帮众"
+    },
+    {
+      "bit": 5,
+      "label": "Royal guard",
+      "description": "亲卫"
+    },
+    {
+      "bit": 6,
+      "label": "Reserved 2",
+      "description": "备选2"
+    }
+  ]
+}

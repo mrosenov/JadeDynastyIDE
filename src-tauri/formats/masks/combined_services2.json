@@ -1,0 +1,166 @@
+{
+  "key": "combined_services2",
+  "label": "NPC Services 2",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Appearance change",
+      "description": "形象修改服务"
+    },
+    {
+      "bit": 1,
+      "label": "Pet equipment refine",
+      "description": "宠物装备强化"
+    },
+    {
+      "bit": 2,
+      "label": "Cross-server PK sign-up (Yilong)",
+      "description": "跨服PK逸龙轩报名"
+    },
+    {
+      "bit": 3,
+      "label": "Cross-server PK spectate",
+      "description": "跨服PK观战"
+    },
+    {
+      "bit": 4,
+      "label": "Story battlefield sign-up",
+      "description": "剧情战场报名服务"
+    },
+    {
+      "bit": 5,
+      "label": "Transformation items",
+      "description": "变身道具相关服务"
+    },
+    {
+      "bit": 6,
+      "label": "Transformation card restore",
+      "description": "变身卡灵力恢复服务"
+    },
+    {
+      "bit": 7,
+      "label": "Territory war declaration",
+      "description": "领土战宣战服务"
+    },
+    {
+      "bit": 8,
+      "label": "Enter territory war",
+      "description": "进入领土战战场"
+    },
+    {
+      "bit": 9,
+      "label": "Territory war rewards",
+      "description": "领土战领取奖励"
+    },
+    {
+      "bit": 10,
+      "label": "Astrolabe charging",
+      "description": "星盘充能服务"
+    },
+    {
+      "bit": 11,
+      "label": "Repair damaged items (special)",
+      "description": "修复破损物品（特殊）"
+    },
+    {
+      "bit": 12,
+      "label": "Equipment upgrade",
+      "description": "装备升级服务"
+    },
+    {
+      "bit": 13,
+      "label": "Teleport to cross-server",
+      "description": "传送到跨服服务"
+    },
+    {
+      "bit": 14,
+      "label": "Return from cross-server",
+      "description": "从跨服传回服务"
+    },
+    {
+      "bit": 15,
+      "label": "Enter challenge space",
+      "description": "进入挑战空间服务"
+    },
+    {
+      "bit": 16,
+      "label": "Gem socket identify",
+      "description": "宝石插槽鉴定服务"
+    },
+    {
+      "bit": 17,
+      "label": "Gem socket reforge",
+      "description": "宝石插槽重铸服务"
+    },
+    {
+      "bit": 18,
+      "label": "Gem socket customize",
+      "description": "宝石插槽定制服务"
+    },
+    {
+      "bit": 19,
+      "label": "Gem embed",
+      "description": "宝石镶嵌服务"
+    },
+    {
+      "bit": 20,
+      "label": "Gem removal",
+      "description": "宝石拆除服务"
+    },
+    {
+      "bit": 21,
+      "label": "Gem grade upgrade",
+      "description": "宝石升品服务"
+    },
+    {
+      "bit": 22,
+      "label": "Gem refine",
+      "description": "宝石精炼服务"
+    },
+    {
+      "bit": 23,
+      "label": "Gem extraction",
+      "description": "宝石萃取服务"
+    },
+    {
+      "bit": 24,
+      "label": "Gem smelting",
+      "description": "宝石熔炼服务"
+    },
+    {
+      "bit": 25,
+      "label": "Cross-server team PK (red)",
+      "description": "跨服小队pk红队报名"
+    },
+    {
+      "bit": 26,
+      "label": "Cross-server team PK (blue)",
+      "description": "跨服小队pk蓝队报名"
+    },
+    {
+      "bit": 27,
+      "label": "Cross-server team PK (reporter)",
+      "description": "跨服小队pk记者报名"
+    },
+    {
+      "bit": 28,
+      "label": "Instance",
+      "description": "副本相关服务"
+    },
+    {
+      "bit": 29,
+      "label": "Zhenyuan Tower info",
+      "description": "神武镇元塔个人信息"
+    },
+    {
+      "bit": 30,
+      "label": "Rename",
+      "description": "改名服务"
+    },
+    {
+      "bit": 31,
+      "label": "Family rename",
+      "description": "家族改名"
+    }
+  ]
+}

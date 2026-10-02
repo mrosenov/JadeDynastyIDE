@@ -1,0 +1,141 @@
+{
+  "key": "equip_mask",
+  "label": "Equip Slots",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Weapon",
+      "description": "EQUIP_MASK_WEAPON"
+    },
+    {
+      "bit": 1,
+      "label": "Head",
+      "description": "EQUIP_MASK_HEAD"
+    },
+    {
+      "bit": 2,
+      "label": "Body",
+      "description": "EQUIP_MASK_BODY"
+    },
+    {
+      "bit": 3,
+      "label": "Foot",
+      "description": "EQUIP_MASK_FOOT"
+    },
+    {
+      "bit": 4,
+      "label": "Neck",
+      "description": "EQUIP_MASK_NECK"
+    },
+    {
+      "bit": 5,
+      "label": "Finger 1",
+      "description": "EQUIP_MASK_FINGER1"
+    },
+    {
+      "bit": 6,
+      "label": "Finger 2",
+      "description": "EQUIP_MASK_FINGER2"
+    },
+    {
+      "bit": 7,
+      "label": "Fashion eye",
+      "description": "EQUIP_MASK_FASHION_EYE"
+    },
+    {
+      "bit": 8,
+      "label": "Fashion nose",
+      "description": "EQUIP_MASK_FASHION_NOSE"
+    },
+    {
+      "bit": 9,
+      "label": "Fashion lip",
+      "description": "EQUIP_MASK_FASHION_LIP"
+    },
+    {
+      "bit": 10,
+      "label": "Fashion head",
+      "description": "EQUIP_MASK_FASHION_HEAD"
+    },
+    {
+      "bit": 11,
+      "label": "Fashion body",
+      "description": "EQUIP_MASK_FASHION_BODY"
+    },
+    {
+      "bit": 12,
+      "label": "Fashion leg",
+      "description": "EQUIP_MASK_FASHION_LEG"
+    },
+    {
+      "bit": 13,
+      "label": "Fashion foot",
+      "description": "EQUIP_MASK_FASHION_FOOT"
+    },
+    {
+      "bit": 14,
+      "label": "Fashion back",
+      "description": "EQUIP_MASK_FASHION_BACK"
+    },
+    {
+      "bit": 15,
+      "label": "Wing",
+      "description": "EQUIP_MASK_WING"
+    },
+    {
+      "bit": 16,
+      "label": "Main talisman",
+      "description": "EQUIP_MASK_MAIN_TALISMAN"
+    },
+    {
+      "bit": 17,
+      "label": "Sub talisman 1",
+      "description": "EQUIP_MASK_SUB_TALISMAN1"
+    },
+    {
+      "bit": 18,
+      "label": "Sub talisman 2",
+      "description": "EQUIP_MASK_SUB_TALISMAN2"
+    },
+    {
+      "bit": 19,
+      "label": "Speaker",
+      "description": "EQUIP_MASK_SPEAKER"
+    },
+    {
+      "bit": 20,
+      "label": "Pouch (aux 1)",
+      "description": "EQUIP_MASK_AUX1 — 锦囊"
+    },
+    {
+      "bit": 21,
+      "label": "Seal ribbon (aux 2)",
+      "description": "EQUIP_MASK_AUX2 — 玺绶"
+    },
+    {
+      "bit": 22,
+      "label": "Aura (aux 3)",
+      "description": "EQUIP_MASK_AUX3 — 罡气"
+    },
+    {
+      "bit": 23,
+      "label": "Soul (aux 4)",
+      "description": "EQUIP_MASK_AUX4 — 元魂"
+    },
+    {
+      "bit": 24,
+      "label": "Aux 5",
+      "description": "EQUIP_MASK_AUX5"
+    },
+    {
+      "bit": 25,
+      "label": "Aux 6",
+      "description": "EQUIP_MASK_AUX6"
+    },
+    {
+      "bit": 26,
+      "label": "Fashion weapon",
+      "description": "EQUIP_MASK_FASHION_WEAPON"
+    }
+  ]
+}

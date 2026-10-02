@@ -10,6 +10,11 @@ import type {
   ClientInfo,
   Settings,
   SettingsView,
+  NamedSet,
+  SetDetail,
+  SetKind,
+  SetSummary,
+  SetsChanged,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -39,3 +44,11 @@ export const inspectClient = (dir: string) => invoke<ClientInfo>("inspect_client
 
 /** URL of an item icon served by the app (by path.data ID). No slashes: convertFileSrc encodes them. */
 export const iconUrl = (generation: number, pathId: number) => convertFileSrc(`${generation}-${pathId}`, "jdicon");
+
+export const namedSets = () => invoke<SetSummary[]>("named_sets");
+
+export const namedSet = (key: string) => invoke<SetDetail>("named_set", { key });
+
+export const saveNamedSet = (kind: SetKind, set: NamedSet) => invoke<SetsChanged>("save_named_set", { kind, set });
+
+export const deleteNamedSet = (key: string) => invoke<SetsChanged>("delete_named_set", { key });

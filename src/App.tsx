@@ -10,6 +10,7 @@ import { RecordInspector } from "./components/RecordInspector";
 import { SchemaEditor } from "./components/SchemaEditor";
 import { TabBar, type TabLabel } from "./components/TabBar";
 import { SettingsDialog } from "./components/SettingsDialog";
+import { SetsEditor } from "./components/SetsEditor";
 import type { FieldSpec } from "./schema/model";
 import { EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import "./App.css";
@@ -75,6 +76,8 @@ export default function App() {
   const [editorIntent, setEditorIntent] = useState<{ list: number; offset: number; spec: FieldSpec } | null>(null);
   const [settingsView, setSettingsView] = useState<SettingsView | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // The enums & masks editor, open at a set (or none).
+  const [setsEditor, setSetsEditor] = useState<{ key: string | null } | null>(null);
   const started = useRef(false);
   const iconGen = settingsView?.client?.hasItemIcons ? settingsView.iconGeneration : null;
   const icon = (pathId?: number | null) => (iconGen !== null && pathId ? iconUrl(iconGen, pathId) : undefined);
@@ -334,6 +337,14 @@ export default function App() {
         </button>
       </header>
 
+      {setsEditor && (
+        <SetsEditor
+          initialKey={setsEditor.key}
+          onChanged={(next) => next && onSchemaSaved(next)}
+          onClose={() => setSetsEditor(null)}
+        />
+      )}
+
       {settingsOpen && settingsView && (
         <SettingsDialog
           view={settingsView}
@@ -359,6 +370,7 @@ export default function App() {
             initialList={editorIntent?.list ?? list?.index ?? 0}
             intent={editorIntent}
             initialRow={recordIndex ?? 0}
+            onEditSets={(key) => setSetsEditor({ key })}
             onSaved={onSchemaSaved}
             onClose={closeEditor}
           />
@@ -402,6 +414,7 @@ export default function App() {
                   setEditorOpen(true);
                 }}
                 icon={icon}
+                onEditSet={(key) => setSetsEditor({ key })}
               />
             ) : (
               <section className="pane inspector">

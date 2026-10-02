@@ -1,0 +1,116 @@
+{
+  "key": "immune_type",
+  "label": "Immunities",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Immune to fear",
+      "description": "免疫恐惧"
+    },
+    {
+      "bit": 1,
+      "label": "Immune to blind",
+      "description": "免疫致盲"
+    },
+    {
+      "bit": 2,
+      "label": "Immune to knockback",
+      "description": "免疫击退"
+    },
+    {
+      "bit": 3,
+      "label": "Immune to MP drain",
+      "description": "免疫被打掉mp"
+    },
+    {
+      "bit": 4,
+      "label": "Immune to total defense % reduction",
+      "description": "免疫减总防御％"
+    },
+    {
+      "bit": 5,
+      "label": "Immune to flat defense reduction",
+      "description": "免疫减固定值防御"
+    },
+    {
+      "bit": 6,
+      "label": "Immune to stun",
+      "description": "免疫眩晕"
+    },
+    {
+      "bit": 7,
+      "label": "Immune to weakness",
+      "description": "免疫虚弱"
+    },
+    {
+      "bit": 8,
+      "label": "Immune to slow",
+      "description": "免疫缓慢"
+    },
+    {
+      "bit": 9,
+      "label": "Immune to silence",
+      "description": "免疫沉默"
+    },
+    {
+      "bit": 10,
+      "label": "Immune to sleep",
+      "description": "免疫睡眠"
+    },
+    {
+      "bit": 11,
+      "label": "Immune to root",
+      "description": "免疫缠绕"
+    },
+    {
+      "bit": 12,
+      "label": "Immune to food ban",
+      "description": "免疫禁食"
+    },
+    {
+      "bit": 13,
+      "label": "Immune to disarm",
+      "description": "免疫空手"
+    },
+    {
+      "bit": 14,
+      "label": "Immune to damage over time",
+      "description": "免疫持续伤害"
+    },
+    {
+      "bit": 15,
+      "label": "Immune to taunt",
+      "description": "免疫嘲讽"
+    },
+    {
+      "bit": 16,
+      "label": "Immune to spirit dissipation",
+      "description": "免疫元神耗散"
+    },
+    {
+      "bit": 17,
+      "label": "Immune to mana flow",
+      "description": "免疫流魔"
+    },
+    {
+      "bit": 18,
+      "label": "Immune to transformation",
+      "description": "免疫变身"
+    },
+    {
+      "bit": 19,
+      "label": "Immune to burn",
+      "description": "免疫灼烧"
+    },
+    {
+      "bit": 20,
+      "label": "Immune to blood curse",
+      "description": "免疫血咒"
+    },
+    {
+      "bit": 21,
+      "label": "Immune to defense % reduction",
+      "description": "免疫降低防御%"
+    }
+  ]
+}

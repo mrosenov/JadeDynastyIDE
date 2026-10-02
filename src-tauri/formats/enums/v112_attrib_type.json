@@ -1,0 +1,202 @@
+{
+  "key": "v112_attrib_type",
+  "label": "Attrib Type (v112)",
+  "values": [
+    {
+      "value": 1,
+      "label": "Health"
+    },
+    {
+      "value": 2,
+      "label": "Spirit"
+    },
+    {
+      "value": 3,
+      "label": "Attack Power"
+    },
+    {
+      "value": 4,
+      "label": "Defense"
+    },
+    {
+      "value": 5,
+      "label": "Accuracy"
+    },
+    {
+      "value": 6,
+      "label": "Evasion"
+    },
+    {
+      "value": 7,
+      "label": "Critstrike Rate"
+    },
+    {
+      "value": 8,
+      "label": "Critstrike Bonus"
+    },
+    {
+      "value": 9,
+      "label": "Stun Resistance"
+    },
+    {
+      "value": 10,
+      "label": "Weaken Resistance"
+    },
+    {
+      "value": 11,
+      "label": "Paralyze Resistance"
+    },
+    {
+      "value": 12,
+      "label": "Silence Resistance"
+    },
+    {
+      "value": 13,
+      "label": "Sleep Resistance"
+    },
+    {
+      "value": 14,
+      "label": "Slow Resistance"
+    },
+    {
+      "value": 15,
+      "label": "Health Percent"
+    },
+    {
+      "value": 16,
+      "label": "Spirit Percent"
+    },
+    {
+      "value": 17,
+      "label": "Attack Power Percent"
+    },
+    {
+      "value": 18,
+      "label": "Defense Percent"
+    },
+    {
+      "value": 19,
+      "label": "Stun Resistance Percent"
+    },
+    {
+      "value": 20,
+      "label": "Weaken Resistance Percent"
+    },
+    {
+      "value": 21,
+      "label": "Paralyze Resistance Percent"
+    },
+    {
+      "value": 22,
+      "label": "Silence Resistance Percent"
+    },
+    {
+      "value": 23,
+      "label": "Sleep Resistance Percent"
+    },
+    {
+      "value": 24,
+      "label": "Slow Resistance Percent"
+    },
+    {
+      "value": 25,
+      "label": "Movement Speed"
+    },
+    {
+      "value": 26,
+      "label": "Health Recovery Rate"
+    },
+    {
+      "value": 27,
+      "label": "Spirit Recovery Rate"
+    },
+    {
+      "value": 28,
+      "label": "Experience"
+    },
+    {
+      "value": 29,
+      "label": "Experience Percent"
+    },
+    {
+      "value": 30,
+      "label": "Cash Acquired"
+    },
+    {
+      "value": 31,
+      "label": "Cash Acquired Percent"
+    },
+    {
+      "value": 32,
+      "label": "Damage Reduction"
+    },
+    {
+      "value": 33,
+      "label": "Damage Reduction Percent"
+    },
+    {
+      "value": 34,
+      "label": "Skill Rank Increase"
+    },
+    {
+      "value": 35,
+      "label": "Skill Cooldown Reduction"
+    },
+    {
+      "value": 36,
+      "label": "Bonus Damage"
+    },
+    {
+      "value": 37,
+      "label": "Unknown37"
+    },
+    {
+      "value": 38,
+      "label": "Bonus Skill"
+    },
+    {
+      "value": 39,
+      "label": "Unknown39"
+    },
+    {
+      "value": 40,
+      "label": "Flight Speed"
+    },
+    {
+      "value": 41,
+      "label": "Crit Null"
+    },
+    {
+      "value": 42,
+      "label": "Crit Shield"
+    },
+    {
+      "value": 43,
+      "label": "Skill Evasion"
+    },
+    {
+      "value": 44,
+      "label": "Skill Accuracy"
+    },
+    {
+      "value": 45,
+      "label": "Unknown45"
+    },
+    {
+      "value": 46,
+      "label": "Unknown46"
+    },
+    {
+      "value": 47,
+      "label": "Dagos Resistance"
+    },
+    {
+      "value": 48,
+      "label": "Felkin Resistance"
+    },
+    {
+      "value": 49,
+      "label": "Fuwa Resistance"
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "key": "combined_services3",
+  "label": "NPC Services 3",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Guild rename",
+      "description": "帮派改名"
+    },
+    {
+      "bit": 1,
+      "label": "Talisman ascension",
+      "description": "法宝飞升"
+    },
+    {
+      "bit": 2,
+      "label": "Talisman skill fusion",
+      "description": "法宝技能融合"
+    },
+    {
+      "bit": 3,
+      "label": "Talisman skill embed",
+      "description": "法宝技能镶嵌"
+    },
+    {
+      "bit": 4,
+      "label": "Unused",
+      "description": "无用别勾"
+    },
+    {
+      "bit": 5,
+      "label": "Constellation socketing",
+      "description": "装备星座打孔"
+    },
+    {
+      "bit": 6,
+      "label": "Constellation embed",
+      "description": "星座镶嵌"
+    },
+    {
+      "bit": 7,
+      "label": "Constellation removal",
+      "description": "星座摘除"
+    },
+    {
+      "bit": 8,
+      "label": "Unused",
+      "description": "无用别勾"
+    },
+    {
+      "bit": 9,
+      "label": "Unused",
+      "description": "无用别勾"
+    },
+    {
+      "bit": 10,
+      "label": "Cross-server sign-up return",
+      "description": "跨服报名传回"
+    },
+    {
+      "bit": 11,
+      "label": "Cross-server sign-up teleport",
+      "description": "跨服报名传送"
+    },
+    {
+      "bit": 12,
+      "label": "Nation war sign-up",
+      "description": "国战报名"
+    },
+    {
+      "bit": 13,
+      "label": "Ascension progress",
+      "description": "飞升进度"
+    },
+    {
+      "bit": 14,
+      "label": "Jewelry upgrade",
+      "description": "首饰升级"
+    },
+    {
+      "bit": 15,
+      "label": "Quick crafting",
+      "description": "生产技能快速生产"
+    },
+    {
+      "bit": 16,
+      "label": "Quick golden / dharma body",
+      "description": "金身法身快速制作"
+    },
+    {
+      "bit": 17,
+      "label": "Banquet battlefield sign-up",
+      "description": "流水席战场报名"
+    },
+    {
+      "bit": 18,
+      "label": "Guild base",
+      "description": "帮派基地"
+    },
+    {
+      "bit": 19,
+      "label": "Pet ascension",
+      "description": "宠物飞升"
+    },
+    {
+      "bit": 20,
+      "label": "Cataclysm only",
+      "description": "灾变专用"
+    },
+    {
+      "bit": 21,
+      "label": "Guild ingot mall",
+      "description": "帮派元宝商城"
+    }
+  ]
+}
