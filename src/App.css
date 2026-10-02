@@ -369,11 +369,16 @@ input {
 .fit-dot.fit-exact {
   background: var(--accent);
 }
-.fit-dot.fit-approx {
+.fit-dot.fit-borrowed {
   background: var(--warn);
 }
-.fit-dot.fit-partial {
+.fit-dot.fit-partial,
+.fit-dot.fit-grown {
   background: var(--orange);
+}
+.fit-dot.fit-named {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--text-dim);
 }
 
 /* ---------- records ---------- */
@@ -447,10 +452,11 @@ input {
   background: var(--accent-soft);
   color: var(--accent);
 }
-.badge.fit-approx {
+.badge.fit-borrowed {
   background: var(--warn-soft);
   color: var(--warn);
 }
+.badge.fit-grown,
 .badge.fit-partial {
   background: var(--orange-soft);
   color: var(--orange);
@@ -578,6 +584,48 @@ input {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.badge-sub {
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.back {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-hover);
+  cursor: pointer;
+}
+.back:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.role {
+  flex: none;
+  padding: 0 5px;
+  border-radius: 4px;
+  font-family: var(--font);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  border: 1px solid var(--border);
+}
+
+.link-hint {
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+}
+.link-hint:hover {
+  text-decoration-color: currentColor;
 }
 
 .hint {

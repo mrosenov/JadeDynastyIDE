@@ -29,6 +29,36 @@ function writeLastPath(path: string) {
 
 const fileName = (path: string) => path.split(/[\\/]/).pop() ?? path;
 
+interface Location {
+  list: number;
+  row: number;
+}
+
+function parseLabel(summary: FileSummary): { text: string; tone: "ok" | "warn" | "muted"; title: string } {
+  switch (summary.parseMode) {
+    case "layout":
+      return {
+        text: `Layout ${summary.layoutId}`,
+        tone: summary.layoutUnverified ? "warn" : "ok",
+        title:
+          (summary.layoutSource ?? "") +
+          (summary.layoutUnverified ? "\nThe list count of this layout was never checked against a real file." : ""),
+      };
+    case "markers":
+      return {
+        text: `Markers from ${summary.markersFrom}`,
+        tone: "warn",
+        title: `No layout exists for v${summary.version}. Lists were split using the ${summary.markersFrom} marker table, and names and fields are borrowed by record size.`,
+      };
+    case "detected":
+      return {
+        text: "Detected",
+        tone: "muted",
+        title: "No known marker table fits this file. Lists were found by recognising each segment, and names and fields are borrowed by record size.",
+      };
+  }
+}
+
 export default function App() {
   const [summary, setSummary] = useState<FileSummary | null>(null);
   const [loading, setLoading] = useState<string | null>(null);
@@ -39,6 +69,9 @@ export default function App() {
   const [detail, setDetail] = useState<RecordDetail | null>(null);
   const [lastPath, setLastPath] = useState<string | null>(readLastPath);
   const rowsCache = useRef(new Map<number, RecordRow[]>());
+  // Row to select once the list being opened has loaded (for followed links).
+  const pendingRow = useRef<number | null>(null);
+  const [history, setHistory] = useState<Location[]>([]);
 
   const loadFile = useCallback(async (path: string) => {
     setLoading(path);
@@ -50,6 +83,8 @@ export default function App() {
       setRows(null);
       setDetail(null);
       setRecordIndex(null);
+      setHistory([]);
+      pendingRow.current = null;
       setListIndex(result.lists.findIndex((l) => l.count > 0));
       writeLastPath(path);
       setLastPath(path);
@@ -94,10 +129,15 @@ export default function App() {
   useEffect(() => {
     if (listIndex === null || listIndex < 0) return;
     setDetail(null);
+    const initialRow = (rows: RecordRow[]) => {
+      const pending = pendingRow.current;
+      pendingRow.current = null;
+      return pending !== null && pending < rows.length ? pending : rows.length ? 0 : null;
+    };
     const cached = rowsCache.current.get(listIndex);
     if (cached) {
       setRows(cached);
-      setRecordIndex(cached.length ? 0 : null);
+      setRecordIndex(initialRow(cached));
       return;
     }
     setRows(null);
@@ -107,7 +147,7 @@ export default function App() {
         rowsCache.current.set(listIndex, result);
         if (cancelled) return;
         setRows(result);
-        setRecordIndex(result.length ? 0 : null);
+        setRecordIndex(initialRow(result));
       })
       .catch((e) => !cancelled && setError(String(e)));
     return () => {
@@ -135,6 +175,44 @@ export default function App() {
     setListIndex(index);
   };
 
+  const goTo = useCallback(
+    ({ list, row }: Location) => {
+      if (list === listIndex) {
+        setRecordIndex(row);
+        return;
+      }
+      pendingRow.current = row;
+      setRecordIndex(null);
+      setListIndex(list);
+    },
+    [listIndex],
+  );
+
+  const follow = (list: number, row: number) => {
+    if (listIndex !== null && recordIndex !== null) {
+      setHistory((h) => [...h.slice(-49), { list: listIndex, row: recordIndex }]);
+    }
+    goTo({ list, row });
+  };
+
+  const back = useCallback(() => {
+    const previous = history.at(-1);
+    if (!previous) return;
+    setHistory(history.slice(0, -1));
+    goTo(previous);
+  }, [history, goTo]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey && e.key === "ArrowLeft") {
+        e.preventDefault();
+        back();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [back]);
+
   const list = summary && listIndex !== null && listIndex >= 0 ? summary.lists[listIndex] : null;
   const row = rows && recordIndex !== null ? (rows[recordIndex] ?? null) : null;
 
@@ -154,20 +232,14 @@ export default function App() {
           <div className="file-chip" title={summary.path}>
             <span className="truncate">{fileName(summary.path)}</span>
             <span className="tag">v{summary.version}</span>
-            {summary.profileVersion !== null && (
-              <span
-                className={"tag " + (summary.profileExact ? "ok" : "warn")}
-                title={summary.profileSource ?? undefined}
-              >
-                {summary.profileExact ? "Profile v" : "Borrowing v"}
-                {summary.profileVersion}
-              </span>
-            )}
-            {summary.profileVersion === null && (
-              <span className="tag muted" title="No list names or layouts are known for this version">
-                Raw view
-              </span>
-            )}
+            {(() => {
+              const p = parseLabel(summary);
+              return (
+                <span className={`tag ${p.tone}`} title={p.title}>
+                  {p.text}
+                </span>
+              );
+            })()}
           </div>
         )}
         <span className="spacer" />
@@ -187,7 +259,14 @@ export default function App() {
         <main className="workspace">
           <ListSidebar lists={summary.lists} selected={listIndex} onSelect={selectList} />
           <RecordTable list={list} rows={rows} selected={recordIndex} onSelect={setRecordIndex} />
-          <RecordInspector list={list} row={row} detail={detail} />
+          <RecordInspector
+            list={list}
+            row={row}
+            detail={detail}
+            canGoBack={history.length > 0}
+            onBack={back}
+            onFollow={follow}
+          />
         </main>
       ) : (
         <main className="welcome">
@@ -197,8 +276,8 @@ export default function App() {
             </div>
             <h1>Open an elements.data file</h1>
             <p className="muted">
-              Drop a file anywhere in this window, or choose one. Versions 112 and 156 have full list names and
-              layouts. Other versions open in a raw view, borrowing names where the layout matches.
+              Drop a file anywhere in this window, or choose one. Layouts are built in for versions 66, 112, 156,
+              158, 160, 165 and 176. Other versions still open: lists are matched to known ones by record size.
             </p>
             <div className="drop-actions">
               <button className="btn primary" onClick={chooseFile}>

@@ -11,16 +11,28 @@ export function bytes(n: number): string {
 }
 
 export const LAYOUT_LABEL: Record<LayoutFit, string> = {
-  exact: "Exact layout",
-  approx: "Borrowed layout",
-  partial: "Partial layout",
-  none: "No layout",
+  exact: "Exact",
+  partial: "Partial",
+  borrowed: "Borrowed",
+  grown: "Grown struct",
+  named: "Name only",
+  none: "Unknown",
 };
 
-export const LAYOUT_HELP: Record<LayoutFit, string> = {
-  exact: "Field layout generated for this exact version and record size.",
-  approx: "Field layout borrowed from a neighbouring version with the same record size. Most likely correct.",
-  partial:
-    "Records are larger than the known layout. Known fields are decoded from the start; the extra bytes are shown as unknown. Fields may be shifted if the game inserted new ones mid-struct.",
-  none: "No layout is known for this list. Bytes are shown as raw int32 values.",
-};
+export function layoutHelp(fit: LayoutFit, layoutId: string | null): string {
+  const from = layoutId ? ` from ${layoutId}` : "";
+  switch (fit) {
+    case "exact":
+      return `Field layout${from}, made for this version; the record size matches.`;
+    case "partial":
+      return `Field layout${from} covers the start of each record; the remaining bytes are shown as unknown.`;
+    case "borrowed":
+      return `Field layout borrowed${from}. Lists were matched by record size, so this is very likely correct.`;
+    case "grown":
+      return `This struct grew since${layoutId ? " " + layoutId : " the version it was borrowed from"}. Its known fields are decoded from the start and the new bytes are shown as unknown. If the game inserted fields mid-struct, later values are shifted.`;
+    case "named":
+      return "Only the list's name is known. Bytes are shown as raw int32 values.";
+    case "none":
+      return "No layout is known for this list. Bytes are shown as raw int32 values.";
+  }
+}

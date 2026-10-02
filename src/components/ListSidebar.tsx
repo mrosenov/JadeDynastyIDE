@@ -21,7 +21,7 @@ export function ListSidebar({ lists, selected, onSelect }: Props) {
           l.name.toLowerCase().includes(q) ||
           l.key?.includes(q) ||
           l.structName?.toLowerCase().includes(q) ||
-          String(l.index + 1) === q),
+          String(l.index) === q),
     );
   }, [lists, filter, hideEmpty]);
 
@@ -53,15 +53,16 @@ export function ListSidebar({ lists, selected, onSelect }: Props) {
             title={[
               l.structName ?? l.name,
               `${l.itemSize} bytes × ${count(l.count)}`,
-              LAYOUT_LABEL[l.layout],
-              l.approxName ? "Name borrowed by position from another version" : null,
+              LAYOUT_LABEL[l.layout] + (l.layoutId ? ` (${l.layoutId})` : ""),
             ]
               .filter(Boolean)
               .join("\n")}
           >
             <span className={`fit-dot fit-${l.layout}`} />
-            <span className="list-num">{l.index + 1}</span>
-            <span className={"list-name" + (l.approxName ? " approx" : "")}>{l.name}</span>
+            <span className="list-num">{l.index}</span>
+            <span className={"list-name" + (l.layout === "borrowed" || l.layout === "grown" ? " approx" : "")}>
+              {l.name}
+            </span>
             <span className="list-count">{count(l.count)}</span>
           </button>
         ))}

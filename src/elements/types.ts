@@ -1,13 +1,16 @@
 // Mirrors the serialized types in src-tauri/src/elements.
 
-export type LayoutFit = "exact" | "approx" | "partial" | "none";
+export type LayoutFit = "exact" | "partial" | "borrowed" | "grown" | "named" | "none";
 
-export type SegmentKind = "header" | "list" | "checksum" | "tag" | "talk";
+export type ParseMode = "layout" | "markers" | "detected";
+
+export type SegmentKind = "header" | "list" | "checksum" | "exporter" | "tag" | "talk";
 
 export interface Segment {
   kind: SegmentKind;
   offset: number;
   size: number;
+  before: number | null;
 }
 
 export interface ListSummary {
@@ -15,11 +18,12 @@ export interface ListSummary {
   name: string;
   key: string | null;
   structName: string | null;
-  approxName: boolean;
   itemSize: number;
   count: number;
   offset: number;
   layout: LayoutFit;
+  layoutId: string | null;
+  layoutSize: number | null;
 }
 
 export interface FileSummary {
@@ -29,10 +33,11 @@ export interface FileSummary {
   rawVersion: number;
   timestamp: number;
   exporter: string | null;
-  layoutSignature: string;
-  profileVersion: number | null;
-  profileSource: string | null;
-  profileExact: boolean;
+  parseMode: ParseMode;
+  layoutId: string | null;
+  layoutSource: string | null;
+  layoutUnverified: boolean;
+  markersFrom: string | null;
   talkCount: number;
   lists: ListSummary[];
   segments: Segment[];
@@ -51,6 +56,9 @@ export interface FieldNode {
   ty: string;
   value?: string;
   hint?: string;
+  /** Referenced record as [list, row]. */
+  link?: [number, number];
+  display?: string;
   comment?: string;
   children?: FieldNode[];
   unknown?: boolean;
@@ -61,6 +69,7 @@ export interface RecordDetail {
   index: number;
   fileOffset: number;
   layout: LayoutFit;
+  layoutId: string | null;
   layoutSize: number | null;
   bytes: number[];
   nodes: FieldNode[];

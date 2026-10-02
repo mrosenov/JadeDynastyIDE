@@ -3,7 +3,7 @@
 use encoding_rs::GBK;
 use serde::Serialize;
 
-use super::profile::{Field, Profile, Ty};
+use super::format::{Field, Ty};
 
 /// Arrays of plain values are previewed inline up to this many elements.
 const PREVIEW_ITEMS: usize = 8;
@@ -19,9 +19,15 @@ pub struct Node {
     pub ty: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Enum label for the value, when the field has one.
+    /// Enum label, referenced record or float reading of the value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hint: Option<String>,
+    /// The record this value refers to, as (list, row).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<(usize, usize)>,
+    /// Display role of the value ("path", "icon", "skill").
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub comment: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -87,8 +93,14 @@ fn scalar(ty: &Ty, b: &[u8], off: usize) -> Option<(String, Option<i64>)> {
         }
         Ty::F32 => (f32::from_le_bytes(fixed(b, off)).to_string(), None),
         Ty::F64 => (f64::from_le_bytes(fixed(b, off)).to_string(), None),
-        Ty::I64 => (i64::from_le_bytes(fixed(b, off)).to_string(), None),
-        Ty::U64 => (u64::from_le_bytes(fixed(b, off)).to_string(), None),
+        Ty::I64 => {
+            let v = i64::from_le_bytes(fixed(b, off));
+            (v.to_string(), Some(v))
+        }
+        Ty::U64 => {
+            let v = u64::from_le_bytes(fixed(b, off));
+            (v.to_string(), Some(v as i64))
+        }
         Ty::Wstr { n } => (read_wstr(&b[off..off + n * 2]), None),
         Ty::Str { n } => (read_str(&b[off..off + n]), None),
         Ty::Bytes { n } => (hex(&b[off..off + n]), None),
@@ -96,9 +108,18 @@ fn scalar(ty: &Ty, b: &[u8], off: usize) -> Option<(String, Option<i64>)> {
     })
 }
 
+/// Extra meaning for an integer field value, supplied by the document.
+#[derive(Default)]
+pub struct Annotation {
+    pub hint: Option<String>,
+    pub link: Option<(usize, usize)>,
+}
+
+pub type Annotator<'a> = dyn Fn(&Field, i64) -> Annotation + 'a;
+
 struct Ctx<'a> {
     bytes: &'a [u8],
-    profile: &'a Profile,
+    annotate: &'a Annotator<'a>,
 }
 
 impl Ctx<'_> {
@@ -111,6 +132,8 @@ impl Ctx<'_> {
             ty: ty.label(),
             value: None,
             hint: None,
+            link: None,
+            display: field.and_then(|f| f.display.clone()),
             comment: field.and_then(|f| f.c.clone()),
             children: None,
             unknown: false,
@@ -140,9 +163,9 @@ impl Ctx<'_> {
             _ => {
                 let (text, int) = scalar(ty, self.bytes, off).expect("scalar type");
                 if let (Some(f), Some(v)) = (field, int) {
-                    if let Some(e) = &f.e {
-                        node.hint = self.profile.enum_label(e, v, f.flags);
-                    }
+                    let a = (self.annotate)(f, v);
+                    node.hint = a.hint;
+                    node.link = a.link;
                 }
                 if node.hint.is_none() && matches!(ty, Ty::I32 | Ty::U32) {
                     node.hint = float_hint(u32::from_le_bytes(fixed(self.bytes, off)));
@@ -174,6 +197,8 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
                     ty: "int32?".into(),
                     value: Some(v.to_string()),
                     hint: float_hint(v as u32),
+                    link: None,
+                    display: None,
                     comment: None,
                     children: None,
                     unknown: true,
@@ -189,6 +214,8 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
         ty: format!("byte[{size}]"),
         value: Some(preview),
         hint: None,
+        link: None,
+        display: None,
         comment: None,
         children,
         unknown: true,
@@ -197,8 +224,8 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
 
 /// Decodes a record with `fields`, filling any uncovered byte ranges (gaps
 /// between fields or a tail beyond the layout) with unknown nodes.
-pub fn decode_record(bytes: &[u8], fields: &[Field], profile: &Profile) -> Vec<Node> {
-    let ctx = Ctx { bytes, profile };
+pub fn decode_record(bytes: &[u8], fields: &[Field], annotate: &Annotator) -> Vec<Node> {
+    let ctx = Ctx { bytes, annotate };
     let mut sorted: Vec<&Field> = fields.iter().filter(|f| f.off < bytes.len()).collect();
     sorted.sort_by_key(|f| f.off);
 

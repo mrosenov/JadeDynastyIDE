@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Generates an elements.data format profile from the server's template sources.
 //
-//   node tools/gen-elements-schema.mjs <template-dir> <out.json> [elements.data to validate]
+//   node tools/gen-elements-schema.mjs <template-dir> <layouts/ID.json> [elements.data to validate]
 //
 // <template-dir> must contain exptypes.h, elementdataman.h and elementdataman.cpp
 // (e.g. zx_source/zgame/gs/template). The list order comes from
@@ -10,6 +10,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { validateLayout } from "./lib/elements-file.mjs";
 
 const [templateDir, outPath, validatePath] = process.argv.slice(2);
 if (!templateDir || !outPath) {
@@ -322,129 +323,72 @@ function layoutStruct(members, structName = "?") {
 
 // ---------------------------------------------------------------- list order
 
-function parseListOrder(cpp, header) {
+// Walks elementdataman::load_data in order: each `x_array.load(file)` is a
+// list, each `fseek(file, 8, SEEK_CUR)` an 8-byte checksum slot, and each
+// `fread(&tag, …)` an exporter/tag block (an exporter block also reads a
+// trailing timestamp before the next list).
+function parseLoadOrder(cpp, header) {
   const typeOfArray = new Map();
   for (const m of header.matchAll(/array\s*<\s*(\w+)\s*>\s*(\w+)_array\s*;/g)) typeOfArray.set(m[2], m[1]);
   const start = cpp.indexOf("int elementdataman::load_data");
   if (start < 0) throw new Error("elementdataman::load_data not found");
   const body = cpp.slice(start, cpp.indexOf("talk_proc", start));
-  return [...body.matchAll(/(\w+)_array\.load\(file\)/g)].map((m) => {
-    const struct = typeOfArray.get(m[1]);
-    if (!struct) throw new Error(`no array<> declaration for ${m[1]}_array`);
-    return { key: m[1], struct };
-  });
+  const lists = [];
+  const markers = [];
+  const events = /(\w+)_array\.load\(file\)|fseek\(file,\s*8,\s*SEEK_CUR\)|fread\(&tag\b|fread\(&t\s*,/g;
+  for (const m of body.matchAll(events)) {
+    if (m[1]) {
+      const struct = typeOfArray.get(m[1]);
+      if (!struct) throw new Error(`no array<> declaration for ${m[1]}_array`);
+      lists.push({ key: m[1], struct });
+    } else if (m[0].startsWith("fseek")) {
+      markers.push({ before: lists.length, kind: "checksum" });
+    } else if (m[0].startsWith("fread(&tag")) {
+      markers.push({ before: lists.length, kind: "tag" });
+    } else {
+      const last = markers.at(-1);
+      if (last?.kind === "tag" && last.before === lists.length) last.kind = "exporter";
+    }
+  }
+  return { lists, markers };
 }
 
 const humanize = (key) => key.split("_").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
-
-// ---------------------------------------------------------------- validation
-
-// True when the bytes from `p` to EOF are exactly the talk_proc block.
-function isTalkBlock(d, p) {
-  const n = d.length;
-  const i32 = (o) => d.readInt32LE(o);
-  if (p + 4 > n) return false;
-  const count = d.readUInt32LE(p);
-  p += 4;
-  if (count > 200000) return false;
-  for (let i = 0; i < count; i++) {
-    if (p + 136 > n) return false;
-    const windows = i32(p + 132);
-    p += 136;
-    if (windows < 0 || windows > 10000) return false;
-    for (let w = 0; w < windows; w++) {
-      if (p + 12 > n) return false;
-      const textLen = i32(p + 8);
-      p += 12;
-      if (textLen < 0 || p + textLen * 2 + 4 > n) return false;
-      p += textLen * 2;
-      const options = i32(p);
-      p += 4;
-      if (options < 0 || p + options * 136 > n) return false;
-      p += options * 136;
-    }
-  }
-  return p === n;
-}
-
-function listSizesOf(file) {
-  const d = fs.readFileSync(file);
-  const sizes = [];
-  const markers = [];
-  let p = 8;
-  const hex8 = (o) => /^[0-9a-fA-F]{8}$/.test(d.toString("latin1", o, o + 8));
-  while (p + 8 <= d.length) {
-    if (isTalkBlock(d, p)) break;
-    const u = d.readUInt32LE(p);
-    if (u === 0x19e75edf || u === 0xee35679f) markers.push(`t${sizes.length}`);
-    if (u === 0x19e75edf) {
-      p += 12 + d.readUInt32LE(p + 4);
-      continue;
-    }
-    if (u === 0xee35679f) {
-      p += 8 + d.readUInt32LE(p + 4);
-      continue;
-    }
-    if (hex8(p)) {
-      markers.push(`c${sizes.length}`);
-      p += 8;
-      continue;
-    }
-    const size = d.readUInt32LE(p);
-    const count = d.readUInt32LE(p + 4);
-    if (size === 0 || size > 1 << 20 || p + 8 + size * count > d.length) break;
-    sizes.push(size);
-    p += 8 + size * count;
-  }
-  return { version: d.readUInt32LE(0), sizes, layout: markers.join(" ") };
-}
 
 // ---------------------------------------------------------------- main
 
 const exptypes = readSource("exptypes.h");
 parseHeader(exptypes);
 const versionMatch = /#define\s+ELEMENTDATA_VERSION\s+(0x[0-9a-fA-F]+|\d+)/.exec(exptypes);
-const version = Number(versionMatch[1]);
+const version = Number(versionMatch[1]) & 0xffff;
 
-const order = parseListOrder(readSource("elementdataman.cpp"), readSource("elementdataman.h"));
-const lists = order.map(({ key, struct }) => {
+const order = parseLoadOrder(readSource("elementdataman.cpp"), readSource("elementdataman.h"));
+const lists = order.lists.map(({ key, struct }) => {
   const members = structs.get(struct);
   if (!members) throw new Error(`struct ${struct} not found or not plain`);
   const { t, size } = layoutStruct(members, struct);
   return { key, name: humanize(key), struct, size, fields: t.fields };
 });
 
-let layout = null;
-if (validatePath) {
-  const actual = listSizesOf(validatePath);
-  if ((actual.version & 0xffff) !== (version & 0xffff)) {
-    console.warn(`warning: ${validatePath} is version ${actual.version & 0xffff}, profile is ${version & 0xffff}`);
-  }
-  let bad = 0;
-  lists.forEach((l, i) => {
-    if (actual.sizes[i] !== l.size) {
-      bad++;
-      console.error(`  #${i + 1} ${l.struct}: computed ${l.size}, file has ${actual.sizes[i]}`);
-    }
-  });
-  if (actual.sizes.length !== lists.length) {
-    bad++;
-    console.error(`  list count: profile ${lists.length}, file ${actual.sizes.length}`);
-  }
-  if (bad) {
-    console.error(`validation failed: ${bad} mismatch(es)`);
-    process.exit(2);
-  }
-  layout = actual.layout;
-  console.log(`validated ${lists.length} list layouts against ${path.basename(validatePath)}`);
-}
-
-const profile = {
-  version: version & 0xffff,
-  source: "server template sources (exptypes.h / elementdataman.cpp)",
-  layout,
+const id = path.basename(outPath, ".json");
+const layout = {
+  id,
+  version,
+  source: `Server template sources (${path.basename(path.resolve(templateDir, "../../.."))}: exptypes.h, elementdataman.cpp)`,
+  markers: order.markers,
   lists,
 };
+
+if (validatePath) {
+  const problems = validateLayout(layout, validatePath);
+  if (problems.length) {
+    problems.forEach((p) => console.error("  " + p));
+    console.error(`validation failed: ${problems.length} problem(s)`);
+    process.exit(2);
+  }
+  console.log(`validated ${lists.length} list layouts against ${validatePath}`);
+}
+
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
-fs.writeFileSync(outPath, JSON.stringify(profile));
-console.log(`wrote ${outPath}: v${profile.version}, ${lists.length} lists`);
+fs.writeFileSync(outPath, JSON.stringify(layout));
+console.log(`wrote ${outPath}: v${version}, ${lists.length} lists, markers ${order.markers.map((m) => m.kind[0] + m.before).join(" ")}`);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ListSummary, RecordDetail, RecordRow } from "../elements/types";
-import { LAYOUT_HELP, LAYOUT_LABEL, hex } from "../elements/format";
+import { LAYOUT_LABEL, hex, layoutHelp } from "../elements/format";
 import { FieldTree } from "./FieldTree";
 import { type Path, allPaths, nodeAt, pathAt } from "../elements/fieldPaths";
 import { HexView } from "./HexView";
@@ -9,9 +9,12 @@ interface Props {
   list: ListSummary;
   row: RecordRow | null;
   detail: RecordDetail | null;
+  canGoBack: boolean;
+  onBack: () => void;
+  onFollow: (list: number, row: number) => void;
 }
 
-export function RecordInspector({ list, row, detail }: Props) {
+export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow }: Props) {
   const [expanded, setExpanded] = useState<Set<Path>>(new Set());
   const [selected, setSelected] = useState<Path | null>(null);
   const [hovered, setHovered] = useState<Path | null>(null);
@@ -51,9 +54,15 @@ export function RecordInspector({ list, row, detail }: Props) {
     <section className="pane inspector">
       <div className="inspector-head">
         <div className="inspector-title">
+          {canGoBack && (
+            <button className="back" onClick={onBack} title="Back to the previous record (Alt+←)">
+              ←
+            </button>
+          )}
           <h2 className="truncate">{row.name || <span className="muted">Unnamed record</span>}</h2>
-          <span className={`badge fit-${detail.layout}`} title={LAYOUT_HELP[detail.layout]}>
+          <span className={`badge fit-${detail.layout}`} title={layoutHelp(detail.layout, detail.layoutId)}>
             {LAYOUT_LABEL[detail.layout]}
+            {detail.layoutId && <span className="badge-sub"> · {detail.layoutId}</span>}
           </span>
         </div>
         <dl className="facts">
@@ -85,8 +94,8 @@ export function RecordInspector({ list, row, detail }: Props) {
             </div>
           )}
         </dl>
-        {(detail.layout === "partial" || detail.layout === "approx") && (
-          <p className="note">{LAYOUT_HELP[detail.layout]}</p>
+        {(detail.layout === "partial" || detail.layout === "grown") && (
+          <p className="note">{layoutHelp(detail.layout, detail.layoutId)}</p>
         )}
       </div>
 
@@ -108,6 +117,7 @@ export function RecordInspector({ list, row, detail }: Props) {
           onToggle={toggle}
           onSelect={setSelected}
           onHover={setHovered}
+          onFollow={onFollow}
         />
         <div className="subhead">
           <span className="pane-title">Bytes</span>

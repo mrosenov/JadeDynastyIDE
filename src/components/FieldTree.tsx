@@ -8,9 +8,10 @@ interface Props {
   onToggle: (path: Path) => void;
   onSelect: (path: Path) => void;
   onHover: (path: Path | null) => void;
+  onFollow: (list: number, row: number) => void;
 }
 
-export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover }: Props) {
+export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow }: Props) {
   const rows = flatten(nodes, expanded);
   return (
     <div className="fields scroll" onMouseLeave={() => onHover(null)}>
@@ -53,7 +54,22 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
             </span>
             <span className="field-value truncate mono">
               {node.value ?? (node.children ? <span className="muted">{node.children.length} items</span> : null)}
-              {node.hint && <span className="hint">{node.hint}</span>}
+              {node.hint &&
+                (node.link ? (
+                  <button
+                    className="hint link-hint"
+                    title="Open the referenced record"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onFollow(node.link![0], node.link![1]);
+                    }}
+                  >
+                    {node.hint}
+                  </button>
+                ) : (
+                  <span className="hint">{node.hint}</span>
+                ))}
+              {node.display && <span className="role">{node.display}</span>}
             </span>
             <span className="muted mono truncate">{node.ty}</span>
             <span className="muted mono">{node.off.toString(16).toUpperCase().padStart(4, "0")}</span>
