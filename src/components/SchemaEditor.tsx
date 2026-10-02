@@ -96,6 +96,25 @@ function suggestGroupName(members: EditField[]): string {
   return prefix.replace(/[_\d]+$/, "") || "Group";
 }
 
+/** The changes a type switch brings: members for structs, a length for
+ *  strings and bytes, and no enum/role/refs for non-integers. */
+function kindPatch(f: EditField, kind: Kind): Partial<EditField> {
+  const p: Partial<EditField> = { kind };
+  if (kind === "struct" && !f.children.length) p.children = [newField({ name: "value" })];
+  if (kindInfo(kind).len && !(f.len >= 1)) p.len = kind === "bytes" ? 4 : 32;
+  if (!INTEGER_KINDS.has(kind)) Object.assign(p, { e: "", display: "", refs: [] });
+  return p;
+}
+
+/** Uids of every field (not groups), nested ones included. */
+function fieldUids(fields: EditField[], out: number[] = []): number[] {
+  for (const f of fields) {
+    if (f.kind !== "group") out.push(f.uid);
+    fieldUids(f.children, out);
+  }
+  return out;
+}
+
 const insertAfterOp =
   (field: EditField): Op =>
   (list, i) =>
@@ -357,9 +376,22 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
       return next;
     });
 
+  const togglePick = (uid: number) => {
+    setPicked((p) => {
+      const next = new Set(p);
+      if (next.has(uid)) next.delete(uid);
+      else next.add(uid);
+      return next;
+    });
+    pickAnchor.current = uid;
+  };
+
   const clickRow = (e: React.MouseEvent, row: Row) => {
     const uid = row.field.uid;
     setSelected(uid);
+    // Editing a cell keeps the current selection.
+    const interactive = (e.target as HTMLElement).closest("input, select, textarea, button, .refs-chips");
+    if (interactive && !e.shiftKey && !e.ctrlKey && !e.metaKey) return;
     const sameLevel = (other: number) => row.parent.some((f) => f.uid === other);
     if (e.shiftKey && pickAnchor.current !== null && sameLevel(pickAnchor.current)) {
       const a = row.parent.findIndex((f) => f.uid === pickAnchor.current);
@@ -400,6 +432,31 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
     setSelected(group.uid);
     setPicked(new Set([group.uid]));
     pickAnchor.current = group.uid;
+  };
+
+  // ------------------------------------------------------------ bulk edit
+
+  const allFields = fieldUids(draft.fields);
+  const pickedFields = allFields.filter((u) => picked.has(u));
+  const allPicked = allFields.length > 0 && pickedFields.length === allFields.length;
+
+  /** Applies a change to every picked field (one undo step). */
+  const applyBulk = (change: (f: EditField) => Partial<EditField> | null, tag: string) => {
+    const walk = (fields: EditField[]): EditField[] =>
+      fields.map((f) => {
+        const p = picked.has(f.uid) && f.kind !== "group" ? change(f) : null;
+        const next = p ? { ...f, ...p } : f;
+        return next.children.length ? { ...next, children: walk(next.children) } : next;
+      });
+    commit({ ...draft, fields: walk(draft.fields) }, tag);
+  };
+
+  const deletePicked = () => {
+    if (!window.confirm(`Remove the ${picked.size} selected rows?`)) return;
+    const walk = (fields: EditField[]): EditField[] =>
+      fields.filter((f) => !picked.has(f.uid)).map((f) => (f.children.length ? { ...f, children: walk(f.children) } : f));
+    commit({ ...draft, fields: walk(draft.fields) }, "bulk-delete");
+    setPicked(new Set());
   };
 
   const autoGroupAll = () => {
@@ -631,9 +688,97 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                   <ChevronsDownUp size={13} /> Collapse all
                 </button>
               </div>
+              {picked.size > 1 && (
+                <div className="se-bulk" role="toolbar" aria-label="Bulk edit">
+                  <span className="se-bulk-count">
+                    <b>{picked.size}</b> selected
+                  </span>
+                  <label>
+                    Type
+                    <select
+                      className="cell"
+                      value=""
+                      onChange={(e) => e.target.value && applyBulk((f) => kindPatch(f, e.target.value as Kind), "bulk-kind")}
+                    >
+                      <option value="">set…</option>
+                      {KINDS.map((k) => (
+                        <option key={k.kind} value={k.kind}>
+                          {k.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label title="Applies to integer fields only">
+                    Enum / mask
+                    <select
+                      className="cell"
+                      value=""
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (v === "__edit__") onEditSets?.(null);
+                        else if (v) applyBulk((f) => (INTEGER_KINDS.has(f.kind) ? { e: v === "__none__" ? "" : v } : null), "bulk-e");
+                      }}
+                    >
+                      <option value="">set…</option>
+                      <option value="__none__">— none —</option>
+                      {context?.enums.map((x) => (
+                        <option key={x.key} value={x.key}>
+                          {x.label}
+                          {x.flags ? " (mask)" : ""}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label title="Applies to integer fields only">
+                    Role
+                    <select
+                      className="cell"
+                      value=""
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (v) applyBulk((f) => (INTEGER_KINDS.has(f.kind) ? { display: v === "__none__" ? "" : v } : null), "bulk-role");
+                      }}
+                    >
+                      <option value="">set…</option>
+                      <option value="__none__">— none —</option>
+                      {ROLES.filter(Boolean).map((r) => (
+                        <option key={r} value={r}>
+                          {r}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <button className="btn small" onClick={() => applyBulk((f) => (f.refs.length ? { refs: [] } : null), "bulk-refs")}>
+                    Clear refs
+                  </button>
+                  <button className="btn small" onClick={groupPicked} disabled={!canGroup} title={canGroup ? "Group the selected rows" : "Only rows of one level can be grouped"}>
+                    <Group size={14} /> Group
+                  </button>
+                  <button className="btn small danger-btn" onClick={deletePicked}>
+                    <Trash2 size={14} /> Delete
+                  </button>
+                  <span className="spacer" />
+                  <button className="link" onClick={() => setPicked(new Set())}>
+                    Clear selection
+                  </button>
+                </div>
+              )}
               <div className="se-table scroll">
                 <div className="se-grid se-grid-head">
-                  <span>Field</span>
+                  <span className="se-head-field">
+                    <input
+                      type="checkbox"
+                      className="row-check"
+                      checked={allPicked}
+                      ref={(el) => {
+                        if (el) el.indeterminate = pickedFields.length > 0 && !allPicked;
+                      }}
+                      onChange={() => setPicked(allPicked ? new Set() : new Set(allFields))}
+                      title={allPicked ? "Clear the selection" : "Select every field"}
+                      aria-label="Select all fields"
+                    />
+                    Field
+                  </span>
                   <span>Type</span>
                   <span>Length</span>
                   <span>Array</span>
@@ -674,7 +819,16 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                         className={rowClass + " se-group-row"}
                         onClick={(e) => clickRow(e, row)}
                       >
-                        <span className="se-name" style={{ paddingLeft: depth * 16 }}>
+                        <span className="se-name">
+                          <input
+                            type="checkbox"
+                            className="row-check"
+                            checked={picked.has(f.uid)}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={() => togglePick(f.uid)}
+                            aria-label={`Select ${f.name}`}
+                          />
+                          <span className="indent" style={{ width: depth * 16 }} />
                           <button
                             className={"caret" + (open ? " open" : "")}
                             onClick={(e) => {
@@ -746,7 +900,16 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                       data-uid={f.uid}
                       onFocus={() => setSelected(f.uid)}
                     >
-                      <span className="se-name" style={{ paddingLeft: depth * 16 }}>
+                      <span className="se-name">
+                        <input
+                            type="checkbox"
+                            className="row-check"
+                            checked={picked.has(f.uid)}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={() => togglePick(f.uid)}
+                            aria-label={`Select ${f.name}`}
+                          />
+                          <span className="indent" style={{ width: depth * 16 }} />
                         {f.kind === "struct" ? (
                           <button
                             className={"caret" + (collapsed.has(f.uid) ? "" : " open")}
@@ -785,11 +948,7 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                         className="cell"
                         value={f.kind}
                         onChange={(e) => {
-                          const kind = e.target.value as Kind;
-                          const p: Partial<EditField> = { kind };
-                          if (kind === "struct" && !f.children.length) p.children = [newField({ name: "value" })];
-                          if (!INTEGER_KINDS.has(kind)) Object.assign(p, { e: "", display: "", refs: [] });
-                          patch(f.uid, p, "kind");
+                          patch(f.uid, kindPatch(f, e.target.value as Kind), "kind");
                         }}
                       >
                         {KINDS.map((k) => (
@@ -799,14 +958,23 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                         ))}
                       </select>
                       {info.len ? (
-                        <input
-                          className="cell mono num"
-                          type="number"
-                          min={1}
-                          value={f.len || ""}
-                          title={info.len === "chars" ? "Characters (2 bytes each)" : "Bytes"}
-                          onChange={(e) => patch(f.uid, { len: Math.max(0, Math.floor(Number(e.target.value))) }, "len")}
-                        />
+                        <span
+                          className="len-cell"
+                          title={
+                            info.len === "chars"
+                              ? `${f.len || 0} characters = ${(f.len || 0) * 2} bytes (UTF-16, 2 bytes each). Tools that write wstring:N count bytes.`
+                              : `${f.len || 0} bytes`
+                          }
+                        >
+                          <input
+                            className="cell mono num"
+                            type="number"
+                            min={1}
+                            value={f.len || ""}
+                            onChange={(e) => patch(f.uid, { len: Math.max(0, Math.floor(Number(e.target.value))) }, "len")}
+                          />
+                          <span className="len-unit">{info.len === "chars" ? "ch" : "B"}</span>
+                        </span>
                       ) : (
                         <span className="muted cell-static">—</span>
                       )}

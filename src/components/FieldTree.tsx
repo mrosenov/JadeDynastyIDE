@@ -101,7 +101,16 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
                 </span>
               )}
             </span>
-            <span className="muted mono truncate">{node.ty}</span>
+            <span
+              className="muted mono truncate"
+              title={
+                node.ty.startsWith("wchar[")
+                  ? `${node.ty} · ${node.size / 2} characters = ${node.size} bytes`
+                  : `${node.ty} · ${node.size} byte${node.size === 1 ? "" : "s"}`
+              }
+            >
+              {node.ty}
+            </span>
             <span className="muted mono">{node.off.toString(16).toUpperCase().padStart(4, "0")}</span>
           </div>
         );

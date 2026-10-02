@@ -24,6 +24,28 @@ export function SetPopover({ node, anchor, onEdit, onClose }: Props) {
   const [copied, setCopied] = useState<string | null>(null);
   const box = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState({ left: anchor.left, top: anchor.bottom + 6 });
+  // Once dragged, the popover stays where the user put it.
+  const moved = useRef(false);
+  const drag = useRef<{ dx: number; dy: number } | null>(null);
+
+  const startDrag = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest("button") || e.button !== 0) return;
+    drag.current = { dx: e.clientX - pos.left, dy: e.clientY - pos.top };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    e.preventDefault();
+  };
+  const onDrag = (e: React.PointerEvent) => {
+    if (!drag.current || !box.current) return;
+    const { width: w, height: h } = box.current.getBoundingClientRect();
+    moved.current = true;
+    setPos({
+      left: Math.max(0, Math.min(e.clientX - drag.current.dx, window.innerWidth - w)),
+      top: Math.max(0, Math.min(e.clientY - drag.current.dy, window.innerHeight - h)),
+    });
+  };
+  const endDrag = () => {
+    drag.current = null;
+  };
 
   useEffect(() => {
     if (!node.set) return;
@@ -35,7 +57,7 @@ export function SetPopover({ node, anchor, onEdit, onClose }: Props) {
   // Keep the popover on screen.
   useLayoutEffect(() => {
     const el = box.current;
-    if (!el) return;
+    if (!el || moved.current) return;
     const { width: w, height: h } = el.getBoundingClientRect();
     const left = Math.max(8, Math.min(anchor.left, window.innerWidth - w - 8));
     const below = anchor.bottom + 6;
@@ -76,7 +98,14 @@ export function SetPopover({ node, anchor, onEdit, onClose }: Props) {
 
   return (
     <div className="set-popover" ref={box} style={pos} role="dialog" aria-label={`${node.name} values`}>
-      <div className="set-popover-head">
+      <div
+        className="set-popover-head"
+        onPointerDown={startDrag}
+        onPointerMove={onDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        title="Drag to move"
+      >
         <span className="truncate">
           <b>{node.name}</b> <span className="muted">· {detail?.set.label ?? node.set}</span>
         </span>
