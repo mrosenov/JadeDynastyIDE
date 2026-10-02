@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { getRecord, listRecords, openElements } from "./elements/api";
@@ -8,7 +8,9 @@ import { ListSidebar } from "./components/ListSidebar";
 import { RecordTable } from "./components/RecordTable";
 import { RecordInspector } from "./components/RecordInspector";
 import { SchemaEditor } from "./components/SchemaEditor";
+import { TabBar, type TabLabel } from "./components/TabBar";
 import type { FieldSpec } from "./schema/model";
+import { EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import "./App.css";
 import { Braces, FolderOpen, Gem } from "lucide-react";
 
@@ -31,11 +33,6 @@ function writeLastPath(path: string) {
 }
 
 const fileName = (path: string) => path.split(/[\\/]/).pop() ?? path;
-
-interface Location {
-  list: number;
-  row: number;
-}
 
 function parseLabel(summary: FileSummary): { text: string; tone: "ok" | "warn" | "muted"; title: string } {
   switch (summary.parseMode) {
@@ -66,17 +63,20 @@ export default function App() {
   const [summary, setSummary] = useState<FileSummary | null>(null);
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [listIndex, setListIndex] = useState<number | null>(null);
   const [rows, setRows] = useState<RecordRow[] | null>(null);
-  const [recordIndex, setRecordIndex] = useState<number | null>(null);
   const [detail, setDetail] = useState<RecordDetail | null>(null);
   const [lastPath, setLastPath] = useState<string | null>(readLastPath);
   const rowsCache = useRef(new Map<number, RecordRow[]>());
-  // Row to select once the list being opened has loaded (for followed links).
-  const pendingRow = useRef<number | null>(null);
-  const [history, setHistory] = useState<Location[]>([]);
+  // Bumped when rows load in the background, so tab titles can use names.
+  const [, setRowsLoaded] = useState(0);
+  const [tabs, dispatch] = useReducer(tabsReducer, EMPTY_TABS);
   const [editorOpen, setEditorOpen] = useState(false);
   const [editorIntent, setEditorIntent] = useState<{ list: number; offset: number; spec: FieldSpec } | null>(null);
+
+  // The active tab decides what the sidebar, the table and the inspector show.
+  const activeTab = tabs.tabs.find((t) => t.id === tabs.active) ?? null;
+  const listIndex = activeTab?.list ?? null;
+  const recordIndex = activeTab?.row ?? null;
 
   const loadFile = useCallback(async (path: string) => {
     setLoading(path);
@@ -87,10 +87,17 @@ export default function App() {
       setSummary(result);
       setRows(null);
       setDetail(null);
-      setRecordIndex(null);
-      setHistory([]);
-      pendingRow.current = null;
-      setListIndex(result.lists.findIndex((l) => l.count > 0));
+      const first = result.lists.findIndex((l) => l.count > 0);
+      const restored = loadTabs(path, result.lists.map((l) => l.count));
+      dispatch({
+        type: "reset",
+        state:
+          restored ??
+          (first < 0 ? EMPTY_TABS : (() => {
+            const tab = makeTab({ list: first, row: null }, false);
+            return { tabs: [tab], active: tab.id };
+          })()),
+      });
       writeLastPath(path);
       setLastPath(path);
     } catch (e) {
@@ -99,6 +106,11 @@ export default function App() {
       setLoading(null);
     }
   }, []);
+
+  // Remember the open tabs per file.
+  useEffect(() => {
+    if (summary) saveTabs(summary.path, tabs);
+  }, [summary, tabs]);
 
   const chooseFile = useCallback(async () => {
     const picked = await open({
@@ -130,19 +142,19 @@ export default function App() {
     };
   }, [chooseFile, loadFile]);
 
-  // Load the records of the selected list.
+  // Load the records of the active tab's list.
   useEffect(() => {
-    if (listIndex === null || listIndex < 0) return;
-    setDetail(null);
-    const initialRow = (rows: RecordRow[]) => {
-      const pending = pendingRow.current;
-      pendingRow.current = null;
-      return pending !== null && pending < rows.length ? pending : rows.length ? 0 : null;
+    if (listIndex === null || listIndex < 0) {
+      setRows(null);
+      return;
+    }
+    const show = (result: RecordRow[]) => {
+      setRows(result);
+      dispatch({ type: "settle", row: result.length ? 0 : null });
     };
     const cached = rowsCache.current.get(listIndex);
     if (cached) {
-      setRows(cached);
-      setRecordIndex(initialRow(cached));
+      show(cached);
       return;
     }
     setRows(null);
@@ -150,9 +162,7 @@ export default function App() {
     listRecords(listIndex)
       .then((result) => {
         rowsCache.current.set(listIndex, result);
-        if (cancelled) return;
-        setRows(result);
-        setRecordIndex(initialRow(result));
+        if (!cancelled) show(result);
       })
       .catch((e) => !cancelled && setError(String(e)));
     return () => {
@@ -160,7 +170,7 @@ export default function App() {
     };
   }, [listIndex, summary]);
 
-  // Load the selected record.
+  // Load the active record.
   useEffect(() => {
     if (listIndex === null || recordIndex === null) {
       setDetail(null);
@@ -175,16 +185,36 @@ export default function App() {
     };
   }, [listIndex, recordIndex, summary]);
 
-  const selectList = (index: number) => {
-    setRecordIndex(null);
-    setListIndex(index);
-  };
+  // Load record names for the other tabs' lists, for their titles.
+  useEffect(() => {
+    if (!summary) return;
+    const missing = [...new Set(tabs.tabs.map((t) => t.list))].filter((l) => !rowsCache.current.has(l));
+    let cancelled = false;
+    (async () => {
+      for (const list of missing) {
+        const result = await listRecords(list).catch(() => null);
+        if (cancelled || !result) return;
+        rowsCache.current.set(list, result);
+        setRowsLoaded((n) => n + 1);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [tabs.tabs, summary]);
 
-  // A schema was saved: the file was re-read with the new layouts. Keep the
-  // current list and record selected while everything reloads.
+  const openLocation = (loc: Location, options: { pin?: boolean; newTab?: boolean } = {}) =>
+    dispatch({ type: "open", loc, ...options });
+
+  const selectList = (index: number) => openLocation({ list: index, row: null });
+
+  const follow = (list: number, row: number, newTab = false) =>
+    newTab ? openLocation({ list, row }, { newTab: true }) : dispatch({ type: "navigate", loc: { list, row } });
+
+  // A schema was saved: the file was re-read with the new layouts. The tabs
+  // keep their records while everything reloads.
   const onSchemaSaved = (next: FileSummary) => {
     rowsCache.current.clear();
-    pendingRow.current = recordIndex;
     setSummary(next);
   };
 
@@ -194,43 +224,36 @@ export default function App() {
     if (list !== listIndex) selectList(list);
   };
 
-  const goTo = useCallback(
-    ({ list, row }: Location) => {
-      if (list === listIndex) {
-        setRecordIndex(row);
-        return;
-      }
-      pendingRow.current = row;
-      setRecordIndex(null);
-      setListIndex(list);
-    },
-    [listIndex],
-  );
-
-  const follow = (list: number, row: number) => {
-    if (listIndex !== null && recordIndex !== null) {
-      setHistory((h) => [...h.slice(-49), { list: listIndex, row: recordIndex }]);
-    }
-    goTo({ list, row });
-  };
-
-  const back = useCallback(() => {
-    const previous = history.at(-1);
-    if (!previous) return;
-    setHistory(history.slice(0, -1));
-    goTo(previous);
-  }, [history, goTo]);
-
+  // Tab and history shortcuts (not while the schema editor is open).
   useEffect(() => {
+    if (!summary || editorOpen) return;
     const onKey = (e: KeyboardEvent) => {
+      const mod = e.ctrlKey || e.metaKey;
       if (e.altKey && e.key === "ArrowLeft") {
         e.preventDefault();
-        back();
+        dispatch({ type: "back" });
+      } else if (mod && e.key === "Tab") {
+        e.preventDefault();
+        dispatch({ type: "cycle", delta: e.shiftKey ? -1 : 1 });
+      } else if (mod && e.key.toLowerCase() === "w") {
+        e.preventDefault();
+        if (tabs.active !== null) dispatch({ type: "close", id: tabs.active });
+      } else if (mod && /^[1-9]$/.test(e.key)) {
+        e.preventDefault();
+        dispatch({ type: "activateIndex", index: e.key === "9" ? -1 : Number(e.key) - 1 });
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [back]);
+  }, [summary, editorOpen, tabs.active]);
+
+  const tabLabel = (tab: Tab): TabLabel => {
+    const l = summary?.lists[tab.list];
+    const listName = l?.name ?? `List ${tab.list}`;
+    if (tab.row === null) return { title: listName, subtitle: `list ${tab.list}` };
+    const name = rowsCache.current.get(tab.list)?.[tab.row]?.name;
+    return { title: name || `${listName} #${tab.row}`, subtitle: `${listName} · #${tab.row}` };
+  };
 
   const list = summary && listIndex !== null && listIndex >= 0 ? summary.lists[listIndex] : null;
   const row = rows && recordIndex !== null ? (rows[recordIndex] ?? null) : null;
@@ -266,7 +289,7 @@ export default function App() {
         <button
           className={"btn" + (editorOpen ? " active" : "")}
           onClick={() => (editorOpen ? closeEditor(listIndex ?? 0) : setEditorOpen(true))}
-          disabled={!summary || !list}
+          disabled={!summary || !summary.lists.length}
           title={summary ? "Write your own schema for this file's lists" : "Open a file to edit its schema"}
         >
           <Braces size={15} /> Schema editor
@@ -282,33 +305,61 @@ export default function App() {
         </div>
       )}
 
-      {summary && list && editorOpen ? (
+      {summary && editorOpen ? (
         <main className="editor-main">
           <SchemaEditor
             summary={summary}
-            initialList={editorIntent?.list ?? list.index}
+            initialList={editorIntent?.list ?? list?.index ?? 0}
             intent={editorIntent}
             initialRow={recordIndex ?? 0}
             onSaved={onSchemaSaved}
             onClose={closeEditor}
           />
         </main>
-      ) : summary && list ? (
+      ) : summary ? (
         <main className="workspace">
           <ListSidebar lists={summary.lists} selected={listIndex} onSelect={selectList} />
-          <RecordTable list={list} rows={rows} selected={recordIndex} onSelect={setRecordIndex} />
-          <RecordInspector
-            list={list}
-            row={row}
-            detail={detail}
-            canGoBack={history.length > 0}
-            onBack={back}
-            onFollow={follow}
-            onDefine={(list, offset, spec) => {
-              setEditorIntent({ list, offset, spec });
-              setEditorOpen(true);
-            }}
-          />
+          {list ? (
+            <RecordTable
+              list={list}
+              rows={rows}
+              selected={recordIndex}
+              onSelect={(index) => openLocation({ list: list.index, row: index })}
+              onOpen={(index) => openLocation({ list: list.index, row: index }, { pin: true })}
+            />
+          ) : (
+            <section className="pane records">
+              <div className="empty-note center">Pick a list to see its records.</div>
+            </section>
+          )}
+          <div className="inspector-column">
+            <TabBar
+              tabs={tabs.tabs}
+              active={tabs.active}
+              label={tabLabel}
+              onActivate={(id) => dispatch({ type: "activate", id })}
+              onPin={(id) => dispatch({ type: "pin", id })}
+              onClose={(id) => dispatch({ type: "close", id })}
+            />
+            {list ? (
+              <RecordInspector
+                list={list}
+                row={row}
+                detail={detail}
+                canGoBack={(activeTab?.history.length ?? 0) > 0}
+                onBack={() => dispatch({ type: "back" })}
+                onFollow={follow}
+                onDefine={(list, offset, spec) => {
+                  setEditorIntent({ list, offset, spec });
+                  setEditorOpen(true);
+                }}
+              />
+            ) : (
+              <section className="pane inspector">
+                <div className="empty-note center">No record open. Pick a list, then a record.</div>
+              </section>
+            )}
+          </div>
         </main>
       ) : (
         <main className="welcome">
@@ -348,6 +399,11 @@ export default function App() {
             </span>
             {summary.exporter && <span title="Exporter machine name stored in the file">by {summary.exporter}</span>}
             <span className="spacer" />
+            {tabs.tabs.length > 0 && (
+              <span title="Ctrl+Tab switches tabs, Ctrl+W closes, Ctrl+1…9 jumps">
+                {tabs.tabs.length} tab{tabs.tabs.length > 1 ? "s" : ""}
+              </span>
+            )}
             <span className="mono" title="Raw version word">
               0x{summary.rawVersion.toString(16).toUpperCase()}
             </span>

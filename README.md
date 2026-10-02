@@ -31,7 +31,19 @@ Each list then gets a definition:
 Borrowing aligns record sizes (a longest common subsequence within each
 marker group), so lists inserted mid-way do not shift every later name.
 Fields with enums/masks show their labels; fields that hold another list's IDs
-link to that record (Alt+← goes back).
+link to that record.
+
+## Tabs
+
+Records open in tabs above the inspector:
+
+- Clicking a record previews it in a reusable tab (shown in italics). Double-click or
+  Enter keeps it open.
+- Links navigate inside the current tab (Alt+← goes back). Ctrl+click or middle-click
+  opens a link in a new tab.
+- Ctrl+Tab and Ctrl+Shift+Tab switch tabs, Ctrl+1…9 jumps to a tab, and Ctrl+W or
+  middle-click closes one.
+- Open tabs are remembered per file.
 
 ## Built-in layouts (`src-tauri/formats`)
 

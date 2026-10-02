@@ -9,7 +9,8 @@ interface Props {
   onToggle: (path: Path) => void;
   onSelect: (path: Path) => void;
   onHover: (path: Path | null) => void;
-  onFollow: (list: number, row: number) => void;
+  /** Follow a reference; `newTab` for Ctrl+click or middle-click. */
+  onFollow: (list: number, row: number, newTab?: boolean) => void;
 }
 
 export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow }: Props) {
@@ -59,11 +60,18 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
                 (node.link ? (
                   <button
                     className="hint link-hint"
-                    title="Open the referenced record"
+                    title="Open the referenced record (Ctrl+click or middle-click: in a new tab)"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onFollow(node.link![0], node.link![1]);
+                      onFollow(node.link![0], node.link![1], e.ctrlKey || e.metaKey);
                     }}
+                    onAuxClick={(e) => {
+                      if (e.button !== 1) return;
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onFollow(node.link![0], node.link![1], true);
+                    }}
+                    onMouseDown={(e) => e.button === 1 && e.preventDefault()}
                   >
                     {node.hint}
                   </button>

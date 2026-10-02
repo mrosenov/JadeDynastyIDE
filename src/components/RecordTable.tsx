@@ -8,11 +8,13 @@ interface Props {
   rows: RecordRow[] | null;
   selected: number | null;
   onSelect: (index: number) => void;
+  /** Double-click: open the record in a tab that stays open. */
+  onOpen?: (index: number) => void;
 }
 
 const ROW_HEIGHT = 28;
 
-export function RecordTable({ list, rows, selected, onSelect }: Props) {
+export function RecordTable({ list, rows, selected, onSelect, onOpen }: Props) {
   const [filter, setFilter] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +47,9 @@ export function RecordTable({ list, rows, selected, onSelect }: Props) {
       e.preventDefault();
       const next = Math.min(visible.length - 1, Math.max(0, (position < 0 ? -1 : position) + step));
       onSelect(visible[next].index);
+    } else if (e.key === "Enter" && position >= 0) {
+      e.preventDefault();
+      onOpen?.(visible[position].index);
     } else if (e.key === "Home" || e.key === "End") {
       e.preventDefault();
       onSelect(visible[e.key === "Home" ? 0 : visible.length - 1].index);
@@ -90,6 +95,7 @@ export function RecordTable({ list, rows, selected, onSelect }: Props) {
                 className={"record-row record-grid" + (row.index === selected ? " active" : "")}
                 style={{ transform: `translateY(${item.start}px)`, height: ROW_HEIGHT }}
                 onClick={() => onSelect(row.index)}
+                onDoubleClick={() => onOpen?.(row.index)}
               >
                 <span className="muted mono">{row.index}</span>
                 <span className="mono">{row.id}</span>

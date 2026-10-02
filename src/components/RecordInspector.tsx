@@ -15,7 +15,7 @@ interface Props {
   detail: RecordDetail | null;
   canGoBack: boolean;
   onBack: () => void;
-  onFollow: (list: number, row: number) => void;
+  onFollow: (list: number, row: number, newTab?: boolean) => void;
   /** Open the schema editor with a field defined at this offset. */
   onDefine: (list: number, offset: number, spec: FieldSpec) => void;
 }
