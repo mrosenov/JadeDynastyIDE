@@ -59,8 +59,17 @@ interface Props {
 }
 
 const INTEGER_KINDS = new Set<Kind>(["i8", "u8", "bool", "i16", "u16", "i32", "u32", "i64", "u64"]);
-const ROLES = ["", "path", "icon", "skill", "time"];
-const ROLE_LABEL: Record<string, string> = { "": "—", path: "path", icon: "icon", skill: "skill", time: "date/time (unix)" };
+const ROLES = ["", "path", "icon", "skill", "time", "duration", "duration_ms", "daytime"];
+const ROLE_LABEL: Record<string, string> = {
+  "": "—",
+  path: "path",
+  icon: "icon",
+  skill: "skill",
+  time: "date/time (unix)",
+  duration: "duration (seconds)",
+  duration_ms: "duration (ms)",
+  daytime: "time of day (seconds)",
+};
 
 // ---------------------------------------------------------------- tree edits
 

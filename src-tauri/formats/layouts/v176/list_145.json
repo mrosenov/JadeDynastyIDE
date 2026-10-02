@@ -51,7 +51,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "竞猜开始时间"
+      "c": "竞猜开始时间",
+      "display": "time"
     },
     {
       "name": "guess_end_time",
@@ -59,7 +60,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "竞猜截止时间"
+      "c": "竞猜截止时间",
+      "display": "time"
     },
     {
       "name": "accept_award_start_time",
@@ -67,7 +69,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "领奖开始时间"
+      "c": "领奖开始时间",
+      "display": "time"
     },
     {
       "name": "accept_award_end_time",
@@ -75,7 +78,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "领奖截止时间"
+      "c": "领奖截止时间",
+      "display": "time"
     },
     {
       "name": "champion_guess_item",

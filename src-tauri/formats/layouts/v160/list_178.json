@@ -149,7 +149,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "开启互动的准备时间"
+      "c": "开启互动的准备时间",
+      "display": "duration"
     },
     {
       "name": "interaction_time",

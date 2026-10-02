@@ -3368,3 +3368,11 @@ select.sf-control {
 .sf-set {
   min-width: 0;
 }
+.time-chip.duration {
+  background: color-mix(in srgb, #c297ff 18%, transparent);
+  color: color-mix(in srgb, #c297ff 85%, var(--text));
+}
+.time-chip.daytime {
+  background: color-mix(in srgb, #ffb86b 18%, transparent);
+  color: color-mix(in srgb, #ffb86b 80%, var(--text));
+}

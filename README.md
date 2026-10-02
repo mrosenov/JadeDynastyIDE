@@ -193,6 +193,22 @@ There, a file overrides the built-in set with the same key or adds a new one. De
 a built-in set writes `{ "key": …, "deleted": true }` there, which hides it; it is listed under
 **Deleted** to restore. Removing a user file reverts the set. In the inspector, clicking a mask field's labels opens a
 calculator: tick bits to get the resulting value in decimal and hex.
+
+Integer fields can also have a display role (`"display"` in a list file, **Role** in the
+schema editor):
+
+| Role | Value | Shown as |
+|---|---|---|
+| `path` / `icon` | path.data ID | the client path (and item icon) |
+| `skill` | skill ID | marked as a skill |
+| `time` | unix seconds | `2014-03-28 12:26:34` (local; UTC in the tooltip) |
+| `duration` | seconds | `1h 30m`, `7d`, `45s` |
+| `duration_ms` | milliseconds | `1m`, `5s`, `250 ms` |
+| `daytime` | seconds after midnight | `14:30`, `23:59:59` |
+
+`tools/type-rules.json` assigns roles by field name (`roles`), with units checked against
+real values: medicine and revive scroll `cool_time` are milliseconds, recipe `cool_time` is
+seconds (up to 7 days) although its source comment says milliseconds.
 Each list definition is `{ name, struct, size, fields }`, and fields are `{ name, off, t, c?, e?, display?, refs?, g?, when? }`.
 Here `t` is a type tree (scalars, `wstr`/`str`/`bytes`, nested `array` and `struct`), and
 `refs` names the target lists by struct, so a definition can be shared between versions.

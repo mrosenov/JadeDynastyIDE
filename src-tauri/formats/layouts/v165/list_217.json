@@ -51,7 +51,8 @@
       "off": 84,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "duration"
     },
     {
       "name": "player_min_level",
@@ -208,21 +209,24 @@
       "off": 180,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "duration"
     },
     {
       "name": "wait_time_before_leave",
       "off": 184,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "duration"
     },
     {
       "name": "total_exist_time",
       "off": 188,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "duration"
     },
     {
       "name": "controller_id",

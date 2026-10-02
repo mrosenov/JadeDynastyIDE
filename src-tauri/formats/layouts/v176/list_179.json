@@ -165,7 +165,8 @@
       "off": 160,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "duration"
     },
     {
       "name": "Interaction_Time",

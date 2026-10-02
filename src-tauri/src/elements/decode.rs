@@ -243,8 +243,9 @@ impl Ctx<'_> {
                     node.set = a.set;
                     node.talk = a.talk;
                 }
-                // Timestamps are shown as dates by the UI, not as floats.
-                if node.hint.is_none() && matches!(ty, Ty::I32 | Ty::U32) && node.display.as_deref() != Some("time") {
+                // Dates, durations and times of day are shown by the UI, not as floats.
+                let timed = matches!(node.display.as_deref(), Some("time" | "duration" | "duration_ms" | "daytime"));
+                if node.hint.is_none() && matches!(ty, Ty::I32 | Ty::U32) && !timed {
                     node.hint = float_hint(u32::from_le_bytes(fixed(self.bytes, off)));
                 }
                 node.value = Some(text);

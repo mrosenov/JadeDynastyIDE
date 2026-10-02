@@ -103,7 +103,8 @@
       "off": 124,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "duration"
     },
     {
       "name": "Success_Chance",

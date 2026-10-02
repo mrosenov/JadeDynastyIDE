@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Applies tools/type-rules.json to every layout in src-tauri/formats/layouts:
-// the conditional field types (`rules`) and the name-based enum/mask
-// assignments (`sets`). Run it after regenerating layouts.
+// the conditional field types (`rules`), the name-based enum/mask
+// assignments (`sets`) and display roles (`roles`). Run it after
+// regenerating layouts.
 //
 //   node tools/apply-type-rules.mjs
 
@@ -11,10 +12,11 @@ import { fileURLToPath } from "node:url";
 import { readLayouts, writeLayout } from "./lib/layouts.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const { rules, sets = [] } = JSON.parse(fs.readFileSync(path.join(here, "type-rules.json"), "utf8"));
+const { rules, sets = [], roles = [] } = JSON.parse(fs.readFileSync(path.join(here, "type-rules.json"), "utf8"));
 
 const INTEGER = new Set(["i8", "u8", "i16", "u16", "i32", "u32", "i64", "u64"]);
 const setRules = sets.map((r) => ({ ...r, re: new RegExp(r.name, "i") }));
+const roleRules = roles.map((r) => ({ ...r, re: new RegExp(r.name, "i") }));
 
 /** Every field of a list, members of structs and struct arrays included. */
 function* allFields(fields) {
@@ -46,6 +48,16 @@ const mostUsed = (counts) => counts && [...counts].sort((a, b) => b[1] - a[1] ||
 for (const layout of layouts) {
   let applied = 0;
   let named = 0;
+  let roled = 0;
+  for (const def of layout.lists) {
+    for (const f of allFields(def?.fields)) {
+      if (f.display || !INTEGER.has(f.t.k)) continue;
+      const rule = roleRules.find((r) => (!r.struct || r.struct === def.struct) && r.re.test(f.name));
+      if (!rule) continue;
+      f.display = rule.display;
+      roled++;
+    }
+  }
   for (const def of layout.lists) {
     for (const f of allFields(def?.fields)) {
       if (f.e || !INTEGER.has(f.t.k)) continue;
@@ -72,8 +84,8 @@ for (const layout of layouts) {
       applied++;
     }
   }
-  if (applied || named) {
+  if (applied || named || roled) {
     writeLayout(layout);
-    console.log(`${layout.id}: ${applied} type rule(s), ${named} enum/mask assignment(s)`);
+    console.log(`${layout.id}: ${applied} type rule(s), ${named} enum/mask assignment(s), ${roled} display role(s)`);
   }
 }

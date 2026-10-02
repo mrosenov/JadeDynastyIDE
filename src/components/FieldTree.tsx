@@ -1,9 +1,43 @@
 import type { FieldNode } from "../elements/types";
-import { formatUnix, formatUnixUtc } from "../elements/time";
+import { TIME_ROLES, formatDaytime, formatDuration, formatUnix, formatUnixUtc } from "../elements/time";
 import { type Path, flatten } from "../elements/fieldPaths";
 import { DIALOGS } from "../tabs";
 import { isTextNode, textLines } from "../elements/text";
-import { CalendarClock, ChevronRight, CornerDownLeft, GitBranch } from "lucide-react";
+import { CalendarClock, ChevronRight, Clock, CornerDownLeft, GitBranch, Timer } from "lucide-react";
+
+/** A time value read for people: a date, a duration or a time of day. */
+function TimeChip({ role, value }: { role: string; value: string }) {
+  const n = Number(value);
+  if (role === "time") {
+    const local = formatUnix(n);
+    return local ? (
+      <span className="time-chip" title={`${formatUnixUtc(n)} · unix ${value}`}>
+        <CalendarClock size={11} /> {local}
+      </span>
+    ) : (
+      <span className="time-chip unset">not set</span>
+    );
+  }
+  if (role === "daytime") {
+    const clock = formatDaytime(n);
+    return clock ? (
+      <span className="time-chip daytime" title={`Time of day: ${value} seconds after midnight`}>
+        <Clock size={11} /> {clock}
+      </span>
+    ) : (
+      <span className="time-chip unset" title="Not between 0 and 86400 seconds">
+        not a time of day
+      </span>
+    );
+  }
+  const ms = role === "duration_ms";
+  if (n === 0) return <span className="time-chip unset">none</span>;
+  return (
+    <span className="time-chip duration" title={`Duration: ${value} ${ms ? "milliseconds" : "seconds"}`}>
+      <Timer size={11} /> {formatDuration(ms ? n / 1000 : n)}
+    </span>
+  );
+}
 
 /** Where a value leads: a record, or an NPC dialog. */
 const link = (node: FieldNode): [number, number] | undefined =>
@@ -120,18 +154,8 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
                 ) : (
                   <span className="hint">{node.hint}</span>
                 ))}
-              {node.display === "time" && node.value !== undefined && (() => {
-                const seconds = Number(node.value);
-                const local = formatUnix(seconds);
-                return local ? (
-                  <span className="time-chip" title={`${formatUnixUtc(seconds)} · unix ${node.value}`}>
-                    <CalendarClock size={11} /> {local}
-                  </span>
-                ) : (
-                  <span className="time-chip unset">not set</span>
-                );
-              })()}
-              {node.display && node.display !== "time" && <span className="role">{node.display}</span>}
+              {node.display && TIME_ROLES.has(node.display) && node.value !== undefined && <TimeChip role={node.display} value={node.value} />}
+              {node.display && !TIME_ROLES.has(node.display) && <span className="role">{node.display}</span>}
               {node.cond && (
                 <span className="cond-chip" title={`Conditional type: ${node.cond}`}>
                   <GitBranch size={11} /> {node.cond}

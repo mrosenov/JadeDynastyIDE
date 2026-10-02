@@ -44,35 +44,40 @@
       "off": 80,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "daytime"
     },
     {
       "name": "End_Time_Per_Day",
       "off": 84,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "daytime"
     },
     {
       "name": "Start_Time_Per_Interval",
       "off": 88,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "time"
     },
     {
       "name": "End_Time_Per_Interval",
       "off": 92,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "time"
     },
     {
       "name": "Expire_Time",
       "off": 96,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "time"
     },
     {
       "name": "Renascence_Count",

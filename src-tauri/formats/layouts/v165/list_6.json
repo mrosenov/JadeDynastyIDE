@@ -65,7 +65,8 @@
       "off": 92,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "duration_ms"
     },
     {
       "name": "only_in_war",

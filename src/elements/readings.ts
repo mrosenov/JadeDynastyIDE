@@ -2,7 +2,7 @@
 
 import type { Kind } from "../schema/model";
 import type { FieldNode } from "./types";
-import { formatUnix, plausibleUnix } from "./time";
+import { formatDuration, formatUnix, plausibleUnix } from "./time";
 
 export interface Reading {
   key: string;
@@ -110,6 +110,16 @@ export function readings(raw: number[], offset: number, span: Span): Reading[] {
         value: formatUnix(u32) ?? String(u32),
         likely: true,
         define: { kind: "i32", display: "time", size: 4 },
+      });
+    }
+    // Whole minutes up to a year read well as a duration.
+    if (u32 >= 60 && u32 <= 31_536_000 && u32 % 60 === 0) {
+      out.push({
+        key: "duration",
+        label: "duration",
+        value: formatDuration(u32),
+        likely: false,
+        define: { kind: "i32", display: "duration", size: 4 },
       });
     }
     out.push({

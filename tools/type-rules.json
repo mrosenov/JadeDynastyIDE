@@ -5,7 +5,9 @@
     "Addon param1 float types: the Jade Editor's value1_float_type_ids, plus 55-60 and 64",
     "which hold floats in every record of the v156, v160 and v165 files checked.",
     "`sets` give integer fields that have no enum/mask one by name (case-insensitive, whole name).",
-    "A field takes the set most other fields of that name already use; else `set`."
+    "A field takes the set most other fields of that name already use; else `set`.",
+    "`roles` give integer fields without a display role one: `name` (whole name, case-insensitive), optionally only in `struct`.",
+    "Units checked against the values in the v156 and v165 files: e.g. medicine cool_time is in ms (5000-60000), recipe cool_time in seconds (up to 604800 = 7 days) despite its source comment."
   ],
   "rules": [
     {
@@ -172,6 +174,67 @@
     {
       "name": "^visualize_id$",
       "set": "zx_visualize_id"
+    }
+  ],
+  "roles": [
+    {
+      "struct": "MEDICINE_ESSENCE",
+      "name": "^cool_time$",
+      "display": "duration_ms"
+    },
+    {
+      "struct": "REVIVESCROLL_ESSENCE",
+      "name": "^cool_time$",
+      "display": "duration_ms"
+    },
+    {
+      "struct": "CASH_MEDIC_MERGE_ITEM_ESSENCE",
+      "name": "^cool_time$",
+      "display": "duration_ms"
+    },
+    {
+      "struct": "RECIPE_ESSENCE",
+      "name": "^cool_time$",
+      "display": "duration"
+    },
+    {
+      "struct": "FLAG_BUFF_ITEM_ESSENCE",
+      "name": "^(cool_time|exit_time)$",
+      "display": "duration"
+    },
+    {
+      "name": "^(effect_time|open_time|time_min|time_max|time_to_fire|double_exp_time|remain_speak_interval|deliver_interval|max_trustee_time|apply_time|run_time|reopen_time|room_active_time|invincible_time|total_exist_time|wait_time_before_leave)$",
+      "display": "duration"
+    },
+    {
+      "name": "^element_list_d+_award_itemd+_valid_time$",
+      "display": "duration"
+    },
+    {
+      "name": "^(start|end)_time_per_day$",
+      "display": "daytime"
+    },
+    {
+      "name": "^(start|end)_time_per_interval$",
+      "display": "time"
+    },
+    {
+      "struct": "ONLINE_GIFT_BAG_CONFIG",
+      "name": "^expire_time$",
+      "display": "time"
+    },
+    {
+      "struct": "DROP_INTERNAL_CONFIG",
+      "name": "^start_time$",
+      "display": "time"
+    },
+    {
+      "name": "^(guess_start|guess_end|accept_award_start|accept_award_end)_time$",
+      "display": "time"
+    },
+    {
+      "name": "^element_list_d+_valid_time_(start|end)$",
+      "display": "time"
     }
   ]
 }

@@ -83,7 +83,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "冷却时间（毫秒）"
+      "c": "冷却时间（毫秒）",
+      "display": "duration_ms"
     },
     {
       "name": "only_in_war",
