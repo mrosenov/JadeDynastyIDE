@@ -11,9 +11,11 @@ interface Props {
   onHover: (path: Path | null) => void;
   /** Follow a reference; `newTab` for Ctrl+click or middle-click. */
   onFollow: (list: number, row: number, newTab?: boolean) => void;
+  /** Item icon URL for a path ID (when the client's icons are available). */
+  icon?: (pathId?: number | null) => string | undefined;
 }
 
-export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow }: Props) {
+export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon }: Props) {
   const rows = flatten(nodes, expanded);
   return (
     <div className="fields scroll" onMouseLeave={() => onHover(null)}>
@@ -55,6 +57,7 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
               {node.comment && <span className="field-comment truncate">{node.comment}</span>}
             </span>
             <span className="field-value truncate mono">
+              {node.icon && icon?.(node.icon) && <img className="field-icon" src={icon(node.icon)} alt="" draggable={false} />}
               {node.value ?? (node.children ? <span className="muted">{node.children.length} items</span> : null)}
               {node.hint &&
                 (node.link ? (

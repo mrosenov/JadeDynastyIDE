@@ -1,7 +1,13 @@
+mod client;
 mod elements;
+mod settings;
 
 use std::path::PathBuf;
+use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::{Arc, Mutex, RwLock};
+
+use client::{ClientInfo, Resources};
+use settings::Settings;
 
 use elements::format::{delete_user_list, save_user_list, Catalog, ListDef};
 use elements::{Document, FileSummary, ImportCandidate, ListSchema, RecordDetail, RecordRow};
@@ -13,9 +19,58 @@ struct AppState {
     catalog: RwLock<Arc<Catalog>>,
     /// Folder holding the layouts written by the schema editor.
     user_dir: PathBuf,
+    settings: Mutex<Settings>,
+    settings_path: PathBuf,
+    /// The configured game client's paths and icons.
+    resources: RwLock<Option<Arc<Resources>>>,
+    /// Changes whenever the client changes, so icon URLs are not served stale.
+    icon_generation: AtomicU32,
 }
 
 impl AppState {
+    fn resources(&self) -> Option<Arc<Resources>> {
+        self.resources.read().ok().and_then(|r| r.clone())
+    }
+
+    /// Loads the client named in the settings, for icons and paths. The
+    /// open document starts using it right away.
+    fn apply_client(&self, settings: &Settings) -> (Option<ClientInfo>, Option<String>) {
+        let (resources, info, error) = match settings.client_dir().map(|d| client::inspect(std::path::Path::new(d))) {
+            Some(Ok(info)) => (Some(Arc::new(Resources::new(info.clone()))), Some(info), None),
+            Some(Err(e)) => (None, None, Some(e)),
+            None => (None, None, None),
+        };
+        if let Some(res) = resources.clone() {
+            // Index the icon atlas and path table in the background.
+            std::thread::spawn(move || {
+                if let Err(e) = res.paths() {
+                    eprintln!("client paths: {e}");
+                }
+                if let Err(e) = res.item_icons() {
+                    eprintln!("client icons: {e}");
+                }
+            });
+        }
+        if let Ok(mut r) = self.resources.write() {
+            *r = resources.clone();
+        }
+        self.icon_generation.fetch_add(1, Ordering::Relaxed);
+        if let Ok(mut doc) = self.document.lock() {
+            if let Some(doc) = doc.as_mut() {
+                doc.resources = resources;
+            }
+        }
+        (info, error)
+    }
+
+    fn settings_view(&self, client: Option<ClientInfo>, client_error: Option<String>) -> SettingsView {
+        SettingsView {
+            settings: self.settings.lock().map(|s| s.clone()).unwrap_or_default(),
+            client,
+            client_error,
+            icon_generation: self.icon_generation.load(Ordering::Relaxed),
+        }
+    }
     fn catalog(&self) -> Arc<Catalog> {
         self.catalog.read().map(|c| c.clone()).unwrap_or_else(|p| p.into_inner().clone())
     }
@@ -43,9 +98,10 @@ impl AppState {
 #[tauri::command]
 async fn open_elements(path: String, state: State<'_, AppState>) -> Result<FileSummary, String> {
     let catalog = state.catalog();
-    let doc = tauri::async_runtime::spawn_blocking(move || Document::open(path, catalog))
+    let mut doc = tauri::async_runtime::spawn_blocking(move || Document::open(path, catalog))
         .await
         .map_err(|e| e.to_string())??;
+    doc.resources = state.resources();
     let summary = doc.summary();
     *state.document.lock().map_err(|_| "State lock poisoned")? = Some(doc);
     Ok(summary)
@@ -133,6 +189,78 @@ async fn reset_list_schema(list: usize, state: State<'_, AppState>) -> Result<Fi
     state.change_schemas(|doc| delete_user_list(&dir, &doc.edit_target(), list))
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct SettingsView {
+    settings: Settings,
+    /// What was found in the client folder, if one is set and readable.
+    client: Option<ClientInfo>,
+    client_error: Option<String>,
+    icon_generation: u32,
+}
+
+#[tauri::command]
+async fn get_settings(state: State<'_, AppState>) -> Result<SettingsView, String> {
+    let settings = state.settings.lock().map_err(|_| "State lock poisoned")?.clone();
+    let (client, error) = match settings.client_dir() {
+        Some(dir) => match client::inspect(std::path::Path::new(dir)) {
+            Ok(info) => (Some(info), None),
+            Err(e) => (None, Some(e)),
+        },
+        None => (None, None),
+    };
+    Ok(state.settings_view(client, error))
+}
+
+/// Checks a client folder without saving it (for the settings dialog).
+#[tauri::command]
+async fn inspect_client(dir: String) -> Result<ClientInfo, String> {
+    client::inspect(std::path::Path::new(dir.trim()))
+}
+
+#[tauri::command]
+async fn save_settings(settings: Settings, state: State<'_, AppState>) -> Result<SettingsView, String> {
+    if let Some(dir) = settings.client_dir() {
+        client::inspect(std::path::Path::new(dir))?;
+    }
+    settings.save(&state.settings_path)?;
+    *state.settings.lock().map_err(|_| "State lock poisoned")? = settings.clone();
+    let (client, error) = state.apply_client(&settings);
+    Ok(state.settings_view(client, error))
+}
+
+/// The path ID in an icon URL path: `/<generation>-<path id>` (also accepts
+/// `/<generation>/<path id>`, encoded or not).
+fn icon_id(uri_path: &str) -> Option<u32> {
+    uri_path.replace("%2F", "/").replace("%2f", "/").rsplit(['/', '-']).next()?.parse().ok()
+}
+
+/// `jdicon://localhost/<generation>-<path id>` → the item icon as a PNG.
+fn icon_response(app: &tauri::AppHandle, uri_path: &str) -> tauri::http::Response<Vec<u8>> {
+    let not_found = || tauri::http::Response::builder().status(404).body(Vec::new()).unwrap();
+    let Some(id) = icon_id(uri_path) else { return not_found() };
+    let Some(res) = app.state::<AppState>().resources() else { return not_found() };
+    match res.item_icon_png(id) {
+        Ok(png) => tauri::http::Response::builder()
+            .header("Content-Type", "image/png")
+            .header("Cache-Control", "max-age=31536000, immutable")
+            .body(png.to_vec())
+            .unwrap(),
+        Err(_) => not_found(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn icon_urls_parse_with_or_without_encoding() {
+        assert_eq!(super::icon_id("/3-1291"), Some(1291));
+        assert_eq!(super::icon_id("/3%2F1291"), Some(1291));
+        assert_eq!(super::icon_id("/3/1291"), Some(1291));
+        assert_eq!(super::icon_id("/favicon.ico"), None);
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -144,8 +272,28 @@ pub fn run() {
             for error in &catalog.errors {
                 eprintln!("user layout skipped: {error}");
             }
-            app.manage(AppState { document: Mutex::new(None), catalog: RwLock::new(catalog), user_dir });
+            let settings_path = app.path().app_config_dir()?.join("settings.json");
+            let settings = Settings::load(&settings_path);
+            let state = AppState {
+                document: Mutex::new(None),
+                catalog: RwLock::new(catalog),
+                user_dir,
+                settings: Mutex::new(settings.clone()),
+                settings_path,
+                resources: RwLock::new(None),
+                icon_generation: AtomicU32::new(0),
+            };
+            let (_, error) = state.apply_client(&settings);
+            if let Some(error) = error {
+                eprintln!("client folder: {error}");
+            }
+            app.manage(state);
             Ok(())
+        })
+        .register_asynchronous_uri_scheme_protocol("jdicon", |ctx, request, responder| {
+            let app = ctx.app_handle().clone();
+            let path = request.uri().path().to_string();
+            std::thread::spawn(move || responder.respond(icon_response(&app, &path)));
         })
         .invoke_handler(tauri::generate_handler![
             open_elements,
@@ -156,7 +304,10 @@ pub fn run() {
             preview_list_schema,
             save_list_schema,
             reset_list_schema,
-            import_candidates
+            import_candidates,
+            get_settings,
+            inspect_client,
+            save_settings
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -33,6 +33,25 @@ marker group), so lists inserted mid-way do not shift every later name.
 Fields with enums/masks show their labels; fields that hold another list's IDs
 link to that record.
 
+## Settings and the game client
+
+Settings (gear icon, top right) take the game client folder: the client root or its `element`
+folder. JD IDE then:
+
+- lists the client's data files (`element\data\*.data`) and opens `elements.data` from there.
+  Other kinds (tasks, gshop, npcgen, …) are listed for later versions. It can also open
+  the client's `elements.data` on start.
+- reads `path.data`, so path and icon fields show their resource path.
+- reads item icons from `surfaces.pck` (`surfaces\iconset\iconlist_ivtr.dds` + `.txt`).
+  Icons show in the record table, the inspector, icon fields and tabs.
+
+Settings are stored in `%APPDATA%\com.jdide.app\settings.json`.
+
+`src-tauri/src/client/pck.rs` reads Angelica File Packages (version 2.2, including `.pkx`
+continuation parts). `dds.rs` decodes DXT1/3/5 and uncompressed DDS, one icon's blocks at a
+time. Icons are served to the UI as PNGs through the `jdicon://` protocol. Path IDs only
+match when `elements.data` comes from the same client as `path.data`.
+
 ## Tabs
 
 Records open in tabs above the inspector:

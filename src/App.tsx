@@ -1,18 +1,19 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
-import { getRecord, listRecords, openElements } from "./elements/api";
-import type { FileSummary, RecordDetail, RecordRow } from "./elements/types";
+import { getRecord, getSettings, iconUrl, listRecords, openElements } from "./elements/api";
+import type { FileSummary, RecordDetail, RecordRow, SettingsView } from "./elements/types";
 import { bytes, count } from "./elements/format";
 import { ListSidebar } from "./components/ListSidebar";
 import { RecordTable } from "./components/RecordTable";
 import { RecordInspector } from "./components/RecordInspector";
 import { SchemaEditor } from "./components/SchemaEditor";
 import { TabBar, type TabLabel } from "./components/TabBar";
+import { SettingsDialog } from "./components/SettingsDialog";
 import type { FieldSpec } from "./schema/model";
 import { EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import "./App.css";
-import { Braces, FolderOpen, Gem } from "lucide-react";
+import { Braces, FolderOpen, Gem, Settings } from "lucide-react";
 
 const LAST_PATH_KEY = "jdide.lastPath";
 
@@ -72,6 +73,11 @@ export default function App() {
   const [tabs, dispatch] = useReducer(tabsReducer, EMPTY_TABS);
   const [editorOpen, setEditorOpen] = useState(false);
   const [editorIntent, setEditorIntent] = useState<{ list: number; offset: number; spec: FieldSpec } | null>(null);
+  const [settingsView, setSettingsView] = useState<SettingsView | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const started = useRef(false);
+  const iconGen = settingsView?.client?.hasItemIcons ? settingsView.iconGeneration : null;
+  const icon = (pathId?: number | null) => (iconGen !== null && pathId ? iconUrl(iconGen, pathId) : undefined);
 
   // The active tab decides what the sidebar, the table and the inspector show.
   const activeTab = tabs.tabs.find((t) => t.id === tabs.active) ?? null;
@@ -106,6 +112,26 @@ export default function App() {
       setLoading(null);
     }
   }, []);
+
+  // Settings, and the client's elements.data on start when asked for.
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    getSettings()
+      .then((view) => {
+        setSettingsView(view);
+        const elements = view.client?.elementsPath;
+        if (view.settings.openOnStart && elements) loadFile(elements);
+      })
+      .catch((e) => setError(String(e)));
+  }, [loadFile]);
+
+  // New client settings: reload rows and the record so icons and paths appear.
+  const onSettingsSaved = (view: SettingsView) => {
+    setSettingsView(view);
+    rowsCache.current.clear();
+    setSummary((s) => (s ? { ...s } : s));
+  };
 
   // Remember the open tabs per file.
   useEffect(() => {
@@ -251,8 +277,8 @@ export default function App() {
     const l = summary?.lists[tab.list];
     const listName = l?.name ?? `List ${tab.list}`;
     if (tab.row === null) return { title: listName, subtitle: `list ${tab.list}` };
-    const name = rowsCache.current.get(tab.list)?.[tab.row]?.name;
-    return { title: name || `${listName} #${tab.row}`, subtitle: `${listName} · #${tab.row}` };
+    const row = rowsCache.current.get(tab.list)?.[tab.row];
+    return { title: row?.name || `${listName} #${tab.row}`, subtitle: `${listName} · #${tab.row}`, icon: icon(row?.icon) };
   };
 
   const list = summary && listIndex !== null && listIndex >= 0 ? summary.lists[listIndex] : null;
@@ -294,7 +320,28 @@ export default function App() {
         >
           <Braces size={15} /> Schema editor
         </button>
+        <button
+          className={"icon-btn topbar-settings" + (settingsOpen ? " active" : "")}
+          onClick={() => setSettingsOpen(true)}
+          title={
+            settingsView?.client
+              ? `Settings · client: ${settingsView.client.root}`
+              : "Settings: set the game client folder for icons and quick access to its files"
+          }
+          aria-label="Settings"
+        >
+          <Settings size={18} />
+        </button>
       </header>
+
+      {settingsOpen && settingsView && (
+        <SettingsDialog
+          view={settingsView}
+          onSaved={onSettingsSaved}
+          onOpenFile={loadFile}
+          onClose={() => setSettingsOpen(false)}
+        />
+      )}
 
       {error && (
         <div className="error-bar" role="alert">
@@ -326,6 +373,7 @@ export default function App() {
               selected={recordIndex}
               onSelect={(index) => openLocation({ list: list.index, row: index })}
               onOpen={(index) => openLocation({ list: list.index, row: index }, { pin: true })}
+              icon={icon}
             />
           ) : (
             <section className="pane records">
@@ -353,6 +401,7 @@ export default function App() {
                   setEditorIntent({ list, offset, spec });
                   setEditorOpen(true);
                 }}
+                icon={icon}
               />
             ) : (
               <section className="pane inspector">
@@ -373,7 +422,16 @@ export default function App() {
               158, 160, 165 and 176. Other versions still open: lists are matched to known ones by record size.
             </p>
             <div className="drop-actions">
-              <button className="btn primary" onClick={chooseFile}>
+              {settingsView?.client?.elementsPath && (
+                <button
+                  className="btn primary"
+                  onClick={() => loadFile(settingsView.client!.elementsPath!)}
+                  title={settingsView.client.elementsPath}
+                >
+                  <Gem size={15} /> Open client elements.data
+                </button>
+              )}
+              <button className={"btn" + (settingsView?.client?.elementsPath ? "" : " primary")} onClick={chooseFile}>
                 <FolderOpen size={15} /> Choose file…
               </button>
               {lastPath && (
@@ -383,6 +441,11 @@ export default function App() {
               )}
             </div>
             {lastPath && <div className="muted small truncate">{lastPath}</div>}
+            {settingsView && !settingsView.client && (
+              <button className="link" onClick={() => setSettingsOpen(true)}>
+                <Settings size={13} /> Set your game client folder to open its files quickly and show item icons
+              </button>
+            )}
           </div>
         </main>
       )}

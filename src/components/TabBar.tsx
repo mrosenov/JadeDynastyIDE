@@ -5,6 +5,8 @@ import type { Tab } from "../tabs";
 export interface TabLabel {
   title: string;
   subtitle: string;
+  /** Item icon URL, if any. */
+  icon?: string;
 }
 
 interface Props {
@@ -37,7 +39,7 @@ export function TabBar({ tabs, active, label, onActivate, onPin, onClose }: Prop
       }}
     >
       {tabs.map((tab, i) => {
-        const { title, subtitle } = label(tab);
+        const { title, subtitle, icon } = label(tab);
         return (
           <div
             key={tab.id}
@@ -59,6 +61,7 @@ export function TabBar({ tabs, active, label, onActivate, onPin, onClose }: Prop
               (i < 9 ? `\nCtrl+${i + 1}` : "")
             }
           >
+            {icon && <img className="tab-icon" src={icon} alt="" draggable={false} />}
             <span className="tab-text">
               <span className="tab-title">{title}</span>
               <span className="tab-subtitle">{subtitle}</span>

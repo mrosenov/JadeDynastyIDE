@@ -1,0 +1,346 @@
+//! The game client folder: its data files, resource packages (`.pck`), the
+//! path table (`path.data`) and the item icon atlas.
+
+pub mod dds;
+pub mod pck;
+
+use std::collections::HashMap;
+use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex, OnceLock};
+
+use encoding_rs::GBK;
+use serde::Serialize;
+
+use dds::Dds;
+use pck::Pck;
+
+// ---------------------------------------------------------------- folder detection
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DataFile {
+    pub name: String,
+    pub path: String,
+    pub size: u64,
+    /// What the file holds, e.g. "elements", "tasks", "gshop".
+    pub kind: String,
+    /// The app can open this kind of file yet.
+    pub supported: bool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PackageFile {
+    pub name: String,
+    pub path: String,
+    /// Bytes across the .pck and its .pkx parts.
+    pub size: u64,
+    pub parts: usize,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ClientInfo {
+    /// The folder the user picked.
+    pub root: String,
+    /// The `element` folder (holding `data/` and the packages).
+    pub element_dir: String,
+    pub data_files: Vec<DataFile>,
+    pub packages: Vec<PackageFile>,
+    pub elements_path: Option<String>,
+    pub has_path_data: bool,
+    pub has_item_icons: bool,
+}
+
+const ITEM_ICONS: &str = "surfaces\\iconset\\iconlist_ivtr";
+
+/// Kind of a client data file by name ("tasks.data12" → "tasks").
+fn data_kind(name: &str) -> String {
+    let lower = name.to_lowercase();
+    let stem = lower.split(".data").next().unwrap_or(&lower);
+    let stem = stem.trim_end_matches(|c: char| c.is_ascii_digit());
+    match stem {
+        "elements" => "elements",
+        "tasks" | "dyn_tasks" => "tasks",
+        "gshop" => "gshop",
+        "npcgen" => "npcgen",
+        "path" => "path",
+        s if s.starts_with("domain") => "domain",
+        "task_npc" => "task npc",
+        "dynamicobjects" => "dynamic objects",
+        _ => "other",
+    }
+    .to_string()
+}
+
+/// The `element` folder for a picked folder: the client root, or `element` itself.
+pub fn element_dir(picked: &Path) -> Option<PathBuf> {
+    [picked.join("element"), picked.to_path_buf()].into_iter().find(|d| d.join("data").is_dir())
+}
+
+pub fn inspect(picked: &Path) -> Result<ClientInfo, String> {
+    if !picked.is_dir() {
+        return Err(format!("{} is not a folder", picked.display()));
+    }
+    let element = element_dir(picked)
+        .ok_or_else(|| format!("No element\\data folder in {}. Pick the game client folder.", picked.display()))?;
+
+    let mut data_files: Vec<DataFile> = std::fs::read_dir(element.join("data"))
+        .map_err(|e| e.to_string())?
+        .flatten()
+        .filter(|e| e.path().is_file())
+        .filter_map(|e| {
+            let name = e.file_name().to_string_lossy().into_owned();
+            name.to_lowercase().contains(".data").then(|| {
+                let kind = data_kind(&name);
+                DataFile {
+                    supported: kind == "elements",
+                    path: e.path().display().to_string(),
+                    size: e.metadata().map(|m| m.len()).unwrap_or(0),
+                    name,
+                    kind,
+                }
+            })
+        })
+        .collect();
+    data_files.sort_by(|a, b| (a.kind != "elements", &a.kind, &a.name).cmp(&(b.kind != "elements", &b.kind, &b.name)));
+
+    let mut packages: Vec<PackageFile> = std::fs::read_dir(&element)
+        .map_err(|e| e.to_string())?
+        .flatten()
+        .filter(|e| e.path().extension().is_some_and(|x| x.eq_ignore_ascii_case("pck")))
+        .map(|e| {
+            let path = e.path();
+            let mut size = e.metadata().map(|m| m.len()).unwrap_or(0);
+            let mut parts = 1;
+            for n in 0.. {
+                let ext = if n == 0 { "pkx".to_string() } else { format!("pkx{n}") };
+                let Ok(meta) = std::fs::metadata(path.with_extension(ext)) else { break };
+                size += meta.len();
+                parts += 1;
+            }
+            PackageFile { name: e.file_name().to_string_lossy().into_owned(), path: path.display().to_string(), size, parts }
+        })
+        .collect();
+    packages.sort_by(|a, b| a.name.cmp(&b.name));
+
+    let elements_path = data_files.iter().find(|f| f.name.eq_ignore_ascii_case("elements.data")).map(|f| f.path.clone());
+    Ok(ClientInfo {
+        root: picked.display().to_string(),
+        element_dir: element.display().to_string(),
+        has_path_data: element.join("data/path.data").is_file(),
+        has_item_icons: element.join("surfaces.pck").is_file(),
+        data_files,
+        packages,
+        elements_path,
+    })
+}
+
+// ---------------------------------------------------------------- path.data
+
+/// `path.data`: path IDs used by data files → resource paths.
+///
+/// ```text
+/// u32 magic 0x504D4944 ("PMID"), u32 count, count × { u32 id, u32 len, len bytes (GBK) }
+/// ```
+pub struct PathTable {
+    paths: HashMap<u32, String>,
+}
+
+impl PathTable {
+    pub fn parse(data: &[u8]) -> Result<Self, String> {
+        let u32_at = |at: usize| data.get(at..at + 4).map(|b| u32::from_le_bytes(b.try_into().unwrap()));
+        if u32_at(0) != Some(0x504d_4944) {
+            return Err("path.data: not a path table".into());
+        }
+        let count = u32_at(4).unwrap_or(0) as usize;
+        let mut paths = HashMap::with_capacity(count);
+        let mut p = 8;
+        for _ in 0..count {
+            let (Some(id), Some(len)) = (u32_at(p), u32_at(p + 4)) else { break };
+            let Some(raw) = data.get(p + 8..p + 8 + len as usize) else { break };
+            paths.insert(id, GBK.decode(raw).0.into_owned());
+            p += 8 + len as usize;
+        }
+        Ok(Self { paths })
+    }
+
+    pub fn get(&self, id: u32) -> Option<&str> {
+        self.paths.get(&id).map(String::as_str)
+    }
+
+    #[cfg(test)]
+    pub fn len(&self) -> usize {
+        self.paths.len()
+    }
+}
+
+// ---------------------------------------------------------------- icon sets
+
+/// An icon atlas: `<name>.dds` with `<name>.txt` listing icon size, grid and
+/// the file name of each cell, left to right, top to bottom.
+pub struct IconSet {
+    atlas: Dds,
+    pub icon_w: usize,
+    pub icon_h: usize,
+    columns: usize,
+    /// Lowercased icon file name → cell index.
+    index: HashMap<String, usize>,
+    cache: Mutex<HashMap<usize, Arc<Vec<u8>>>>,
+}
+
+impl IconSet {
+    pub fn parse(list: &[u8], atlas: Vec<u8>) -> Result<Self, String> {
+        let text = GBK.decode(list).0;
+        let mut lines = text.lines().map(str::trim).filter(|l| !l.is_empty());
+        let mut num = |what: &str| {
+            lines
+                .next()
+                .and_then(|l| l.parse::<usize>().ok())
+                .filter(|&n| n > 0)
+                .ok_or_else(|| format!("icon list: bad {what}"))
+        };
+        let (icon_w, icon_h, _rows, columns) = (num("width")?, num("height")?, num("rows")?, num("columns")?);
+        let mut index = HashMap::new();
+        for (i, name) in lines.enumerate() {
+            index.entry(name.to_lowercase()).or_insert(i);
+        }
+        Ok(Self { atlas: Dds::parse(atlas)?, icon_w, icon_h, columns, index, cache: Mutex::new(HashMap::new()) })
+    }
+
+    /// Cell of an icon by any path ending in its file name.
+    pub fn find(&self, path: &str) -> Option<usize> {
+        let name = path.rsplit(['\\', '/']).next()?.to_lowercase();
+        self.index.get(&name).copied()
+    }
+
+    #[cfg(test)]
+    pub fn len(&self) -> usize {
+        self.index.len()
+    }
+
+    /// One icon as a PNG, decoded from the atlas on first use.
+    pub fn png(&self, cell: usize) -> Result<Arc<Vec<u8>>, String> {
+        if let Some(hit) = self.cache.lock().map_err(|_| "icon cache poisoned")?.get(&cell) {
+            return Ok(hit.clone());
+        }
+        let (x, y) = ((cell % self.columns) * self.icon_w, (cell / self.columns) * self.icon_h);
+        let rgba = self.atlas.rect(x, y, self.icon_w, self.icon_h);
+        let png = Arc::new(dds::png(&rgba, self.icon_w, self.icon_h)?);
+        self.cache.lock().map_err(|_| "icon cache poisoned")?.insert(cell, png.clone());
+        Ok(png)
+    }
+}
+
+// ---------------------------------------------------------------- resources
+
+/// Client resources, loaded on first use.
+pub struct Resources {
+    element: PathBuf,
+    paths: OnceLock<Result<PathTable, String>>,
+    item_icons: OnceLock<Result<IconSet, String>>,
+    packages: Mutex<HashMap<String, Arc<Pck>>>,
+}
+
+impl Resources {
+    pub fn new(info: ClientInfo) -> Self {
+        Self {
+            element: PathBuf::from(&info.element_dir),
+            paths: OnceLock::new(),
+            item_icons: OnceLock::new(),
+            packages: Mutex::new(HashMap::new()),
+        }
+    }
+
+    /// A package of the client, e.g. "surfaces", opened once.
+    pub fn package(&self, name: &str) -> Result<Arc<Pck>, String> {
+        let key = name.to_lowercase();
+        let mut open = self.packages.lock().map_err(|_| "package lock poisoned")?;
+        if let Some(p) = open.get(&key) {
+            return Ok(p.clone());
+        }
+        let pck = Arc::new(Pck::open(&self.element.join(format!("{key}.pck")))?);
+        open.insert(key, pck.clone());
+        Ok(pck)
+    }
+
+    pub fn paths(&self) -> Result<&PathTable, String> {
+        self.paths
+            .get_or_init(|| {
+                let data = std::fs::read(self.element.join("data/path.data")).map_err(|e| format!("path.data: {e}"))?;
+                PathTable::parse(&data)
+            })
+            .as_ref()
+            .map_err(Clone::clone)
+    }
+
+    pub fn path(&self, id: u32) -> Option<&str> {
+        self.paths().ok()?.get(id)
+    }
+
+    pub fn item_icons(&self) -> Result<&IconSet, String> {
+        self.item_icons
+            .get_or_init(|| {
+                let surfaces = self.package("surfaces")?;
+                let list = surfaces.read_path(&format!("{ITEM_ICONS}.txt"))?;
+                let atlas = surfaces.read_path(&format!("{ITEM_ICONS}.dds"))?;
+                IconSet::parse(&list, atlas)
+            })
+            .as_ref()
+            .map_err(Clone::clone)
+    }
+
+    /// The item icon cell for a path ID (an item's `file_icon`).
+    pub fn item_icon(&self, path_id: u32) -> Option<usize> {
+        let path = self.path(path_id)?;
+        self.item_icons().ok()?.find(path)
+    }
+
+    /// The item icon for a path ID as a PNG.
+    pub fn item_icon_png(&self, path_id: u32) -> Result<Arc<Vec<u8>>, String> {
+        let cell = self.item_icon(path_id).ok_or_else(|| format!("no icon for path {path_id}"))?;
+        self.item_icons()?.png(cell)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn client() -> Option<PathBuf> {
+        let dir = PathBuf::from(std::env::var("JDIDE_CLIENT").unwrap_or_else(|_| "E:/Games/ForsakenJD".into()));
+        dir.join("element/data/elements.data").exists().then_some(dir)
+    }
+
+    #[test]
+    fn inspects_a_client_folder() {
+        let Some(dir) = client() else { return eprintln!("skipping: no client found") };
+        // The client root and its element folder both work.
+        for picked in [dir.clone(), dir.join("element")] {
+            let info = inspect(&picked).unwrap();
+            assert!(info.elements_path.as_deref().is_some_and(|p| p.ends_with("elements.data")));
+            assert_eq!(info.data_files[0].kind, "elements");
+            assert!(info.data_files.iter().any(|f| f.kind == "tasks" && !f.supported));
+            assert!(info.packages.iter().any(|p| p.name.eq_ignore_ascii_case("surfaces.pck")));
+            assert!(info.has_path_data && info.has_item_icons);
+        }
+        assert!(inspect(&std::env::temp_dir()).is_err());
+    }
+
+    #[test]
+    fn resolves_item_icons_through_path_data() {
+        let Some(dir) = client() else { return };
+        let res = Resources::new(inspect(&dir).unwrap());
+        assert!(res.paths().unwrap().len() > 10_000);
+        let icons = res.item_icons().unwrap();
+        assert_eq!((icons.icon_w, icons.icon_h), (36, 36));
+        assert!(icons.len() > 10_000);
+        // The first path whose file name is in the item atlas gives a 36×36 PNG.
+        let id = (1..200_000).find(|&id| res.item_icon(id).is_some()).expect("an item icon path");
+        let png = res.item_icon_png(id).unwrap();
+        assert_eq!(&png[1..4], b"PNG");
+        let decoder = png::Decoder::new(&png[..]);
+        let reader = decoder.read_info().unwrap();
+        assert_eq!((reader.info().width, reader.info().height), (36, 36));
+    }
+}

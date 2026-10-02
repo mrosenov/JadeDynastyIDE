@@ -1798,7 +1798,9 @@ name = "jdide"
 version = "0.1.0"
 dependencies = [
  "encoding_rs",
+ "flate2",
  "include_dir",
+ "png 0.17.16",
  "serde",
  "serde_json",
  "tauri",

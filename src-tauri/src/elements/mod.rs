@@ -13,6 +13,8 @@ use decode::{decode_record, gap_node, guess_name, read_wstr, Annotation, Node};
 use format::{builtin_layout, Catalog, Field, Layout, LayoutMeta, ListDef, ListHead, Marker, MarkerKind, Ty};
 use reader::{ElementsFile, Segment, SegmentKind};
 
+use crate::client::Resources;
+
 /// Where a list's definition comes from and how well it fits the records.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 #[serde(rename_all = "lowercase")]
@@ -61,6 +63,8 @@ pub struct Document {
     lists: Vec<Resolved>,
     by_struct: HashMap<String, Vec<usize>>,
     ids: Vec<OnceLock<HashMap<u32, usize>>>,
+    /// The game client's paths and icons, when a client folder is set.
+    pub resources: Option<Arc<Resources>>,
 }
 
 #[derive(Serialize)]
@@ -107,6 +111,9 @@ pub struct RecordRow {
     pub index: usize,
     pub id: u32,
     pub name: String,
+    /// Path ID of the record's item icon, if the client has it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icon: Option<u32>,
 }
 
 #[derive(Serialize)]
@@ -120,6 +127,8 @@ pub struct RecordDetail {
     pub layout_size: Option<usize>,
     pub bytes: Vec<u8>,
     pub nodes: Vec<Node>,
+    /// Path ID of the record's item icon, if the client has it.
+    pub icon: Option<u32>,
 }
 
 /// What the schema editor needs to edit one list.
@@ -227,12 +236,30 @@ impl Document {
             }
         }
         let ids = (0..file.lists.len()).map(|_| OnceLock::new()).collect();
-        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids })
+        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, resources: None })
     }
 
     /// Re-reads the same bytes with a new catalog (after a schema edit).
     pub fn reload(&self, catalog: Arc<Catalog>) -> Result<Self, String> {
-        Self::from_bytes(self.path.clone(), self.file.data.clone(), catalog)
+        let mut doc = Self::from_bytes(self.path.clone(), self.file.data.clone(), catalog)?;
+        doc.resources = self.resources.clone();
+        Ok(doc)
+    }
+
+    /// Offset of the field standing for the record's icon (display "icon").
+    fn icon_field(def: Option<&ListDef>) -> Option<usize> {
+        def?.fields
+            .iter()
+            .find(|f| f.display.as_deref() == Some("icon") && matches!(f.t, Ty::I32 | Ty::U32))
+            .map(|f| f.off)
+    }
+
+    /// The record's icon path ID, if the client has an icon for it.
+    fn record_icon(&self, bytes: &[u8], icon_at: Option<usize>) -> Option<u32> {
+        let res = self.resources.as_ref()?;
+        let off = icon_at?;
+        let id = u32::from_le_bytes(bytes.get(off..off + 4)?.try_into().ok()?);
+        (id > 0 && res.item_icon(id).is_some()).then_some(id)
     }
 
     /// Picks, per list: the file's own layout, else a definition borrowed
@@ -399,11 +426,18 @@ impl Document {
 
     pub fn records(&self, list: usize) -> Result<Vec<RecordRow>, String> {
         let block = self.file.lists.get(list).ok_or("No such list")?;
-        let name_at = Self::name_field(self.def(list).map(|(_, d)| d));
+        let def = self.def(list).map(|(_, d)| d);
+        let name_at = Self::name_field(def);
+        let icon_at = Self::icon_field(def);
         Ok((0..block.count)
             .map(|index| {
                 let bytes = self.file.record(list, index).unwrap();
-                RecordRow { index, id: Self::record_id(bytes), name: Self::record_name(bytes, name_at) }
+                RecordRow {
+                    index,
+                    id: Self::record_id(bytes),
+                    name: Self::record_name(bytes, name_at),
+                    icon: self.record_icon(bytes, icon_at),
+                }
             })
             .collect())
     }
@@ -414,6 +448,21 @@ impl Document {
         if let Some(set) = field.e.as_deref().and_then(|key| self.catalog.enum_set(layout, key)) {
             a.hint = set.label_for(value);
             return a;
+        }
+        // Path and icon fields hold path.data IDs: show the client's path.
+        if let (Some(display @ ("path" | "icon")), Some(res)) = (field.display.as_deref(), &self.resources) {
+            if value > 0 && value <= u32::MAX as i64 {
+                let id = value as u32;
+                if let Some(path) = res.path(id) {
+                    a.hint = Some(path.to_string());
+                    if display == "icon" && res.item_icon(id).is_some() {
+                        a.icon = Some(id);
+                    }
+                } else if res.paths().is_ok() {
+                    a.hint = Some("not in path.data".into());
+                }
+                return a;
+            }
         }
         if field.refs.is_empty() || value <= 0 || value > u32::MAX as i64 {
             return a;
@@ -450,6 +499,7 @@ impl Document {
             layout: fit,
             layout_id: def.and_then(|(l, _)| l.map(|l| l.id.clone())),
             layout_size: def.and_then(|(_, d)| d.size),
+            icon: self.record_icon(bytes, Self::icon_field(def.map(|(_, d)| d))),
             bytes: bytes.to_vec(),
             nodes,
         })
@@ -820,6 +870,27 @@ mod tests {
     }
 
     #[test]
+    fn client_resources_give_icons_and_paths() {
+        let client = std::path::Path::new("E:/Games/ForsakenJD");
+        let Some(mut doc) = open("Games/ForsakenJD/element/data/elements.data") else { return };
+        let Ok(info) = crate::client::inspect(client) else { return };
+        doc.resources = Some(Arc::new(crate::client::Resources::new(info)));
+        let equipment = doc.by_struct["EQUIPMENT_ESSENCE"][0];
+        let rows = doc.records(equipment).unwrap();
+        let with_icons = rows.iter().filter(|r| r.icon.is_some()).count();
+        assert!(with_icons * 10 > rows.len() * 9, "{with_icons} of {} rows have icons", rows.len());
+
+        let row = rows.iter().find(|r| r.icon.is_some()).unwrap();
+        let detail = doc.record(equipment, row.index).unwrap();
+        assert_eq!(detail.icon, row.icon);
+        let icon = detail.nodes.iter().find(|n| n.display.as_deref() == Some("icon")).unwrap();
+        assert_eq!(icon.icon, row.icon);
+        assert!(icon.hint.as_deref().is_some_and(|p| p.to_lowercase().ends_with(".dds")), "{:?}", icon.hint);
+        let png = doc.resources.as_ref().unwrap().item_icon_png(row.icon.unwrap()).unwrap();
+        assert_eq!(&png[1..4], b"PNG");
+    }
+
+    #[test]
     fn invalid_definitions_are_rejected() {
         let field = |name: &str, off| Field { name: name.into(), off, t: Ty::I32, c: None, e: None, display: None, refs: vec![], g: None, when: vec![] };
         let def = |fields, size| ListDef { key: None, name: "L".into(), struct_name: None, size, fields };
@@ -829,3 +900,4 @@ mod tests {
         assert!(def(vec![field("a", 0), field("b", 4)], Some(8)).check().is_ok());
     }
 }
+

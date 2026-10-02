@@ -10,11 +10,13 @@ interface Props {
   onSelect: (index: number) => void;
   /** Double-click: open the record in a tab that stays open. */
   onOpen?: (index: number) => void;
+  /** Item icon URL for a path ID (when the client's icons are available). */
+  icon?: (pathId?: number | null) => string | undefined;
 }
 
 const ROW_HEIGHT = 28;
 
-export function RecordTable({ list, rows, selected, onSelect, onOpen }: Props) {
+export function RecordTable({ list, rows, selected, onSelect, onOpen, icon }: Props) {
   const [filter, setFilter] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +37,8 @@ export function RecordTable({ list, rows, selected, onSelect, onOpen }: Props) {
   });
 
   const position = visible.findIndex((r) => r.index === selected);
+  const withIcons = !!icon && !!rows?.some((r) => r.icon);
+  const grid = "record-grid" + (withIcons ? " with-icons" : "");
 
   useEffect(() => {
     if (position >= 0) virtualizer.scrollToIndex(position, { align: "auto" });
@@ -76,7 +80,8 @@ export function RecordTable({ list, rows, selected, onSelect, onOpen }: Props) {
           spellCheck={false}
         />
       </div>
-      <div className="table-head record-grid">
+      <div className={"table-head " + grid}>
+        {withIcons && <span />}
         <span>#</span>
         <span>ID</span>
         <span>Name</span>
@@ -92,11 +97,17 @@ export function RecordTable({ list, rows, selected, onSelect, onOpen }: Props) {
             return (
               <div
                 key={row.index}
-                className={"record-row record-grid" + (row.index === selected ? " active" : "")}
+                className={"record-row " + grid + (row.index === selected ? " active" : "")}
                 style={{ transform: `translateY(${item.start}px)`, height: ROW_HEIGHT }}
                 onClick={() => onSelect(row.index)}
                 onDoubleClick={() => onOpen?.(row.index)}
               >
+                {withIcons &&
+                  (row.icon ? (
+                    <img className="row-icon" src={icon!(row.icon)} alt="" loading="lazy" draggable={false} />
+                  ) : (
+                    <span />
+                  ))}
                 <span className="muted mono">{row.index}</span>
                 <span className="mono">{row.id}</span>
                 <span className={"truncate" + (row.name ? "" : " muted")}>{row.name || "—"}</span>

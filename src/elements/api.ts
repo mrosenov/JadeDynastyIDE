@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
+import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
   FileSummary,
   ImportCandidate,
@@ -7,6 +7,9 @@ import type {
   RecordDetail,
   RecordRow,
   SchemaContext,
+  ClientInfo,
+  Settings,
+  SettingsView,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -27,3 +30,12 @@ export const saveListSchema = (list: number, def: ListDef) => invoke<FileSummary
 export const resetListSchema = (list: number) => invoke<FileSummary>("reset_list_schema", { list });
 
 export const importCandidates = (list: number) => invoke<ImportCandidate[]>("import_candidates", { list });
+
+export const getSettings = () => invoke<SettingsView>("get_settings");
+
+export const saveSettings = (settings: Settings) => invoke<SettingsView>("save_settings", { settings });
+
+export const inspectClient = (dir: string) => invoke<ClientInfo>("inspect_client", { dir });
+
+/** URL of an item icon served by the app (by path.data ID). No slashes: convertFileSrc encodes them. */
+export const iconUrl = (generation: number, pathId: number) => convertFileSrc(`${generation}-${pathId}`, "jdicon");

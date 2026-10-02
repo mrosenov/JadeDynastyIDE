@@ -50,6 +50,8 @@ export interface RecordRow {
   index: number;
   id: number;
   name: string;
+  /** Path ID of the record's item icon (client icons). */
+  icon?: number;
 }
 
 export interface FieldNode {
@@ -69,6 +71,8 @@ export interface FieldNode {
   group?: boolean;
   /** Why a conditional type was chosen, e.g. "type = 7 → float". */
   cond?: string;
+  /** Path ID of the item icon this value points at. */
+  icon?: number;
 }
 
 export interface RecordDetail {
@@ -80,6 +84,8 @@ export interface RecordDetail {
   layoutSize: number | null;
   bytes: number[];
   nodes: FieldNode[];
+  /** Path ID of the record's item icon. */
+  icon: number | null;
 }
 
 // ---------------------------------------------------------------- schemas
@@ -159,4 +165,44 @@ export interface ImportCandidate {
   /** Record size of the list in the open file. */
   itemSize: number;
   def: ListDef;
+}
+
+// ---------------------------------------------------------------- settings
+
+export interface Settings {
+  clientDir: string | null;
+  openOnStart: boolean;
+}
+
+export interface DataFile {
+  name: string;
+  path: string;
+  size: number;
+  kind: string;
+  supported: boolean;
+}
+
+export interface PackageFile {
+  name: string;
+  path: string;
+  size: number;
+  parts: number;
+}
+
+export interface ClientInfo {
+  root: string;
+  elementDir: string;
+  dataFiles: DataFile[];
+  packages: PackageFile[];
+  elementsPath: string | null;
+  hasPathData: boolean;
+  hasItemIcons: boolean;
+}
+
+export interface SettingsView {
+  settings: Settings;
+  client: ClientInfo | null;
+  clientError: string | null;
+  /** Part of icon URLs; changes when the client changes. */
+  iconGeneration: number;
 }

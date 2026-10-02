@@ -42,6 +42,9 @@ pub struct Node {
     /// e.g. "type = 7 → float".
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cond: Option<String>,
+    /// Path ID of the item icon this value points at (client icons).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icon: Option<u32>,
 }
 
 fn group_node(name: String, members: Vec<Node>) -> Node {
@@ -62,6 +65,7 @@ fn group_node(name: String, members: Vec<Node>) -> Node {
         unknown: false,
         group: true,
         cond: None,
+        icon: None,
     }
 }
 
@@ -166,6 +170,7 @@ fn scalar(ty: &Ty, b: &[u8], off: usize) -> Option<(String, Option<i64>)> {
 pub struct Annotation {
     pub hint: Option<String>,
     pub link: Option<(usize, usize)>,
+    pub icon: Option<u32>,
 }
 
 pub type Annotator<'a> = dyn Fn(&Field, i64) -> Annotation + 'a;
@@ -192,6 +197,7 @@ impl Ctx<'_> {
             unknown: false,
             group: false,
             cond: None,
+            icon: None,
         };
         if off + size > self.bytes.len() {
             node.value = Some("(past end of record)".into());
@@ -221,6 +227,7 @@ impl Ctx<'_> {
                     let a = (self.annotate)(f, v);
                     node.hint = a.hint;
                     node.link = a.link;
+                    node.icon = a.icon;
                 }
                 if node.hint.is_none() && matches!(ty, Ty::I32 | Ty::U32) {
                     node.hint = float_hint(u32::from_le_bytes(fixed(self.bytes, off)));
@@ -289,6 +296,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
                     unknown: true,
                     group: false,
                     cond: None,
+                    icon: None,
                 }
             })
             .collect()
@@ -308,6 +316,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
         unknown: true,
         group: false,
         cond: None,
+        icon: None,
     }
 }
 

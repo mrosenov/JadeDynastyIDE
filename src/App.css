@@ -1306,9 +1306,6 @@ svg.lucide {
 
 /* ---------- possible readings ---------- */
 
-.readings-slot:empty {
-  display: none;
-}
 
 .readings {
   margin: 8px 12px;
@@ -1665,4 +1662,172 @@ svg.lucide {
 .tab-close:hover {
   background: var(--bg-hover);
   color: var(--text);
+}
+
+/* ---------- modal ---------- */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 100%);
+  max-height: min(820px, 100%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.modal-head,
+.modal-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--bg-elev);
+}
+.modal-head {
+  border-bottom: 1px solid var(--border);
+}
+.modal-foot {
+  border-top: 1px solid var(--border);
+}
+.modal-head h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.modal-body {
+  padding: 4px 20px 16px;
+}
+
+/* ---------- settings ---------- */
+
+.topbar-settings.active {
+  color: var(--accent);
+}
+
+.settings-section h4 {
+  margin: 14px 0 4px;
+  font-size: 14px;
+}
+.settings-section h5 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 18px 0 6px;
+  font-size: 12px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+}
+.settings-section h5 .muted {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.settings-section p {
+  margin: 0 0 10px;
+}
+
+.settings-row {
+  display: flex;
+  gap: 8px;
+}
+.settings-row .se-input {
+  flex: 1;
+}
+.settings-row .btn {
+  height: 36px;
+}
+
+.settings-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  background: var(--bg-hover);
+}
+.settings-status.ok {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.settings-status.bad {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.settings-check {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.settings-table {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.settings-file {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) 80px 56px;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+.settings-file:last-child {
+  border-bottom: 0;
+}
+.settings-file > :last-child {
+  justify-self: end;
+}
+
+/* ---------- item icons ---------- */
+
+.record-grid.with-icons {
+  grid-template-columns: 24px 48px 70px minmax(0, 1fr);
+}
+.row-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  image-rendering: auto;
+}
+.record-icon {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px var(--border);
+}
+.field-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+}
+.tab-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
 }

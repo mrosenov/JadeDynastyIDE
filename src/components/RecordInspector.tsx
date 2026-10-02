@@ -18,9 +18,11 @@ interface Props {
   onFollow: (list: number, row: number, newTab?: boolean) => void;
   /** Open the schema editor with a field defined at this offset. */
   onDefine: (list: number, offset: number, spec: FieldSpec) => void;
+  /** Item icon URL for a path ID (when the client's icons are available). */
+  icon?: (pathId?: number | null) => string | undefined;
 }
 
-export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine }: Props) {
+export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon }: Props) {
   const [expanded, setExpanded] = useState<Set<Path>>(new Set());
   const [selected, setSelected] = useState<Path | null>(null);
   const [hovered, setHovered] = useState<Path | null>(null);
@@ -80,6 +82,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
               <ArrowLeft size={15} />
             </button>
           )}
+          {icon?.(detail.icon) && <img className="record-icon" src={icon(detail.icon)} alt="" draggable={false} />}
           <h2 className="truncate">{row.name || <span className="muted">Unnamed record</span>}</h2>
           <span className={`badge fit-${detail.layout}`} title={layoutHelp(detail.layout, detail.layoutId)}>
             {LAYOUT_LABEL[detail.layout]}
@@ -139,6 +142,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           onSelect={selectNode}
           onHover={setHovered}
           onFollow={onFollow}
+          icon={icon}
         />
         <div className="readings-slot">
           {span && readOffset !== null && (
