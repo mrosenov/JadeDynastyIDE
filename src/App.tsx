@@ -415,6 +415,7 @@ export default function App() {
                 }}
                 icon={icon}
                 onEditSet={(key) => setSetsEditor({ key })}
+                lists={summary.lists}
               />
             ) : (
               <section className="pane inspector">

@@ -2,6 +2,7 @@ pub mod align;
 pub mod decode;
 pub mod format;
 pub mod reader;
+pub mod refs;
 
 use std::collections::HashMap;
 use std::sync::{Arc, OnceLock};
@@ -63,6 +64,8 @@ pub struct Document {
     lists: Vec<Resolved>,
     by_struct: HashMap<String, Vec<usize>>,
     ids: Vec<OnceLock<HashMap<u32, usize>>>,
+    /// Integer fields that may hold other records' IDs (for "referenced by").
+    sites: OnceLock<Vec<refs::Site>>,
     /// The game client's paths and icons, when a client folder is set.
     pub resources: Option<Arc<Resources>>,
 }
@@ -245,7 +248,7 @@ impl Document {
             }
         }
         let ids = (0..file.lists.len()).map(|_| OnceLock::new()).collect();
-        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, resources: None })
+        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, sites: OnceLock::new(), resources: None })
     }
 
     /// Re-reads the same bytes with a new catalog (after a schema edit).
@@ -612,6 +615,78 @@ impl Document {
         &self.catalog
     }
 
+    // ------------------------------------------------------------ referenced by
+
+    fn sites(&self) -> &[refs::Site] {
+        self.sites.get_or_init(|| {
+            let mut out = Vec::new();
+            for list in 0..self.lists.len() {
+                if let Some((_, def)) = self.def(list) {
+                    refs::sites_of(list, &def.fields, &mut out);
+                }
+            }
+            out
+        })
+    }
+
+    /// Records whose fields point at this record's ID: fields whose refs name
+    /// its struct, and ID-named fields of the same ID space.
+    pub fn referenced_by(&self, list: usize, row: usize) -> Result<refs::ReferencedBy, String> {
+        const LIMIT: usize = 500;
+        let bytes = self.file.record(list, row).ok_or("No such record")?;
+        let id = Self::record_id(bytes);
+        let mut out = refs::ReferencedBy { id, referrers: Vec::new(), truncated: false };
+        if id == 0 {
+            return Ok(out);
+        }
+        let target = self.lists[list].struct_name.as_deref();
+        let space = refs::list_space(target.unwrap_or(""));
+        let mut names: HashMap<usize, (Option<(usize, usize)>, Option<usize>)> = HashMap::new();
+
+        for site in self.sites() {
+            let how = if target.is_some_and(|t| site.refs.iter().any(|r| r == t)) {
+                "declared"
+            } else if site.refs.is_empty() && site.space == Some(space) {
+                "id"
+            } else {
+                continue;
+            };
+            let block = &self.file.lists[site.list];
+            if site.off + 4 > block.item_size {
+                continue;
+            }
+            for r in 0..block.count {
+                if site.list == list && r == row {
+                    continue;
+                }
+                let at = block.data_offset + r * block.item_size + site.off;
+                if u32::from_le_bytes(self.file.data[at..at + 4].try_into().unwrap()) != id {
+                    continue;
+                }
+                if out.referrers.len() == LIMIT {
+                    out.truncated = true;
+                    break;
+                }
+                let (name_at, icon_at) = *names.entry(site.list).or_insert_with(|| {
+                    let def = self.def(site.list).map(|(_, d)| d);
+                    (Self::name_field(def), Self::icon_field(def))
+                });
+                let rec = self.file.record(site.list, r).unwrap();
+                out.referrers.push(refs::Referrer {
+                    list: site.list,
+                    row: r,
+                    id: Self::record_id(rec),
+                    name: Self::record_name(rec, name_at),
+                    field: site.path.clone(),
+                    how,
+                    icon: self.record_icon(rec, icon_at),
+                });
+            }
+        }
+        out.referrers.sort_by(|a, b| (a.list, a.row, &a.field).cmp(&(b.list, b.row, &b.field)));
+        Ok(out)
+    }
+
     // ------------------------------------------------------------ import from other versions
 
     /// The definitions other layouts have for the same list slot, to copy
@@ -905,6 +980,31 @@ mod tests {
         assert!(icon.hint.as_deref().is_some_and(|p| p.to_lowercase().ends_with(".dds")), "{:?}", icon.hint);
         let png = doc.resources.as_ref().unwrap().item_icon_png(row.icon.unwrap()).unwrap();
         assert_eq!(&png[1..4], b"PNG");
+    }
+
+    #[test]
+    fn referenced_by_finds_shops_and_recipes_but_not_other_id_spaces() {
+        let Some(doc) = open("Game Dev/JD/zxserver/zgame/gs/config/elements.data") else { return };
+        let equipment = doc.by_struct["EQUIPMENT_ESSENCE"][0];
+        let refs = doc.referenced_by(equipment, 100).unwrap();
+        assert_eq!(refs.id, 387);
+        let lists: Vec<&str> = refs.referrers.iter().map(|r| doc.lists[r.list].struct_name.as_deref().unwrap_or("")).collect();
+        assert!(lists.contains(&"NPC_SELL_SERVICE"), "{lists:?}");
+        assert!(lists.contains(&"RECIPE_ESSENCE"), "{lists:?}");
+        // Task, recipe-roll and config IDs live in other ID spaces.
+        assert!(refs.referrers.iter().all(|r| !r.field.contains("task") && !r.field.contains("config") && !r.field.contains("id_recipe")), "{:?}", refs.referrers);
+        let shop = refs.referrers.iter().find(|r| r.field.contains("id_goods")).unwrap();
+        assert_eq!(shop.how, "id");
+
+        // Declared refs: an addon is referenced by the equipment that has it.
+        let addons = doc.by_struct["EQUIPMENT_ADDON"][0];
+        let rows = doc.records(addons).unwrap();
+        let used = rows
+            .iter()
+            .map(|r| doc.referenced_by(addons, r.index).unwrap())
+            .find(|r| r.referrers.iter().any(|x| x.how == "declared"))
+            .expect("an addon used by some item");
+        assert!(used.referrers.iter().any(|x| x.field.starts_with("id_addon")));
     }
 
     #[test]

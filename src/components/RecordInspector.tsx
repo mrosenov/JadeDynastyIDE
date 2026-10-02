@@ -7,7 +7,9 @@ import { HexView } from "./HexView";
 import { ArrowLeft, ChevronsDownUp, ChevronsUpDown } from "lucide-react";
 import { ReadingsCard } from "./ReadingsCard";
 import { SetPopover } from "./SetPopover";
-import type { FieldNode } from "../elements/types";
+import { ReferencedByTable } from "./ReferencedByTable";
+import { referencedBy } from "../elements/api";
+import type { FieldNode, ReferencedBy } from "../elements/types";
 import { isUndefinedNode, undefinedSpan } from "../elements/readings";
 import type { FieldSpec } from "../schema/model";
 
@@ -24,9 +26,11 @@ interface Props {
   icon?: (pathId?: number | null) => string | undefined;
   /** Open the enums & masks editor at a set. */
   onEditSet?: (key: string) => void;
+  /** All lists of the file (for naming referring lists). */
+  lists: ListSummary[];
 }
 
-export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, onEditSet }: Props) {
+export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, onEditSet, lists }: Props) {
   const [expanded, setExpanded] = useState<Set<Path>>(new Set());
   const [selected, setSelected] = useState<Path | null>(null);
   const [hovered, setHovered] = useState<Path | null>(null);
@@ -35,6 +39,20 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
   const [readOffset, setReadOffset] = useState<number | null>(null);
   const [setPopover, setSetPopover] = useState<{ node: FieldNode; anchor: DOMRect } | null>(null);
   useEffect(() => setSetPopover(null), [detail]);
+  // Fields, or the records that refer to this one. The choice stays while browsing.
+  const [view, setView] = useState<"fields" | "refs">("fields");
+  const [refs, setRefs] = useState<ReferencedBy | null>(null);
+  useEffect(() => {
+    setRefs(null);
+    if (!detail) return;
+    let cancelled = false;
+    referencedBy(detail.list, detail.index)
+      .then((r) => !cancelled && setRefs(r))
+      .catch(() => !cancelled && setRefs({ id: 0, referrers: [], truncated: false }));
+    return () => {
+      cancelled = true;
+    };
+  }, [detail]);
 
   // Keep the expansion state while browsing records of the same list.
   useEffect(() => {
@@ -131,15 +149,38 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
 
       <div className="inspector-body">
         <div className="subhead">
-          <span className="pane-title">Fields</span>
+          <div className="insp-tabs" role="tablist">
+            <button role="tab" aria-selected={view === "fields"} className={view === "fields" ? "active" : ""} onClick={() => setView("fields")}>
+              Fields
+            </button>
+            <button
+              role="tab"
+              aria-selected={view === "refs"}
+              className={view === "refs" ? "active" : ""}
+              onClick={() => setView("refs")}
+              title="Records of this file that point at this record's ID"
+            >
+              Referenced by
+              <span className={"count-chip" + (refs?.referrers.length ? " on" : "")}>
+                {refs ? refs.referrers.length + (refs.truncated ? "+" : "") : "…"}
+              </span>
+            </button>
+          </div>
           <span className="spacer" />
-          <button className="link" onClick={() => setExpanded(new Set(allPaths(detail.nodes)))}>
-            <ChevronsUpDown size={13} /> Expand all
-          </button>
-          <button className="link" onClick={() => setExpanded(new Set())}>
-            <ChevronsDownUp size={13} /> Collapse all
-          </button>
+          {view === "fields" && (
+            <>
+              <button className="link" onClick={() => setExpanded(new Set(allPaths(detail.nodes)))}>
+                <ChevronsUpDown size={13} /> Expand all
+              </button>
+              <button className="link" onClick={() => setExpanded(new Set())}>
+                <ChevronsDownUp size={13} /> Collapse all
+              </button>
+            </>
+          )}
         </div>
+        {view === "refs" ? (
+          <ReferencedByTable data={refs} lists={lists} icon={icon} onOpen={onFollow} />
+        ) : (
         <FieldTree
           nodes={detail.nodes}
           expanded={expanded}
@@ -151,6 +192,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           icon={icon}
           onSet={(node, anchor) => setSetPopover({ node, anchor })}
         />
+        )}
         {setPopover && (
           <SetPopover
             node={setPopover.node}

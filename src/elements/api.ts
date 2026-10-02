@@ -15,6 +15,7 @@ import type {
   SetKind,
   SetSummary,
   SetsChanged,
+  ReferencedBy,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -52,3 +53,5 @@ export const namedSet = (key: string) => invoke<SetDetail>("named_set", { key })
 export const saveNamedSet = (kind: SetKind, set: NamedSet) => invoke<SetsChanged>("save_named_set", { kind, set });
 
 export const deleteNamedSet = (key: string) => invoke<SetsChanged>("delete_named_set", { key });
+
+export const referencedBy = (list: number, row: number) => invoke<ReferencedBy>("referenced_by", { list, row });

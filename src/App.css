@@ -2309,3 +2309,105 @@ svg.lucide {
     minmax(170px, 2fr) 112px 70px 70px minmax(110px, 1.1fr) 86px minmax(150px, 1.4fr)
     minmax(100px, 1.2fr) 52px 44px 146px;
 }
+
+/* ---------- inspector tabs & referenced by ---------- */
+
+.insp-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 7px;
+  background: var(--bg-hover);
+}
+.insp-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.insp-tabs button.active {
+  background: var(--bg-elev);
+  color: var(--text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+.count-chip {
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0;
+  text-align: center;
+  background: var(--bg);
+  color: var(--text-faint);
+}
+.count-chip.on {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.refby {
+  min-height: 0;
+}
+.refby-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.4fr) 70px minmax(140px, 1.4fr) 72px;
+  gap: 10px;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 16px;
+  cursor: pointer;
+}
+.refby-row.with-icons {
+  grid-template-columns: 24px minmax(140px, 1.4fr) 70px minmax(140px, 1.4fr) 72px;
+}
+.refby-row:hover {
+  background: var(--bg-hover);
+}
+.refby-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  min-height: 28px;
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  cursor: default;
+}
+.refby-head:hover {
+  background: var(--bg);
+}
+.refby-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 16px;
+  font-weight: 600;
+  background: var(--bg-pane);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+.refby-group .truncate {
+  flex: 1;
+}
+.refby-row .match-badge {
+  justify-self: start;
+}
+.refby-empty {
+  max-width: 560px;
+  line-height: 1.5;
+}

@@ -124,6 +124,11 @@ async fn list_records(list: usize, state: State<'_, AppState>) -> Result<Vec<Rec
 }
 
 #[tauri::command]
+async fn referenced_by(list: usize, row: usize, state: State<'_, AppState>) -> Result<elements::refs::ReferencedBy, String> {
+    state.with_document(|doc| doc.referenced_by(list, row))
+}
+
+#[tauri::command]
 async fn get_record(list: usize, index: usize, state: State<'_, AppState>) -> Result<RecordDetail, String> {
     state.with_document(|doc| doc.record(list, index))
 }
@@ -397,6 +402,7 @@ pub fn run() {
             open_elements,
             list_records,
             get_record,
+            referenced_by,
             schema_context,
             get_list_schema,
             preview_list_schema,

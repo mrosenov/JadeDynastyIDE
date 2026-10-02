@@ -52,6 +52,18 @@ continuation parts). `dds.rs` decodes DXT1/3/5 and uncompressed DDS, one icon's 
 time. Icons are served to the UI as PNGs through the `jdicon://` protocol. Path IDs only
 match when `elements.data` comes from the same client as `path.data`.
 
+## Referenced by
+
+The inspector's **Referenced by** tab lists the records that point at the selected
+record's ID, grouped by list. Click one to open it (Ctrl+click opens it in a new tab).
+References come from two sources:
+
+- **ref:** fields whose `refs` name the record's list (exact).
+- **by ID:** integer fields whose name says they hold an ID (`id_goods`, `id_to_make`,
+  `item_id`, …) and whose ID space matches. IDs are only unique within a space, so
+  task, skill, recipe or config ID fields are not matched against items. This is
+  inferred from names, so treat it as a strong hint rather than proof.
+
 ## Tabs
 
 Records open in tabs above the inspector:

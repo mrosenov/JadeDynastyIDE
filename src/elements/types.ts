@@ -263,3 +263,23 @@ export interface SetsChanged {
   sets: SetSummary[];
   summary: FileSummary | null;
 }
+
+// ---------------------------------------------------------------- referenced by
+
+export interface Referrer {
+  list: number;
+  row: number;
+  id: number;
+  name: string;
+  /** Field path in the referring record, e.g. "pages[2].id_goods[5]". */
+  field: string;
+  /** declared: the field's refs name this list; id: matched by field name and ID space. */
+  how: "declared" | "id";
+  icon?: number;
+}
+
+export interface ReferencedBy {
+  id: number;
+  referrers: Referrer[];
+  truncated: boolean;
+}
