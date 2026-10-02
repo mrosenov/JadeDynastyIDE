@@ -66,6 +66,8 @@ pub struct Document {
     ids: Vec<OnceLock<HashMap<u32, usize>>>,
     /// Integer fields that may hold other records' IDs (for "referenced by").
     sites: OnceLock<Vec<refs::Site>>,
+    /// Every record's ID and lowercased name, for Find.
+    find_index: OnceLock<Vec<FindEntry>>,
     /// The game client's paths and icons, when a client folder is set.
     pub resources: Option<Arc<Resources>>,
 }
@@ -117,6 +119,36 @@ pub struct RecordRow {
     /// Path ID of the record's item icon, if the client has it.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub icon: Option<u32>,
+}
+
+/// A record found by Find.
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FindHit {
+    pub list: usize,
+    pub index: usize,
+    pub id: u32,
+    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icon: Option<u32>,
+    /// "id" (the record's ID is the query) or "name" (its name contains it).
+    pub how: &'static str,
+}
+
+struct FindEntry {
+    list: usize,
+    index: usize,
+    id: u32,
+    name: String,
+    lower: String,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FindResult {
+    pub hits: Vec<FindHit>,
+    /// Matches in all, including those past the limit.
+    pub total: usize,
 }
 
 #[derive(Serialize)]
@@ -248,7 +280,7 @@ impl Document {
             }
         }
         let ids = (0..file.lists.len()).map(|_| OnceLock::new()).collect();
-        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, sites: OnceLock::new(), resources: None })
+        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, sites: OnceLock::new(), find_index: OnceLock::new(), resources: None })
     }
 
     /// Re-reads the same bytes with a new catalog (after a schema edit).
@@ -631,6 +663,55 @@ impl Document {
 
     /// Records whose fields point at this record's ID: fields whose refs name
     /// its struct, and ID-named fields of the same ID space.
+    /// Records of every list whose ID is the query (when it is a number) or
+    /// whose name contains it, case-insensitively. ID matches come first,
+    /// then exact names, names starting with the query, and the rest, each
+    /// in file order.
+    pub fn find(&self, query: &str, limit: usize) -> FindResult {
+        let query = query.trim();
+        let id = query.parse::<u32>().ok().filter(|&n| n != 0);
+        let needle = query.to_lowercase();
+        if query.is_empty() {
+            return FindResult { hits: vec![], total: 0 };
+        }
+        let index = self.find_index.get_or_init(|| {
+            (0..self.file.lists.len())
+                .flat_map(|list| self.records(list).unwrap_or_default().into_iter().map(move |r| (list, r)))
+                .map(|(list, r)| FindEntry { list, index: r.index, id: r.id, lower: r.name.to_lowercase(), name: r.name })
+                .collect()
+        });
+        let mut ranked: Vec<(u8, &FindEntry)> = index
+            .iter()
+            .filter_map(|e| {
+                let rank = if Some(e.id) == id {
+                    0
+                } else if e.lower.is_empty() || !e.lower.contains(&needle) {
+                    return None;
+                } else if e.lower == needle {
+                    1
+                } else if e.lower.starts_with(&needle) {
+                    2
+                } else {
+                    3
+                };
+                Some((rank, e))
+            })
+            .collect();
+        // Stable: file order within a rank.
+        ranked.sort_by_key(|(rank, _)| *rank);
+        let total = ranked.len();
+        let hits = ranked
+            .into_iter()
+            .take(limit)
+            .map(|(rank, e)| {
+                let bytes = self.file.record(e.list, e.index).unwrap_or_default();
+                let icon = self.record_icon(bytes, Self::icon_field(self.def(e.list).map(|(_, d)| d)));
+                FindHit { list: e.list, index: e.index, id: e.id, name: e.name.clone(), icon, how: if rank == 0 { "id" } else { "name" } }
+            })
+            .collect();
+        FindResult { hits, total }
+    }
+
     pub fn referenced_by(&self, list: usize, row: usize) -> Result<refs::ReferencedBy, String> {
         const LIMIT: usize = 500;
         let bytes = self.file.record(list, row).ok_or("No such record")?;
@@ -834,6 +915,25 @@ mod tests {
         let ty = detail.nodes.iter().find(|n| n.name == "Type").unwrap();
         // The Jade Editor's attribute types are the shared addon types.
         assert!(ty.hint.as_deref().is_some_and(|h| h.starts_with("Bonus Skill")), "{:?}", ty.hint);
+    }
+
+    #[test]
+    fn find_matches_ids_then_names() {
+        let Some(doc) = open("Game Dev/JD/zxserver/zgame/gs/config/elements.data") else { return };
+        let row = doc.records(3).unwrap().into_iter().find(|r| r.id != 0 && !r.name.is_empty()).unwrap();
+        let by_id = doc.find(&row.id.to_string(), 50);
+        assert_eq!(by_id.hits[0].how, "id");
+        assert!(by_id.hits.iter().any(|h| h.list == 3 && h.index == row.index));
+        let by_name = doc.find(&row.name.to_uppercase(), 50);
+        assert!(by_name.total >= 1 && by_name.hits.iter().all(|h| h.how == "name" || h.id == row.id));
+        assert!(by_name.hits.iter().any(|h| h.list == 3 && h.index == row.index));
+        assert_eq!(doc.find("  ", 50).total, 0);
+        if let Some(big) = open("Game Dev/JD/1792/gamed/config/elements.data") {
+            let _ = big.find("a", 200);
+            let t = std::time::Instant::now();
+            let r = big.find("a", 200);
+            eprintln!("find over {} lists: {} hits in {:?}", big.file.lists.len(), r.total, t.elapsed());
+        }
     }
 
     #[test]

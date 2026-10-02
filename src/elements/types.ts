@@ -284,3 +284,20 @@ export interface ReferencedBy {
   referrers: Referrer[];
   truncated: boolean;
 }
+
+/** A record found by Find. */
+export interface FindHit {
+  list: number;
+  index: number;
+  id: number;
+  name: string;
+  icon?: number;
+  /** id: the record's ID is the query; name: its name contains it. */
+  how: "id" | "name";
+}
+
+export interface FindResult {
+  hits: FindHit[];
+  /** Matches in all, including those past the limit. */
+  total: number;
+}

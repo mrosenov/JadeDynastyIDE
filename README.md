@@ -110,6 +110,14 @@ Records open in tabs above the inspector:
   middle-click closes one.
 - Open tabs are remembered per file.
 
+## Find
+
+Ctrl+G (or Ctrl+Shift+F, or the box in the top bar) finds records in every list: by ID
+when the query is a number, and by name (case-insensitive) always. ID matches come first,
+then exact names, names starting with the query, and the rest. Enter opens a result in the
+current tab, Ctrl+Enter in a new one. Afterwards F3 / Shift+F3 step through the same results.
+IDs are only unique within an ID space, so one ID can match an item, an addon and a config.
+
 ## Built-in layouts (`src-tauri/formats`)
 
 | Layout | Lists | Source | Checked against |

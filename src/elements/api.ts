@@ -1,5 +1,6 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
+  FindResult,
   FileSummary,
   ImportCandidate,
   ListDef,
@@ -21,6 +22,9 @@ import type {
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
 
 export const listRecords = (list: number) => invoke<RecordRow[]>("list_records", { list });
+
+/** Records of every list by ID or name. */
+export const findRecords = (query: string) => invoke<FindResult>("find_records", { query });
 
 export const getRecord = (list: number, index: number) => invoke<RecordDetail>("get_record", { list, index });
 

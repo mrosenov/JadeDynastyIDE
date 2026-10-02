@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { getRecord, getSettings, iconUrl, listRecords, openElements } from "./elements/api";
-import type { FileSummary, RecordDetail, RecordRow, SettingsView } from "./elements/types";
+import type { FileSummary, FindHit, RecordDetail, RecordRow, SettingsView } from "./elements/types";
 import { bytes, count } from "./elements/format";
 import { ListSidebar } from "./components/ListSidebar";
 import { RecordTable } from "./components/RecordTable";
@@ -11,10 +11,19 @@ import { SchemaEditor } from "./components/SchemaEditor";
 import { TabBar, type TabLabel } from "./components/TabBar";
 import { SettingsDialog } from "./components/SettingsDialog";
 import { SetsEditor } from "./components/SetsEditor";
+import { FindPalette } from "./components/FindPalette";
 import type { FieldSpec } from "./schema/model";
 import { EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import "./App.css";
-import { Braces, FolderOpen, Gem, Settings } from "lucide-react";
+import logo from "./assets/logo.png";
+import { Braces, ChevronLeft, ChevronRight, FolderOpen, Gem, Search, Settings } from "lucide-react";
+
+/** The last Find: its hits are stepped through with F3 / Shift+F3. */
+interface LastFind {
+  query: string;
+  hits: FindHit[];
+  position: number;
+}
 
 const LAST_PATH_KEY = "jdide.lastPath";
 
@@ -80,6 +89,11 @@ export default function App() {
   const [setsEditor, setSetsEditor] = useState<{ key: string | null } | null>(null);
   const started = useRef(false);
   const iconGen = settingsView?.client?.hasItemIcons ? settingsView.iconGeneration : null;
+  const [findOpen, setFindOpen] = useState(false);
+  const [lastFind, setLastFind] = useState<LastFind | null>(null);
+  // Hits belong to one file.
+  useEffect(() => setLastFind(null), [summary?.path]);
+
   const icon = (pathId?: number | null) => (iconGen !== null && pathId ? iconUrl(iconGen, pathId) : undefined);
 
   // The active tab decides what the sidebar, the table and the inspector show.
@@ -253,12 +267,30 @@ export default function App() {
     if (list !== listIndex) selectList(list);
   };
 
-  // Tab and history shortcuts (not while the schema editor is open).
+  /** Opens the next (or previous) hit of the last Find. */
+  const stepFind = (delta: number) => {
+    if (!lastFind?.hits.length) return setFindOpen(true);
+    const n = lastFind.hits.length;
+    const position = (lastFind.position + delta + n) % n;
+    const hit = lastFind.hits[position];
+    setLastFind({ ...lastFind, position });
+    follow(hit.list, hit.index);
+  };
+  const stepFindRef = useRef(stepFind);
+  stepFindRef.current = stepFind;
+
+  // Tab, history and find shortcuts (not while the schema editor is open).
   useEffect(() => {
     if (!summary || editorOpen) return;
     const onKey = (e: KeyboardEvent) => {
       const mod = e.ctrlKey || e.metaKey;
-      if (e.altKey && e.key === "ArrowLeft") {
+      if ((mod && e.key.toLowerCase() === "g") || (mod && e.shiftKey && e.key.toLowerCase() === "f")) {
+        e.preventDefault();
+        setFindOpen(true);
+      } else if (e.key === "F3") {
+        e.preventDefault();
+        stepFindRef.current(e.shiftKey ? -1 : 1);
+      } else if (e.altKey && e.key === "ArrowLeft") {
         e.preventDefault();
         dispatch({ type: "back" });
       } else if (mod && e.key === "Tab") {
@@ -291,9 +323,7 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          <span className="logo" aria-hidden>
-            <Gem size={18} />
-          </span>
+          <img className="logo" src={logo} alt="" draggable={false} />
           JD IDE
         </div>
         <button className="btn primary" onClick={chooseFile} title="Open elements.data (Ctrl+O)">
@@ -311,6 +341,28 @@ export default function App() {
                 </span>
               );
             })()}
+          </div>
+        )}
+        {summary && (
+          <div className="find-bar">
+            <button className="find-trigger" onClick={() => setFindOpen(true)} title="Find a record by ID or name in every list (Ctrl+G)">
+              <Search size={14} />
+              <span className="truncate">{lastFind ? lastFind.query : "Find by ID or name…"}</span>
+              <kbd>Ctrl G</kbd>
+            </button>
+            {lastFind && lastFind.hits.length > 1 && (
+              <>
+                <span className="find-pos mono muted">
+                  {lastFind.position + 1}/{lastFind.hits.length}
+                </span>
+                <button className="icon-btn small" onClick={() => stepFind(-1)} title="Previous result (Shift+F3)">
+                  <ChevronLeft size={15} />
+                </button>
+                <button className="icon-btn small" onClick={() => stepFind(1)} title="Next result (F3)">
+                  <ChevronRight size={15} />
+                </button>
+              </>
+            )}
           </div>
         )}
         <span className="spacer" />
@@ -336,6 +388,17 @@ export default function App() {
           <Settings size={18} />
         </button>
       </header>
+
+      {findOpen && summary && (
+        <FindPalette
+          lists={summary.lists}
+          initialQuery={lastFind?.query ?? ""}
+          icon={icon}
+          onOpen={(hit, newTab) => follow(hit.list, hit.index, newTab)}
+          onResults={(query, hits, position) => setLastFind({ query, hits, position })}
+          onClose={() => setFindOpen(false)}
+        />
+      )}
 
       {setsEditor && (
         <SetsEditor
@@ -427,9 +490,7 @@ export default function App() {
       ) : (
         <main className="welcome">
           <div className="drop-card">
-            <div className="drop-icon" aria-hidden>
-              <Gem size={30} />
-            </div>
+            <img className="drop-logo" src={logo} alt="" draggable={false} />
             <h1>Open an elements.data file</h1>
             <p className="muted">
               Drop a file anywhere in this window, or choose one. Layouts are built in for versions 66, 112, 156,

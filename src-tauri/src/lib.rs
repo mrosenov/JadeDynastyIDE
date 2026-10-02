@@ -124,6 +124,11 @@ async fn list_records(list: usize, state: State<'_, AppState>) -> Result<Vec<Rec
 }
 
 #[tauri::command]
+async fn find_records(query: String, state: State<'_, AppState>) -> Result<elements::FindResult, String> {
+    state.with_document(|doc| Ok(doc.find(&query, 200)))
+}
+
+#[tauri::command]
 async fn referenced_by(list: usize, row: usize, state: State<'_, AppState>) -> Result<elements::refs::ReferencedBy, String> {
     state.with_document(|doc| doc.referenced_by(list, row))
 }
@@ -421,6 +426,7 @@ pub fn run() {
             get_settings,
             inspect_client,
             save_settings,
+            find_records,
             named_sets,
             named_set,
             save_named_set,
