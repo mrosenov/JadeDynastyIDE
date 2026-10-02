@@ -538,6 +538,8 @@ export interface FieldSpec {
   kind: Kind;
   len?: number;
   dims?: number[];
+  /** Display role, e.g. "time". */
+  display?: string;
 }
 
 /**
@@ -556,6 +558,7 @@ export function defineAt(
     kind: spec.kind,
     len: spec.len ?? 32,
     dims: spec.dims ?? [],
+    display: spec.display ?? "",
   });
   const want = fieldSize(field);
   const size = draftSize(fields);

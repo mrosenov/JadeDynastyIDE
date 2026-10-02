@@ -1,6 +1,7 @@
 import type { FieldNode } from "../elements/types";
+import { formatUnix, formatUnixUtc } from "../elements/time";
 import { type Path, flatten } from "../elements/fieldPaths";
-import { ChevronRight, GitBranch } from "lucide-react";
+import { CalendarClock, ChevronRight, GitBranch } from "lucide-react";
 
 interface Props {
   nodes: FieldNode[];
@@ -94,7 +95,18 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
                 ) : (
                   <span className="hint">{node.hint}</span>
                 ))}
-              {node.display && <span className="role">{node.display}</span>}
+              {node.display === "time" && node.value !== undefined && (() => {
+                const seconds = Number(node.value);
+                const local = formatUnix(seconds);
+                return local ? (
+                  <span className="time-chip" title={`${formatUnixUtc(seconds)} · unix ${node.value}`}>
+                    <CalendarClock size={11} /> {local}
+                  </span>
+                ) : (
+                  <span className="time-chip unset">not set</span>
+                );
+              })()}
+              {node.display && node.display !== "time" && <span className="role">{node.display}</span>}
               {node.cond && (
                 <span className="cond-chip" title={`Conditional type: ${node.cond}`}>
                   <GitBranch size={11} /> {node.cond}

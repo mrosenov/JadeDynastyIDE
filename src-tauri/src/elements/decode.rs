@@ -236,7 +236,8 @@ impl Ctx<'_> {
                     node.icon = a.icon;
                     node.set = a.set;
                 }
-                if node.hint.is_none() && matches!(ty, Ty::I32 | Ty::U32) {
+                // Timestamps are shown as dates by the UI, not as floats.
+                if node.hint.is_none() && matches!(ty, Ty::I32 | Ty::U32) && node.display.as_deref() != Some("time") {
                     node.hint = float_hint(u32::from_le_bytes(fixed(self.bytes, off)));
                 }
                 node.value = Some(text);

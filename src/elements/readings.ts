@@ -2,6 +2,7 @@
 
 import type { Kind } from "../schema/model";
 import type { FieldNode } from "./types";
+import { formatUnix, plausibleUnix } from "./time";
 
 export interface Reading {
   key: string;
@@ -12,7 +13,7 @@ export interface Reading {
   /** The value looks plausible for this type. */
   likely: boolean;
   /** Field to define for this reading. */
-  define: { kind: Kind; len?: number; dims?: number[]; size: number };
+  define: { kind: Kind; len?: number; dims?: number[]; display?: string; size: number };
 }
 
 /** Bytes the selection can be read from: [start, end) of the undefined run. */
@@ -102,6 +103,15 @@ export function readings(raw: number[], offset: number, span: Span): Reading[] {
       likely: hi !== 0 && Math.abs(lo) < 10_000 && Math.abs(hi) < 10_000 && !floatLike,
       define: { kind: "i16", dims: [2], size: 4 },
     });
+    if (plausibleUnix(u32)) {
+      out.push({
+        key: "time",
+        label: "unix time",
+        value: formatUnix(u32) ?? String(u32),
+        likely: true,
+        define: { kind: "i32", display: "time", size: 4 },
+      });
+    }
     out.push({
       key: "f32",
       label: "float",

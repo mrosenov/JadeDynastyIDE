@@ -59,7 +59,8 @@ interface Props {
 }
 
 const INTEGER_KINDS = new Set<Kind>(["i8", "u8", "bool", "i16", "u16", "i32", "u32", "i64", "u64"]);
-const ROLES = ["", "path", "icon", "skill"];
+const ROLES = ["", "path", "icon", "skill", "time"];
+const ROLE_LABEL: Record<string, string> = { "": "—", path: "path", icon: "icon", skill: "skill", time: "date/time (unix)" };
 
 // ---------------------------------------------------------------- tree edits
 
@@ -743,7 +744,7 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                       <option value="__none__">— none —</option>
                       {ROLES.filter(Boolean).map((r) => (
                         <option key={r} value={r}>
-                          {r}
+                          {ROLE_LABEL[r]}
                         </option>
                       ))}
                     </select>
@@ -1011,7 +1012,7 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                         >
                           {ROLES.map((r) => (
                             <option key={r} value={r}>
-                              {r || "—"}
+                              {ROLE_LABEL[r] ?? r}
                             </option>
                           ))}
                         </select>

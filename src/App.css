@@ -2521,3 +2521,21 @@ svg.lucide {
     minmax(170px, 2fr) 112px 84px 70px minmax(110px, 1.1fr) 86px minmax(150px, 1.4fr)
     minmax(100px, 1.2fr) 52px 44px 146px;
 }
+
+/* Unix timestamps shown as dates. */
+.time-chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-family: var(--font);
+  font-size: 11px;
+  background: color-mix(in srgb, #6ea8fe 18%, transparent);
+  color: color-mix(in srgb, #6ea8fe 85%, var(--text));
+}
+.time-chip.unset {
+  background: var(--bg-hover);
+  color: var(--text-faint);
+}
