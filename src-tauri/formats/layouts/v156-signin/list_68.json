@@ -1,0 +1,124 @@
+{
+  "key": "lottery_essence",
+  "name": "Lottery Essence",
+  "struct": "LOTTERY_ESSENCE",
+  "size": 1252,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径名",
+      "display": "icon"
+    },
+    {
+      "name": "dice_count",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "可以抽取的次数(1~6)"
+    },
+    {
+      "name": "type",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "彩票类型"
+    },
+    {
+      "name": "candidates",
+      "off": 84,
+      "t": {
+        "k": "array",
+        "n": 32,
+        "stride": 36,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "desc",
+              "off": 0,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              },
+              "c": "代表文字, 最多16个汉字"
+            },
+            {
+              "name": "icon",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              },
+              "c": "图标路径名"
+            }
+          ]
+        }
+      },
+      "c": "备选图案"
+    },
+    {
+      "name": "price",
+      "off": 1236,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 1240,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 1244,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 1248,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

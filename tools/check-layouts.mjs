@@ -4,9 +4,8 @@
 //   node tools/check-layouts.mjs <elements.data> [...]
 
 import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { readListSizes } from "./lib/elements-file.mjs";
+import { readLayouts } from "./lib/layouts.mjs";
 
 const files = process.argv.slice(2);
 if (!files.length) {
@@ -14,8 +13,7 @@ if (!files.length) {
   process.exit(1);
 }
 
-const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "../src-tauri/formats/layouts");
-const layouts = fs.readdirSync(dir).map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")));
+const layouts = readLayouts();
 
 for (const file of files) {
   const data = fs.readFileSync(file);

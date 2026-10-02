@@ -1,0 +1,117 @@
+{
+  "key": "rune_equip",
+  "name": "Rune Equip",
+  "struct": "RUNE_EQUIP_ESSENCE",
+  "size": 112,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "id"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "file_model",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "元魂在角色周围显示的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_matter",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径",
+      "display": "icon"
+    },
+    {
+      "name": "quality",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "法宝品质 0-100"
+    },
+    {
+      "name": "hole_max",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "最大孔位数 2-5"
+    },
+    {
+      "name": "require_level",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "c": "等级限制"
+    },
+    {
+      "name": "renascence_count",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "c": "转生次数要求"
+    },
+    {
+      "name": "price",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 108,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

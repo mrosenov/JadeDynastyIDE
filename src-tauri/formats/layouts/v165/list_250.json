@@ -1,0 +1,722 @@
+{
+  "name": "Divine Accessory Imbue Config",
+  "struct": "DIVINE_ACCESSORY_IMBUE_CONFIG",
+  "size": 468,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "item_list_1_pstone_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_1_equipment_id",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_2_pstone_id",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_2_equipment_id",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_3_pstone_id",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_3_equipment_id",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_4_pstone_id",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_4_equipment_id",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_5_pstone_id",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_5_equipment_id",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_6_pstone_id",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_6_equipment_id",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_7_pstone_id",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_7_equipment_id",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_8_pstone_id",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_8_equipment_id",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_9_pstone_id",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_9_equipment_id",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_10_pstone_id",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_10_equipment_id",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_11_pstone_id",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_11_equipment_id",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_12_pstone_id",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_12_equipment_id",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_13_pstone_id",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_13_equipment_id",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_14_pstone_id",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_14_equipment_id",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_15_pstone_id",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_15_equipment_id",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_16_pstone_id",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_16_equipment_id",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_17_pstone_id",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_17_equipment_id",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_18_pstone_id",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_18_equipment_id",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_19_pstone_id",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_19_equipment_id",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_20_pstone_id",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_20_equipment_id",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_21_pstone_id",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_21_equipment_id",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_22_pstone_id",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_22_equipment_id",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_23_pstone_id",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_23_equipment_id",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_24_pstone_id",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_24_equipment_id",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_25_pstone_id",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_25_equipment_id",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_26_pstone_id",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_26_equipment_id",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_27_pstone_id",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_27_equipment_id",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_28_pstone_id",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_28_equipment_id",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_29_pstone_id",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_29_equipment_id",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_30_pstone_id",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_30_equipment_id",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_31_pstone_id",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_31_equipment_id",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_32_pstone_id",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_32_equipment_id",
+      "off": 320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_33_pstone_id",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_33_equipment_id",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_34_pstone_id",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_34_equipment_id",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_35_pstone_id",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_35_equipment_id",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_36_pstone_id",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_36_equipment_id",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_37_pstone_id",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_37_equipment_id",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_38_pstone_id",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_38_equipment_id",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_39_pstone_id",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_39_equipment_id",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_40_pstone_id",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_40_equipment_id",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_41_pstone_id",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_41_equipment_id",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_42_pstone_id",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_42_equipment_id",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_43_pstone_id",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_43_equipment_id",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_44_pstone_id",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_44_equipment_id",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_45_pstone_id",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_45_equipment_id",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_46_pstone_id",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_46_equipment_id",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_47_pstone_id",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_47_equipment_id",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_48_pstone_id",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_48_equipment_id",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_49_pstone_id",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_49_equipment_id",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_50_pstone_id",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_50_equipment_id",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

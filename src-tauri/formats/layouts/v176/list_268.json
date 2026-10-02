@@ -1,0 +1,512 @@
+{
+  "name": "Constellation Skill Config",
+  "struct": "CONSTELLATION_SKILL_CONFIG",
+  "size": 348,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "list_1_skill_1_probability",
+      "off": 68,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_1_skill_1_skill_id",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_1_skill_2_probability",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_1_skill_2_skill_id",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_1_skill_3_probability",
+      "off": 84,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_1_skill_3_skill_id",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_1_probability_total",
+      "off": 92,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_2_skill_1_probability",
+      "off": 96,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_2_skill_1_skill_id",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_2_skill_2_probability",
+      "off": 104,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_2_skill_2_skill_id",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_2_skill_3_probability",
+      "off": 112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_2_skill_3_skill_id",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_2_probability_total",
+      "off": 120,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_3_skill_1_probability",
+      "off": 124,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_3_skill_1_skill_id",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_3_skill_2_probability",
+      "off": 132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_3_skill_2_skill_id",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_3_skill_3_probability",
+      "off": 140,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_3_skill_3_skill_id",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_3_probability_total",
+      "off": 148,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_4_skill_1_probability",
+      "off": 152,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_4_skill_1_skill_id",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_4_skill_2_probability",
+      "off": 160,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_4_skill_2_skill_id",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_4_skill_3_probability",
+      "off": 168,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_4_skill_3_skill_id",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_4_probability_total",
+      "off": 176,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_5_skill_1_probability",
+      "off": 180,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_5_skill_1_skill_id",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_5_skill_2_probability",
+      "off": 188,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_5_skill_2_skill_id",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_5_skill_3_probability",
+      "off": 196,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_5_skill_3_skill_id",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_5_probability_total",
+      "off": 204,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_6_skill_1_probability",
+      "off": 208,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_6_skill_1_skill_id",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_6_skill_2_probability",
+      "off": 216,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_6_skill_2_skill_id",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_6_skill_3_probability",
+      "off": 224,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_6_skill_3_skill_id",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_6_probability_total",
+      "off": 232,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_7_skill_1_probability",
+      "off": 236,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_7_skill_1_skill_id",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_7_skill_2_probability",
+      "off": 244,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_7_skill_2_skill_id",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_7_skill_3_probability",
+      "off": 252,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_7_skill_3_skill_id",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_7_probability_total",
+      "off": 260,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_8_skill_1_probability",
+      "off": 264,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_8_skill_1_skill_id",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_8_skill_2_probability",
+      "off": 272,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_8_skill_2_skill_id",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_8_skill_3_probability",
+      "off": 280,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_8_skill_3_skill_id",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_8_probability_total",
+      "off": 288,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_9_skill_1_probability",
+      "off": 292,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_9_skill_1_skill_id",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_9_skill_2_probability",
+      "off": 300,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_9_skill_2_skill_id",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_9_skill_3_probability",
+      "off": 308,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_9_skill_3_skill_id",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_9_probability_total",
+      "off": 316,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_10_skill_1_probability",
+      "off": 320,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_10_skill_1_skill_id",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_10_skill_2_probability",
+      "off": 328,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_10_skill_2_skill_id",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_10_skill_3_probability",
+      "off": 336,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "list_10_skill_3_skill_id",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "list_10_probability_total",
+      "off": 344,
+      "t": {
+        "k": "f32"
+      }
+    }
+  ]
+}

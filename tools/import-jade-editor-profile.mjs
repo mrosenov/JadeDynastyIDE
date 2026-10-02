@@ -2,14 +2,17 @@
 // Converts the JadeEditorPython format files (formats/elements) into a jdide
 // layout for elements.data v112, the version the original Jade Editor targets.
 //
-//   node tools/import-jade-editor-profile.mjs <JadeEditorPython/formats/elements> <layouts/v112.json>
+//   node tools/import-jade-editor-profile.mjs <JadeEditorPython/formats/elements> [layout-id]
+//
+// Writes src-tauri/formats/layouts/<layout-id>/ (default id: v112).
 
 import fs from "node:fs";
 import path from "node:path";
+import { writeLayout } from "./lib/layouts.mjs";
 
-const [formatsDir, outPath] = process.argv.slice(2);
-if (!formatsDir || !outPath) {
-  console.error("usage: import-jade-editor-profile.mjs <formats/elements dir> <out.json>");
+const [formatsDir, layoutId = "v112"] = process.argv.slice(2);
+if (!formatsDir) {
+  console.error("usage: import-jade-editor-profile.mjs <formats/elements dir> [layout-id]");
   process.exit(1);
 }
 
@@ -50,7 +53,7 @@ const enums = Object.fromEntries(
 );
 
 const layout = {
-  id: path.basename(outPath, ".json"),
+  id: layoutId,
   version: VERSION,
   source: "Jade Editor list names and schemas (JadeEditorPython)",
   markers: [
@@ -61,6 +64,5 @@ const layout = {
   lists: names.map((name) => ({ name, ...(schemas.get(name) ?? {}) })),
 };
 
-fs.mkdirSync(path.dirname(outPath), { recursive: true });
-fs.writeFileSync(outPath, JSON.stringify(layout));
-console.log(`wrote ${outPath}: v${VERSION}, ${layout.lists.length} lists, ${schemas.size} typed`);
+const outDir = writeLayout(layout);
+console.log(`wrote ${outDir}: v${VERSION}, ${layout.lists.length} lists, ${schemas.size} typed`);

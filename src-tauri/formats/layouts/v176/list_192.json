@@ -1,0 +1,56 @@
+{
+  "key": "compound_mine_essence",
+  "name": "Compound Mine Essence",
+  "struct": "COMPOUND_MINE_ESSENCE",
+  "size": 88,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "file_mine",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "矿路径",
+      "display": "path"
+    },
+    {
+      "name": "count",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "可采集次数"
+    },
+    {
+      "name": "file_mine_spe",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "矿4路径",
+      "display": "path"
+    }
+  ]
+}

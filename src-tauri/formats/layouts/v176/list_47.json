@@ -1,0 +1,44 @@
+{
+  "name": "Unknown47",
+  "struct": "UNKNOWN47",
+  "size": 92,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk1",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Unk2",
+      "off": 68,
+      "t": {
+        "k": "wstr",
+        "n": 8
+      }
+    },
+    {
+      "name": "Unk3",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk4",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1979 @@
+{
+  "name": "Npc Transmit Service",
+  "struct": "NPC_TRANSMIT_SERVICE",
+  "size": 1872,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Targets_1_World_ID",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_1_Name",
+      "off": 72,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_1_Pos_X",
+      "off": 104,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_1_Pos_Y",
+      "off": 108,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_1_Pos_Z",
+      "off": 112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_1_Fee",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_1_Unk1",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_1_Unk2",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_1_Unk3",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_1_Unk4",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_1_Req_Level",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_2_World_ID",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_2_Name",
+      "off": 144,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_2_Pos_X",
+      "off": 176,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_2_Pos_Y",
+      "off": 180,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_2_Pos_Z",
+      "off": 184,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_2_Fee",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_2_Unk1",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_2_Unk2",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_2_Unk3",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_2_Unk4",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_2_Req_Level",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_3_World_ID",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_3_Name",
+      "off": 216,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_3_Pos_X",
+      "off": 248,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_3_Pos_Y",
+      "off": 252,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_3_Pos_Z",
+      "off": 256,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_3_Fee",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_3_Unk1",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_3_Unk2",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_3_Unk3",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_3_Unk4",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_3_Req_Level",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_4_World_ID",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_4_Name",
+      "off": 288,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_4_Pos_X",
+      "off": 320,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_4_Pos_Y",
+      "off": 324,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_4_Pos_Z",
+      "off": 328,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_4_Fee",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_4_Unk1",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_4_Unk2",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_4_Unk3",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_4_Unk4",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_4_Req_Level",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_5_World_ID",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_5_Name",
+      "off": 360,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_5_Pos_X",
+      "off": 392,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_5_Pos_Y",
+      "off": 396,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_5_Pos_Z",
+      "off": 400,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_5_Fee",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_5_Unk1",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_5_Unk2",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_5_Unk3",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_5_Unk4",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_5_Req_Level",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_6_World_ID",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_6_Name",
+      "off": 432,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_6_Pos_X",
+      "off": 464,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_6_Pos_Y",
+      "off": 468,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_6_Pos_Z",
+      "off": 472,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_6_Fee",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_6_Unk1",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_6_Unk2",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_6_Unk3",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_6_Unk4",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_6_Req_Level",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_7_World_ID",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_7_Name",
+      "off": 504,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_7_Pos_X",
+      "off": 536,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_7_Pos_Y",
+      "off": 540,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_7_Pos_Z",
+      "off": 544,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_7_Fee",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_7_Unk1",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_7_Unk2",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_7_Unk3",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_7_Unk4",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_7_Req_Level",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_8_World_ID",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_8_Name",
+      "off": 576,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_8_Pos_X",
+      "off": 608,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_8_Pos_Y",
+      "off": 612,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_8_Pos_Z",
+      "off": 616,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_8_Fee",
+      "off": 620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_8_Unk1",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_8_Unk2",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_8_Unk3",
+      "off": 632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_8_Unk4",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_8_Req_Level",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_9_World_ID",
+      "off": 644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_9_Name",
+      "off": 648,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_9_Pos_X",
+      "off": 680,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_9_Pos_Y",
+      "off": 684,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_9_Pos_Z",
+      "off": 688,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_9_Fee",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_9_Unk1",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_9_Unk2",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_9_Unk3",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_9_Unk4",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_9_Req_Level",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_10_World_ID",
+      "off": 716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_10_Name",
+      "off": 720,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_10_Pos_X",
+      "off": 752,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_10_Pos_Y",
+      "off": 756,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_10_Pos_Z",
+      "off": 760,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_10_Fee",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_10_Unk1",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_10_Unk2",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_10_Unk3",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_10_Unk4",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_10_Req_Level",
+      "off": 784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_11_World_ID",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_11_Name",
+      "off": 792,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_11_Pos_X",
+      "off": 824,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_11_Pos_Y",
+      "off": 828,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_11_Pos_Z",
+      "off": 832,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_11_Fee",
+      "off": 836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_11_Unk1",
+      "off": 840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_11_Unk2",
+      "off": 844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_11_Unk3",
+      "off": 848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_11_Unk4",
+      "off": 852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_11_Req_Level",
+      "off": 856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_12_World_ID",
+      "off": 860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_12_Name",
+      "off": 864,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_12_Pos_X",
+      "off": 896,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_12_Pos_Y",
+      "off": 900,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_12_Pos_Z",
+      "off": 904,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_12_Fee",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_12_Unk1",
+      "off": 912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_12_Unk2",
+      "off": 916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_12_Unk3",
+      "off": 920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_12_Unk4",
+      "off": 924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_12_Req_Level",
+      "off": 928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_13_World_ID",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_13_Name",
+      "off": 936,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_13_Pos_X",
+      "off": 968,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_13_Pos_Y",
+      "off": 972,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_13_Pos_Z",
+      "off": 976,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_13_Fee",
+      "off": 980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_13_Unk1",
+      "off": 984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_13_Unk2",
+      "off": 988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_13_Unk3",
+      "off": 992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_13_Unk4",
+      "off": 996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_13_Req_Level",
+      "off": 1000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_14_World_ID",
+      "off": 1004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_14_Name",
+      "off": 1008,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_14_Pos_X",
+      "off": 1040,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_14_Pos_Y",
+      "off": 1044,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_14_Pos_Z",
+      "off": 1048,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_14_Fee",
+      "off": 1052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_14_Unk1",
+      "off": 1056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_14_Unk2",
+      "off": 1060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_14_Unk3",
+      "off": 1064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_14_Unk4",
+      "off": 1068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_14_Req_Level",
+      "off": 1072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_15_World_ID",
+      "off": 1076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_15_Name",
+      "off": 1080,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_15_Pos_X",
+      "off": 1112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_15_Pos_Y",
+      "off": 1116,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_15_Pos_Z",
+      "off": 1120,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_15_Fee",
+      "off": 1124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_15_Unk1",
+      "off": 1128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_15_Unk2",
+      "off": 1132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_15_Unk3",
+      "off": 1136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_15_Unk4",
+      "off": 1140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_15_Req_Level",
+      "off": 1144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_16_World_ID",
+      "off": 1148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_16_Name",
+      "off": 1152,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_16_Pos_X",
+      "off": 1184,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_16_Pos_Y",
+      "off": 1188,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_16_Pos_Z",
+      "off": 1192,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_16_Fee",
+      "off": 1196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_16_Unk1",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_16_Unk2",
+      "off": 1204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_16_Unk3",
+      "off": 1208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_16_Unk4",
+      "off": 1212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_16_Req_Level",
+      "off": 1216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_17_World_ID",
+      "off": 1220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_17_Name",
+      "off": 1224,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_17_Pos_X",
+      "off": 1256,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_17_Pos_Y",
+      "off": 1260,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_17_Pos_Z",
+      "off": 1264,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_17_Fee",
+      "off": 1268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_17_Unk1",
+      "off": 1272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_17_Unk2",
+      "off": 1276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_17_Unk3",
+      "off": 1280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_17_Unk4",
+      "off": 1284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_17_Req_Level",
+      "off": 1288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_18_World_ID",
+      "off": 1292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_18_Name",
+      "off": 1296,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_18_Pos_X",
+      "off": 1328,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_18_Pos_Y",
+      "off": 1332,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_18_Pos_Z",
+      "off": 1336,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_18_Fee",
+      "off": 1340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_18_Unk1",
+      "off": 1344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_18_Unk2",
+      "off": 1348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_18_Unk3",
+      "off": 1352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_18_Unk4",
+      "off": 1356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_18_Req_Level",
+      "off": 1360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_19_World_ID",
+      "off": 1364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_19_Name",
+      "off": 1368,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_19_Pos_X",
+      "off": 1400,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_19_Pos_Y",
+      "off": 1404,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_19_Pos_Z",
+      "off": 1408,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_19_Fee",
+      "off": 1412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_19_Unk1",
+      "off": 1416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_19_Unk2",
+      "off": 1420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_19_Unk3",
+      "off": 1424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_19_Unk4",
+      "off": 1428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_19_Req_Level",
+      "off": 1432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_20_World_ID",
+      "off": 1436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_20_Name",
+      "off": 1440,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_20_Pos_X",
+      "off": 1472,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_20_Pos_Y",
+      "off": 1476,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_20_Pos_Z",
+      "off": 1480,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_20_Fee",
+      "off": 1484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_20_Unk1",
+      "off": 1488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_20_Unk2",
+      "off": 1492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_20_Unk3",
+      "off": 1496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_20_Unk4",
+      "off": 1500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_20_Req_Level",
+      "off": 1504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_21_World_ID",
+      "off": 1508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_21_Name",
+      "off": 1512,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_21_Pos_X",
+      "off": 1544,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_21_Pos_Y",
+      "off": 1548,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_21_Pos_Z",
+      "off": 1552,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_21_Fee",
+      "off": 1556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_21_Unk1",
+      "off": 1560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_21_Unk2",
+      "off": 1564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_21_Unk3",
+      "off": 1568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_21_Unk4",
+      "off": 1572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_21_Req_Level",
+      "off": 1576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_22_World_ID",
+      "off": 1580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_22_Name",
+      "off": 1584,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_22_Pos_X",
+      "off": 1616,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_22_Pos_Y",
+      "off": 1620,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_22_Pos_Z",
+      "off": 1624,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_22_Fee",
+      "off": 1628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_22_Unk1",
+      "off": 1632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_22_Unk2",
+      "off": 1636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_22_Unk3",
+      "off": 1640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_22_Unk4",
+      "off": 1644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_22_Req_Level",
+      "off": 1648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_23_World_ID",
+      "off": 1652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_23_Name",
+      "off": 1656,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_23_Pos_X",
+      "off": 1688,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_23_Pos_Y",
+      "off": 1692,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_23_Pos_Z",
+      "off": 1696,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_23_Fee",
+      "off": 1700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_23_Unk1",
+      "off": 1704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_23_Unk2",
+      "off": 1708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_23_Unk3",
+      "off": 1712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_23_Unk4",
+      "off": 1716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_23_Req_Level",
+      "off": 1720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_24_World_ID",
+      "off": 1724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_24_Name",
+      "off": 1728,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_24_Pos_X",
+      "off": 1760,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_24_Pos_Y",
+      "off": 1764,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_24_Pos_Z",
+      "off": 1768,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_24_Fee",
+      "off": 1772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_24_Unk1",
+      "off": 1776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_24_Unk2",
+      "off": 1780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_24_Unk3",
+      "off": 1784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_24_Unk4",
+      "off": 1788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_24_Req_Level",
+      "off": 1792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_25_World_ID",
+      "off": 1796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_25_Name",
+      "off": 1800,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Targets_25_Pos_X",
+      "off": 1832,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_25_Pos_Y",
+      "off": 1836,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_25_Pos_Z",
+      "off": 1840,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Targets_25_Fee",
+      "off": 1844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_25_Unk1",
+      "off": 1848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_25_Unk2",
+      "off": 1852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_25_Unk3",
+      "off": 1856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_25_Unk4",
+      "off": 1860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Targets_25_Req_Level",
+      "off": 1864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Dialogue",
+      "off": 1868,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

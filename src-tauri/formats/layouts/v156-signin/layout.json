@@ -1,0 +1,32 @@
+{
+  "id": "v156-signin",
+  "version": 156,
+  "source": "Server template sources (JD1447: exptypes.h, elementdataman.cpp)",
+  "markers": [
+    {
+      "before": 13,
+      "kind": "checksum"
+    },
+    {
+      "before": 23,
+      "kind": "exporter"
+    },
+    {
+      "before": 36,
+      "kind": "checksum"
+    },
+    {
+      "before": 56,
+      "kind": "tag"
+    },
+    {
+      "before": 62,
+      "kind": "checksum"
+    },
+    {
+      "before": 103,
+      "kind": "checksum"
+    }
+  ],
+  "listCount": 194
+}

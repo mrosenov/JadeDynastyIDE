@@ -1,0 +1,36 @@
+{
+  "id": "v165",
+  "version": 165,
+  "source": "Laravel jdide structures (v165): 186 curated lists",
+  "markers": [
+    {
+      "before": 13,
+      "kind": "checksum"
+    },
+    {
+      "before": 23,
+      "kind": "exporter"
+    },
+    {
+      "before": 36,
+      "kind": "checksum"
+    },
+    {
+      "before": 56,
+      "kind": "tag"
+    },
+    {
+      "before": 62,
+      "kind": "checksum"
+    },
+    {
+      "before": 103,
+      "kind": "checksum"
+    },
+    {
+      "before": 296,
+      "kind": "checksum"
+    }
+  ],
+  "listCount": 318
+}

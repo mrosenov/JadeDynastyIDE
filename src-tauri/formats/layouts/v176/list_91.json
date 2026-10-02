@@ -1,0 +1,302 @@
+{
+  "name": "Renascence Skill Config",
+  "struct": "RENASCENCE_SKILL_CONFIG",
+  "size": 260,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Occup_Level_0",
+      "off": 68,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Occup_Level_0_2",
+      "off": 76,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Occup_Level_1",
+      "off": 84,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Occup_Level_1_2",
+      "off": 92,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Occup_Level_2",
+      "off": 100,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Occup_Level_2_2",
+      "off": 108,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Occup_Level_3",
+      "off": 116,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Occup_Level_3_2",
+      "off": 124,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Unk1",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk2",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk3",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk4",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk5",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk6",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk7",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk8",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_1_ID",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_1_Level",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_2_ID",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_2_Level",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_3_ID",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_3_Level",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_4_ID",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_4_Level",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_5_ID",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_5_Level",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_6_ID",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_6_Level",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_7_ID",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_7_Level",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_8_ID",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_8_Level",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_9_ID",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_9_Level",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_10_ID",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_10_Level",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_11_ID",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_11_Level",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_12_ID",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skills_12_Level",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

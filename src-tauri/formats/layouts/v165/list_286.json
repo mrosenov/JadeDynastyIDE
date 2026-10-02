@@ -1,0 +1,86 @@
+{
+  "name": "Spirit Stone Essence",
+  "struct": "SPIRIT_STONE_ESSENCE",
+  "size": 132,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "text",
+      "off": 80,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "addon_id",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "price",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "shop_price",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pile_num_max",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

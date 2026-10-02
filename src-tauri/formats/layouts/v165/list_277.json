@@ -1,0 +1,107 @@
+{
+  "name": "Firework Array Essence",
+  "struct": "FIREWORK_ARRAY_ESSENCE",
+  "size": 312,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "rewards_amount",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "file_gfx",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_1",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_2",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_3",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "text",
+      "off": 96,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "price",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "shop_price",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pile_num_max",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

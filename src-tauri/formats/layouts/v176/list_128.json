@@ -1,0 +1,63 @@
+{
+  "key": "gem_extract_config",
+  "name": "Gem Extract Config",
+  "struct": "GEM_EXTRACT_CONFIG",
+  "size": 104,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模板ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "gem_dust_config",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "gem_dust_id",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "生成的宝石粉尘ID"
+            },
+            {
+              "name": "gem_dust_num",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "生成的宝石粉尘的数量"
+            },
+            {
+              "name": "gem_dust_prob",
+              "off": 8,
+              "t": {
+                "k": "f32"
+              },
+              "c": "生成该宝石粉尘的概率"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

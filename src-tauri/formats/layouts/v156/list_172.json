@@ -1,0 +1,68 @@
+{
+  "key": "bashe_award_config",
+  "name": "Bashe Award Config",
+  "struct": "BASHE_AWARD_CONFIG",
+  "size": 192,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "period",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "间隔时间(s)"
+    },
+    {
+      "name": "award_info",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "count",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "prob",
+              "off": 8,
+              "t": {
+                "k": "f32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

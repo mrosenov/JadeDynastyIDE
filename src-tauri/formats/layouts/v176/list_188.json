@@ -1,0 +1,4292 @@
+{
+  "name": "Transcript Strategy Config",
+  "struct": "TRANSCRIPT_STRATEGY_CONFIG",
+  "size": 2508,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "level_list_1_level_type",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_1_monster_1",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_1_monster_2",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_1_monster_3",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_1_monster_4",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_1_monster_5",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_1_monster_6",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_1_monster_7",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_1_monster_8",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_1_monster_9",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_1_monster_10",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_2_level_type",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_2_monster_1",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_2_monster_2",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_2_monster_3",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_2_monster_4",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_2_monster_5",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_2_monster_6",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_2_monster_7",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_2_monster_8",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_2_monster_9",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_2_monster_10",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_3_level_type",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_3_monster_1",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_3_monster_2",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_3_monster_3",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_3_monster_4",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_3_monster_5",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_3_monster_6",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_3_monster_7",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_3_monster_8",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_3_monster_9",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_3_monster_10",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_4_level_type",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_4_monster_1",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_4_monster_2",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_4_monster_3",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_4_monster_4",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_4_monster_5",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_4_monster_6",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_4_monster_7",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_4_monster_8",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_4_monster_9",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_4_monster_10",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_5_level_type",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_5_monster_1",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_5_monster_2",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_5_monster_3",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_5_monster_4",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_5_monster_5",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_5_monster_6",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_5_monster_7",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_5_monster_8",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_5_monster_9",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_5_monster_10",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_6_level_type",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_6_monster_1",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_6_monster_2",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_6_monster_3",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_6_monster_4",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_6_monster_5",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_6_monster_6",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_6_monster_7",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_6_monster_8",
+      "off": 320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_6_monster_9",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_6_monster_10",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_7_level_type",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_7_monster_1",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_7_monster_2",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_7_monster_3",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_7_monster_4",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_7_monster_5",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_7_monster_6",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_7_monster_7",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_7_monster_8",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_7_monster_9",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_7_monster_10",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_8_level_type",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_8_monster_1",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_8_monster_2",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_8_monster_3",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_8_monster_4",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_8_monster_5",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_8_monster_6",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_8_monster_7",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_8_monster_8",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_8_monster_9",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_8_monster_10",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_9_level_type",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_9_monster_1",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_9_monster_2",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_9_monster_3",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_9_monster_4",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_9_monster_5",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_9_monster_6",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_9_monster_7",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_9_monster_8",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_9_monster_9",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_9_monster_10",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_10_level_type",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_10_monster_1",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_10_monster_2",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_10_monster_3",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_10_monster_4",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_10_monster_5",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_10_monster_6",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_10_monster_7",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_10_monster_8",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_10_monster_9",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_10_monster_10",
+      "off": 504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_11_level_type",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_11_monster_1",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_11_monster_2",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_11_monster_3",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_11_monster_4",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_11_monster_5",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_11_monster_6",
+      "off": 532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_11_monster_7",
+      "off": 536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_11_monster_8",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_11_monster_9",
+      "off": 544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_11_monster_10",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_12_level_type",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_12_monster_1",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_12_monster_2",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_12_monster_3",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_12_monster_4",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_12_monster_5",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_12_monster_6",
+      "off": 576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_12_monster_7",
+      "off": 580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_12_monster_8",
+      "off": 584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_12_monster_9",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_12_monster_10",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_13_level_type",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_13_monster_1",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_13_monster_2",
+      "off": 604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_13_monster_3",
+      "off": 608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_13_monster_4",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_13_monster_5",
+      "off": 616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_13_monster_6",
+      "off": 620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_13_monster_7",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_13_monster_8",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_13_monster_9",
+      "off": 632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_13_monster_10",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_14_level_type",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_14_monster_1",
+      "off": 644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_14_monster_2",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_14_monster_3",
+      "off": 652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_14_monster_4",
+      "off": 656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_14_monster_5",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_14_monster_6",
+      "off": 664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_14_monster_7",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_14_monster_8",
+      "off": 672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_14_monster_9",
+      "off": 676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_14_monster_10",
+      "off": 680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_15_level_type",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_15_monster_1",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_15_monster_2",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_15_monster_3",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_15_monster_4",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_15_monster_5",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_15_monster_6",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_15_monster_7",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_15_monster_8",
+      "off": 716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_15_monster_9",
+      "off": 720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_15_monster_10",
+      "off": 724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_16_level_type",
+      "off": 728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_16_monster_1",
+      "off": 732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_16_monster_2",
+      "off": 736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_16_monster_3",
+      "off": 740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_16_monster_4",
+      "off": 744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_16_monster_5",
+      "off": 748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_16_monster_6",
+      "off": 752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_16_monster_7",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_16_monster_8",
+      "off": 760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_16_monster_9",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_16_monster_10",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_17_level_type",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_17_monster_1",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_17_monster_2",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_17_monster_3",
+      "off": 784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_17_monster_4",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_17_monster_5",
+      "off": 792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_17_monster_6",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_17_monster_7",
+      "off": 800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_17_monster_8",
+      "off": 804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_17_monster_9",
+      "off": 808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_17_monster_10",
+      "off": 812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_18_level_type",
+      "off": 816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_18_monster_1",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_18_monster_2",
+      "off": 824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_18_monster_3",
+      "off": 828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_18_monster_4",
+      "off": 832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_18_monster_5",
+      "off": 836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_18_monster_6",
+      "off": 840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_18_monster_7",
+      "off": 844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_18_monster_8",
+      "off": 848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_18_monster_9",
+      "off": 852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_18_monster_10",
+      "off": 856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_19_level_type",
+      "off": 860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_19_monster_1",
+      "off": 864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_19_monster_2",
+      "off": 868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_19_monster_3",
+      "off": 872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_19_monster_4",
+      "off": 876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_19_monster_5",
+      "off": 880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_19_monster_6",
+      "off": 884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_19_monster_7",
+      "off": 888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_19_monster_8",
+      "off": 892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_19_monster_9",
+      "off": 896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_19_monster_10",
+      "off": 900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_20_level_type",
+      "off": 904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_20_monster_1",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_20_monster_2",
+      "off": 912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_20_monster_3",
+      "off": 916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_20_monster_4",
+      "off": 920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_20_monster_5",
+      "off": 924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_20_monster_6",
+      "off": 928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_20_monster_7",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_20_monster_8",
+      "off": 936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_20_monster_9",
+      "off": 940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_20_monster_10",
+      "off": 944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_21_level_type",
+      "off": 948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_21_monster_1",
+      "off": 952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_21_monster_2",
+      "off": 956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_21_monster_3",
+      "off": 960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_21_monster_4",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_21_monster_5",
+      "off": 968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_21_monster_6",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_21_monster_7",
+      "off": 976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_21_monster_8",
+      "off": 980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_21_monster_9",
+      "off": 984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_21_monster_10",
+      "off": 988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_22_level_type",
+      "off": 992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_22_monster_1",
+      "off": 996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_22_monster_2",
+      "off": 1000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_22_monster_3",
+      "off": 1004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_22_monster_4",
+      "off": 1008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_22_monster_5",
+      "off": 1012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_22_monster_6",
+      "off": 1016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_22_monster_7",
+      "off": 1020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_22_monster_8",
+      "off": 1024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_22_monster_9",
+      "off": 1028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_22_monster_10",
+      "off": 1032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_23_level_type",
+      "off": 1036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_23_monster_1",
+      "off": 1040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_23_monster_2",
+      "off": 1044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_23_monster_3",
+      "off": 1048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_23_monster_4",
+      "off": 1052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_23_monster_5",
+      "off": 1056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_23_monster_6",
+      "off": 1060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_23_monster_7",
+      "off": 1064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_23_monster_8",
+      "off": 1068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_23_monster_9",
+      "off": 1072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_23_monster_10",
+      "off": 1076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_24_level_type",
+      "off": 1080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_24_monster_1",
+      "off": 1084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_24_monster_2",
+      "off": 1088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_24_monster_3",
+      "off": 1092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_24_monster_4",
+      "off": 1096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_24_monster_5",
+      "off": 1100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_24_monster_6",
+      "off": 1104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_24_monster_7",
+      "off": 1108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_24_monster_8",
+      "off": 1112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_24_monster_9",
+      "off": 1116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_24_monster_10",
+      "off": 1120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_25_level_type",
+      "off": 1124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_25_monster_1",
+      "off": 1128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_25_monster_2",
+      "off": 1132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_25_monster_3",
+      "off": 1136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_25_monster_4",
+      "off": 1140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_25_monster_5",
+      "off": 1144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_25_monster_6",
+      "off": 1148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_25_monster_7",
+      "off": 1152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_25_monster_8",
+      "off": 1156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_25_monster_9",
+      "off": 1160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_25_monster_10",
+      "off": 1164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_26_level_type",
+      "off": 1168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_26_monster_1",
+      "off": 1172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_26_monster_2",
+      "off": 1176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_26_monster_3",
+      "off": 1180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_26_monster_4",
+      "off": 1184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_26_monster_5",
+      "off": 1188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_26_monster_6",
+      "off": 1192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_26_monster_7",
+      "off": 1196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_26_monster_8",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_26_monster_9",
+      "off": 1204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_26_monster_10",
+      "off": 1208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_27_level_type",
+      "off": 1212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_27_monster_1",
+      "off": 1216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_27_monster_2",
+      "off": 1220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_27_monster_3",
+      "off": 1224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_27_monster_4",
+      "off": 1228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_27_monster_5",
+      "off": 1232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_27_monster_6",
+      "off": 1236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_27_monster_7",
+      "off": 1240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_27_monster_8",
+      "off": 1244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_27_monster_9",
+      "off": 1248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_27_monster_10",
+      "off": 1252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_28_level_type",
+      "off": 1256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_28_monster_1",
+      "off": 1260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_28_monster_2",
+      "off": 1264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_28_monster_3",
+      "off": 1268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_28_monster_4",
+      "off": 1272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_28_monster_5",
+      "off": 1276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_28_monster_6",
+      "off": 1280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_28_monster_7",
+      "off": 1284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_28_monster_8",
+      "off": 1288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_28_monster_9",
+      "off": 1292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_28_monster_10",
+      "off": 1296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_29_level_type",
+      "off": 1300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_29_monster_1",
+      "off": 1304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_29_monster_2",
+      "off": 1308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_29_monster_3",
+      "off": 1312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_29_monster_4",
+      "off": 1316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_29_monster_5",
+      "off": 1320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_29_monster_6",
+      "off": 1324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_29_monster_7",
+      "off": 1328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_29_monster_8",
+      "off": 1332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_29_monster_9",
+      "off": 1336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_29_monster_10",
+      "off": 1340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_30_level_type",
+      "off": 1344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_30_monster_1",
+      "off": 1348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_30_monster_2",
+      "off": 1352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_30_monster_3",
+      "off": 1356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_30_monster_4",
+      "off": 1360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_30_monster_5",
+      "off": 1364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_30_monster_6",
+      "off": 1368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_30_monster_7",
+      "off": 1372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_30_monster_8",
+      "off": 1376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_30_monster_9",
+      "off": 1380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_30_monster_10",
+      "off": 1384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_31_level_type",
+      "off": 1388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_31_monster_1",
+      "off": 1392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_31_monster_2",
+      "off": 1396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_31_monster_3",
+      "off": 1400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_31_monster_4",
+      "off": 1404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_31_monster_5",
+      "off": 1408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_31_monster_6",
+      "off": 1412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_31_monster_7",
+      "off": 1416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_31_monster_8",
+      "off": 1420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_31_monster_9",
+      "off": 1424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_31_monster_10",
+      "off": 1428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_32_level_type",
+      "off": 1432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_32_monster_1",
+      "off": 1436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_32_monster_2",
+      "off": 1440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_32_monster_3",
+      "off": 1444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_32_monster_4",
+      "off": 1448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_32_monster_5",
+      "off": 1452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_32_monster_6",
+      "off": 1456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_32_monster_7",
+      "off": 1460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_32_monster_8",
+      "off": 1464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_32_monster_9",
+      "off": 1468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_32_monster_10",
+      "off": 1472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_33_level_type",
+      "off": 1476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_33_monster_1",
+      "off": 1480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_33_monster_2",
+      "off": 1484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_33_monster_3",
+      "off": 1488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_33_monster_4",
+      "off": 1492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_33_monster_5",
+      "off": 1496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_33_monster_6",
+      "off": 1500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_33_monster_7",
+      "off": 1504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_33_monster_8",
+      "off": 1508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_33_monster_9",
+      "off": 1512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_33_monster_10",
+      "off": 1516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_34_level_type",
+      "off": 1520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_34_monster_1",
+      "off": 1524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_34_monster_2",
+      "off": 1528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_34_monster_3",
+      "off": 1532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_34_monster_4",
+      "off": 1536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_34_monster_5",
+      "off": 1540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_34_monster_6",
+      "off": 1544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_34_monster_7",
+      "off": 1548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_34_monster_8",
+      "off": 1552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_34_monster_9",
+      "off": 1556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_34_monster_10",
+      "off": 1560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_35_level_type",
+      "off": 1564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_35_monster_1",
+      "off": 1568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_35_monster_2",
+      "off": 1572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_35_monster_3",
+      "off": 1576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_35_monster_4",
+      "off": 1580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_35_monster_5",
+      "off": 1584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_35_monster_6",
+      "off": 1588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_35_monster_7",
+      "off": 1592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_35_monster_8",
+      "off": 1596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_35_monster_9",
+      "off": 1600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_35_monster_10",
+      "off": 1604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_36_level_type",
+      "off": 1608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_36_monster_1",
+      "off": 1612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_36_monster_2",
+      "off": 1616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_36_monster_3",
+      "off": 1620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_36_monster_4",
+      "off": 1624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_36_monster_5",
+      "off": 1628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_36_monster_6",
+      "off": 1632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_36_monster_7",
+      "off": 1636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_36_monster_8",
+      "off": 1640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_36_monster_9",
+      "off": 1644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_36_monster_10",
+      "off": 1648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_37_level_type",
+      "off": 1652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_37_monster_1",
+      "off": 1656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_37_monster_2",
+      "off": 1660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_37_monster_3",
+      "off": 1664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_37_monster_4",
+      "off": 1668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_37_monster_5",
+      "off": 1672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_37_monster_6",
+      "off": 1676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_37_monster_7",
+      "off": 1680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_37_monster_8",
+      "off": 1684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_37_monster_9",
+      "off": 1688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_37_monster_10",
+      "off": 1692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_38_level_type",
+      "off": 1696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_38_monster_1",
+      "off": 1700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_38_monster_2",
+      "off": 1704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_38_monster_3",
+      "off": 1708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_38_monster_4",
+      "off": 1712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_38_monster_5",
+      "off": 1716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_38_monster_6",
+      "off": 1720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_38_monster_7",
+      "off": 1724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_38_monster_8",
+      "off": 1728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_38_monster_9",
+      "off": 1732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_38_monster_10",
+      "off": 1736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_39_level_type",
+      "off": 1740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_39_monster_1",
+      "off": 1744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_39_monster_2",
+      "off": 1748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_39_monster_3",
+      "off": 1752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_39_monster_4",
+      "off": 1756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_39_monster_5",
+      "off": 1760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_39_monster_6",
+      "off": 1764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_39_monster_7",
+      "off": 1768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_39_monster_8",
+      "off": 1772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_39_monster_9",
+      "off": 1776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_39_monster_10",
+      "off": 1780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_40_level_type",
+      "off": 1784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_40_monster_1",
+      "off": 1788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_40_monster_2",
+      "off": 1792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_40_monster_3",
+      "off": 1796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_40_monster_4",
+      "off": 1800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_40_monster_5",
+      "off": 1804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_40_monster_6",
+      "off": 1808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_40_monster_7",
+      "off": 1812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_40_monster_8",
+      "off": 1816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_40_monster_9",
+      "off": 1820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_list_40_monster_10",
+      "off": 1824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_1",
+      "off": 1828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_2",
+      "off": 1832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_3",
+      "off": 1836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_4",
+      "off": 1840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_5",
+      "off": 1844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_6",
+      "off": 1848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_7",
+      "off": 1852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_8",
+      "off": 1856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_9",
+      "off": 1860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_10",
+      "off": 1864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_11",
+      "off": 1868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_12",
+      "off": 1872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_13",
+      "off": 1876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_14",
+      "off": 1880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_15",
+      "off": 1884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_16",
+      "off": 1888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_17",
+      "off": 1892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_18",
+      "off": 1896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_19",
+      "off": 1900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_20",
+      "off": 1904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_21",
+      "off": 1908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_22",
+      "off": 1912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_23",
+      "off": 1916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_24",
+      "off": 1920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_25",
+      "off": 1924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_26",
+      "off": 1928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_27",
+      "off": 1932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_28",
+      "off": 1936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_29",
+      "off": 1940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_30",
+      "off": 1944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_31",
+      "off": 1948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_32",
+      "off": 1952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_33",
+      "off": 1956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_34",
+      "off": 1960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_35",
+      "off": 1964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_36",
+      "off": 1968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_37",
+      "off": 1972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_38",
+      "off": 1976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_39",
+      "off": 1980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_40",
+      "off": 1984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_41",
+      "off": 1988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_42",
+      "off": 1992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_43",
+      "off": 1996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_44",
+      "off": 2000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_45",
+      "off": 2004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_46",
+      "off": 2008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_47",
+      "off": 2012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_48",
+      "off": 2016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_49",
+      "off": 2020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_50",
+      "off": 2024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_51",
+      "off": 2028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_52",
+      "off": 2032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_53",
+      "off": 2036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_54",
+      "off": 2040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_55",
+      "off": 2044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_56",
+      "off": 2048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_57",
+      "off": 2052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_58",
+      "off": 2056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_59",
+      "off": 2060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_60",
+      "off": 2064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_61",
+      "off": 2068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_62",
+      "off": 2072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_63",
+      "off": 2076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_64",
+      "off": 2080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_65",
+      "off": 2084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_66",
+      "off": 2088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_67",
+      "off": 2092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_68",
+      "off": 2096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_69",
+      "off": 2100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_70",
+      "off": 2104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_71",
+      "off": 2108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_72",
+      "off": 2112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_73",
+      "off": 2116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_74",
+      "off": 2120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_75",
+      "off": 2124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_76",
+      "off": 2128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_77",
+      "off": 2132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_78",
+      "off": 2136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_79",
+      "off": 2140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_80",
+      "off": 2144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_81",
+      "off": 2148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_82",
+      "off": 2152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_83",
+      "off": 2156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_84",
+      "off": 2160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_85",
+      "off": 2164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_86",
+      "off": 2168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_87",
+      "off": 2172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_88",
+      "off": 2176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_89",
+      "off": 2180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_90",
+      "off": 2184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_91",
+      "off": 2188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_92",
+      "off": 2192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_93",
+      "off": 2196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_94",
+      "off": 2200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_95",
+      "off": 2204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_96",
+      "off": 2208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_97",
+      "off": 2212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_98",
+      "off": 2216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_99",
+      "off": 2220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_100",
+      "off": 2224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_101",
+      "off": 2228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_102",
+      "off": 2232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_103",
+      "off": 2236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_104",
+      "off": 2240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_105",
+      "off": 2244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_106",
+      "off": 2248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_107",
+      "off": 2252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_108",
+      "off": 2256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_109",
+      "off": 2260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_110",
+      "off": 2264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_111",
+      "off": 2268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_112",
+      "off": 2272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_113",
+      "off": 2276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_114",
+      "off": 2280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_115",
+      "off": 2284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_116",
+      "off": 2288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_117",
+      "off": 2292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_118",
+      "off": 2296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_119",
+      "off": 2300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_120",
+      "off": 2304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_121",
+      "off": 2308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_122",
+      "off": 2312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_123",
+      "off": 2316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_124",
+      "off": 2320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_125",
+      "off": 2324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_126",
+      "off": 2328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_127",
+      "off": 2332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_128",
+      "off": 2336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_129",
+      "off": 2340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_130",
+      "off": 2344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_131",
+      "off": 2348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_132",
+      "off": 2352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_133",
+      "off": 2356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_134",
+      "off": 2360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_135",
+      "off": 2364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_136",
+      "off": 2368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_137",
+      "off": 2372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_138",
+      "off": 2376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_139",
+      "off": 2380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_140",
+      "off": 2384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_141",
+      "off": 2388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_142",
+      "off": 2392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_143",
+      "off": 2396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_144",
+      "off": 2400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_145",
+      "off": 2404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_146",
+      "off": 2408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_147",
+      "off": 2412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_148",
+      "off": 2416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_149",
+      "off": 2420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_150",
+      "off": 2424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_151",
+      "off": 2428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_152",
+      "off": 2432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_153",
+      "off": 2436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_154",
+      "off": 2440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_155",
+      "off": 2444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_156",
+      "off": 2448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_157",
+      "off": 2452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_158",
+      "off": 2456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_159",
+      "off": 2460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_160",
+      "off": 2464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_161",
+      "off": 2468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_162",
+      "off": 2472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_163",
+      "off": 2476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_164",
+      "off": 2480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_165",
+      "off": 2484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_166",
+      "off": 2488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_167",
+      "off": 2492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_168",
+      "off": 2496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_169",
+      "off": 2500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unk_170",
+      "off": 2504,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

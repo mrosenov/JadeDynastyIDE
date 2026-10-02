@@ -1,0 +1,10655 @@
+{
+  "name": "Player Levelexp Config",
+  "struct": "PLAYER_LEVELEXP_CONFIG",
+  "size": 10944,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Level_1",
+      "off": 68,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_2",
+      "off": 76,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_3",
+      "off": 84,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_4",
+      "off": 92,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_5",
+      "off": 100,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_6",
+      "off": 108,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_7",
+      "off": 116,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_8",
+      "off": 124,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_9",
+      "off": 132,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_10",
+      "off": 140,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_11",
+      "off": 148,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_12",
+      "off": 156,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_13",
+      "off": 164,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_14",
+      "off": 172,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_15",
+      "off": 180,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_16",
+      "off": 188,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_17",
+      "off": 196,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_18",
+      "off": 204,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_19",
+      "off": 212,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_20",
+      "off": 220,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_21",
+      "off": 228,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_22",
+      "off": 236,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_23",
+      "off": 244,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_24",
+      "off": 252,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_25",
+      "off": 260,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_26",
+      "off": 268,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_27",
+      "off": 276,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_28",
+      "off": 284,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_29",
+      "off": 292,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_30",
+      "off": 300,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_31",
+      "off": 308,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_32",
+      "off": 316,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_33",
+      "off": 324,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_34",
+      "off": 332,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_35",
+      "off": 340,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_36",
+      "off": 348,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_37",
+      "off": 356,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_38",
+      "off": 364,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_39",
+      "off": 372,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_40",
+      "off": 380,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_41",
+      "off": 388,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_42",
+      "off": 396,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_43",
+      "off": 404,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_44",
+      "off": 412,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_45",
+      "off": 420,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_46",
+      "off": 428,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_47",
+      "off": 436,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_48",
+      "off": 444,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_49",
+      "off": 452,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_50",
+      "off": 460,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_51",
+      "off": 468,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_52",
+      "off": 476,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_53",
+      "off": 484,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_54",
+      "off": 492,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_55",
+      "off": 500,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_56",
+      "off": 508,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_57",
+      "off": 516,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_58",
+      "off": 524,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_59",
+      "off": 532,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_60",
+      "off": 540,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_61",
+      "off": 548,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_62",
+      "off": 556,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_63",
+      "off": 564,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_64",
+      "off": 572,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_65",
+      "off": 580,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_66",
+      "off": 588,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_67",
+      "off": 596,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_68",
+      "off": 604,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_69",
+      "off": 612,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_70",
+      "off": 620,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_71",
+      "off": 628,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_72",
+      "off": 636,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_73",
+      "off": 644,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_74",
+      "off": 652,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_75",
+      "off": 660,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_76",
+      "off": 668,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_77",
+      "off": 676,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_78",
+      "off": 684,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_79",
+      "off": 692,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_80",
+      "off": 700,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_81",
+      "off": 708,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_82",
+      "off": 716,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_83",
+      "off": 724,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_84",
+      "off": 732,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_85",
+      "off": 740,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_86",
+      "off": 748,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_87",
+      "off": 756,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_88",
+      "off": 764,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_89",
+      "off": 772,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_90",
+      "off": 780,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_91",
+      "off": 788,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_92",
+      "off": 796,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_93",
+      "off": 804,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_94",
+      "off": 812,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_95",
+      "off": 820,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_96",
+      "off": 828,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_97",
+      "off": 836,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_98",
+      "off": 844,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_99",
+      "off": 852,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_100",
+      "off": 860,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_101",
+      "off": 868,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_102",
+      "off": 876,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_103",
+      "off": 884,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_104",
+      "off": 892,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_105",
+      "off": 900,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_106",
+      "off": 908,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_107",
+      "off": 916,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_108",
+      "off": 924,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_109",
+      "off": 932,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_110",
+      "off": 940,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_111",
+      "off": 948,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_112",
+      "off": 956,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_113",
+      "off": 964,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_114",
+      "off": 972,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_115",
+      "off": 980,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_116",
+      "off": 988,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_117",
+      "off": 996,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_118",
+      "off": 1004,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_119",
+      "off": 1012,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_120",
+      "off": 1020,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_121",
+      "off": 1028,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_122",
+      "off": 1036,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_123",
+      "off": 1044,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_124",
+      "off": 1052,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_125",
+      "off": 1060,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_126",
+      "off": 1068,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_127",
+      "off": 1076,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_128",
+      "off": 1084,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_129",
+      "off": 1092,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_130",
+      "off": 1100,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_131",
+      "off": 1108,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_132",
+      "off": 1116,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_133",
+      "off": 1124,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_134",
+      "off": 1132,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_135",
+      "off": 1140,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_136",
+      "off": 1148,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_137",
+      "off": 1156,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_138",
+      "off": 1164,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_139",
+      "off": 1172,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_140",
+      "off": 1180,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_141",
+      "off": 1188,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_142",
+      "off": 1196,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_143",
+      "off": 1204,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_144",
+      "off": 1212,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_145",
+      "off": 1220,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_146",
+      "off": 1228,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_147",
+      "off": 1236,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_148",
+      "off": 1244,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_149",
+      "off": 1252,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_150",
+      "off": 1260,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_151",
+      "off": 1268,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_152",
+      "off": 1276,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_153",
+      "off": 1284,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_154",
+      "off": 1292,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_155",
+      "off": 1300,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_156",
+      "off": 1308,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_157",
+      "off": 1316,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_158",
+      "off": 1324,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_159",
+      "off": 1332,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_160",
+      "off": 1340,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_161",
+      "off": 1348,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_162",
+      "off": 1356,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_163",
+      "off": 1364,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_164",
+      "off": 1372,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_165",
+      "off": 1380,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_166",
+      "off": 1388,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_167",
+      "off": 1396,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_168",
+      "off": 1404,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_169",
+      "off": 1412,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_170",
+      "off": 1420,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_171",
+      "off": 1428,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_172",
+      "off": 1436,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_173",
+      "off": 1444,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_174",
+      "off": 1452,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_175",
+      "off": 1460,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_176",
+      "off": 1468,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_177",
+      "off": 1476,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_178",
+      "off": 1484,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_179",
+      "off": 1492,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_180",
+      "off": 1500,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_181",
+      "off": 1508,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_182",
+      "off": 1516,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_183",
+      "off": 1524,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_184",
+      "off": 1532,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_185",
+      "off": 1540,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_186",
+      "off": 1548,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_187",
+      "off": 1556,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_188",
+      "off": 1564,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_189",
+      "off": 1572,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_190",
+      "off": 1580,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_191",
+      "off": 1588,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_192",
+      "off": 1596,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_193",
+      "off": 1604,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_194",
+      "off": 1612,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_195",
+      "off": 1620,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_196",
+      "off": 1628,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_197",
+      "off": 1636,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_198",
+      "off": 1644,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_199",
+      "off": 1652,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_200",
+      "off": 1660,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_1_Ascended_1",
+      "off": 1668,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_2_Ascended_1",
+      "off": 1676,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_3_Ascended_1",
+      "off": 1684,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_4_Ascended_1",
+      "off": 1692,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_5_Ascended_1",
+      "off": 1700,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_6_Ascended_1",
+      "off": 1708,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_7_Ascended_1",
+      "off": 1716,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_8_Ascended_1",
+      "off": 1724,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_9_Ascended_1",
+      "off": 1732,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_10_Ascended_1",
+      "off": 1740,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_11_Ascended_1",
+      "off": 1748,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_12_Ascended_1",
+      "off": 1756,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_13_Ascended_1",
+      "off": 1764,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_14_Ascended_1",
+      "off": 1772,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_15_Ascended_1",
+      "off": 1780,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_16_Ascended_1",
+      "off": 1788,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_17_Ascended_1",
+      "off": 1796,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_18_Ascended_1",
+      "off": 1804,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_19_Ascended_1",
+      "off": 1812,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_20_Ascended_1",
+      "off": 1820,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_21_Ascended_1",
+      "off": 1828,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_22_Ascended_1",
+      "off": 1836,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_23_Ascended_1",
+      "off": 1844,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_24_Ascended_1",
+      "off": 1852,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_25_Ascended_1",
+      "off": 1860,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_26_Ascended_1",
+      "off": 1868,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_27_Ascended_1",
+      "off": 1876,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_28_Ascended_1",
+      "off": 1884,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_29_Ascended_1",
+      "off": 1892,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_30_Ascended_1",
+      "off": 1900,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_31_Ascended_1",
+      "off": 1908,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_32_Ascended_1",
+      "off": 1916,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_33_Ascended_1",
+      "off": 1924,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_34_Ascended_1",
+      "off": 1932,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_35_Ascended_1",
+      "off": 1940,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_36_Ascended_1",
+      "off": 1948,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_37_Ascended_1",
+      "off": 1956,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_38_Ascended_1",
+      "off": 1964,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_39_Ascended_1",
+      "off": 1972,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_40_Ascended_1",
+      "off": 1980,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_41_Ascended_1",
+      "off": 1988,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_42_Ascended_1",
+      "off": 1996,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_43_Ascended_1",
+      "off": 2004,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_44_Ascended_1",
+      "off": 2012,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_45_Ascended_1",
+      "off": 2020,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_46_Ascended_1",
+      "off": 2028,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_47_Ascended_1",
+      "off": 2036,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_48_Ascended_1",
+      "off": 2044,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_49_Ascended_1",
+      "off": 2052,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_50_Ascended_1",
+      "off": 2060,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_51_Ascended_1",
+      "off": 2068,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_52_Ascended_1",
+      "off": 2076,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_53_Ascended_1",
+      "off": 2084,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_54_Ascended_1",
+      "off": 2092,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_55_Ascended_1",
+      "off": 2100,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_56_Ascended_1",
+      "off": 2108,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_57_Ascended_1",
+      "off": 2116,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_58_Ascended_1",
+      "off": 2124,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_59_Ascended_1",
+      "off": 2132,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_60_Ascended_1",
+      "off": 2140,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_61_Ascended_1",
+      "off": 2148,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_62_Ascended_1",
+      "off": 2156,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_63_Ascended_1",
+      "off": 2164,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_64_Ascended_1",
+      "off": 2172,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_65_Ascended_1",
+      "off": 2180,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_66_Ascended_1",
+      "off": 2188,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_67_Ascended_1",
+      "off": 2196,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_68_Ascended_1",
+      "off": 2204,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_69_Ascended_1",
+      "off": 2212,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_70_Ascended_1",
+      "off": 2220,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_71_Ascended_1",
+      "off": 2228,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_72_Ascended_1",
+      "off": 2236,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_73_Ascended_1",
+      "off": 2244,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_74_Ascended_1",
+      "off": 2252,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_75_Ascended_1",
+      "off": 2260,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_76_Ascended_1",
+      "off": 2268,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_77_Ascended_1",
+      "off": 2276,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_78_Ascended_1",
+      "off": 2284,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_79_Ascended_1",
+      "off": 2292,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_80_Ascended_1",
+      "off": 2300,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_81_Ascended_1",
+      "off": 2308,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_82_Ascended_1",
+      "off": 2316,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_83_Ascended_1",
+      "off": 2324,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_84_Ascended_1",
+      "off": 2332,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_85_Ascended_1",
+      "off": 2340,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_86_Ascended_1",
+      "off": 2348,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_87_Ascended_1",
+      "off": 2356,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_88_Ascended_1",
+      "off": 2364,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_89_Ascended_1",
+      "off": 2372,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_90_Ascended_1",
+      "off": 2380,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_91_Ascended_1",
+      "off": 2388,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_92_Ascended_1",
+      "off": 2396,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_93_Ascended_1",
+      "off": 2404,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_94_Ascended_1",
+      "off": 2412,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_95_Ascended_1",
+      "off": 2420,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_96_Ascended_1",
+      "off": 2428,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_97_Ascended_1",
+      "off": 2436,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_98_Ascended_1",
+      "off": 2444,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_99_Ascended_1",
+      "off": 2452,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_100_Ascended_1",
+      "off": 2460,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_101_Ascended_1",
+      "off": 2468,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_102_Ascended_1",
+      "off": 2476,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_103_Ascended_1",
+      "off": 2484,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_104_Ascended_1",
+      "off": 2492,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_105_Ascended_1",
+      "off": 2500,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_106_Ascended_1",
+      "off": 2508,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_107_Ascended_1",
+      "off": 2516,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_108_Ascended_1",
+      "off": 2524,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_109_Ascended_1",
+      "off": 2532,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_110_Ascended_1",
+      "off": 2540,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_111_Ascended_1",
+      "off": 2548,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_112_Ascended_1",
+      "off": 2556,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_113_Ascended_1",
+      "off": 2564,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_114_Ascended_1",
+      "off": 2572,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_115_Ascended_1",
+      "off": 2580,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_116_Ascended_1",
+      "off": 2588,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_117_Ascended_1",
+      "off": 2596,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_118_Ascended_1",
+      "off": 2604,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_119_Ascended_1",
+      "off": 2612,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_120_Ascended_1",
+      "off": 2620,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_121_Ascended_1",
+      "off": 2628,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_122_Ascended_1",
+      "off": 2636,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_123_Ascended_1",
+      "off": 2644,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_124_Ascended_1",
+      "off": 2652,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_125_Ascended_1",
+      "off": 2660,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_126_Ascended_1",
+      "off": 2668,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_127_Ascended_1",
+      "off": 2676,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_128_Ascended_1",
+      "off": 2684,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_129_Ascended_1",
+      "off": 2692,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_130_Ascended_1",
+      "off": 2700,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_131_Ascended_1",
+      "off": 2708,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_132_Ascended_1",
+      "off": 2716,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_133_Ascended_1",
+      "off": 2724,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_134_Ascended_1",
+      "off": 2732,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_135_Ascended_1",
+      "off": 2740,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_136_Ascended_1",
+      "off": 2748,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_137_Ascended_1",
+      "off": 2756,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_138_Ascended_1",
+      "off": 2764,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_139_Ascended_1",
+      "off": 2772,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_140_Ascended_1",
+      "off": 2780,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_141_Ascended_1",
+      "off": 2788,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_142_Ascended_1",
+      "off": 2796,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_143_Ascended_1",
+      "off": 2804,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_144_Ascended_1",
+      "off": 2812,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_145_Ascended_1",
+      "off": 2820,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_146_Ascended_1",
+      "off": 2828,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_147_Ascended_1",
+      "off": 2836,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_148_Ascended_1",
+      "off": 2844,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_149_Ascended_1",
+      "off": 2852,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_150_Ascended_1",
+      "off": 2860,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_151_Ascended_1",
+      "off": 2868,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_152_Ascended_1",
+      "off": 2876,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_153_Ascended_1",
+      "off": 2884,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_154_Ascended_1",
+      "off": 2892,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_155_Ascended_1",
+      "off": 2900,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_156_Ascended_1",
+      "off": 2908,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_157_Ascended_1",
+      "off": 2916,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_158_Ascended_1",
+      "off": 2924,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_159_Ascended_1",
+      "off": 2932,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_160_Ascended_1",
+      "off": 2940,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_161_Ascended_1",
+      "off": 2948,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_162_Ascended_1",
+      "off": 2956,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_163_Ascended_1",
+      "off": 2964,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_164_Ascended_1",
+      "off": 2972,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_165_Ascended_1",
+      "off": 2980,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_166_Ascended_1",
+      "off": 2988,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_167_Ascended_1",
+      "off": 2996,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_168_Ascended_1",
+      "off": 3004,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_169_Ascended_1",
+      "off": 3012,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_170_Ascended_1",
+      "off": 3020,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_171_Ascended_1",
+      "off": 3028,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_172_Ascended_1",
+      "off": 3036,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_173_Ascended_1",
+      "off": 3044,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_174_Ascended_1",
+      "off": 3052,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_175_Ascended_1",
+      "off": 3060,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_176_Ascended_1",
+      "off": 3068,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_177_Ascended_1",
+      "off": 3076,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_178_Ascended_1",
+      "off": 3084,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_179_Ascended_1",
+      "off": 3092,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_180_Ascended_1",
+      "off": 3100,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_181_Ascended_1",
+      "off": 3108,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_182_Ascended_1",
+      "off": 3116,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_183_Ascended_1",
+      "off": 3124,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_184_Ascended_1",
+      "off": 3132,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_185_Ascended_1",
+      "off": 3140,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_186_Ascended_1",
+      "off": 3148,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_187_Ascended_1",
+      "off": 3156,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_188_Ascended_1",
+      "off": 3164,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_189_Ascended_1",
+      "off": 3172,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_190_Ascended_1",
+      "off": 3180,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_191_Ascended_1",
+      "off": 3188,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_192_Ascended_1",
+      "off": 3196,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_193_Ascended_1",
+      "off": 3204,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_194_Ascended_1",
+      "off": 3212,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_195_Ascended_1",
+      "off": 3220,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_196_Ascended_1",
+      "off": 3228,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_197_Ascended_1",
+      "off": 3236,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_198_Ascended_1",
+      "off": 3244,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_199_Ascended_1",
+      "off": 3252,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_200_Ascended_1",
+      "off": 3260,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_1_Ascended_2",
+      "off": 3304,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_2_Ascended_2",
+      "off": 3312,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_3_Ascended_2",
+      "off": 3320,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_4_Ascended_2",
+      "off": 3328,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_5_Ascended_2",
+      "off": 3336,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_6_Ascended_2",
+      "off": 3344,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_7_Ascended_2",
+      "off": 3352,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_8_Ascended_2",
+      "off": 3360,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_9_Ascended_2",
+      "off": 3368,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_10_Ascended_2",
+      "off": 3376,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_11_Ascended_2",
+      "off": 3384,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_12_Ascended_2",
+      "off": 3392,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_13_Ascended_2",
+      "off": 3400,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_14_Ascended_2",
+      "off": 3408,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_15_Ascended_2",
+      "off": 3416,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_16_Ascended_2",
+      "off": 3424,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_17_Ascended_2",
+      "off": 3432,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_18_Ascended_2",
+      "off": 3440,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_19_Ascended_2",
+      "off": 3448,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_20_Ascended_2",
+      "off": 3456,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_21_Ascended_2",
+      "off": 3464,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_22_Ascended_2",
+      "off": 3472,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_23_Ascended_2",
+      "off": 3480,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_24_Ascended_2",
+      "off": 3488,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_25_Ascended_2",
+      "off": 3496,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_26_Ascended_2",
+      "off": 3504,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_27_Ascended_2",
+      "off": 3512,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_28_Ascended_2",
+      "off": 3520,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_29_Ascended_2",
+      "off": 3528,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_30_Ascended_2",
+      "off": 3536,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_31_Ascended_2",
+      "off": 3544,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_32_Ascended_2",
+      "off": 3552,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_33_Ascended_2",
+      "off": 3560,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_34_Ascended_2",
+      "off": 3568,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_35_Ascended_2",
+      "off": 3576,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_36_Ascended_2",
+      "off": 3584,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_37_Ascended_2",
+      "off": 3592,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_38_Ascended_2",
+      "off": 3600,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_39_Ascended_2",
+      "off": 3608,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_40_Ascended_2",
+      "off": 3616,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_41_Ascended_2",
+      "off": 3624,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_42_Ascended_2",
+      "off": 3632,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_43_Ascended_2",
+      "off": 3640,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_44_Ascended_2",
+      "off": 3648,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_45_Ascended_2",
+      "off": 3656,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_46_Ascended_2",
+      "off": 3664,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_47_Ascended_2",
+      "off": 3672,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_48_Ascended_2",
+      "off": 3680,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_49_Ascended_2",
+      "off": 3688,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_50_Ascended_2",
+      "off": 3696,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_51_Ascended_2",
+      "off": 3704,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_52_Ascended_2",
+      "off": 3712,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_53_Ascended_2",
+      "off": 3720,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_54_Ascended_2",
+      "off": 3728,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_55_Ascended_2",
+      "off": 3736,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_56_Ascended_2",
+      "off": 3744,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_57_Ascended_2",
+      "off": 3752,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_58_Ascended_2",
+      "off": 3760,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_59_Ascended_2",
+      "off": 3768,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_60_Ascended_2",
+      "off": 3776,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_61_Ascended_2",
+      "off": 3784,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_62_Ascended_2",
+      "off": 3792,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_63_Ascended_2",
+      "off": 3800,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_64_Ascended_2",
+      "off": 3808,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_65_Ascended_2",
+      "off": 3816,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_66_Ascended_2",
+      "off": 3824,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_67_Ascended_2",
+      "off": 3832,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_68_Ascended_2",
+      "off": 3840,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_69_Ascended_2",
+      "off": 3848,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_70_Ascended_2",
+      "off": 3856,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_71_Ascended_2",
+      "off": 3864,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_72_Ascended_2",
+      "off": 3872,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_73_Ascended_2",
+      "off": 3880,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_74_Ascended_2",
+      "off": 3888,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_75_Ascended_2",
+      "off": 3896,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_76_Ascended_2",
+      "off": 3904,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_77_Ascended_2",
+      "off": 3912,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_78_Ascended_2",
+      "off": 3920,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_79_Ascended_2",
+      "off": 3928,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_80_Ascended_2",
+      "off": 3936,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_81_Ascended_2",
+      "off": 3944,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_82_Ascended_2",
+      "off": 3952,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_83_Ascended_2",
+      "off": 3960,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_84_Ascended_2",
+      "off": 3968,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_85_Ascended_2",
+      "off": 3976,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_86_Ascended_2",
+      "off": 3984,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_87_Ascended_2",
+      "off": 3992,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_88_Ascended_2",
+      "off": 4000,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_89_Ascended_2",
+      "off": 4008,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_90_Ascended_2",
+      "off": 4016,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_91_Ascended_2",
+      "off": 4024,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_92_Ascended_2",
+      "off": 4032,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_93_Ascended_2",
+      "off": 4040,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_94_Ascended_2",
+      "off": 4048,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_95_Ascended_2",
+      "off": 4056,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_96_Ascended_2",
+      "off": 4064,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_97_Ascended_2",
+      "off": 4072,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_98_Ascended_2",
+      "off": 4080,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_99_Ascended_2",
+      "off": 4088,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_100_Ascended_2",
+      "off": 4096,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_101_Ascended_2",
+      "off": 4104,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_102_Ascended_2",
+      "off": 4112,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_103_Ascended_2",
+      "off": 4120,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_104_Ascended_2",
+      "off": 4128,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_105_Ascended_2",
+      "off": 4136,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_106_Ascended_2",
+      "off": 4144,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_107_Ascended_2",
+      "off": 4152,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_108_Ascended_2",
+      "off": 4160,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_109_Ascended_2",
+      "off": 4168,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_110_Ascended_2",
+      "off": 4176,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_111_Ascended_2",
+      "off": 4184,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_112_Ascended_2",
+      "off": 4192,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_113_Ascended_2",
+      "off": 4200,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_114_Ascended_2",
+      "off": 4208,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_115_Ascended_2",
+      "off": 4216,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_116_Ascended_2",
+      "off": 4224,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_117_Ascended_2",
+      "off": 4232,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_118_Ascended_2",
+      "off": 4240,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_119_Ascended_2",
+      "off": 4248,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_120_Ascended_2",
+      "off": 4256,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_121_Ascended_2",
+      "off": 4264,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_122_Ascended_2",
+      "off": 4272,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_123_Ascended_2",
+      "off": 4280,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_124_Ascended_2",
+      "off": 4288,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_125_Ascended_2",
+      "off": 4296,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_126_Ascended_2",
+      "off": 4304,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_127_Ascended_2",
+      "off": 4312,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_128_Ascended_2",
+      "off": 4320,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_129_Ascended_2",
+      "off": 4328,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_130_Ascended_2",
+      "off": 4336,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_131_Ascended_2",
+      "off": 4344,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_132_Ascended_2",
+      "off": 4352,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_133_Ascended_2",
+      "off": 4360,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_134_Ascended_2",
+      "off": 4368,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_135_Ascended_2",
+      "off": 4376,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_136_Ascended_2",
+      "off": 4384,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_137_Ascended_2",
+      "off": 4392,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_138_Ascended_2",
+      "off": 4400,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_139_Ascended_2",
+      "off": 4408,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_140_Ascended_2",
+      "off": 4416,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_141_Ascended_2",
+      "off": 4424,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_142_Ascended_2",
+      "off": 4432,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_143_Ascended_2",
+      "off": 4440,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_144_Ascended_2",
+      "off": 4448,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_145_Ascended_2",
+      "off": 4456,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_146_Ascended_2",
+      "off": 4464,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_147_Ascended_2",
+      "off": 4472,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_148_Ascended_2",
+      "off": 4480,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_149_Ascended_2",
+      "off": 4488,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_150_Ascended_2",
+      "off": 4496,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_151_Ascended_2",
+      "off": 4504,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_152_Ascended_2",
+      "off": 4512,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_153_Ascended_2",
+      "off": 4520,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_154_Ascended_2",
+      "off": 4528,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_155_Ascended_2",
+      "off": 4536,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_156_Ascended_2",
+      "off": 4544,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_157_Ascended_2",
+      "off": 4552,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_158_Ascended_2",
+      "off": 4560,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_159_Ascended_2",
+      "off": 4568,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_160_Ascended_2",
+      "off": 4576,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_161_Ascended_2",
+      "off": 4584,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_162_Ascended_2",
+      "off": 4592,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_163_Ascended_2",
+      "off": 4600,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_164_Ascended_2",
+      "off": 4608,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_165_Ascended_2",
+      "off": 4616,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_166_Ascended_2",
+      "off": 4624,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_167_Ascended_2",
+      "off": 4632,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_168_Ascended_2",
+      "off": 4640,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_169_Ascended_2",
+      "off": 4648,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_170_Ascended_2",
+      "off": 4656,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_171_Ascended_2",
+      "off": 4664,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_172_Ascended_2",
+      "off": 4672,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_173_Ascended_2",
+      "off": 4680,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_174_Ascended_2",
+      "off": 4688,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_175_Ascended_2",
+      "off": 4696,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_176_Ascended_2",
+      "off": 4704,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_177_Ascended_2",
+      "off": 4712,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_178_Ascended_2",
+      "off": 4720,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_179_Ascended_2",
+      "off": 4728,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_180_Ascended_2",
+      "off": 4736,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_181_Ascended_2",
+      "off": 4744,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_182_Ascended_2",
+      "off": 4752,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_183_Ascended_2",
+      "off": 4760,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_184_Ascended_2",
+      "off": 4768,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_185_Ascended_2",
+      "off": 4776,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_186_Ascended_2",
+      "off": 4784,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_187_Ascended_2",
+      "off": 4792,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_188_Ascended_2",
+      "off": 4800,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_189_Ascended_2",
+      "off": 4808,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_190_Ascended_2",
+      "off": 4816,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_191_Ascended_2",
+      "off": 4824,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_192_Ascended_2",
+      "off": 4832,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_193_Ascended_2",
+      "off": 4840,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_194_Ascended_2",
+      "off": 4848,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_195_Ascended_2",
+      "off": 4856,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_196_Ascended_2",
+      "off": 4864,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_197_Ascended_2",
+      "off": 4872,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_198_Ascended_2",
+      "off": 4880,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_199_Ascended_2",
+      "off": 4888,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_200_Ascended_2",
+      "off": 4896,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_1_Ascended_3",
+      "off": 4904,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_2_Ascended_3",
+      "off": 4912,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_3_Ascended_3",
+      "off": 4920,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_4_Ascended_3",
+      "off": 4928,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_5_Ascended_3",
+      "off": 4936,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_6_Ascended_3",
+      "off": 4944,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_7_Ascended_3",
+      "off": 4952,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_8_Ascended_3",
+      "off": 4960,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_9_Ascended_3",
+      "off": 4968,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_10_Ascended_3",
+      "off": 4976,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_11_Ascended_3",
+      "off": 4984,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_12_Ascended_3",
+      "off": 4992,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_13_Ascended_3",
+      "off": 5000,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_14_Ascended_3",
+      "off": 5008,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_15_Ascended_3",
+      "off": 5016,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_16_Ascended_3",
+      "off": 5024,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_17_Ascended_3",
+      "off": 5032,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_18_Ascended_3",
+      "off": 5040,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_19_Ascended_3",
+      "off": 5048,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_20_Ascended_3",
+      "off": 5056,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_21_Ascended_3",
+      "off": 5064,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_22_Ascended_3",
+      "off": 5072,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_23_Ascended_3",
+      "off": 5080,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_24_Ascended_3",
+      "off": 5088,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_25_Ascended_3",
+      "off": 5096,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_26_Ascended_3",
+      "off": 5104,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_27_Ascended_3",
+      "off": 5112,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_28_Ascended_3",
+      "off": 5120,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_29_Ascended_3",
+      "off": 5128,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_30_Ascended_3",
+      "off": 5136,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_31_Ascended_3",
+      "off": 5144,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_32_Ascended_3",
+      "off": 5152,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_33_Ascended_3",
+      "off": 5160,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_34_Ascended_3",
+      "off": 5168,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_35_Ascended_3",
+      "off": 5176,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_36_Ascended_3",
+      "off": 5184,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_37_Ascended_3",
+      "off": 5192,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_38_Ascended_3",
+      "off": 5200,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_39_Ascended_3",
+      "off": 5208,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_40_Ascended_3",
+      "off": 5216,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_41_Ascended_3",
+      "off": 5224,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_42_Ascended_3",
+      "off": 5232,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_43_Ascended_3",
+      "off": 5240,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_44_Ascended_3",
+      "off": 5248,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_45_Ascended_3",
+      "off": 5256,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_46_Ascended_3",
+      "off": 5264,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_47_Ascended_3",
+      "off": 5272,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_48_Ascended_3",
+      "off": 5280,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_49_Ascended_3",
+      "off": 5288,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_50_Ascended_3",
+      "off": 5296,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_51_Ascended_3",
+      "off": 5304,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_52_Ascended_3",
+      "off": 5312,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_53_Ascended_3",
+      "off": 5320,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_54_Ascended_3",
+      "off": 5328,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_55_Ascended_3",
+      "off": 5336,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_56_Ascended_3",
+      "off": 5344,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_57_Ascended_3",
+      "off": 5352,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_58_Ascended_3",
+      "off": 5360,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_59_Ascended_3",
+      "off": 5368,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_60_Ascended_3",
+      "off": 5376,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_61_Ascended_3",
+      "off": 5384,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_62_Ascended_3",
+      "off": 5392,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_63_Ascended_3",
+      "off": 5400,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_64_Ascended_3",
+      "off": 5408,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_65_Ascended_3",
+      "off": 5416,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_66_Ascended_3",
+      "off": 5424,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_67_Ascended_3",
+      "off": 5432,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_68_Ascended_3",
+      "off": 5440,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_69_Ascended_3",
+      "off": 5448,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_70_Ascended_3",
+      "off": 5456,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_71_Ascended_3",
+      "off": 5464,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_72_Ascended_3",
+      "off": 5472,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_73_Ascended_3",
+      "off": 5480,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_74_Ascended_3",
+      "off": 5488,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_75_Ascended_3",
+      "off": 5496,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_76_Ascended_3",
+      "off": 5504,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_77_Ascended_3",
+      "off": 5512,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_78_Ascended_3",
+      "off": 5520,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_79_Ascended_3",
+      "off": 5528,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_80_Ascended_3",
+      "off": 5536,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_81_Ascended_3",
+      "off": 5544,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_82_Ascended_3",
+      "off": 5552,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_83_Ascended_3",
+      "off": 5560,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_84_Ascended_3",
+      "off": 5568,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_85_Ascended_3",
+      "off": 5576,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_86_Ascended_3",
+      "off": 5584,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_87_Ascended_3",
+      "off": 5592,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_88_Ascended_3",
+      "off": 5600,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_89_Ascended_3",
+      "off": 5608,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_90_Ascended_3",
+      "off": 5616,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_91_Ascended_3",
+      "off": 5624,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_92_Ascended_3",
+      "off": 5632,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_93_Ascended_3",
+      "off": 5640,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_94_Ascended_3",
+      "off": 5648,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_95_Ascended_3",
+      "off": 5656,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_96_Ascended_3",
+      "off": 5664,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_97_Ascended_3",
+      "off": 5672,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_98_Ascended_3",
+      "off": 5680,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_99_Ascended_3",
+      "off": 5688,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_100_Ascended_3",
+      "off": 5696,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_101_Ascended_3",
+      "off": 5704,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_102_Ascended_3",
+      "off": 5712,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_103_Ascended_3",
+      "off": 5720,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_104_Ascended_3",
+      "off": 5728,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_105_Ascended_3",
+      "off": 5736,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_106_Ascended_3",
+      "off": 5744,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_107_Ascended_3",
+      "off": 5752,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_108_Ascended_3",
+      "off": 5760,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_109_Ascended_3",
+      "off": 5768,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_110_Ascended_3",
+      "off": 5776,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_111_Ascended_3",
+      "off": 5784,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_112_Ascended_3",
+      "off": 5792,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_113_Ascended_3",
+      "off": 5800,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_114_Ascended_3",
+      "off": 5808,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_115_Ascended_3",
+      "off": 5816,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_116_Ascended_3",
+      "off": 5824,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_117_Ascended_3",
+      "off": 5832,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_118_Ascended_3",
+      "off": 5840,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_119_Ascended_3",
+      "off": 5848,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_120_Ascended_3",
+      "off": 5856,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_121_Ascended_3",
+      "off": 5864,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_122_Ascended_3",
+      "off": 5872,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_123_Ascended_3",
+      "off": 5880,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_124_Ascended_3",
+      "off": 5888,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_125_Ascended_3",
+      "off": 5896,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_126_Ascended_3",
+      "off": 5904,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_127_Ascended_3",
+      "off": 5912,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_128_Ascended_3",
+      "off": 5920,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_129_Ascended_3",
+      "off": 5928,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_130_Ascended_3",
+      "off": 5936,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_131_Ascended_3",
+      "off": 5944,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_132_Ascended_3",
+      "off": 5952,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_133_Ascended_3",
+      "off": 5960,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_134_Ascended_3",
+      "off": 5968,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_135_Ascended_3",
+      "off": 5976,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_136_Ascended_3",
+      "off": 5984,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_137_Ascended_3",
+      "off": 5992,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_138_Ascended_3",
+      "off": 6000,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_139_Ascended_3",
+      "off": 6008,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_140_Ascended_3",
+      "off": 6016,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_141_Ascended_3",
+      "off": 6024,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_142_Ascended_3",
+      "off": 6032,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_143_Ascended_3",
+      "off": 6040,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_144_Ascended_3",
+      "off": 6048,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_145_Ascended_3",
+      "off": 6056,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_146_Ascended_3",
+      "off": 6064,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_147_Ascended_3",
+      "off": 6072,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_148_Ascended_3",
+      "off": 6080,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_149_Ascended_3",
+      "off": 6088,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_150_Ascended_3",
+      "off": 6096,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_151_Ascended_3",
+      "off": 6104,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_152_Ascended_3",
+      "off": 6112,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_153_Ascended_3",
+      "off": 6120,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_154_Ascended_3",
+      "off": 6128,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_155_Ascended_3",
+      "off": 6136,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_156_Ascended_3",
+      "off": 6144,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_157_Ascended_3",
+      "off": 6152,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_158_Ascended_3",
+      "off": 6160,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_159_Ascended_3",
+      "off": 6168,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_160_Ascended_3",
+      "off": 6176,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_161_Ascended_3",
+      "off": 6184,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_162_Ascended_3",
+      "off": 6192,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_163_Ascended_3",
+      "off": 6200,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_164_Ascended_3",
+      "off": 6208,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_165_Ascended_3",
+      "off": 6216,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_166_Ascended_3",
+      "off": 6224,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_167_Ascended_3",
+      "off": 6232,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_168_Ascended_3",
+      "off": 6240,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_169_Ascended_3",
+      "off": 6248,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_170_Ascended_3",
+      "off": 6256,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_171_Ascended_3",
+      "off": 6264,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_172_Ascended_3",
+      "off": 6272,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_173_Ascended_3",
+      "off": 6280,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_174_Ascended_3",
+      "off": 6288,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_175_Ascended_3",
+      "off": 6296,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_176_Ascended_3",
+      "off": 6304,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_177_Ascended_3",
+      "off": 6312,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_178_Ascended_3",
+      "off": 6320,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_179_Ascended_3",
+      "off": 6328,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_180_Ascended_3",
+      "off": 6336,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_181_Ascended_3",
+      "off": 6344,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_182_Ascended_3",
+      "off": 6352,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_183_Ascended_3",
+      "off": 6360,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_184_Ascended_3",
+      "off": 6368,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_185_Ascended_3",
+      "off": 6376,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_186_Ascended_3",
+      "off": 6384,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_187_Ascended_3",
+      "off": 6392,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_188_Ascended_3",
+      "off": 6400,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_189_Ascended_3",
+      "off": 6408,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_190_Ascended_3",
+      "off": 6416,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_191_Ascended_3",
+      "off": 6424,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_192_Ascended_3",
+      "off": 6432,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_193_Ascended_3",
+      "off": 6440,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_194_Ascended_3",
+      "off": 6448,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_195_Ascended_3",
+      "off": 6456,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_196_Ascended_3",
+      "off": 6464,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_197_Ascended_3",
+      "off": 6472,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_198_Ascended_3",
+      "off": 6480,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_199_Ascended_3",
+      "off": 6488,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Level_200_Ascended_3",
+      "off": 6496,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Esper_Level_1",
+      "off": 6504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_2",
+      "off": 6508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_3",
+      "off": 6512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_4",
+      "off": 6516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_5",
+      "off": 6520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_6",
+      "off": 6524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_7",
+      "off": 6528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_8",
+      "off": 6532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_9",
+      "off": 6536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_10",
+      "off": 6540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_11",
+      "off": 6544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_12",
+      "off": 6548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_13",
+      "off": 6552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_14",
+      "off": 6556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_15",
+      "off": 6560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_16",
+      "off": 6564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_17",
+      "off": 6568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_18",
+      "off": 6572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_19",
+      "off": 6576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_20",
+      "off": 6580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_21",
+      "off": 6584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_22",
+      "off": 6588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_23",
+      "off": 6592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_24",
+      "off": 6596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_25",
+      "off": 6600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_26",
+      "off": 6604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_27",
+      "off": 6608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_28",
+      "off": 6612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_29",
+      "off": 6616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_30",
+      "off": 6620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_31",
+      "off": 6624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_32",
+      "off": 6628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_33",
+      "off": 6632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_34",
+      "off": 6636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_35",
+      "off": 6640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_36",
+      "off": 6644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_37",
+      "off": 6648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_38",
+      "off": 6652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_39",
+      "off": 6656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_40",
+      "off": 6660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_41",
+      "off": 6664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_42",
+      "off": 6668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_43",
+      "off": 6672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_44",
+      "off": 6676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_45",
+      "off": 6680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_46",
+      "off": 6684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_47",
+      "off": 6688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_48",
+      "off": 6692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_49",
+      "off": 6696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_50",
+      "off": 6700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_51",
+      "off": 6704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_52",
+      "off": 6708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_53",
+      "off": 6712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_54",
+      "off": 6716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_55",
+      "off": 6720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_56",
+      "off": 6724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_57",
+      "off": 6728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_58",
+      "off": 6732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_59",
+      "off": 6736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_60",
+      "off": 6740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_61",
+      "off": 6744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_62",
+      "off": 6748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_63",
+      "off": 6752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_64",
+      "off": 6756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_65",
+      "off": 6760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_66",
+      "off": 6764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_67",
+      "off": 6768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_68",
+      "off": 6772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_69",
+      "off": 6776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_70",
+      "off": 6780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_71",
+      "off": 6784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_72",
+      "off": 6788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_73",
+      "off": 6792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_74",
+      "off": 6796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_75",
+      "off": 6800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_76",
+      "off": 6804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_77",
+      "off": 6808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_78",
+      "off": 6812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_79",
+      "off": 6816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_80",
+      "off": 6820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_81",
+      "off": 6824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_82",
+      "off": 6828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_83",
+      "off": 6832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_84",
+      "off": 6836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_85",
+      "off": 6840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_86",
+      "off": 6844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_87",
+      "off": 6848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_88",
+      "off": 6852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_89",
+      "off": 6856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_90",
+      "off": 6860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_91",
+      "off": 6864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_92",
+      "off": 6868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_93",
+      "off": 6872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_94",
+      "off": 6876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_95",
+      "off": 6880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_96",
+      "off": 6884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_97",
+      "off": 6888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_98",
+      "off": 6892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_99",
+      "off": 6896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Esper_Level_100",
+      "off": 6900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_Level_1",
+      "off": 6904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_Level_2",
+      "off": 6908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_Level_3",
+      "off": 6912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_Level_4",
+      "off": 6916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_Level_5",
+      "off": 6920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_Level_6",
+      "off": 6924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_Level_7",
+      "off": 6928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_Level_8",
+      "off": 6932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_Level_9",
+      "off": 6936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_Level_10",
+      "off": 6940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_1_1_",
+      "off": 6944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_1_2_",
+      "off": 6948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_1_3_",
+      "off": 6952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_1_4_",
+      "off": 6956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_1_5_",
+      "off": 6960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_1_6_",
+      "off": 6964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_1_7_",
+      "off": 6968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_1_8_",
+      "off": 6972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_1_9_",
+      "off": 6976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_1_10_",
+      "off": 6980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_2_1_",
+      "off": 6984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_2_2_",
+      "off": 6988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_2_3_",
+      "off": 6992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_2_4_",
+      "off": 6996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_2_5_",
+      "off": 7000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_2_6_",
+      "off": 7004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_2_7_",
+      "off": 7008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_2_8_",
+      "off": 7012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_2_9_",
+      "off": 7016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_2_10_",
+      "off": 7020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_3_1_",
+      "off": 7024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_3_2_",
+      "off": 7028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_3_3_",
+      "off": 7032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_3_4_",
+      "off": 7036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_3_5_",
+      "off": 7040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_3_6_",
+      "off": 7044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_3_7_",
+      "off": 7048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_3_8_",
+      "off": 7052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_3_9_",
+      "off": 7056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_3_10_",
+      "off": 7060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_4_1_",
+      "off": 7064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_4_2_",
+      "off": 7068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_4_3_",
+      "off": 7072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_4_4_",
+      "off": 7076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_4_5_",
+      "off": 7080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_4_6_",
+      "off": 7084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_4_7_",
+      "off": 7088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_4_8_",
+      "off": 7092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_4_9_",
+      "off": 7096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_4_10_",
+      "off": 7100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_5_1_",
+      "off": 7104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_5_2_",
+      "off": 7108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_5_3_",
+      "off": 7112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_5_4_",
+      "off": 7116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_5_5_",
+      "off": 7120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_5_6_",
+      "off": 7124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_5_7_",
+      "off": 7128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_5_8_",
+      "off": 7132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_5_9_",
+      "off": 7136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_5_10_",
+      "off": 7140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_6_1_",
+      "off": 7144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_6_2_",
+      "off": 7148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_6_3_",
+      "off": 7152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_6_4_",
+      "off": 7156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_6_5_",
+      "off": 7160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_6_6_",
+      "off": 7164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_6_7_",
+      "off": 7168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_6_8_",
+      "off": 7172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_6_9_",
+      "off": 7176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_6_10_",
+      "off": 7180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_7_1_",
+      "off": 7184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_7_2_",
+      "off": 7188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_7_3_",
+      "off": 7192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_7_4_",
+      "off": 7196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_7_5_",
+      "off": 7200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_7_6_",
+      "off": 7204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_7_7_",
+      "off": 7208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_7_8_",
+      "off": 7212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_7_9_",
+      "off": 7216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_7_10_",
+      "off": 7220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_8_1_",
+      "off": 7224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_8_2_",
+      "off": 7228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_8_3_",
+      "off": 7232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_8_4_",
+      "off": 7236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_8_5_",
+      "off": 7240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_8_6_",
+      "off": 7244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_8_7_",
+      "off": 7248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_8_8_",
+      "off": 7252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_8_9_",
+      "off": 7256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_8_10_",
+      "off": 7260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_9_1_",
+      "off": 7264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_9_2_",
+      "off": 7268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_9_3_",
+      "off": 7272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_9_4_",
+      "off": 7276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_9_5_",
+      "off": 7280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_9_6_",
+      "off": 7284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_9_7_",
+      "off": 7288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_9_8_",
+      "off": 7292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_9_9_",
+      "off": 7296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_9_10_",
+      "off": 7300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_10_1_",
+      "off": 7304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_10_2_",
+      "off": 7308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_10_3_",
+      "off": 7312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_10_4_",
+      "off": 7316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_10_5_",
+      "off": 7320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_10_6_",
+      "off": 7324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_10_7_",
+      "off": 7328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_10_8_",
+      "off": 7332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_10_9_",
+      "off": 7336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Craft_EXP_Gain_Level_10_10",
+      "off": 7340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Pet_Level_1",
+      "off": 7344,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_2",
+      "off": 7352,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_3",
+      "off": 7360,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_4",
+      "off": 7368,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_5",
+      "off": 7376,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_6",
+      "off": 7384,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_7",
+      "off": 7392,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_8",
+      "off": 7400,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_9",
+      "off": 7408,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_10",
+      "off": 7416,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_11",
+      "off": 7424,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_12",
+      "off": 7432,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_13",
+      "off": 7440,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_14",
+      "off": 7448,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_15",
+      "off": 7456,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_16",
+      "off": 7464,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_17",
+      "off": 7472,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_18",
+      "off": 7480,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_19",
+      "off": 7488,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_20",
+      "off": 7496,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_21",
+      "off": 7504,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_22",
+      "off": 7512,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_23",
+      "off": 7520,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_24",
+      "off": 7528,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_25",
+      "off": 7536,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_26",
+      "off": 7544,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_27",
+      "off": 7552,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_28",
+      "off": 7560,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_29",
+      "off": 7568,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_30",
+      "off": 7576,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_31",
+      "off": 7584,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_32",
+      "off": 7592,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_33",
+      "off": 7600,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_34",
+      "off": 7608,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_35",
+      "off": 7616,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_36",
+      "off": 7624,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_37",
+      "off": 7632,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_38",
+      "off": 7640,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_39",
+      "off": 7648,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_40",
+      "off": 7656,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_41",
+      "off": 7664,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_42",
+      "off": 7672,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_43",
+      "off": 7680,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_44",
+      "off": 7688,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_45",
+      "off": 7696,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_46",
+      "off": 7704,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_47",
+      "off": 7712,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_48",
+      "off": 7720,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_49",
+      "off": 7728,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_50",
+      "off": 7736,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_51",
+      "off": 7744,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_52",
+      "off": 7752,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_53",
+      "off": 7760,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_54",
+      "off": 7768,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_55",
+      "off": 7776,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_56",
+      "off": 7784,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_57",
+      "off": 7792,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_58",
+      "off": 7800,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_59",
+      "off": 7808,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_60",
+      "off": 7816,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_61",
+      "off": 7824,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_62",
+      "off": 7832,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_63",
+      "off": 7840,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_64",
+      "off": 7848,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_65",
+      "off": 7856,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_66",
+      "off": 7864,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_67",
+      "off": 7872,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_68",
+      "off": 7880,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_69",
+      "off": 7888,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_70",
+      "off": 7896,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_71",
+      "off": 7904,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_72",
+      "off": 7912,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_73",
+      "off": 7920,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_74",
+      "off": 7928,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_75",
+      "off": 7936,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_76",
+      "off": 7944,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_77",
+      "off": 7952,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_78",
+      "off": 7960,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_79",
+      "off": 7968,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_80",
+      "off": 7976,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_81",
+      "off": 7984,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_82",
+      "off": 7992,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_83",
+      "off": 8000,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_84",
+      "off": 8008,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_85",
+      "off": 8016,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_86",
+      "off": 8024,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_87",
+      "off": 8032,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_88",
+      "off": 8040,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_89",
+      "off": 8048,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_90",
+      "off": 8056,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_91",
+      "off": 8064,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_92",
+      "off": 8072,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_93",
+      "off": 8080,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_94",
+      "off": 8088,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_95",
+      "off": 8096,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_96",
+      "off": 8104,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_97",
+      "off": 8112,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_98",
+      "off": 8120,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_99",
+      "off": 8128,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_100",
+      "off": 8136,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_101",
+      "off": 8144,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_102",
+      "off": 8152,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_103",
+      "off": 8160,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_104",
+      "off": 8168,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_105",
+      "off": 8176,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_106",
+      "off": 8184,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_107",
+      "off": 8192,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_108",
+      "off": 8200,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_109",
+      "off": 8208,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_110",
+      "off": 8216,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_111",
+      "off": 8224,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_112",
+      "off": 8232,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_113",
+      "off": 8240,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_114",
+      "off": 8248,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_115",
+      "off": 8256,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_116",
+      "off": 8264,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_117",
+      "off": 8272,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_118",
+      "off": 8280,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_119",
+      "off": 8288,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_120",
+      "off": 8296,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_121",
+      "off": 8304,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_122",
+      "off": 8312,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_123",
+      "off": 8320,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_124",
+      "off": 8328,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_125",
+      "off": 8336,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_126",
+      "off": 8344,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_127",
+      "off": 8352,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_128",
+      "off": 8360,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_129",
+      "off": 8368,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_130",
+      "off": 8376,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_131",
+      "off": 8384,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_132",
+      "off": 8392,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_133",
+      "off": 8400,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_134",
+      "off": 8408,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_135",
+      "off": 8416,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_136",
+      "off": 8424,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_137",
+      "off": 8432,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_138",
+      "off": 8440,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_139",
+      "off": 8448,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_140",
+      "off": 8456,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_141",
+      "off": 8464,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_142",
+      "off": 8472,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_143",
+      "off": 8480,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_144",
+      "off": 8488,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_145",
+      "off": 8496,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_146",
+      "off": 8504,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_147",
+      "off": 8512,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_148",
+      "off": 8520,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_149",
+      "off": 8528,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_150",
+      "off": 8536,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_151",
+      "off": 8544,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_152",
+      "off": 8552,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_153",
+      "off": 8560,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_154",
+      "off": 8568,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_155",
+      "off": 8576,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_156",
+      "off": 8584,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_157",
+      "off": 8592,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_158",
+      "off": 8600,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_159",
+      "off": 8608,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_160",
+      "off": 8616,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_161",
+      "off": 8624,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_162",
+      "off": 8632,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_163",
+      "off": 8640,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_164",
+      "off": 8648,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_165",
+      "off": 8656,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_166",
+      "off": 8664,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_167",
+      "off": 8672,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_168",
+      "off": 8680,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_169",
+      "off": 8688,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_170",
+      "off": 8696,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_171",
+      "off": 8704,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_172",
+      "off": 8712,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_173",
+      "off": 8720,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_174",
+      "off": 8728,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_175",
+      "off": 8736,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_176",
+      "off": 8744,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_177",
+      "off": 8752,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_178",
+      "off": 8760,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_179",
+      "off": 8768,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_180",
+      "off": 8776,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_181",
+      "off": 8784,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_182",
+      "off": 8792,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_183",
+      "off": 8800,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_184",
+      "off": 8808,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_185",
+      "off": 8816,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_186",
+      "off": 8824,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_187",
+      "off": 8832,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_188",
+      "off": 8840,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_189",
+      "off": 8848,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_190",
+      "off": 8856,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_191",
+      "off": 8864,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_192",
+      "off": 8872,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_193",
+      "off": 8880,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_194",
+      "off": 8888,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_195",
+      "off": 8896,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_196",
+      "off": 8904,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_197",
+      "off": 8912,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_198",
+      "off": 8920,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_199",
+      "off": 8928,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Pet_Level_200",
+      "off": 8936,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_1_EXP",
+      "off": 8944,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_1",
+      "off": 8952,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_1",
+      "off": 8956,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_2_EXP",
+      "off": 8964,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_2",
+      "off": 8972,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_2",
+      "off": 8976,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_3_EXP",
+      "off": 8984,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_3",
+      "off": 8992,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_3",
+      "off": 8996,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_4_EXP",
+      "off": 9004,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_4",
+      "off": 9012,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_4",
+      "off": 9016,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_5_EXP",
+      "off": 9024,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_5",
+      "off": 9032,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_5",
+      "off": 9036,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_6_EXP",
+      "off": 9044,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_6",
+      "off": 9052,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_6",
+      "off": 9056,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_7_EXP",
+      "off": 9064,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_7",
+      "off": 9072,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_7",
+      "off": 9076,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_8_EXP",
+      "off": 9084,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_8",
+      "off": 9092,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_8",
+      "off": 9096,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_9_EXP",
+      "off": 9104,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_9",
+      "off": 9112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_9",
+      "off": 9116,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_10_EXP",
+      "off": 9124,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_10",
+      "off": 9132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_10",
+      "off": 9136,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_11_EXP",
+      "off": 9144,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_11",
+      "off": 9152,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_11",
+      "off": 9156,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_12_EXP",
+      "off": 9164,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_12",
+      "off": 9172,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_12",
+      "off": 9176,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_13_EXP",
+      "off": 9184,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_13",
+      "off": 9192,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_13",
+      "off": 9196,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_14_EXP",
+      "off": 9204,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_14",
+      "off": 9212,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_14",
+      "off": 9216,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_15_EXP",
+      "off": 9224,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_15",
+      "off": 9232,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_15",
+      "off": 9236,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_16_EXP",
+      "off": 9244,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_16",
+      "off": 9252,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_16",
+      "off": 9256,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_17_EXP",
+      "off": 9264,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_17",
+      "off": 9272,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_17",
+      "off": 9276,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_18_EXP",
+      "off": 9284,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_18",
+      "off": 9292,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_18",
+      "off": 9296,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_19_EXP",
+      "off": 9304,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_19",
+      "off": 9312,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_19",
+      "off": 9316,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_20_EXP",
+      "off": 9324,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_20",
+      "off": 9332,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_20",
+      "off": 9336,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_21_EXP",
+      "off": 9344,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_21",
+      "off": 9352,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_21",
+      "off": 9356,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_22_EXP",
+      "off": 9364,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_22",
+      "off": 9372,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_22",
+      "off": 9376,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_23_EXP",
+      "off": 9384,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_23",
+      "off": 9392,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_23",
+      "off": 9396,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_24_EXP",
+      "off": 9404,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_24",
+      "off": 9412,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_24",
+      "off": 9416,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_25_EXP",
+      "off": 9424,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_25",
+      "off": 9432,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_25",
+      "off": 9436,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_26_EXP",
+      "off": 9444,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_26",
+      "off": 9452,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_26",
+      "off": 9456,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_27_EXP",
+      "off": 9464,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_27",
+      "off": 9472,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_27",
+      "off": 9476,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_28_EXP",
+      "off": 9484,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_28",
+      "off": 9492,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_28",
+      "off": 9496,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_29_EXP",
+      "off": 9504,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_29",
+      "off": 9512,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_29",
+      "off": 9516,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_30_EXP",
+      "off": 9524,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_30",
+      "off": 9532,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_30",
+      "off": 9536,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_31_EXP",
+      "off": 9544,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_31",
+      "off": 9552,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_31",
+      "off": 9556,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_32_EXP",
+      "off": 9564,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_32",
+      "off": 9572,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_32",
+      "off": 9576,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_33_EXP",
+      "off": 9584,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_33",
+      "off": 9592,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_33",
+      "off": 9596,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_34_EXP",
+      "off": 9604,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_34",
+      "off": 9612,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_34",
+      "off": 9616,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_35_EXP",
+      "off": 9624,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_35",
+      "off": 9632,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_35",
+      "off": 9636,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_36_EXP",
+      "off": 9644,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_36",
+      "off": 9652,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_36",
+      "off": 9656,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_37_EXP",
+      "off": 9664,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_37",
+      "off": 9672,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_37",
+      "off": 9676,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_38_EXP",
+      "off": 9684,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_38",
+      "off": 9692,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_38",
+      "off": 9696,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_39_EXP",
+      "off": 9704,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_39",
+      "off": 9712,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_39",
+      "off": 9716,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_40_EXP",
+      "off": 9724,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_40",
+      "off": 9732,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_40",
+      "off": 9736,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_41_EXP",
+      "off": 9744,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_41",
+      "off": 9752,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_41",
+      "off": 9756,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_42_EXP",
+      "off": 9764,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_42",
+      "off": 9772,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_42",
+      "off": 9776,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_43_EXP",
+      "off": 9784,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_43",
+      "off": 9792,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_43",
+      "off": 9796,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_44_EXP",
+      "off": 9804,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_44",
+      "off": 9812,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_44",
+      "off": 9816,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_45_EXP",
+      "off": 9824,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_45",
+      "off": 9832,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_45",
+      "off": 9836,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_46_EXP",
+      "off": 9844,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_46",
+      "off": 9852,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_46",
+      "off": 9856,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_47_EXP",
+      "off": 9864,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_47",
+      "off": 9872,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_47",
+      "off": 9876,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_48_EXP",
+      "off": 9884,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_48",
+      "off": 9892,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_48",
+      "off": 9896,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_49_EXP",
+      "off": 9904,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_49",
+      "off": 9912,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_49",
+      "off": 9916,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_50_EXP",
+      "off": 9924,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_50",
+      "off": 9932,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_50",
+      "off": 9936,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_51_EXP",
+      "off": 9944,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_51",
+      "off": 9952,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_51",
+      "off": 9956,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_52_EXP",
+      "off": 9964,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_52",
+      "off": 9972,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_52",
+      "off": 9976,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_53_EXP",
+      "off": 9984,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_53",
+      "off": 9992,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_53",
+      "off": 9996,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_54_EXP",
+      "off": 10004,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_54",
+      "off": 10012,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_54",
+      "off": 10016,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_55_EXP",
+      "off": 10024,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_55",
+      "off": 10032,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_55",
+      "off": 10036,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_56_EXP",
+      "off": 10044,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_56",
+      "off": 10052,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_56",
+      "off": 10056,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_57_EXP",
+      "off": 10064,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_57",
+      "off": 10072,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_57",
+      "off": 10076,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_58_EXP",
+      "off": 10084,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_58",
+      "off": 10092,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_58",
+      "off": 10096,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_59_EXP",
+      "off": 10104,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_59",
+      "off": 10112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_59",
+      "off": 10116,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_60_EXP",
+      "off": 10124,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_60",
+      "off": 10132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_60",
+      "off": 10136,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_61_EXP",
+      "off": 10144,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_61",
+      "off": 10152,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_61",
+      "off": 10156,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_62_EXP",
+      "off": 10164,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_62",
+      "off": 10172,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_62",
+      "off": 10176,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_63_EXP",
+      "off": 10184,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_63",
+      "off": 10192,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_63",
+      "off": 10196,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_64_EXP",
+      "off": 10204,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_64",
+      "off": 10212,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_64",
+      "off": 10216,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_65_EXP",
+      "off": 10224,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_65",
+      "off": 10232,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_65",
+      "off": 10236,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_66_EXP",
+      "off": 10244,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_66",
+      "off": 10252,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_66",
+      "off": 10256,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_67_EXP",
+      "off": 10264,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_67",
+      "off": 10272,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_67",
+      "off": 10276,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_68_EXP",
+      "off": 10284,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_68",
+      "off": 10292,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_68",
+      "off": 10296,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_69_EXP",
+      "off": 10304,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_69",
+      "off": 10312,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_69",
+      "off": 10316,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_70_EXP",
+      "off": 10324,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_70",
+      "off": 10332,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_70",
+      "off": 10336,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_71_EXP",
+      "off": 10344,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_71",
+      "off": 10352,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_71",
+      "off": 10356,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_72_EXP",
+      "off": 10364,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_72",
+      "off": 10372,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_72",
+      "off": 10376,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_73_EXP",
+      "off": 10384,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_73",
+      "off": 10392,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_73",
+      "off": 10396,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_74_EXP",
+      "off": 10404,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_74",
+      "off": 10412,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_74",
+      "off": 10416,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_75_EXP",
+      "off": 10424,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_75",
+      "off": 10432,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_75",
+      "off": 10436,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_76_EXP",
+      "off": 10444,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_76",
+      "off": 10452,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_76",
+      "off": 10456,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_77_EXP",
+      "off": 10464,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_77",
+      "off": 10472,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_77",
+      "off": 10476,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_78_EXP",
+      "off": 10484,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_78",
+      "off": 10492,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_78",
+      "off": 10496,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_79_EXP",
+      "off": 10504,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_79",
+      "off": 10512,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_79",
+      "off": 10516,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_80_EXP",
+      "off": 10524,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_80",
+      "off": 10532,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_80",
+      "off": 10536,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_81_EXP",
+      "off": 10544,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_81",
+      "off": 10552,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_81",
+      "off": 10556,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_82_EXP",
+      "off": 10564,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_82",
+      "off": 10572,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_82",
+      "off": 10576,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_83_EXP",
+      "off": 10584,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_83",
+      "off": 10592,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_83",
+      "off": 10596,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_84_EXP",
+      "off": 10604,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_84",
+      "off": 10612,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_84",
+      "off": 10616,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_85_EXP",
+      "off": 10624,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_85",
+      "off": 10632,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_85",
+      "off": 10636,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_86_EXP",
+      "off": 10644,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_86",
+      "off": 10652,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_86",
+      "off": 10656,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_87_EXP",
+      "off": 10664,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_87",
+      "off": 10672,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_87",
+      "off": 10676,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_88_EXP",
+      "off": 10684,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_88",
+      "off": 10692,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_88",
+      "off": 10696,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_89_EXP",
+      "off": 10704,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_89",
+      "off": 10712,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_89",
+      "off": 10716,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_90_EXP",
+      "off": 10724,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_90",
+      "off": 10732,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_90",
+      "off": 10736,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_91_EXP",
+      "off": 10744,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_91",
+      "off": 10752,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_91",
+      "off": 10756,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_92_EXP",
+      "off": 10764,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_92",
+      "off": 10772,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_92",
+      "off": 10776,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_93_EXP",
+      "off": 10784,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_93",
+      "off": 10792,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_93",
+      "off": 10796,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_94_EXP",
+      "off": 10804,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_94",
+      "off": 10812,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_94",
+      "off": 10816,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_95_EXP",
+      "off": 10824,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_95",
+      "off": 10832,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_95",
+      "off": 10836,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_96_EXP",
+      "off": 10844,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_96",
+      "off": 10852,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_96",
+      "off": 10856,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_97_EXP",
+      "off": 10864,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_97",
+      "off": 10872,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_97",
+      "off": 10876,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_98_EXP",
+      "off": 10884,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_98",
+      "off": 10892,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_98",
+      "off": 10896,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_99_EXP",
+      "off": 10904,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_99",
+      "off": 10912,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_99",
+      "off": 10916,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_100_EXP",
+      "off": 10924,
+      "t": {
+        "k": "f64"
+      }
+    },
+    {
+      "name": "Chroma_Level_Up_Chance_100",
+      "off": 10932,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Chroma_Failure_EXP_100",
+      "off": 10936,
+      "t": {
+        "k": "f64"
+      }
+    }
+  ]
+}

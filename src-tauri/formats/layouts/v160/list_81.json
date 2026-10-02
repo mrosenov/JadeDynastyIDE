@@ -1,0 +1,259 @@
+{
+  "key": "war_role_config",
+  "name": "War Role Config",
+  "struct": "WAR_ROLE_CONFIG",
+  "size": 524,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "(类型)ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "attack_max_lev",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "攻击力等级上限"
+    },
+    {
+      "name": "attack_level",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "attack_value",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "攻击力等级1-20的攻击力"
+            },
+            {
+              "name": "attack_extra",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "攻击力等级1-20的附加伤害"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "attack_war_material",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      },
+      "c": "建设攻击力等级消耗城防物资种类"
+    },
+    {
+      "name": "attack_co",
+      "off": 236,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "c": "建设攻击力等级消耗城防物资值系数a,b,c"
+    },
+    {
+      "name": "defence_max_lev",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      },
+      "c": "防御力等级上限"
+    },
+    {
+      "name": "defence_level",
+      "off": 252,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "defence_value",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "防御力等级1-20的防御力"
+            },
+            {
+              "name": "defence_extra",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "防御力等级1-20的减免附加伤害"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "defence_war_material",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      },
+      "c": "建设防御力等级消耗城防物资种类"
+    },
+    {
+      "name": "defence_co",
+      "off": 416,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "c": "建设防御力等级消耗城防物资值系数a,b,c"
+    },
+    {
+      "name": "range_max_lev",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      },
+      "c": "射程等级上限"
+    },
+    {
+      "name": "range_values",
+      "off": 432,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "射程等级1-5"
+    },
+    {
+      "name": "range_war_material",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      },
+      "c": "建设射程等级消耗城防物资种类"
+    },
+    {
+      "name": "range_co",
+      "off": 456,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "c": "建设射程等级消耗城防物资值系数a,b,c"
+    },
+    {
+      "name": "strategy_max_lev",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      },
+      "c": "策略等级上限"
+    },
+    {
+      "name": "strategy_id",
+      "off": 472,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "策略等级1-5"
+    },
+    {
+      "name": "strategy_war_material",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      },
+      "c": "建设策略等级消耗城防物资种类"
+    },
+    {
+      "name": "strategy_co",
+      "off": 496,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "c": "建设策略等级消耗城防物资值系数a,b,c"
+    },
+    {
+      "name": "init_hp",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      },
+      "c": "初始HP"
+    },
+    {
+      "name": "hp_war_material",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      },
+      "c": "建设HP消耗城防物资种类"
+    },
+    {
+      "name": "lvlup_hp",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      },
+      "c": "HP每次建设提高的点数"
+    },
+    {
+      "name": "hp_material_num",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      },
+      "c": "每次建设HP所需城防物资值"
+    }
+  ]
+}

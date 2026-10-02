@@ -1,0 +1,37 @@
+{
+  "id": "v176",
+  "version": 176,
+  "source": "Laravel jdide structures (v176): 211 curated lists",
+  "markers": [
+    {
+      "before": 13,
+      "kind": "checksum"
+    },
+    {
+      "before": 23,
+      "kind": "exporter"
+    },
+    {
+      "before": 36,
+      "kind": "checksum"
+    },
+    {
+      "before": 56,
+      "kind": "tag"
+    },
+    {
+      "before": 62,
+      "kind": "checksum"
+    },
+    {
+      "before": 103,
+      "kind": "checksum"
+    },
+    {
+      "before": 296,
+      "kind": "checksum"
+    }
+  ],
+  "listCountUnverified": true,
+  "listCount": 294
+}

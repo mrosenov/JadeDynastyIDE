@@ -1,0 +1,60 @@
+{
+  "key": "combine_skill_edit_config",
+  "name": "Combine Skill Edit Config",
+  "struct": "COMBINE_SKILL_EDIT_CONFIG",
+  "size": 428,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "edit_config",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 30,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "skill_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "cool_index",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "cool_time",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

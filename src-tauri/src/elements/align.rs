@@ -79,7 +79,7 @@ fn lcs(a: &[usize], b: &[usize]) -> Vec<(usize, usize)> {
 
 /// For each of the file's lists, the matching list of `donor`, if any.
 pub fn align(file_sizes: &[usize], file_markers: &[Marker], donor: &Layout) -> Vec<Option<Match>> {
-    let donor_sizes: Vec<usize> = donor.lists.iter().map(|l| l.as_ref().and_then(|d| d.size).unwrap_or(0)).collect();
+    let donor_sizes: Vec<usize> = donor.lists.iter().map(|l| l.as_ref().and_then(|s| s.head.size).unwrap_or(0)).collect();
     let fg = groups(file_sizes.len(), file_markers);
     let dg = groups(donor_sizes.len(), &donor.markers);
     let group_pairs: Vec<_> = if fg.len() == dg.len() {
@@ -117,7 +117,7 @@ pub fn align(file_sizes: &[usize], file_markers: &[Marker], donor: &Layout) -> V
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::elements::format::{ListDef, MarkerKind};
+    use crate::elements::format::{ListDef, ListSlot, MarkerKind};
 
     fn layout(sizes: &[usize], markers: Vec<Marker>) -> Layout {
         Layout {
@@ -127,7 +127,7 @@ mod tests {
             markers,
             lists: sizes
                 .iter()
-                .map(|&s| Some(ListDef { key: None, name: format!("L{s}"), struct_name: None, size: Some(s), fields: vec![] }))
+                .map(|&s| Some(ListSlot::of(ListDef { key: None, name: format!("L{s}"), struct_name: None, size: Some(s), fields: vec![] })))
                 .collect(),
             enums: Default::default(),
             list_count_unverified: false,

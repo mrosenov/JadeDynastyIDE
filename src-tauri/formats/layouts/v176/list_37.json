@@ -1,0 +1,364 @@
+{
+  "name": "Recipe Essence",
+  "struct": "RECIPE_ESSENCE",
+  "size": 260,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Type",
+      "off": 4,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "RECIPE_MAJOR_TYPE"
+      ]
+    },
+    {
+      "name": "Sub_type",
+      "off": 8,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "RECIPE_SUB_TYPE"
+      ]
+    },
+    {
+      "name": "Name",
+      "off": 12,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Level",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Product_1_Probabilty",
+      "off": 80,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Product_1_ID_To_Make",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Product_1_Min_Num_Make",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Product_1_Max_Num_Make",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Product_2_Probabilty",
+      "off": 96,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Product_2_ID_To_Make",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Product_2_Min_Num_Make",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Product_2_Max_Num_Make",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Product_3_Probabilty",
+      "off": 112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Product_3_ID_To_Make",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Product_3_Min_Num_Make",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Product_3_Max_Num_Make",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Sell_Price",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk1",
+      "off": 132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk2",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk3",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk4",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk5",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk6",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk7",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk8",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unk9",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Duration",
+      "off": 168,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Material_1_ID",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Material_1_Num",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Material_2_ID",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Material_2_Num",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Material_3_ID",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Material_3_Num",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Material_4_ID",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Material_4_Num",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Material_5_ID",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Material_5_Num",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Material_6_ID",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Material_6_Num",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Recipe_Class",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_1",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_2",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_3",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_4",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_5",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_6",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_7",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Cooldown_Time",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Cooldown_Type",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

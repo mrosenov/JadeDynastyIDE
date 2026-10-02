@@ -1,0 +1,479 @@
+{
+  "name": "Gift Letter Essence",
+  "struct": "GIFT_LETTER_ESSENCE",
+  "size": 2528,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "pre_unknown_1",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pre_unknown_2",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pre_unknown_3",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pre_unknown_4",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pre_unknown_5",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pre_unknown_6",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pre_unknown_7",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pre_unknown_8",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "file_matter",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "file_icon",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_1",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_2",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_3",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "character_combo_id_1",
+      "off": 120,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "character_combo_id_2",
+      "off": 128,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "unknown_4",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "title",
+      "off": 140,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "unknown_5",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_6",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "text",
+      "off": 348,
+      "t": {
+        "k": "wstr",
+        "n": 1000
+      }
+    },
+    {
+      "name": "award_1_unknown",
+      "off": 2348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_1_award_id",
+      "off": 2352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_1_bind",
+      "off": 2356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_1_award_amount",
+      "off": 2360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_2_unknown",
+      "off": 2364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_2_award_id",
+      "off": 2368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_2_bind",
+      "off": 2372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_2_award_amount",
+      "off": 2376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_3_unknown",
+      "off": 2380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_3_award_id",
+      "off": 2384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_3_bind",
+      "off": 2388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_3_award_amount",
+      "off": 2392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_4_unknown",
+      "off": 2396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_4_award_id",
+      "off": 2400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_4_bind",
+      "off": 2404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_4_award_amount",
+      "off": 2408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_5_unknown",
+      "off": 2412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_5_award_id",
+      "off": 2416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_5_bind",
+      "off": 2420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_5_award_amount",
+      "off": 2424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_6_unknown",
+      "off": 2428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_6_award_id",
+      "off": 2432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_6_bind",
+      "off": 2436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_6_award_amount",
+      "off": 2440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_7_unknown",
+      "off": 2444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_7_award_id",
+      "off": 2448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_7_bind",
+      "off": 2452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_7_award_amount",
+      "off": 2456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_8_unknown",
+      "off": 2460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_8_award_id",
+      "off": 2464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_8_bind",
+      "off": 2468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_8_award_amount",
+      "off": 2472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_9_unknown",
+      "off": 2476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_9_award_id",
+      "off": 2480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_9_bind",
+      "off": 2484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_9_award_amount",
+      "off": 2488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_10_unknown",
+      "off": 2492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_10_award_id",
+      "off": 2496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_10_bind",
+      "off": 2500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_10_award_amount",
+      "off": 2504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_7",
+      "off": 2508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "price",
+      "off": 2512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "shop_price",
+      "off": 2516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pile_num_max",
+      "off": 2520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 2524,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

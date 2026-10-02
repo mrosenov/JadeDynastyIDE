@@ -1,0 +1,2045 @@
+{
+  "name": "Fairyhouse Probability Config",
+  "struct": "FAIRYHOUSE_PROBABILITY_CONFIG",
+  "size": 1224,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "props_1_prop_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_1_probability",
+      "off": 72,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_2_prop_id",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_2_probability",
+      "off": 80,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_3_prop_id",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_3_probability",
+      "off": 88,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_4_prop_id",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_4_probability",
+      "off": 96,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_5_prop_id",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_5_probability",
+      "off": 104,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_6_prop_id",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_6_probability",
+      "off": 112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_7_prop_id",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_7_probability",
+      "off": 120,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_8_prop_id",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_8_probability",
+      "off": 128,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_9_prop_id",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_9_probability",
+      "off": 136,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_10_prop_id",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_10_probability",
+      "off": 144,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_11_prop_id",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_11_probability",
+      "off": 152,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_12_prop_id",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_12_probability",
+      "off": 160,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_13_prop_id",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_13_probability",
+      "off": 168,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_14_prop_id",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_14_probability",
+      "off": 176,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_15_prop_id",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_15_probability",
+      "off": 184,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_16_prop_id",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_16_probability",
+      "off": 192,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_17_prop_id",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_17_probability",
+      "off": 200,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_18_prop_id",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_18_probability",
+      "off": 208,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_19_prop_id",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_19_probability",
+      "off": 216,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_20_prop_id",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_20_probability",
+      "off": 224,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_21_prop_id",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_21_probability",
+      "off": 232,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_22_prop_id",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_22_probability",
+      "off": 240,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_23_prop_id",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_23_probability",
+      "off": 248,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_24_prop_id",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_24_probability",
+      "off": 256,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_25_prop_id",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_25_probability",
+      "off": 264,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_26_prop_id",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_26_probability",
+      "off": 272,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_27_prop_id",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_27_probability",
+      "off": 280,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_28_prop_id",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_28_probability",
+      "off": 288,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_29_prop_id",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_29_probability",
+      "off": 296,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_30_prop_id",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_30_probability",
+      "off": 304,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_31_prop_id",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_31_probability",
+      "off": 312,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_32_prop_id",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_32_probability",
+      "off": 320,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_33_prop_id",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_33_probability",
+      "off": 328,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_34_prop_id",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_34_probability",
+      "off": 336,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_35_prop_id",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_35_probability",
+      "off": 344,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_36_prop_id",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_36_probability",
+      "off": 352,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_37_prop_id",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_37_probability",
+      "off": 360,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_38_prop_id",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_38_probability",
+      "off": 368,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_39_prop_id",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_39_probability",
+      "off": 376,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_40_prop_id",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_40_probability",
+      "off": 384,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_41_prop_id",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_41_probability",
+      "off": 392,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_42_prop_id",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_42_probability",
+      "off": 400,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_43_prop_id",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_43_probability",
+      "off": 408,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_44_prop_id",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_44_probability",
+      "off": 416,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_45_prop_id",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_45_probability",
+      "off": 424,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_46_prop_id",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_46_probability",
+      "off": 432,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_47_prop_id",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_47_probability",
+      "off": 440,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_48_prop_id",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_48_probability",
+      "off": 448,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_49_prop_id",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_49_probability",
+      "off": 456,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_50_prop_id",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_50_probability",
+      "off": 464,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_51_prop_id",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_51_probability",
+      "off": 472,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_52_prop_id",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_52_probability",
+      "off": 480,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_53_prop_id",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_53_probability",
+      "off": 488,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_54_prop_id",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_54_probability",
+      "off": 496,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_55_prop_id",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_55_probability",
+      "off": 504,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_56_prop_id",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_56_probability",
+      "off": 512,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_57_prop_id",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_57_probability",
+      "off": 520,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_58_prop_id",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_58_probability",
+      "off": 528,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_59_prop_id",
+      "off": 532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_59_probability",
+      "off": 536,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_60_prop_id",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_60_probability",
+      "off": 544,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_61_prop_id",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_61_probability",
+      "off": 552,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_62_prop_id",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_62_probability",
+      "off": 560,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_63_prop_id",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_63_probability",
+      "off": 568,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_64_prop_id",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_64_probability",
+      "off": 576,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_65_prop_id",
+      "off": 580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_65_probability",
+      "off": 584,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_66_prop_id",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_66_probability",
+      "off": 592,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_67_prop_id",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_67_probability",
+      "off": 600,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_68_prop_id",
+      "off": 604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_68_probability",
+      "off": 608,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_69_prop_id",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_69_probability",
+      "off": 616,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_70_prop_id",
+      "off": 620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_70_probability",
+      "off": 624,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_71_prop_id",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_71_probability",
+      "off": 632,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_72_prop_id",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_72_probability",
+      "off": 640,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_73_prop_id",
+      "off": 644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_73_probability",
+      "off": 648,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_74_prop_id",
+      "off": 652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_74_probability",
+      "off": 656,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_75_prop_id",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_75_probability",
+      "off": 664,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_76_prop_id",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_76_probability",
+      "off": 672,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_77_prop_id",
+      "off": 676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_77_probability",
+      "off": 680,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_78_prop_id",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_78_probability",
+      "off": 688,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_79_prop_id",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_79_probability",
+      "off": 696,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_80_prop_id",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_80_probability",
+      "off": 704,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_81_prop_id",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_81_probability",
+      "off": 712,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_82_prop_id",
+      "off": 716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_82_probability",
+      "off": 720,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_83_prop_id",
+      "off": 724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_83_probability",
+      "off": 728,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_84_prop_id",
+      "off": 732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_84_probability",
+      "off": 736,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_85_prop_id",
+      "off": 740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_85_probability",
+      "off": 744,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_86_prop_id",
+      "off": 748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_86_probability",
+      "off": 752,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_87_prop_id",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_87_probability",
+      "off": 760,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_88_prop_id",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_88_probability",
+      "off": 768,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_89_prop_id",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_89_probability",
+      "off": 776,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_90_prop_id",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_90_probability",
+      "off": 784,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_91_prop_id",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_91_probability",
+      "off": 792,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_92_prop_id",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_92_probability",
+      "off": 800,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_93_prop_id",
+      "off": 804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_93_probability",
+      "off": 808,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_94_prop_id",
+      "off": 812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_94_probability",
+      "off": 816,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_95_prop_id",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_95_probability",
+      "off": 824,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_96_prop_id",
+      "off": 828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_96_probability",
+      "off": 832,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_97_prop_id",
+      "off": 836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_97_probability",
+      "off": 840,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_98_prop_id",
+      "off": 844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_98_probability",
+      "off": 848,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_99_prop_id",
+      "off": 852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_99_probability",
+      "off": 856,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_100_prop_id",
+      "off": 860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_100_probability",
+      "off": 864,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_101_prop_id",
+      "off": 868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_101_probability",
+      "off": 872,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_102_prop_id",
+      "off": 876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_102_probability",
+      "off": 880,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_103_prop_id",
+      "off": 884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_103_probability",
+      "off": 888,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_104_prop_id",
+      "off": 892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_104_probability",
+      "off": 896,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_105_prop_id",
+      "off": 900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_105_probability",
+      "off": 904,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_106_prop_id",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_106_probability",
+      "off": 912,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_107_prop_id",
+      "off": 916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_107_probability",
+      "off": 920,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_108_prop_id",
+      "off": 924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_108_probability",
+      "off": 928,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_109_prop_id",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_109_probability",
+      "off": 936,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_110_prop_id",
+      "off": 940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_110_probability",
+      "off": 944,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_111_prop_id",
+      "off": 948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_111_probability",
+      "off": 952,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_112_prop_id",
+      "off": 956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_112_probability",
+      "off": 960,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_113_prop_id",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_113_probability",
+      "off": 968,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_114_prop_id",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_114_probability",
+      "off": 976,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_115_prop_id",
+      "off": 980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_115_probability",
+      "off": 984,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_116_prop_id",
+      "off": 988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_116_probability",
+      "off": 992,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_117_prop_id",
+      "off": 996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_117_probability",
+      "off": 1000,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_118_prop_id",
+      "off": 1004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_118_probability",
+      "off": 1008,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_119_prop_id",
+      "off": 1012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_119_probability",
+      "off": 1016,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_120_prop_id",
+      "off": 1020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_120_probability",
+      "off": 1024,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_121_prop_id",
+      "off": 1028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_121_probability",
+      "off": 1032,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_122_prop_id",
+      "off": 1036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_122_probability",
+      "off": 1040,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_123_prop_id",
+      "off": 1044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_123_probability",
+      "off": 1048,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_124_prop_id",
+      "off": 1052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_124_probability",
+      "off": 1056,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_125_prop_id",
+      "off": 1060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_125_probability",
+      "off": 1064,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_126_prop_id",
+      "off": 1068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_126_probability",
+      "off": 1072,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_127_prop_id",
+      "off": 1076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_127_probability",
+      "off": 1080,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_128_prop_id",
+      "off": 1084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_128_probability",
+      "off": 1088,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "unknown_1",
+      "off": 1092,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_1_prop_id",
+      "off": 1096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_1_probability",
+      "off": 1100,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_2_prop_id",
+      "off": 1104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_2_probability",
+      "off": 1108,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_3_prop_id",
+      "off": 1112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_3_probability",
+      "off": 1116,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_4_prop_id",
+      "off": 1120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_4_probability",
+      "off": 1124,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_5_prop_id",
+      "off": 1128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_5_probability",
+      "off": 1132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_6_prop_id",
+      "off": 1136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_6_probability",
+      "off": 1140,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_7_prop_id",
+      "off": 1144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_7_probability",
+      "off": 1148,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_8_prop_id",
+      "off": 1152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_8_probability",
+      "off": 1156,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_9_prop_id",
+      "off": 1160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_9_probability",
+      "off": 1164,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_10_prop_id",
+      "off": 1168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_10_probability",
+      "off": 1172,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_11_prop_id",
+      "off": 1176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_11_probability",
+      "off": 1180,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_12_prop_id",
+      "off": 1184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_12_probability",
+      "off": 1188,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_13_prop_id",
+      "off": 1192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_13_probability",
+      "off": 1196,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_14_prop_id",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_14_probability",
+      "off": 1204,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_15_prop_id",
+      "off": 1208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_15_probability",
+      "off": 1212,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_16_prop_id",
+      "off": 1216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_16_probability",
+      "off": 1220,
+      "t": {
+        "k": "f32"
+      }
+    }
+  ]
+}

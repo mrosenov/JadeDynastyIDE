@@ -1,0 +1,2766 @@
+{
+  "name": "Cross6v6 Item Exchange Config",
+  "struct": "CROSS6V6_ITEM_EXCHANGE_CONFIG",
+  "size": 1636,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "unknown_1",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_2",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_3",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_4",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_5",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_6",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_7",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_8",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_1_item_id",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_1_item_num",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_1_require_currency_id",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_1_require_currnecy_num",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_1_time_limit",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_1_exchange_count",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_2_item_id",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_2_item_num",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_2_require_currency_id",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_2_require_currnecy_num",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_2_time_limit",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_2_exchange_count",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_3_item_id",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_3_item_num",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_3_require_currency_id",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_3_require_currnecy_num",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_3_time_limit",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_3_exchange_count",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_4_item_id",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_4_item_num",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_4_require_currency_id",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_4_require_currnecy_num",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_4_time_limit",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_4_exchange_count",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_5_item_id",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_5_item_num",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_5_require_currency_id",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_5_require_currnecy_num",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_5_time_limit",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_5_exchange_count",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_6_item_id",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_6_item_num",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_6_require_currency_id",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_6_require_currnecy_num",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_6_time_limit",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_6_exchange_count",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_7_item_id",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_7_item_num",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_7_require_currency_id",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_7_require_currnecy_num",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_7_time_limit",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_7_exchange_count",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_8_item_id",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_8_item_num",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_8_require_currency_id",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_8_require_currnecy_num",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_8_time_limit",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_8_exchange_count",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_9_item_id",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_9_item_num",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_9_require_currency_id",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_9_require_currnecy_num",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_9_time_limit",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_9_exchange_count",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_10_item_id",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_10_item_num",
+      "off": 320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_10_require_currency_id",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_10_require_currnecy_num",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_10_time_limit",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_10_exchange_count",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_11_item_id",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_11_item_num",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_11_require_currency_id",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_11_require_currnecy_num",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_11_time_limit",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_11_exchange_count",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_12_item_id",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_12_item_num",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_12_require_currency_id",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_12_require_currnecy_num",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_12_time_limit",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_12_exchange_count",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_13_item_id",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_13_item_num",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_13_require_currency_id",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_13_require_currnecy_num",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_13_time_limit",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_13_exchange_count",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_14_item_id",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_14_item_num",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_14_require_currency_id",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_14_require_currnecy_num",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_14_time_limit",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_14_exchange_count",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_15_item_id",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_15_item_num",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_15_require_currency_id",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_15_require_currnecy_num",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_15_time_limit",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_15_exchange_count",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_16_item_id",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_16_item_num",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_16_require_currency_id",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_16_require_currnecy_num",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_16_time_limit",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_16_exchange_count",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_17_item_id",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_17_item_num",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_17_require_currency_id",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_17_require_currnecy_num",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_17_time_limit",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_17_exchange_count",
+      "off": 504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_18_item_id",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_18_item_num",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_18_require_currency_id",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_18_require_currnecy_num",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_18_time_limit",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_18_exchange_count",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_19_item_id",
+      "off": 532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_19_item_num",
+      "off": 536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_19_require_currency_id",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_19_require_currnecy_num",
+      "off": 544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_19_time_limit",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_19_exchange_count",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_20_item_id",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_20_item_num",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_20_require_currency_id",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_20_require_currnecy_num",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_20_time_limit",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_20_exchange_count",
+      "off": 576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_21_item_id",
+      "off": 580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_21_item_num",
+      "off": 584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_21_require_currency_id",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_21_require_currnecy_num",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_21_time_limit",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_21_exchange_count",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_22_item_id",
+      "off": 604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_22_item_num",
+      "off": 608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_22_require_currency_id",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_22_require_currnecy_num",
+      "off": 616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_22_time_limit",
+      "off": 620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_22_exchange_count",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_23_item_id",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_23_item_num",
+      "off": 632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_23_require_currency_id",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_23_require_currnecy_num",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_23_time_limit",
+      "off": 644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_23_exchange_count",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_24_item_id",
+      "off": 652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_24_item_num",
+      "off": 656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_24_require_currency_id",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_24_require_currnecy_num",
+      "off": 664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_24_time_limit",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_24_exchange_count",
+      "off": 672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_25_item_id",
+      "off": 676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_25_item_num",
+      "off": 680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_25_require_currency_id",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_25_require_currnecy_num",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_25_time_limit",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_25_exchange_count",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_26_item_id",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_26_item_num",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_26_require_currency_id",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_26_require_currnecy_num",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_26_time_limit",
+      "off": 716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_26_exchange_count",
+      "off": 720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_27_item_id",
+      "off": 724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_27_item_num",
+      "off": 728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_27_require_currency_id",
+      "off": 732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_27_require_currnecy_num",
+      "off": 736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_27_time_limit",
+      "off": 740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_27_exchange_count",
+      "off": 744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_28_item_id",
+      "off": 748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_28_item_num",
+      "off": 752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_28_require_currency_id",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_28_require_currnecy_num",
+      "off": 760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_28_time_limit",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_28_exchange_count",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_29_item_id",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_29_item_num",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_29_require_currency_id",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_29_require_currnecy_num",
+      "off": 784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_29_time_limit",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_29_exchange_count",
+      "off": 792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_30_item_id",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_30_item_num",
+      "off": 800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_30_require_currency_id",
+      "off": 804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_30_require_currnecy_num",
+      "off": 808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_30_time_limit",
+      "off": 812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_30_exchange_count",
+      "off": 816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_31_item_id",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_31_item_num",
+      "off": 824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_31_require_currency_id",
+      "off": 828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_31_require_currnecy_num",
+      "off": 832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_31_time_limit",
+      "off": 836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_31_exchange_count",
+      "off": 840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_32_item_id",
+      "off": 844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_32_item_num",
+      "off": 848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_32_require_currency_id",
+      "off": 852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_32_require_currnecy_num",
+      "off": 856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_32_time_limit",
+      "off": 860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_32_exchange_count",
+      "off": 864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_33_item_id",
+      "off": 868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_33_item_num",
+      "off": 872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_33_require_currency_id",
+      "off": 876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_33_require_currnecy_num",
+      "off": 880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_33_time_limit",
+      "off": 884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_33_exchange_count",
+      "off": 888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_34_item_id",
+      "off": 892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_34_item_num",
+      "off": 896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_34_require_currency_id",
+      "off": 900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_34_require_currnecy_num",
+      "off": 904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_34_time_limit",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_34_exchange_count",
+      "off": 912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_35_item_id",
+      "off": 916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_35_item_num",
+      "off": 920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_35_require_currency_id",
+      "off": 924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_35_require_currnecy_num",
+      "off": 928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_35_time_limit",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_35_exchange_count",
+      "off": 936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_36_item_id",
+      "off": 940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_36_item_num",
+      "off": 944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_36_require_currency_id",
+      "off": 948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_36_require_currnecy_num",
+      "off": 952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_36_time_limit",
+      "off": 956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_36_exchange_count",
+      "off": 960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_37_item_id",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_37_item_num",
+      "off": 968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_37_require_currency_id",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_37_require_currnecy_num",
+      "off": 976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_37_time_limit",
+      "off": 980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_37_exchange_count",
+      "off": 984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_38_item_id",
+      "off": 988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_38_item_num",
+      "off": 992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_38_require_currency_id",
+      "off": 996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_38_require_currnecy_num",
+      "off": 1000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_38_time_limit",
+      "off": 1004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_38_exchange_count",
+      "off": 1008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_39_item_id",
+      "off": 1012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_39_item_num",
+      "off": 1016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_39_require_currency_id",
+      "off": 1020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_39_require_currnecy_num",
+      "off": 1024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_39_time_limit",
+      "off": 1028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_39_exchange_count",
+      "off": 1032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_40_item_id",
+      "off": 1036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_40_item_num",
+      "off": 1040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_40_require_currency_id",
+      "off": 1044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_40_require_currnecy_num",
+      "off": 1048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_40_time_limit",
+      "off": 1052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_40_exchange_count",
+      "off": 1056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_41_item_id",
+      "off": 1060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_41_item_num",
+      "off": 1064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_41_require_currency_id",
+      "off": 1068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_41_require_currnecy_num",
+      "off": 1072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_41_time_limit",
+      "off": 1076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_41_exchange_count",
+      "off": 1080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_42_item_id",
+      "off": 1084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_42_item_num",
+      "off": 1088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_42_require_currency_id",
+      "off": 1092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_42_require_currnecy_num",
+      "off": 1096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_42_time_limit",
+      "off": 1100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_42_exchange_count",
+      "off": 1104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_43_item_id",
+      "off": 1108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_43_item_num",
+      "off": 1112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_43_require_currency_id",
+      "off": 1116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_43_require_currnecy_num",
+      "off": 1120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_43_time_limit",
+      "off": 1124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_43_exchange_count",
+      "off": 1128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_44_item_id",
+      "off": 1132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_44_item_num",
+      "off": 1136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_44_require_currency_id",
+      "off": 1140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_44_require_currnecy_num",
+      "off": 1144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_44_time_limit",
+      "off": 1148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_44_exchange_count",
+      "off": 1152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_45_item_id",
+      "off": 1156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_45_item_num",
+      "off": 1160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_45_require_currency_id",
+      "off": 1164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_45_require_currnecy_num",
+      "off": 1168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_45_time_limit",
+      "off": 1172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_45_exchange_count",
+      "off": 1176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_46_item_id",
+      "off": 1180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_46_item_num",
+      "off": 1184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_46_require_currency_id",
+      "off": 1188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_46_require_currnecy_num",
+      "off": 1192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_46_time_limit",
+      "off": 1196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_46_exchange_count",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_47_item_id",
+      "off": 1204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_47_item_num",
+      "off": 1208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_47_require_currency_id",
+      "off": 1212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_47_require_currnecy_num",
+      "off": 1216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_47_time_limit",
+      "off": 1220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_47_exchange_count",
+      "off": 1224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_48_item_id",
+      "off": 1228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_48_item_num",
+      "off": 1232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_48_require_currency_id",
+      "off": 1236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_48_require_currnecy_num",
+      "off": 1240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_48_time_limit",
+      "off": 1244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_48_exchange_count",
+      "off": 1248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_49_item_id",
+      "off": 1252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_49_item_num",
+      "off": 1256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_49_require_currency_id",
+      "off": 1260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_49_require_currnecy_num",
+      "off": 1264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_49_time_limit",
+      "off": 1268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_49_exchange_count",
+      "off": 1272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_50_item_id",
+      "off": 1276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_50_item_num",
+      "off": 1280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_50_require_currency_id",
+      "off": 1284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_50_require_currnecy_num",
+      "off": 1288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_50_time_limit",
+      "off": 1292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_50_exchange_count",
+      "off": 1296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_51_item_id",
+      "off": 1300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_51_item_num",
+      "off": 1304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_51_require_currency_id",
+      "off": 1308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_51_require_currnecy_num",
+      "off": 1312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_51_time_limit",
+      "off": 1316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_51_exchange_count",
+      "off": 1320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_52_item_id",
+      "off": 1324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_52_item_num",
+      "off": 1328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_52_require_currency_id",
+      "off": 1332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_52_require_currnecy_num",
+      "off": 1336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_52_time_limit",
+      "off": 1340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_52_exchange_count",
+      "off": 1344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_53_item_id",
+      "off": 1348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_53_item_num",
+      "off": 1352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_53_require_currency_id",
+      "off": 1356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_53_require_currnecy_num",
+      "off": 1360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_53_time_limit",
+      "off": 1364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_53_exchange_count",
+      "off": 1368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_54_item_id",
+      "off": 1372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_54_item_num",
+      "off": 1376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_54_require_currency_id",
+      "off": 1380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_54_require_currnecy_num",
+      "off": 1384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_54_time_limit",
+      "off": 1388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_54_exchange_count",
+      "off": 1392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_55_item_id",
+      "off": 1396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_55_item_num",
+      "off": 1400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_55_require_currency_id",
+      "off": 1404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_55_require_currnecy_num",
+      "off": 1408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_55_time_limit",
+      "off": 1412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_55_exchange_count",
+      "off": 1416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_56_item_id",
+      "off": 1420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_56_item_num",
+      "off": 1424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_56_require_currency_id",
+      "off": 1428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_56_require_currnecy_num",
+      "off": 1432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_56_time_limit",
+      "off": 1436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_56_exchange_count",
+      "off": 1440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_57_item_id",
+      "off": 1444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_57_item_num",
+      "off": 1448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_57_require_currency_id",
+      "off": 1452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_57_require_currnecy_num",
+      "off": 1456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_57_time_limit",
+      "off": 1460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_57_exchange_count",
+      "off": 1464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_58_item_id",
+      "off": 1468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_58_item_num",
+      "off": 1472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_58_require_currency_id",
+      "off": 1476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_58_require_currnecy_num",
+      "off": 1480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_58_time_limit",
+      "off": 1484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_58_exchange_count",
+      "off": 1488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_59_item_id",
+      "off": 1492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_59_item_num",
+      "off": 1496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_59_require_currency_id",
+      "off": 1500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_59_require_currnecy_num",
+      "off": 1504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_59_time_limit",
+      "off": 1508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_59_exchange_count",
+      "off": 1512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_60_item_id",
+      "off": 1516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_60_item_num",
+      "off": 1520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_60_require_currency_id",
+      "off": 1524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_60_require_currnecy_num",
+      "off": 1528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_60_time_limit",
+      "off": 1532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_60_exchange_count",
+      "off": 1536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_61_item_id",
+      "off": 1540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_61_item_num",
+      "off": 1544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_61_require_currency_id",
+      "off": 1548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_61_require_currnecy_num",
+      "off": 1552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_61_time_limit",
+      "off": 1556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_61_exchange_count",
+      "off": 1560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_62_item_id",
+      "off": 1564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_62_item_num",
+      "off": 1568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_62_require_currency_id",
+      "off": 1572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_62_require_currnecy_num",
+      "off": 1576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_62_time_limit",
+      "off": 1580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_62_exchange_count",
+      "off": 1584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_63_item_id",
+      "off": 1588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_63_item_num",
+      "off": 1592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_63_require_currency_id",
+      "off": 1596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_63_require_currnecy_num",
+      "off": 1600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_63_time_limit",
+      "off": 1604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_63_exchange_count",
+      "off": 1608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_64_item_id",
+      "off": 1612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_64_item_num",
+      "off": 1616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_64_require_currency_id",
+      "off": 1620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_64_require_currnecy_num",
+      "off": 1624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_64_time_limit",
+      "off": 1628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cross6v6_item_exchange_info_64_exchange_count",
+      "off": 1632,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

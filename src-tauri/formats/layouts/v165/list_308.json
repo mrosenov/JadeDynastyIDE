@@ -1,0 +1,2535 @@
+{
+  "name": "Fortune Gift Pack Essence",
+  "struct": "FORTUNE_GIFT_PACK_ESSENCE",
+  "size": 5440,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "ui_name",
+      "off": 68,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "file_matter",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "file_icon",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "timeframe_start",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "timeframe_end",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "timeleft_days",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_2",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_require_ascension_count",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_require_level_min",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_unknown_1",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_unknown_2",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_unknown_3",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_unknown_4",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_unknown_5",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_unknown_6",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_award_id",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_award_count",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_award_expire",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_award_bind",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_gift_award_id",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_gift_award_amount",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_gift_award_expire",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_gift_award_bind",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_1_description",
+      "off": 188,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_2_require_ascension_count",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_require_level_min",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_unknown_1",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_unknown_2",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_unknown_3",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_unknown_4",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_unknown_5",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_unknown_6",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_award_id",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_award_count",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_award_expire",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_award_bind",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_gift_award_id",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_gift_award_amount",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_gift_award_expire",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_gift_award_bind",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_2_description",
+      "off": 452,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_3_require_ascension_count",
+      "off": 652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_require_level_min",
+      "off": 656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_unknown_1",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_unknown_2",
+      "off": 664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_unknown_3",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_unknown_4",
+      "off": 672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_unknown_5",
+      "off": 676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_unknown_6",
+      "off": 680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_award_id",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_award_count",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_award_expire",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_award_bind",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_gift_award_id",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_gift_award_amount",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_gift_award_expire",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_gift_award_bind",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_3_description",
+      "off": 716,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_4_require_ascension_count",
+      "off": 916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_require_level_min",
+      "off": 920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_unknown_1",
+      "off": 924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_unknown_2",
+      "off": 928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_unknown_3",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_unknown_4",
+      "off": 936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_unknown_5",
+      "off": 940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_unknown_6",
+      "off": 944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_award_id",
+      "off": 948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_award_count",
+      "off": 952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_award_expire",
+      "off": 956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_award_bind",
+      "off": 960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_gift_award_id",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_gift_award_amount",
+      "off": 968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_gift_award_expire",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_gift_award_bind",
+      "off": 976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_4_description",
+      "off": 980,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_5_require_ascension_count",
+      "off": 1180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_require_level_min",
+      "off": 1184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_unknown_1",
+      "off": 1188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_unknown_2",
+      "off": 1192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_unknown_3",
+      "off": 1196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_unknown_4",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_unknown_5",
+      "off": 1204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_unknown_6",
+      "off": 1208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_award_id",
+      "off": 1212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_award_count",
+      "off": 1216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_award_expire",
+      "off": 1220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_award_bind",
+      "off": 1224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_gift_award_id",
+      "off": 1228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_gift_award_amount",
+      "off": 1232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_gift_award_expire",
+      "off": 1236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_gift_award_bind",
+      "off": 1240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_5_description",
+      "off": 1244,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_6_require_ascension_count",
+      "off": 1444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_require_level_min",
+      "off": 1448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_unknown_1",
+      "off": 1452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_unknown_2",
+      "off": 1456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_unknown_3",
+      "off": 1460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_unknown_4",
+      "off": 1464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_unknown_5",
+      "off": 1468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_unknown_6",
+      "off": 1472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_award_id",
+      "off": 1476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_award_count",
+      "off": 1480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_award_expire",
+      "off": 1484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_award_bind",
+      "off": 1488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_gift_award_id",
+      "off": 1492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_gift_award_amount",
+      "off": 1496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_gift_award_expire",
+      "off": 1500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_gift_award_bind",
+      "off": 1504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_6_description",
+      "off": 1508,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_7_require_ascension_count",
+      "off": 1708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_require_level_min",
+      "off": 1712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_unknown_1",
+      "off": 1716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_unknown_2",
+      "off": 1720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_unknown_3",
+      "off": 1724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_unknown_4",
+      "off": 1728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_unknown_5",
+      "off": 1732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_unknown_6",
+      "off": 1736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_award_id",
+      "off": 1740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_award_count",
+      "off": 1744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_award_expire",
+      "off": 1748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_award_bind",
+      "off": 1752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_gift_award_id",
+      "off": 1756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_gift_award_amount",
+      "off": 1760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_gift_award_expire",
+      "off": 1764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_gift_award_bind",
+      "off": 1768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_7_description",
+      "off": 1772,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_8_require_ascension_count",
+      "off": 1972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_require_level_min",
+      "off": 1976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_unknown_1",
+      "off": 1980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_unknown_2",
+      "off": 1984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_unknown_3",
+      "off": 1988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_unknown_4",
+      "off": 1992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_unknown_5",
+      "off": 1996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_unknown_6",
+      "off": 2000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_award_id",
+      "off": 2004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_award_count",
+      "off": 2008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_award_expire",
+      "off": 2012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_award_bind",
+      "off": 2016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_gift_award_id",
+      "off": 2020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_gift_award_amount",
+      "off": 2024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_gift_award_expire",
+      "off": 2028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_gift_award_bind",
+      "off": 2032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_8_description",
+      "off": 2036,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_9_require_ascension_count",
+      "off": 2236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_require_level_min",
+      "off": 2240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_unknown_1",
+      "off": 2244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_unknown_2",
+      "off": 2248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_unknown_3",
+      "off": 2252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_unknown_4",
+      "off": 2256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_unknown_5",
+      "off": 2260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_unknown_6",
+      "off": 2264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_award_id",
+      "off": 2268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_award_count",
+      "off": 2272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_award_expire",
+      "off": 2276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_award_bind",
+      "off": 2280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_gift_award_id",
+      "off": 2284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_gift_award_amount",
+      "off": 2288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_gift_award_expire",
+      "off": 2292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_gift_award_bind",
+      "off": 2296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_9_description",
+      "off": 2300,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_10_require_ascension_count",
+      "off": 2500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_require_level_min",
+      "off": 2504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_unknown_1",
+      "off": 2508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_unknown_2",
+      "off": 2512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_unknown_3",
+      "off": 2516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_unknown_4",
+      "off": 2520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_unknown_5",
+      "off": 2524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_unknown_6",
+      "off": 2528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_award_id",
+      "off": 2532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_award_count",
+      "off": 2536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_award_expire",
+      "off": 2540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_award_bind",
+      "off": 2544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_gift_award_id",
+      "off": 2548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_gift_award_amount",
+      "off": 2552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_gift_award_expire",
+      "off": 2556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_gift_award_bind",
+      "off": 2560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_10_description",
+      "off": 2564,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_11_require_ascension_count",
+      "off": 2764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_require_level_min",
+      "off": 2768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_unknown_1",
+      "off": 2772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_unknown_2",
+      "off": 2776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_unknown_3",
+      "off": 2780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_unknown_4",
+      "off": 2784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_unknown_5",
+      "off": 2788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_unknown_6",
+      "off": 2792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_award_id",
+      "off": 2796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_award_count",
+      "off": 2800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_award_expire",
+      "off": 2804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_award_bind",
+      "off": 2808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_gift_award_id",
+      "off": 2812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_gift_award_amount",
+      "off": 2816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_gift_award_expire",
+      "off": 2820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_gift_award_bind",
+      "off": 2824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_11_description",
+      "off": 2828,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_12_require_ascension_count",
+      "off": 3028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_require_level_min",
+      "off": 3032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_unknown_1",
+      "off": 3036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_unknown_2",
+      "off": 3040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_unknown_3",
+      "off": 3044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_unknown_4",
+      "off": 3048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_unknown_5",
+      "off": 3052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_unknown_6",
+      "off": 3056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_award_id",
+      "off": 3060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_award_count",
+      "off": 3064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_award_expire",
+      "off": 3068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_award_bind",
+      "off": 3072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_gift_award_id",
+      "off": 3076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_gift_award_amount",
+      "off": 3080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_gift_award_expire",
+      "off": 3084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_gift_award_bind",
+      "off": 3088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_12_description",
+      "off": 3092,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_13_require_ascension_count",
+      "off": 3292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_require_level_min",
+      "off": 3296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_unknown_1",
+      "off": 3300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_unknown_2",
+      "off": 3304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_unknown_3",
+      "off": 3308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_unknown_4",
+      "off": 3312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_unknown_5",
+      "off": 3316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_unknown_6",
+      "off": 3320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_award_id",
+      "off": 3324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_award_count",
+      "off": 3328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_award_expire",
+      "off": 3332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_award_bind",
+      "off": 3336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_gift_award_id",
+      "off": 3340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_gift_award_amount",
+      "off": 3344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_gift_award_expire",
+      "off": 3348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_gift_award_bind",
+      "off": 3352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_13_description",
+      "off": 3356,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_14_require_ascension_count",
+      "off": 3556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_require_level_min",
+      "off": 3560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_unknown_1",
+      "off": 3564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_unknown_2",
+      "off": 3568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_unknown_3",
+      "off": 3572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_unknown_4",
+      "off": 3576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_unknown_5",
+      "off": 3580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_unknown_6",
+      "off": 3584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_award_id",
+      "off": 3588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_award_count",
+      "off": 3592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_award_expire",
+      "off": 3596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_award_bind",
+      "off": 3600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_gift_award_id",
+      "off": 3604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_gift_award_amount",
+      "off": 3608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_gift_award_expire",
+      "off": 3612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_gift_award_bind",
+      "off": 3616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_14_description",
+      "off": 3620,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_15_require_ascension_count",
+      "off": 3820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_require_level_min",
+      "off": 3824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_unknown_1",
+      "off": 3828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_unknown_2",
+      "off": 3832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_unknown_3",
+      "off": 3836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_unknown_4",
+      "off": 3840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_unknown_5",
+      "off": 3844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_unknown_6",
+      "off": 3848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_award_id",
+      "off": 3852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_award_count",
+      "off": 3856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_award_expire",
+      "off": 3860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_award_bind",
+      "off": 3864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_gift_award_id",
+      "off": 3868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_gift_award_amount",
+      "off": 3872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_gift_award_expire",
+      "off": 3876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_gift_award_bind",
+      "off": 3880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_15_description",
+      "off": 3884,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_16_require_ascension_count",
+      "off": 4084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_require_level_min",
+      "off": 4088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_unknown_1",
+      "off": 4092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_unknown_2",
+      "off": 4096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_unknown_3",
+      "off": 4100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_unknown_4",
+      "off": 4104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_unknown_5",
+      "off": 4108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_unknown_6",
+      "off": 4112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_award_id",
+      "off": 4116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_award_count",
+      "off": 4120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_award_expire",
+      "off": 4124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_award_bind",
+      "off": 4128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_gift_award_id",
+      "off": 4132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_gift_award_amount",
+      "off": 4136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_gift_award_expire",
+      "off": 4140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_gift_award_bind",
+      "off": 4144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_16_description",
+      "off": 4148,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_17_require_ascension_count",
+      "off": 4348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_require_level_min",
+      "off": 4352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_unknown_1",
+      "off": 4356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_unknown_2",
+      "off": 4360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_unknown_3",
+      "off": 4364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_unknown_4",
+      "off": 4368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_unknown_5",
+      "off": 4372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_unknown_6",
+      "off": 4376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_award_id",
+      "off": 4380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_award_count",
+      "off": 4384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_award_expire",
+      "off": 4388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_award_bind",
+      "off": 4392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_gift_award_id",
+      "off": 4396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_gift_award_amount",
+      "off": 4400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_gift_award_expire",
+      "off": 4404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_gift_award_bind",
+      "off": 4408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_17_description",
+      "off": 4412,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_18_require_ascension_count",
+      "off": 4612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_require_level_min",
+      "off": 4616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_unknown_1",
+      "off": 4620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_unknown_2",
+      "off": 4624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_unknown_3",
+      "off": 4628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_unknown_4",
+      "off": 4632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_unknown_5",
+      "off": 4636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_unknown_6",
+      "off": 4640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_award_id",
+      "off": 4644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_award_count",
+      "off": 4648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_award_expire",
+      "off": 4652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_award_bind",
+      "off": 4656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_gift_award_id",
+      "off": 4660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_gift_award_amount",
+      "off": 4664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_gift_award_expire",
+      "off": 4668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_gift_award_bind",
+      "off": 4672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_18_description",
+      "off": 4676,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_19_require_ascension_count",
+      "off": 4876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_require_level_min",
+      "off": 4880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_unknown_1",
+      "off": 4884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_unknown_2",
+      "off": 4888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_unknown_3",
+      "off": 4892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_unknown_4",
+      "off": 4896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_unknown_5",
+      "off": 4900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_unknown_6",
+      "off": 4904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_award_id",
+      "off": 4908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_award_count",
+      "off": 4912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_award_expire",
+      "off": 4916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_award_bind",
+      "off": 4920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_gift_award_id",
+      "off": 4924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_gift_award_amount",
+      "off": 4928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_gift_award_expire",
+      "off": 4932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_gift_award_bind",
+      "off": 4936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_19_description",
+      "off": 4940,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "awards_20_require_ascension_count",
+      "off": 5140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_require_level_min",
+      "off": 5144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_unknown_1",
+      "off": 5148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_unknown_2",
+      "off": 5152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_unknown_3",
+      "off": 5156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_unknown_4",
+      "off": 5160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_unknown_5",
+      "off": 5164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_unknown_6",
+      "off": 5168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_award_id",
+      "off": 5172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_award_count",
+      "off": 5176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_award_expire",
+      "off": 5180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_award_bind",
+      "off": 5184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_gift_award_id",
+      "off": 5188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_gift_award_amount",
+      "off": 5192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_gift_award_expire",
+      "off": 5196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_gift_award_bind",
+      "off": 5200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "awards_20_description",
+      "off": 5204,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "unknown_1",
+      "off": 5404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_2",
+      "off": 5408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_3",
+      "off": 5412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_4",
+      "off": 5416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_5",
+      "off": 5420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "price",
+      "off": 5424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "shop_price",
+      "off": 5428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pile_num_max",
+      "off": 5432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 5436,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

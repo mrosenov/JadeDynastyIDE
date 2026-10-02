@@ -1,0 +1,92 @@
+{
+  "key": "original_shape_config",
+  "name": "Original Shape Config",
+  "struct": "ORIGINAL_SHAPE_CONFIG",
+  "size": 872,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "table_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "显形规则表id"
+    },
+    {
+      "name": "shape_map",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 40,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "monster_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "original",
+              "off": 4,
+              "t": {
+                "k": "array",
+                "n": 3,
+                "stride": 12,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "original_type",
+                      "off": 0,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "c": "原形的类型(0:npc, 1:monster)"
+                    },
+                    {
+                      "name": "original_id",
+                      "off": 4,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "c": "怪物原形的id"
+                    },
+                    {
+                      "name": "probability",
+                      "off": 8,
+                      "t": {
+                        "k": "f32"
+                      },
+                      "c": "怪物显形的概率"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

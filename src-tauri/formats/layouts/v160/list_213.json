@@ -1,0 +1,1342 @@
+{
+  "name": "Talent Scroll Config",
+  "struct": "TALENT_SCROLL_CONFIG",
+  "size": 812,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Prop_2_Prob",
+      "off": 68,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Prop_3_Prob",
+      "off": 72,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Prop_4_Prob",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Prop_5_Prob",
+      "off": 80,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Spe_Prob",
+      "off": 84,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_1_Prop_ID",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_1_Max_Value",
+      "off": 92,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_1_Min_Value",
+      "off": 96,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_1_Add_Value",
+      "off": 100,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_1_Prob",
+      "off": 104,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_2_Prop_ID",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_2_Max_Value",
+      "off": 112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_2_Min_Value",
+      "off": 116,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_2_Add_Value",
+      "off": 120,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_2_Prob",
+      "off": 124,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_3_Prop_ID",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_3_Max_Value",
+      "off": 132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_3_Min_Value",
+      "off": 136,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_3_Add_Value",
+      "off": 140,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_3_Prob",
+      "off": 144,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_4_Prop_ID",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_4_Max_Value",
+      "off": 152,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_4_Min_Value",
+      "off": 156,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_4_Add_Value",
+      "off": 160,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_4_Prob",
+      "off": 164,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_5_Prop_ID",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_5_Max_Value",
+      "off": 172,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_5_Min_Value",
+      "off": 176,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_5_Add_Value",
+      "off": 180,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_5_Prob",
+      "off": 184,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_6_Prop_ID",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_6_Max_Value",
+      "off": 192,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_6_Min_Value",
+      "off": 196,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_6_Add_Value",
+      "off": 200,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_6_Prob",
+      "off": 204,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_7_Prop_ID",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_7_Max_Value",
+      "off": 212,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_7_Min_Value",
+      "off": 216,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_7_Add_Value",
+      "off": 220,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_7_Prob",
+      "off": 224,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_8_Prop_ID",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_8_Max_Value",
+      "off": 232,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_8_Min_Value",
+      "off": 236,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_8_Add_Value",
+      "off": 240,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_8_Prob",
+      "off": 244,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_9_Prop_ID",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_9_Max_Value",
+      "off": 252,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_9_Min_Value",
+      "off": 256,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_9_Add_Value",
+      "off": 260,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_9_Prob",
+      "off": 264,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_10_Prop_ID",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_10_Max_Value",
+      "off": 272,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_10_Min_Value",
+      "off": 276,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_10_Add_Value",
+      "off": 280,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_10_Prob",
+      "off": 284,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_11_Prop_ID",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_11_Max_Value",
+      "off": 292,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_11_Min_Value",
+      "off": 296,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_11_Add_Value",
+      "off": 300,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_11_Prob",
+      "off": 304,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_12_Prop_ID",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_12_Max_Value",
+      "off": 312,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_12_Min_Value",
+      "off": 316,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_12_Add_Value",
+      "off": 320,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_12_Prob",
+      "off": 324,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_13_Prop_ID",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_13_Max_Value",
+      "off": 332,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_13_Min_Value",
+      "off": 336,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_13_Add_Value",
+      "off": 340,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_13_Prob",
+      "off": 344,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_14_Prop_ID",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_14_Max_Value",
+      "off": 352,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_14_Min_Value",
+      "off": 356,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_14_Add_Value",
+      "off": 360,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_14_Prob",
+      "off": 364,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_15_Prop_ID",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_15_Max_Value",
+      "off": 372,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_15_Min_Value",
+      "off": 376,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_15_Add_Value",
+      "off": 380,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_15_Prob",
+      "off": 384,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_16_Prop_ID",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_16_Max_Value",
+      "off": 392,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_16_Min_Value",
+      "off": 396,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_16_Add_Value",
+      "off": 400,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_16_Prob",
+      "off": 404,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_17_Prop_ID",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_17_Max_Value",
+      "off": 412,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_17_Min_Value",
+      "off": 416,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_17_Add_Value",
+      "off": 420,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_17_Prob",
+      "off": 424,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_18_Prop_ID",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_18_Max_Value",
+      "off": 432,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_18_Min_Value",
+      "off": 436,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_18_Add_Value",
+      "off": 440,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_18_Prob",
+      "off": 444,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_19_Prop_ID",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_19_Max_Value",
+      "off": 452,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_19_Min_Value",
+      "off": 456,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_19_Add_Value",
+      "off": 460,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_19_Prob",
+      "off": 464,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_20_Prop_ID",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_20_Max_Value",
+      "off": 472,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_20_Min_Value",
+      "off": 476,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_20_Add_Value",
+      "off": 480,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_20_Prob",
+      "off": 484,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_21_Prop_ID",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_21_Max_Value",
+      "off": 492,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_21_Min_Value",
+      "off": 496,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_21_Add_Value",
+      "off": 500,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_21_Prob",
+      "off": 504,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_22_Prop_ID",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_22_Max_Value",
+      "off": 512,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_22_Min_Value",
+      "off": 516,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_22_Add_Value",
+      "off": 520,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_22_Prob",
+      "off": 524,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_23_Prop_ID",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_23_Max_Value",
+      "off": 532,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_23_Min_Value",
+      "off": 536,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_23_Add_Value",
+      "off": 540,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_23_Prob",
+      "off": 544,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_24_Prop_ID",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_24_Max_Value",
+      "off": 552,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_24_Min_Value",
+      "off": 556,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_24_Add_Value",
+      "off": 560,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_24_Prob",
+      "off": 564,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_25_Prop_ID",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_25_Max_Value",
+      "off": 572,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_25_Min_Value",
+      "off": 576,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_25_Add_Value",
+      "off": 580,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_25_Prob",
+      "off": 584,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_26_Prop_ID",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_26_Max_Value",
+      "off": 592,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_26_Min_Value",
+      "off": 596,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_26_Add_Value",
+      "off": 600,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_26_Prob",
+      "off": 604,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_27_Prop_ID",
+      "off": 608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_27_Max_Value",
+      "off": 612,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_27_Min_Value",
+      "off": 616,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_27_Add_Value",
+      "off": 620,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_27_Prob",
+      "off": 624,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_28_Prop_ID",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_28_Max_Value",
+      "off": 632,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_28_Min_Value",
+      "off": 636,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_28_Add_Value",
+      "off": 640,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_28_Prob",
+      "off": 644,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_29_Prop_ID",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_29_Max_Value",
+      "off": 652,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_29_Min_Value",
+      "off": 656,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_29_Add_Value",
+      "off": 660,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_29_Prob",
+      "off": 664,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_30_Prop_ID",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_30_Max_Value",
+      "off": 672,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_30_Min_Value",
+      "off": 676,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_30_Add_Value",
+      "off": 680,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_30_Prob",
+      "off": 684,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_31_Prop_ID",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_31_Max_Value",
+      "off": 692,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_31_Min_Value",
+      "off": 696,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_31_Add_Value",
+      "off": 700,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_31_Prob",
+      "off": 704,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_32_Prop_ID",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Property_Info_32_Max_Value",
+      "off": 712,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_32_Min_Value",
+      "off": 716,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_32_Add_Value",
+      "off": 720,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Property_Info_32_Prob",
+      "off": 724,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Prob_1",
+      "off": 728,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Prob_2",
+      "off": 732,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Prob_3",
+      "off": 736,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Prob_4",
+      "off": 740,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Prob_5",
+      "off": 744,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Profession_Addon_Skill_1",
+      "off": 748,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_2",
+      "off": 752,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_3",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_4",
+      "off": 760,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_5",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_6",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_7",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_8",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_9",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_10",
+      "off": 784,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_11",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_12",
+      "off": 792,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_13",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_14",
+      "off": 800,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Profession_Addon_Skill_I5",
+      "off": 804,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "TALEN_CONFING",
+      "off": 808,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "TALENT_SCROLL_SKILL_CONFIG"
+      ]
+    }
+  ]
+}

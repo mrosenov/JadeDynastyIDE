@@ -4,7 +4,7 @@
 //
 //   node tools/import-laravel-structures.mjs <structures-dir> <formats-dir> [elements.data ...]
 //
-// - <structures-dir>/vNNN/list_N.json  → <formats-dir>/layouts/vNNN.json
+// - <structures-dir>/vNNN/list_N.json  → <formats-dir>/layouts/vNNN/
 // - <structures-dir>/masks.json        → <formats-dir>/enums.json
 // - lists whose struct matches a source-generated layout already in
 //   <formats-dir>/layouts (same struct name and size) keep that richer
@@ -16,6 +16,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { readListSizes, validateLayout } from "./lib/elements-file.mjs";
+import { readLayouts, writeLayout } from "./lib/layouts.mjs";
 
 const [structuresDir, formatsDir, ...samples] = process.argv.slice(2);
 if (!structuresDir || !formatsDir) {
@@ -153,10 +154,8 @@ fs.writeFileSync(path.join(formatsDir, "enums.json"), JSON.stringify(enums, null
 console.log(`wrote enums.json: ${Object.keys(enums).length} sets`);
 
 // Source-generated layouts, indexed by struct name, to prefer and enrich.
-const sourceLayouts = fs
-  .readdirSync(layoutsDir)
-  .filter((f) => f.endsWith(".json"))
-  .map((f) => ({ file: path.join(layoutsDir, f), layout: readJson(path.join(layoutsDir, f)) }))
+const sourceLayouts = readLayouts(layoutsDir)
+  .map((layout) => ({ layout }))
   .filter(({ layout }) => layout.source?.startsWith("Server template sources"));
 // Keyed by struct and size: variants of one version may define a struct
 // with different sizes.
@@ -231,10 +230,10 @@ for (const dir of versionDirs) {
     lists,
   };
   if (!sample) layout.listCountUnverified = true;
-  fs.writeFileSync(path.join(layoutsDir, `${dir}.json`), JSON.stringify(layout));
+  writeLayout(layout, layoutsDir);
 
   const defined = lists.filter(Boolean).length;
-  let report = `wrote ${dir}.json: ${lists.length} lists, ${defined} defined (${reused} from source)`;
+  let report = `wrote ${dir}/: ${lists.length} lists, ${defined} defined (${reused} from source)`;
   if (sample) {
     const problems = validateLayout(layout, sample.file);
     report += problems.length ? `, ${problems.length} mismatch(es) vs ${sample.file}` : `, all sizes match ${sample.file}`;
@@ -246,5 +245,5 @@ for (const dir of versionDirs) {
 }
 
 // Write back the source layouts with merged hints.
-for (const { file, layout } of sourceLayouts) fs.writeFileSync(file, JSON.stringify(layout));
+for (const { layout } of sourceLayouts) writeLayout(layout, layoutsDir);
 console.log(`merged hints into ${sourceLayouts.map(({ layout }) => layout.id).join(", ")}`);

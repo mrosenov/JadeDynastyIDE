@@ -1,0 +1,97 @@
+{
+  "key": "jinfashen_to_money_config",
+  "name": "Jinfashen To Money Config",
+  "struct": "JINFASHEN_TO_MONEY_CONFIG",
+  "size": 668,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "jinshen",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 25,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "money",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "reputation",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "仙魔佛造化之通用版本，需要服务器处理"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fashen",
+      "off": 368,
+      "t": {
+        "k": "array",
+        "n": 25,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "money",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "reputation",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "仙魔佛造化之通用版本，需要服务器处理"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

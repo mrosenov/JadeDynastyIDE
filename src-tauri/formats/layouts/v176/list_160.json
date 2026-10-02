@@ -1,0 +1,897 @@
+{
+  "name": "Gift Bag Lottery Deliver Essence",
+  "struct": "GIFT_BAG_LOTTERY_DELIVER_ESSENCE",
+  "size": 580,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Model_Path_ID",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Icon_Path_ID",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Everlimit",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Required",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Upperlimit",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Require_Gender",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Renascence_Count",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Character_Combo_ID",
+      "off": 96,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Character_Combo_ID_2",
+      "off": 104,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Character_Combo_ID_3",
+      "off": 112,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "God_Devil_Mask",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Open_Time",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Probability",
+      "off": 128,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Success_Disappear",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Faliure_Disappear",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "ID_1_Object_Need",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "ID_1_Object_Num",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "ID_2_Object_Need",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "ID_2_Object_Num",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Money_Need",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Num_Object",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_1_ID_Object",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_1_Probability",
+      "off": 168,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_1_Num_min",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_1_Num_max",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_1_Is_Bind",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_1_Effect_Time",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_2_ID_Object",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_2_Probability",
+      "off": 192,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_2_Num_min",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_2_Num_max",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_2_Is_Bind",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_2_Effect_Time",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_3_ID_Object",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_3_Probability",
+      "off": 216,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_3_Num_min",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_3_Num_max",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_3_Is_Bind",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_3_Effect_Time",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_4_ID_Object",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_4_Probability",
+      "off": 240,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_4_Num_min",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_4_Num_max",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_4_Is_Bind",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_4_Effect_Time",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_5_ID_Object",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_5_Probability",
+      "off": 264,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_5_Num_min",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_5_Num_max",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_5_Is_Bind",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_5_Effect_Time",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_6_ID_Object",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_6_Probability",
+      "off": 288,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_6_Num_min",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_6_Num_max",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_6_Is_Bind",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_6_Effect_Time",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_7_ID_Object",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_7_Probability",
+      "off": 312,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_7_Num_min",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_7_Num_max",
+      "off": 320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_7_Is_Bind",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_7_Effect_Time",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_8_ID_Object",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_8_Probability",
+      "off": 336,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_8_Num_min",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_8_Num_max",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_8_Is_Bind",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_8_Effect_Time",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_9_ID_Object",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_9_Probability",
+      "off": 360,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_9_Num_min",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_9_Num_max",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_9_Is_Bind",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_9_Effect_Time",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_10_ID_Object",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_10_Probability",
+      "off": 384,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_10_Num_min",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_10_Num_max",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_10_Is_Bind",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_10_Effect_Time",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_11_ID_Object",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_11_Probability",
+      "off": 408,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_11_Num_min",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_11_Num_max",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_11_Is_Bind",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_11_Effect_Time",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_12_ID_Object",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_12_Probability",
+      "off": 432,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_12_Num_min",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_12_Num_max",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_12_Is_Bind",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_12_Effect_Time",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_13_ID_Object",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_13_Probability",
+      "off": 456,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_13_Num_min",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_13_Num_max",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_13_Is_Bind",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_13_Effect_Time",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_14_ID_Object",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_14_Probability",
+      "off": 480,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_14_Num_min",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_14_Num_max",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_14_Is_Bind",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_14_Effect_Time",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_15_ID_Object",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_15_Probability",
+      "off": 504,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_15_Num_min",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_15_Num_max",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_15_Is_Bind",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_15_Effect_Time",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_16_ID_Object",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_16_Probability",
+      "off": 528,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Gifts_16_Num_min",
+      "off": 532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_16_Num_max",
+      "off": 536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_16_Is_Bind",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_16_Effect_Time",
+      "off": 544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Normalize_Group_1",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Normalize_Group_2",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Normalize_Group_3",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Normalize_Group_4",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Sell_Price",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Buy_Price",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Stack_Amt",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Trade_Behavior",
+      "off": 576,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

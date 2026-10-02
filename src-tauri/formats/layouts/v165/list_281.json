@@ -1,0 +1,218 @@
+{
+  "name": "Luck Value Config",
+  "struct": "LUCK_VALUE_CONFIG",
+  "size": 180,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "unknown_1",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "luck_1_unknown",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "luck_1_unknown_float",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "luck_2_unknown",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "luck_2_unknown_float",
+      "off": 84,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "luck_3_unknown",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "luck_3_unknown_float",
+      "off": 92,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "luck_4_unknown",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "luck_4_unknown_float",
+      "off": 100,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "luck_5_unknown",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "luck_5_unknown_float",
+      "off": 108,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "luck_6_unknown",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "luck_6_unknown_float",
+      "off": 116,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "luck_7_unknown",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "luck_7_unknown_float",
+      "off": 124,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "luck_8_unknown",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "luck_8_unknown_float",
+      "off": 132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "luck_9_unknown",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "luck_9_unknown_float",
+      "off": 140,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "luck_10_unknown",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "luck_10_unknown_float",
+      "off": 148,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "unknowns_1",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknowns_2",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknowns_3",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknowns_4",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknowns_5",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknowns_6",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknowns_7",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

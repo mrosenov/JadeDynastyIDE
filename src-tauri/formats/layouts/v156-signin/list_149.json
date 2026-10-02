@@ -1,0 +1,113 @@
+{
+  "key": "npc_reputation_shop_service",
+  "name": "Npc Reputation Shop Service",
+  "struct": "NPC_REPUTATION_SHOP_SERVICE",
+  "size": 10116,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "服务(类型)ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "pages",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 2512,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "page_title",
+              "off": 0,
+              "t": {
+                "k": "wstr",
+                "n": 8
+              },
+              "c": "页的名字，最多7个汉字"
+            },
+            {
+              "name": "goods",
+              "off": 16,
+              "t": {
+                "k": "array",
+                "n": 48,
+                "stride": 52,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "id_goods",
+                      "off": 0,
+                      "t": {
+                        "k": "u32"
+                      }
+                    },
+                    {
+                      "name": "repu_required_pre",
+                      "off": 4,
+                      "t": {
+                        "k": "array",
+                        "n": 3,
+                        "stride": 16,
+                        "t": {
+                          "k": "struct",
+                          "fields": [
+                            {
+                              "name": "repu_id_req",
+                              "off": 0,
+                              "t": {
+                                "k": "u32"
+                              }
+                            },
+                            {
+                              "name": "repu_req_value",
+                              "off": 4,
+                              "t": {
+                                "k": "u32"
+                              }
+                            },
+                            {
+                              "name": "repu_id_consume",
+                              "off": 8,
+                              "t": {
+                                "k": "u32"
+                              }
+                            },
+                            {
+                              "name": "repu_consume_value",
+                              "off": 12,
+                              "t": {
+                                "k": "u32"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "c": "可出售的商品列表"
+            }
+          ]
+        }
+      },
+      "c": "按页方式存储的商品列表"
+    }
+  ]
+}

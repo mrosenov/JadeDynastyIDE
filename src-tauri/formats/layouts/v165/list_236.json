@@ -1,0 +1,222 @@
+{
+  "name": "Faction Base Activity Config",
+  "struct": "FACTION_BASE_ACTIVITY_CONFIG",
+  "size": 228,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "activity_list_1_title",
+      "off": 68,
+      "t": {
+        "k": "wstr",
+        "n": 8
+      }
+    },
+    {
+      "name": "activity_list_1_build_id",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_1_build_level",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_1_res_type",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_1_res_count",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_1_controller_id",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_1_region_index",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_2_title",
+      "off": 108,
+      "t": {
+        "k": "wstr",
+        "n": 8
+      }
+    },
+    {
+      "name": "activity_list_2_build_id",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_2_build_level",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_2_res_type",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_2_res_count",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_2_controller_id",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_2_region_index",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_3_title",
+      "off": 148,
+      "t": {
+        "k": "wstr",
+        "n": 8
+      }
+    },
+    {
+      "name": "activity_list_3_build_id",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_3_build_level",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_3_res_type",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_3_res_count",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_3_controller_id",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_3_region_index",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_4_title",
+      "off": 188,
+      "t": {
+        "k": "wstr",
+        "n": 8
+      }
+    },
+    {
+      "name": "activity_list_4_build_id",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_4_build_level",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_4_res_type",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_4_res_count",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_4_controller_id",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_list_4_region_index",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

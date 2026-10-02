@@ -1,0 +1,90 @@
+{
+  "key": "droptable_essence",
+  "name": "Droptable Essence",
+  "struct": "DROPTABLE_ESSENCE",
+  "size": 604,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "怪物(类型)ID"
+    },
+    {
+      "name": "id_type",
+      "off": 4,
+      "t": {
+        "k": "u32"
+      },
+      "c": "类别ID",
+      "refs": [
+        "DROPTABLE_TYPE"
+      ]
+    },
+    {
+      "name": "name",
+      "off": 8,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "num_to_drop",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "probability",
+              "off": 0,
+              "t": {
+                "k": "f32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "drops",
+      "off": 92,
+      "t": {
+        "k": "array",
+        "n": 64,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id_obj",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "掉落物品id",
+              "refs": [
+                "EQUIPMENT_ADDON"
+              ]
+            },
+            {
+              "name": "probability",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              },
+              "c": "掉落概率"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

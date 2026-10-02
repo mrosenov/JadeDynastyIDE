@@ -1,0 +1,164 @@
+{
+  "key": "param_adjust_config",
+  "name": "Param Adjust Config",
+  "struct": "PARAM_ADJUST_CONFIG",
+  "size": 544,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "id"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "adjust_config_id",
+      "off": 68,
+      "t": {
+        "k": "u32"
+      },
+      "c": "修正表id，为了使飞升前和飞升后的玩家使用不同的修正表"
+    },
+    {
+      "name": "level_diff_adjust",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 16,
+        "stride": 20,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "level_diff",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "Player和怪物的级别差(Player-怪物)(当级别差为0时，表示此条失效)"
+            },
+            {
+              "name": "adjust_exp",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              },
+              "c": "对杀怪获得经验的修正系数(0.0~1.0)"
+            },
+            {
+              "name": "adjust_money",
+              "off": 8,
+              "t": {
+                "k": "f32"
+              },
+              "c": "对杀怪获得金钱掉落数目的修正系数(0.0~1.0)"
+            },
+            {
+              "name": "adjust_matter",
+              "off": 12,
+              "t": {
+                "k": "f32"
+              },
+              "c": "对杀怪掉落物品的概率的修正(0.0~1.0)"
+            },
+            {
+              "name": "adjust_attack",
+              "off": 16,
+              "t": {
+                "k": "f32"
+              },
+              "c": "对攻击力的等级惩罚系数(0.0~1.0)"
+            }
+          ]
+        }
+      },
+      "c": "级别差对杀怪计算修正"
+    },
+    {
+      "name": "team_adjust",
+      "off": 392,
+      "t": {
+        "k": "array",
+        "n": 11,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "adjust_exp",
+              "off": 0,
+              "t": {
+                "k": "f32"
+              },
+              "c": "对杀怪获得经验的修正系数(0.0~1.0)"
+            }
+          ]
+        }
+      },
+      "c": "组队杀怪时的计算修正"
+    },
+    {
+      "name": "team_profession_adjust",
+      "off": 436,
+      "t": {
+        "k": "array",
+        "n": 9,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "adjust_exp",
+              "off": 0,
+              "t": {
+                "k": "f32"
+              },
+              "c": "对杀怪获得经验的修正系数(0.0~1.0)"
+            }
+          ]
+        }
+      },
+      "c": "队伍中职业个数计算修正"
+    },
+    {
+      "name": "level_diff_produce",
+      "off": 472,
+      "t": {
+        "k": "array",
+        "n": 9,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "level_diff",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "生产等级和生产装备的级差"
+            },
+            {
+              "name": "adjust_exp",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              },
+              "c": "对生产获得生产经验的系数修正（0.0～1.0）"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

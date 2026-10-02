@@ -1,0 +1,3872 @@
+{
+  "name": "Phase Config",
+  "struct": "PHASE_CONFIG",
+  "size": 2268,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "phaselist_1",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_2",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_3",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_4",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_5",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_6",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_7",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_8",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_9",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_10",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_11",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_12",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_13",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_14",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_15",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_16",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_17",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_18",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_19",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_20",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_21",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_22",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_23",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_24",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_25",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_26",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_27",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_28",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_29",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_30",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_31",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_32",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_33",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_34",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_35",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_36",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_37",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_38",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_39",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_40",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_41",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_42",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_43",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_44",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_45",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_46",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_47",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_48",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_49",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_50",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_51",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_52",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_53",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_54",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_55",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_56",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_57",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_58",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_59",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_60",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_61",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_62",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_63",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_64",
+      "off": 320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_65",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_66",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_67",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_68",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_69",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_70",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_71",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_72",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_73",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_74",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_75",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_76",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_77",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_78",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_79",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_80",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_81",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_82",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_83",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_84",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_85",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_86",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_87",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_88",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_89",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_90",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_91",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_92",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_93",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_94",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_95",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_96",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_97",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_98",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_99",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_100",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_101",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_102",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_103",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_104",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_105",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_106",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_107",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_108",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_109",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_110",
+      "off": 504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_111",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_112",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_113",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_114",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_115",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_116",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_117",
+      "off": 532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_118",
+      "off": 536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_119",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_120",
+      "off": 544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_121",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_122",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_123",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_124",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_125",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_126",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_127",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_128",
+      "off": 576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_129",
+      "off": 580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_130",
+      "off": 584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_131",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_132",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_133",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_134",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_135",
+      "off": 604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_136",
+      "off": 608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_137",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_138",
+      "off": 616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_139",
+      "off": 620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_140",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_141",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_142",
+      "off": 632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_143",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_144",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_145",
+      "off": 644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_146",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_147",
+      "off": 652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_148",
+      "off": 656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_149",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_150",
+      "off": 664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_151",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_152",
+      "off": 672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_153",
+      "off": 676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_154",
+      "off": 680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_155",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_156",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_157",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_158",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_159",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_160",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_161",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_162",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_163",
+      "off": 716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_164",
+      "off": 720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_165",
+      "off": 724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_166",
+      "off": 728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_167",
+      "off": 732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_168",
+      "off": 736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_169",
+      "off": 740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_170",
+      "off": 744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_171",
+      "off": 748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_172",
+      "off": 752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_173",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_174",
+      "off": 760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_175",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_176",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_177",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_178",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_179",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_180",
+      "off": 784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_181",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_182",
+      "off": 792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_183",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_184",
+      "off": 800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_185",
+      "off": 804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_186",
+      "off": 808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_187",
+      "off": 812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_188",
+      "off": 816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_189",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_190",
+      "off": 824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_191",
+      "off": 828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_192",
+      "off": 832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_193",
+      "off": 836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_194",
+      "off": 840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_195",
+      "off": 844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_196",
+      "off": 848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_197",
+      "off": 852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_198",
+      "off": 856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_199",
+      "off": 860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_200",
+      "off": 864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_201",
+      "off": 868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_202",
+      "off": 872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_203",
+      "off": 876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_204",
+      "off": 880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_205",
+      "off": 884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_206",
+      "off": 888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_207",
+      "off": 892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_208",
+      "off": 896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_209",
+      "off": 900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_210",
+      "off": 904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_211",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_212",
+      "off": 912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_213",
+      "off": 916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_214",
+      "off": 920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_215",
+      "off": 924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_216",
+      "off": 928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_217",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_218",
+      "off": 936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_219",
+      "off": 940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_220",
+      "off": 944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_221",
+      "off": 948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_222",
+      "off": 952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_223",
+      "off": 956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_224",
+      "off": 960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_225",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_226",
+      "off": 968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_227",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_228",
+      "off": 976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_229",
+      "off": 980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_230",
+      "off": 984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_231",
+      "off": 988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_232",
+      "off": 992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_233",
+      "off": 996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_234",
+      "off": 1000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_235",
+      "off": 1004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_236",
+      "off": 1008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_237",
+      "off": 1012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_238",
+      "off": 1016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_239",
+      "off": 1020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_240",
+      "off": 1024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_241",
+      "off": 1028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_242",
+      "off": 1032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_243",
+      "off": 1036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_244",
+      "off": 1040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_245",
+      "off": 1044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_246",
+      "off": 1048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_247",
+      "off": 1052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_248",
+      "off": 1056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_249",
+      "off": 1060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_250",
+      "off": 1064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_251",
+      "off": 1068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_252",
+      "off": 1072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_253",
+      "off": 1076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_254",
+      "off": 1080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_255",
+      "off": 1084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_256",
+      "off": 1088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_257",
+      "off": 1092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_258",
+      "off": 1096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_259",
+      "off": 1100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_260",
+      "off": 1104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_261",
+      "off": 1108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_262",
+      "off": 1112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_263",
+      "off": 1116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_264",
+      "off": 1120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_265",
+      "off": 1124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_266",
+      "off": 1128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_267",
+      "off": 1132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_268",
+      "off": 1136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_269",
+      "off": 1140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_270",
+      "off": 1144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_271",
+      "off": 1148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_272",
+      "off": 1152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_273",
+      "off": 1156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_274",
+      "off": 1160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_275",
+      "off": 1164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_276",
+      "off": 1168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_277",
+      "off": 1172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_278",
+      "off": 1176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_279",
+      "off": 1180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_280",
+      "off": 1184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_281",
+      "off": 1188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_282",
+      "off": 1192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_283",
+      "off": 1196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_284",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_285",
+      "off": 1204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_286",
+      "off": 1208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_287",
+      "off": 1212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_288",
+      "off": 1216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_289",
+      "off": 1220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_290",
+      "off": 1224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_291",
+      "off": 1228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_292",
+      "off": 1232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_293",
+      "off": 1236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_294",
+      "off": 1240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_295",
+      "off": 1244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_296",
+      "off": 1248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_297",
+      "off": 1252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_298",
+      "off": 1256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_299",
+      "off": 1260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_300",
+      "off": 1264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_301",
+      "off": 1268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_302",
+      "off": 1272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_303",
+      "off": 1276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_304",
+      "off": 1280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_305",
+      "off": 1284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_306",
+      "off": 1288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_307",
+      "off": 1292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_308",
+      "off": 1296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_309",
+      "off": 1300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_310",
+      "off": 1304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_311",
+      "off": 1308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_312",
+      "off": 1312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_313",
+      "off": 1316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_314",
+      "off": 1320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_315",
+      "off": 1324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_316",
+      "off": 1328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_317",
+      "off": 1332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_318",
+      "off": 1336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_319",
+      "off": 1340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_320",
+      "off": 1344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_321",
+      "off": 1348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_322",
+      "off": 1352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_323",
+      "off": 1356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_324",
+      "off": 1360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_325",
+      "off": 1364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_326",
+      "off": 1368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_327",
+      "off": 1372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_328",
+      "off": 1376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_329",
+      "off": 1380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_330",
+      "off": 1384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_331",
+      "off": 1388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_332",
+      "off": 1392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_333",
+      "off": 1396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_334",
+      "off": 1400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_335",
+      "off": 1404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_336",
+      "off": 1408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_337",
+      "off": 1412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_338",
+      "off": 1416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_339",
+      "off": 1420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_340",
+      "off": 1424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_341",
+      "off": 1428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_342",
+      "off": 1432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_343",
+      "off": 1436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_344",
+      "off": 1440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_345",
+      "off": 1444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_346",
+      "off": 1448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_347",
+      "off": 1452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_348",
+      "off": 1456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_349",
+      "off": 1460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_350",
+      "off": 1464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_351",
+      "off": 1468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_352",
+      "off": 1472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_353",
+      "off": 1476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_354",
+      "off": 1480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_355",
+      "off": 1484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_356",
+      "off": 1488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_357",
+      "off": 1492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_358",
+      "off": 1496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_359",
+      "off": 1500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_360",
+      "off": 1504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_361",
+      "off": 1508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_362",
+      "off": 1512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_363",
+      "off": 1516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_364",
+      "off": 1520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_365",
+      "off": 1524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_366",
+      "off": 1528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_367",
+      "off": 1532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_368",
+      "off": 1536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_369",
+      "off": 1540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_370",
+      "off": 1544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_371",
+      "off": 1548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_372",
+      "off": 1552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_373",
+      "off": 1556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_374",
+      "off": 1560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_375",
+      "off": 1564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_376",
+      "off": 1568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_377",
+      "off": 1572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_378",
+      "off": 1576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_379",
+      "off": 1580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_380",
+      "off": 1584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_381",
+      "off": 1588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_382",
+      "off": 1592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_383",
+      "off": 1596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_384",
+      "off": 1600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_385",
+      "off": 1604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_386",
+      "off": 1608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_387",
+      "off": 1612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_388",
+      "off": 1616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_389",
+      "off": 1620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_390",
+      "off": 1624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_391",
+      "off": 1628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_392",
+      "off": 1632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_393",
+      "off": 1636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_394",
+      "off": 1640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_395",
+      "off": 1644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_396",
+      "off": 1648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_397",
+      "off": 1652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_398",
+      "off": 1656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_399",
+      "off": 1660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_400",
+      "off": 1664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_401",
+      "off": 1668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_402",
+      "off": 1672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_403",
+      "off": 1676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_404",
+      "off": 1680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_405",
+      "off": 1684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_406",
+      "off": 1688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_407",
+      "off": 1692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_408",
+      "off": 1696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_409",
+      "off": 1700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_410",
+      "off": 1704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_411",
+      "off": 1708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_412",
+      "off": 1712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_413",
+      "off": 1716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_414",
+      "off": 1720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_415",
+      "off": 1724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_416",
+      "off": 1728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_417",
+      "off": 1732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_418",
+      "off": 1736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_419",
+      "off": 1740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_420",
+      "off": 1744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_421",
+      "off": 1748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_422",
+      "off": 1752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_423",
+      "off": 1756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_424",
+      "off": 1760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_425",
+      "off": 1764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_426",
+      "off": 1768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_427",
+      "off": 1772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_428",
+      "off": 1776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_429",
+      "off": 1780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_430",
+      "off": 1784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_431",
+      "off": 1788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_432",
+      "off": 1792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_433",
+      "off": 1796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_434",
+      "off": 1800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_435",
+      "off": 1804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_436",
+      "off": 1808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_437",
+      "off": 1812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_438",
+      "off": 1816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_439",
+      "off": 1820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_440",
+      "off": 1824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_441",
+      "off": 1828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_442",
+      "off": 1832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_443",
+      "off": 1836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_444",
+      "off": 1840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_445",
+      "off": 1844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_446",
+      "off": 1848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_447",
+      "off": 1852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_448",
+      "off": 1856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_449",
+      "off": 1860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_450",
+      "off": 1864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_451",
+      "off": 1868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_452",
+      "off": 1872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_453",
+      "off": 1876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_454",
+      "off": 1880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_455",
+      "off": 1884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_456",
+      "off": 1888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_457",
+      "off": 1892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_458",
+      "off": 1896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_459",
+      "off": 1900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_460",
+      "off": 1904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_461",
+      "off": 1908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_462",
+      "off": 1912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_463",
+      "off": 1916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_464",
+      "off": 1920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_465",
+      "off": 1924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_466",
+      "off": 1928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_467",
+      "off": 1932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_468",
+      "off": 1936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_469",
+      "off": 1940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_470",
+      "off": 1944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_471",
+      "off": 1948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_472",
+      "off": 1952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_473",
+      "off": 1956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_474",
+      "off": 1960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_475",
+      "off": 1964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_476",
+      "off": 1968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_477",
+      "off": 1972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_478",
+      "off": 1976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_479",
+      "off": 1980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_480",
+      "off": 1984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_481",
+      "off": 1988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_482",
+      "off": 1992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_483",
+      "off": 1996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_484",
+      "off": 2000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_485",
+      "off": 2004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_486",
+      "off": 2008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_487",
+      "off": 2012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_488",
+      "off": 2016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_489",
+      "off": 2020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_490",
+      "off": 2024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_491",
+      "off": 2028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_492",
+      "off": 2032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_493",
+      "off": 2036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_494",
+      "off": 2040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_495",
+      "off": 2044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_496",
+      "off": 2048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_497",
+      "off": 2052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_498",
+      "off": 2056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_499",
+      "off": 2060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_500",
+      "off": 2064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_501",
+      "off": 2068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_502",
+      "off": 2072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_503",
+      "off": 2076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_504",
+      "off": 2080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_505",
+      "off": 2084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_506",
+      "off": 2088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_507",
+      "off": 2092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_508",
+      "off": 2096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_509",
+      "off": 2100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_510",
+      "off": 2104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_511",
+      "off": 2108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_512",
+      "off": 2112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_513",
+      "off": 2116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_514",
+      "off": 2120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_515",
+      "off": 2124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_516",
+      "off": 2128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_517",
+      "off": 2132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_518",
+      "off": 2136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_519",
+      "off": 2140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_520",
+      "off": 2144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_521",
+      "off": 2148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_522",
+      "off": 2152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_523",
+      "off": 2156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_524",
+      "off": 2160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_525",
+      "off": 2164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_526",
+      "off": 2168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_527",
+      "off": 2172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_528",
+      "off": 2176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_529",
+      "off": 2180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_530",
+      "off": 2184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_531",
+      "off": 2188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_532",
+      "off": 2192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_533",
+      "off": 2196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_534",
+      "off": 2200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_535",
+      "off": 2204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_536",
+      "off": 2208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_537",
+      "off": 2212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_538",
+      "off": 2216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_539",
+      "off": 2220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_540",
+      "off": 2224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_541",
+      "off": 2228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_542",
+      "off": 2232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_543",
+      "off": 2236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_544",
+      "off": 2240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_545",
+      "off": 2244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_546",
+      "off": 2248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_547",
+      "off": 2252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_548",
+      "off": 2256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_549",
+      "off": 2260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "phaselist_550",
+      "off": 2264,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

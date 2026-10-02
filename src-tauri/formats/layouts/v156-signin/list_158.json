@@ -1,0 +1,322 @@
+{
+  "key": "challenge_2012_config",
+  "name": "Challenge 2012 Config",
+  "struct": "CHALLENGE_2012_CONFIG",
+  "size": 816,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称"
+    },
+    {
+      "name": "main_config",
+      "off": 68,
+      "t": {
+        "k": "struct",
+        "fields": [
+          {
+            "name": "controler_id",
+            "off": 0,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本开启关联控制器"
+          },
+          {
+            "name": "monster_id",
+            "off": 4,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标击杀怪物ID"
+          },
+          {
+            "name": "monster_count_min",
+            "off": 8,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标怪物数量下限"
+          },
+          {
+            "name": "monster_count_max",
+            "off": 12,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标怪物数量上限"
+          },
+          {
+            "name": "mine_id",
+            "off": 16,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标开矿ID"
+          },
+          {
+            "name": "mine_count_min",
+            "off": 20,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标开矿数量下限"
+          },
+          {
+            "name": "mine_count_max",
+            "off": 24,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标开矿数量上限"
+          },
+          {
+            "name": "dead_count",
+            "off": 28,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标总死亡次数"
+          },
+          {
+            "name": "time_limit",
+            "off": 32,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标时间时限"
+          },
+          {
+            "name": "medic_limit_hp",
+            "off": 36,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战大红药品使用量"
+          },
+          {
+            "name": "medic_limit_mp",
+            "off": 40,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战大蓝药品使用量"
+          },
+          {
+            "name": "controller_id_challenge",
+            "off": 44,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标相关变量ID"
+          },
+          {
+            "name": "controller_id_min",
+            "off": 48,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标相关变量下限"
+          },
+          {
+            "name": "controller_id_max",
+            "off": 52,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标相关变量上限"
+          },
+          {
+            "name": "controller_id_win",
+            "off": 56,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标对应的控制器ID"
+          },
+          {
+            "name": "award_item_id",
+            "off": 60,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标完成奖励物品ID"
+          },
+          {
+            "name": "win_control_id",
+            "off": 64,
+            "t": {
+              "k": "i32"
+            },
+            "c": "副本挑战目标完成开启控制器ID"
+          }
+        ]
+      },
+      "c": "副本总配置"
+    },
+    {
+      "name": "lv_config",
+      "off": 136,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 68,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "controler_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本开启关联控制器"
+            },
+            {
+              "name": "monster_id",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标击杀怪物ID"
+            },
+            {
+              "name": "monster_count_min",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标怪物数量下限"
+            },
+            {
+              "name": "monster_count_max",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标怪物数量上限"
+            },
+            {
+              "name": "mine_id",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标开矿ID"
+            },
+            {
+              "name": "mine_count_min",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标开矿数量下限"
+            },
+            {
+              "name": "mine_count_max",
+              "off": 24,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标开矿数量上限"
+            },
+            {
+              "name": "dead_count",
+              "off": 28,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标总死亡次数"
+            },
+            {
+              "name": "time_limit",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标时间时限"
+            },
+            {
+              "name": "medic_limit_hp",
+              "off": 36,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战大红药品使用量"
+            },
+            {
+              "name": "medic_limit_mp",
+              "off": 40,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战大蓝药品使用量"
+            },
+            {
+              "name": "controller_id_challenge",
+              "off": 44,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标相关变量ID"
+            },
+            {
+              "name": "controller_id_min",
+              "off": 48,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标相关变量下限"
+            },
+            {
+              "name": "controller_id_max",
+              "off": 52,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标相关变量上限"
+            },
+            {
+              "name": "controller_id_win",
+              "off": 56,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标对应的控制器ID"
+            },
+            {
+              "name": "award_item_id",
+              "off": 60,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标完成奖励物品ID"
+            },
+            {
+              "name": "win_control_id",
+              "off": 64,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副本挑战目标完成开启控制器ID"
+            }
+          ]
+        }
+      },
+      "c": "每一关卡配置"
+    }
+  ]
+}

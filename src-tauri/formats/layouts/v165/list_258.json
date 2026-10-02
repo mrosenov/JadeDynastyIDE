@@ -1,0 +1,64 @@
+{
+  "name": "Pet Trait Config",
+  "struct": "PET_TRAIT_CONFIG",
+  "size": 92,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "spell_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "spell_level",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "probability_1",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "spell_level_2",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "probability_2",
+      "off": 84,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "unknown_1",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "key": "rune2013_config",
+  "name": "Rune2013 Config",
+  "struct": "RUNE2013_CONFIG",
+  "size": 232,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "lv_limit",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "等级上限"
+    },
+    {
+      "name": "lvup_exp",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 40,
+        "t": {
+          "k": "array",
+          "n": 10,
+          "stride": 4,
+          "t": {
+            "k": "i32"
+          }
+        }
+      },
+      "c": "符文升级所需经验，初等、中等、高等、极品 1-10"
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "name": "Prepaid Book Essence",
+  "struct": "PREPAID_BOOK_ESSENCE",
+  "size": 2564,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "window_title",
+      "off": 68,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "file_matter",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "file_icon",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_1",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_2",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_3",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "combo_character_id_1",
+      "off": 120,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "combo_character_id_2",
+      "off": 128,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "description_1",
+      "off": 136,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "unknown_4",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_5",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "description_2",
+      "off": 344,
+      "t": {
+        "k": "wstr",
+        "n": 250
+      }
+    },
+    {
+      "name": "description_3",
+      "off": 844,
+      "t": {
+        "k": "wstr",
+        "n": 250
+      }
+    },
+    {
+      "name": "description_4",
+      "off": 1344,
+      "t": {
+        "k": "wstr",
+        "n": 250
+      }
+    },
+    {
+      "name": "description_5",
+      "off": 1844,
+      "t": {
+        "k": "wstr",
+        "n": 250
+      }
+    },
+    {
+      "name": "description_6",
+      "off": 2344,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "unknown_6",
+      "off": 2544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "price",
+      "off": 2548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "shop_price",
+      "off": 2552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pile_num_max",
+      "off": 2556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 2560,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

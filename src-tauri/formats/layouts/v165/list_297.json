@@ -1,0 +1,2381 @@
+{
+  "name": "Merged Star Soul Growth Config",
+  "struct": "MERGED_STAR_SOUL_GROWTH_CONFIG",
+  "size": 1416,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "per_point_soul_req",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "props_list_1",
+      "off": 72,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_2",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_3",
+      "off": 80,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_4",
+      "off": 84,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_5",
+      "off": 88,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_6",
+      "off": 92,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_7",
+      "off": 96,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_8",
+      "off": 100,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_9",
+      "off": 104,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_10",
+      "off": 108,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_11",
+      "off": 112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_12",
+      "off": 116,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_13",
+      "off": 120,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_14",
+      "off": 124,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_15",
+      "off": 128,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_16",
+      "off": 132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_17",
+      "off": 136,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_18",
+      "off": 140,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_19",
+      "off": 144,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_20",
+      "off": 148,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_21",
+      "off": 152,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_22",
+      "off": 156,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_23",
+      "off": 160,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_24",
+      "off": 164,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_25",
+      "off": 168,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_26",
+      "off": 172,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_27",
+      "off": 176,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_28",
+      "off": 180,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_29",
+      "off": 184,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_30",
+      "off": 188,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_31",
+      "off": 192,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_32",
+      "off": 196,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_33",
+      "off": 200,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_34",
+      "off": 204,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_35",
+      "off": 208,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "props_list_36",
+      "off": 212,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_1_points_req",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_1_success_prob",
+      "off": 220,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_1_failed_return_ratio",
+      "off": 224,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_2_points_req",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_2_success_prob",
+      "off": 232,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_2_failed_return_ratio",
+      "off": 236,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_3_points_req",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_3_success_prob",
+      "off": 244,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_3_failed_return_ratio",
+      "off": 248,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_4_points_req",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_4_success_prob",
+      "off": 256,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_4_failed_return_ratio",
+      "off": 260,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_5_points_req",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_5_success_prob",
+      "off": 268,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_5_failed_return_ratio",
+      "off": 272,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_6_points_req",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_6_success_prob",
+      "off": 280,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_6_failed_return_ratio",
+      "off": 284,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_7_points_req",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_7_success_prob",
+      "off": 292,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_7_failed_return_ratio",
+      "off": 296,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_8_points_req",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_8_success_prob",
+      "off": 304,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_8_failed_return_ratio",
+      "off": 308,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_9_points_req",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_9_success_prob",
+      "off": 316,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_9_failed_return_ratio",
+      "off": 320,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_10_points_req",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_10_success_prob",
+      "off": 328,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_10_failed_return_ratio",
+      "off": 332,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_11_points_req",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_11_success_prob",
+      "off": 340,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_11_failed_return_ratio",
+      "off": 344,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_12_points_req",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_12_success_prob",
+      "off": 352,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_12_failed_return_ratio",
+      "off": 356,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_13_points_req",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_13_success_prob",
+      "off": 364,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_13_failed_return_ratio",
+      "off": 368,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_14_points_req",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_14_success_prob",
+      "off": 376,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_14_failed_return_ratio",
+      "off": 380,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_15_points_req",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_15_success_prob",
+      "off": 388,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_15_failed_return_ratio",
+      "off": 392,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_16_points_req",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_16_success_prob",
+      "off": 400,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_16_failed_return_ratio",
+      "off": 404,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_17_points_req",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_17_success_prob",
+      "off": 412,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_17_failed_return_ratio",
+      "off": 416,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_18_points_req",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_18_success_prob",
+      "off": 424,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_18_failed_return_ratio",
+      "off": 428,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_19_points_req",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_19_success_prob",
+      "off": 436,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_19_failed_return_ratio",
+      "off": 440,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_20_points_req",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_20_success_prob",
+      "off": 448,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_20_failed_return_ratio",
+      "off": 452,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_21_points_req",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_21_success_prob",
+      "off": 460,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_21_failed_return_ratio",
+      "off": 464,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_22_points_req",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_22_success_prob",
+      "off": 472,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_22_failed_return_ratio",
+      "off": 476,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_23_points_req",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_23_success_prob",
+      "off": 484,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_23_failed_return_ratio",
+      "off": 488,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_24_points_req",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_24_success_prob",
+      "off": 496,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_24_failed_return_ratio",
+      "off": 500,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_25_points_req",
+      "off": 504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_25_success_prob",
+      "off": 508,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_25_failed_return_ratio",
+      "off": 512,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_26_points_req",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_26_success_prob",
+      "off": 520,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_26_failed_return_ratio",
+      "off": 524,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_27_points_req",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_27_success_prob",
+      "off": 532,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_27_failed_return_ratio",
+      "off": 536,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_28_points_req",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_28_success_prob",
+      "off": 544,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_28_failed_return_ratio",
+      "off": 548,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_29_points_req",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_29_success_prob",
+      "off": 556,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_29_failed_return_ratio",
+      "off": 560,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_30_points_req",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_30_success_prob",
+      "off": 568,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_30_failed_return_ratio",
+      "off": 572,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_31_points_req",
+      "off": 576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_31_success_prob",
+      "off": 580,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_31_failed_return_ratio",
+      "off": 584,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_32_points_req",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_32_success_prob",
+      "off": 592,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_32_failed_return_ratio",
+      "off": 596,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_33_points_req",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_33_success_prob",
+      "off": 604,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_33_failed_return_ratio",
+      "off": 608,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_34_points_req",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_34_success_prob",
+      "off": 616,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_34_failed_return_ratio",
+      "off": 620,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_35_points_req",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_35_success_prob",
+      "off": 628,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_35_failed_return_ratio",
+      "off": 632,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_36_points_req",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_36_success_prob",
+      "off": 640,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_36_failed_return_ratio",
+      "off": 644,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_37_points_req",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_37_success_prob",
+      "off": 652,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_37_failed_return_ratio",
+      "off": 656,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_38_points_req",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_38_success_prob",
+      "off": 664,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_38_failed_return_ratio",
+      "off": 668,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_39_points_req",
+      "off": 672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_39_success_prob",
+      "off": 676,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_39_failed_return_ratio",
+      "off": 680,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_40_points_req",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_40_success_prob",
+      "off": 688,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_40_failed_return_ratio",
+      "off": 692,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_41_points_req",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_41_success_prob",
+      "off": 700,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_41_failed_return_ratio",
+      "off": 704,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_42_points_req",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_42_success_prob",
+      "off": 712,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_42_failed_return_ratio",
+      "off": 716,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_43_points_req",
+      "off": 720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_43_success_prob",
+      "off": 724,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_43_failed_return_ratio",
+      "off": 728,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_44_points_req",
+      "off": 732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_44_success_prob",
+      "off": 736,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_44_failed_return_ratio",
+      "off": 740,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_45_points_req",
+      "off": 744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_45_success_prob",
+      "off": 748,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_45_failed_return_ratio",
+      "off": 752,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_46_points_req",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_46_success_prob",
+      "off": 760,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_46_failed_return_ratio",
+      "off": 764,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_47_points_req",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_47_success_prob",
+      "off": 772,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_47_failed_return_ratio",
+      "off": 776,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_48_points_req",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_48_success_prob",
+      "off": 784,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_48_failed_return_ratio",
+      "off": 788,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_49_points_req",
+      "off": 792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_49_success_prob",
+      "off": 796,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_49_failed_return_ratio",
+      "off": 800,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_50_points_req",
+      "off": 804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_50_success_prob",
+      "off": 808,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_50_failed_return_ratio",
+      "off": 812,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_51_points_req",
+      "off": 816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_51_success_prob",
+      "off": 820,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_51_failed_return_ratio",
+      "off": 824,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_52_points_req",
+      "off": 828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_52_success_prob",
+      "off": 832,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_52_failed_return_ratio",
+      "off": 836,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_53_points_req",
+      "off": 840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_53_success_prob",
+      "off": 844,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_53_failed_return_ratio",
+      "off": 848,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_54_points_req",
+      "off": 852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_54_success_prob",
+      "off": 856,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_54_failed_return_ratio",
+      "off": 860,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_55_points_req",
+      "off": 864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_55_success_prob",
+      "off": 868,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_55_failed_return_ratio",
+      "off": 872,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_56_points_req",
+      "off": 876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_56_success_prob",
+      "off": 880,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_56_failed_return_ratio",
+      "off": 884,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_57_points_req",
+      "off": 888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_57_success_prob",
+      "off": 892,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_57_failed_return_ratio",
+      "off": 896,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_58_points_req",
+      "off": 900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_58_success_prob",
+      "off": 904,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_58_failed_return_ratio",
+      "off": 908,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_59_points_req",
+      "off": 912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_59_success_prob",
+      "off": 916,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_59_failed_return_ratio",
+      "off": 920,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_60_points_req",
+      "off": 924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_60_success_prob",
+      "off": 928,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_60_failed_return_ratio",
+      "off": 932,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_61_points_req",
+      "off": 936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_61_success_prob",
+      "off": 940,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_61_failed_return_ratio",
+      "off": 944,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_62_points_req",
+      "off": 948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_62_success_prob",
+      "off": 952,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_62_failed_return_ratio",
+      "off": 956,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_63_points_req",
+      "off": 960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_63_success_prob",
+      "off": 964,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_63_failed_return_ratio",
+      "off": 968,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_64_points_req",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_64_success_prob",
+      "off": 976,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_64_failed_return_ratio",
+      "off": 980,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_65_points_req",
+      "off": 984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_65_success_prob",
+      "off": 988,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_65_failed_return_ratio",
+      "off": 992,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_66_points_req",
+      "off": 996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_66_success_prob",
+      "off": 1000,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_66_failed_return_ratio",
+      "off": 1004,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_67_points_req",
+      "off": 1008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_67_success_prob",
+      "off": 1012,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_67_failed_return_ratio",
+      "off": 1016,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_68_points_req",
+      "off": 1020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_68_success_prob",
+      "off": 1024,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_68_failed_return_ratio",
+      "off": 1028,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_69_points_req",
+      "off": 1032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_69_success_prob",
+      "off": 1036,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_69_failed_return_ratio",
+      "off": 1040,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_70_points_req",
+      "off": 1044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_70_success_prob",
+      "off": 1048,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_70_failed_return_ratio",
+      "off": 1052,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_71_points_req",
+      "off": 1056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_71_success_prob",
+      "off": 1060,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_71_failed_return_ratio",
+      "off": 1064,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_72_points_req",
+      "off": 1068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_72_success_prob",
+      "off": 1072,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_72_failed_return_ratio",
+      "off": 1076,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_73_points_req",
+      "off": 1080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_73_success_prob",
+      "off": 1084,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_73_failed_return_ratio",
+      "off": 1088,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_74_points_req",
+      "off": 1092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_74_success_prob",
+      "off": 1096,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_74_failed_return_ratio",
+      "off": 1100,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_75_points_req",
+      "off": 1104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_75_success_prob",
+      "off": 1108,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_75_failed_return_ratio",
+      "off": 1112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_76_points_req",
+      "off": 1116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_76_success_prob",
+      "off": 1120,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_76_failed_return_ratio",
+      "off": 1124,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_77_points_req",
+      "off": 1128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_77_success_prob",
+      "off": 1132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_77_failed_return_ratio",
+      "off": 1136,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_78_points_req",
+      "off": 1140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_78_success_prob",
+      "off": 1144,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_78_failed_return_ratio",
+      "off": 1148,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_79_points_req",
+      "off": 1152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_79_success_prob",
+      "off": 1156,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_79_failed_return_ratio",
+      "off": 1160,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_80_points_req",
+      "off": 1164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_80_success_prob",
+      "off": 1168,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_80_failed_return_ratio",
+      "off": 1172,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_81_points_req",
+      "off": 1176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_81_success_prob",
+      "off": 1180,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_81_failed_return_ratio",
+      "off": 1184,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_82_points_req",
+      "off": 1188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_82_success_prob",
+      "off": 1192,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_82_failed_return_ratio",
+      "off": 1196,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_83_points_req",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_83_success_prob",
+      "off": 1204,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_83_failed_return_ratio",
+      "off": 1208,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_84_points_req",
+      "off": 1212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_84_success_prob",
+      "off": 1216,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_84_failed_return_ratio",
+      "off": 1220,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_85_points_req",
+      "off": 1224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_85_success_prob",
+      "off": 1228,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_85_failed_return_ratio",
+      "off": 1232,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_86_points_req",
+      "off": 1236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_86_success_prob",
+      "off": 1240,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_86_failed_return_ratio",
+      "off": 1244,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_87_points_req",
+      "off": 1248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_87_success_prob",
+      "off": 1252,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_87_failed_return_ratio",
+      "off": 1256,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_88_points_req",
+      "off": 1260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_88_success_prob",
+      "off": 1264,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_88_failed_return_ratio",
+      "off": 1268,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_89_points_req",
+      "off": 1272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_89_success_prob",
+      "off": 1276,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_89_failed_return_ratio",
+      "off": 1280,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_90_points_req",
+      "off": 1284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_90_success_prob",
+      "off": 1288,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_90_failed_return_ratio",
+      "off": 1292,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_91_points_req",
+      "off": 1296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_91_success_prob",
+      "off": 1300,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_91_failed_return_ratio",
+      "off": 1304,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_92_points_req",
+      "off": 1308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_92_success_prob",
+      "off": 1312,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_92_failed_return_ratio",
+      "off": 1316,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_93_points_req",
+      "off": 1320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_93_success_prob",
+      "off": 1324,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_93_failed_return_ratio",
+      "off": 1328,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_94_points_req",
+      "off": 1332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_94_success_prob",
+      "off": 1336,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_94_failed_return_ratio",
+      "off": 1340,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_95_points_req",
+      "off": 1344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_95_success_prob",
+      "off": 1348,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_95_failed_return_ratio",
+      "off": 1352,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_96_points_req",
+      "off": 1356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_96_success_prob",
+      "off": 1360,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_96_failed_return_ratio",
+      "off": 1364,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_97_points_req",
+      "off": 1368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_97_success_prob",
+      "off": 1372,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_97_failed_return_ratio",
+      "off": 1376,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_98_points_req",
+      "off": 1380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_98_success_prob",
+      "off": 1384,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_98_failed_return_ratio",
+      "off": 1388,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_99_points_req",
+      "off": 1392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_99_success_prob",
+      "off": 1396,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_99_failed_return_ratio",
+      "off": 1400,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_100_points_req",
+      "off": 1404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_up_list_100_success_prob",
+      "off": 1408,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_up_list_100_failed_return_ratio",
+      "off": 1412,
+      "t": {
+        "k": "f32"
+      }
+    }
+  ]
+}

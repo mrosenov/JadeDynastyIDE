@@ -1,0 +1,141 @@
+{
+  "name": "Soul Drop Config",
+  "struct": "SOUL_DROP_CONFIG",
+  "size": 136,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "monster_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_1_min_count",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_1_max_count",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_1_probability",
+      "off": 80,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "soul_drop_list_1_value",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_2_min_count",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_2_max_count",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_2_probability",
+      "off": 96,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "soul_drop_list_2_value",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_3_min_count",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_3_max_count",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_3_probability",
+      "off": 112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "soul_drop_list_3_value",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_4_min_count",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_4_max_count",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "soul_drop_list_4_probability",
+      "off": 128,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "soul_drop_list_4_value",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

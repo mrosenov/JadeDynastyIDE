@@ -1,0 +1,757 @@
+{
+  "name": "Mine Essence",
+  "struct": "MINE_ESSENCE",
+  "size": 488,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "id_type",
+      "off": 4,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 8,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "level",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_required",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "id_equipment_required",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "eliminate_tool",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_1",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_2",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "time_min",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "time_max",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "exp",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "skillpoint",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cursor_icon",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "file_model",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_2",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_3",
+      "off": 124,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_1_id",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_1_probability",
+      "off": 132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_2_id",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_2_probability",
+      "off": 140,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_3_id",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_3_probability",
+      "off": 148,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_4_id",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_4_probability",
+      "off": 156,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_5_id",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_5_probability",
+      "off": 164,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_6_id",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_6_probability",
+      "off": 172,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_7_id",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_7_probability",
+      "off": 180,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_8_id",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_8_probability",
+      "off": 188,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_9_id",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_9_probability",
+      "off": 196,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_10_id",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_10_probability",
+      "off": 204,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_11_id",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_11_probability",
+      "off": 212,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_12_id",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_12_probability",
+      "off": 220,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_13_id",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_13_probability",
+      "off": 228,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_14_id",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_14_probability",
+      "off": 236,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_15_id",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_15_probability",
+      "off": 244,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "materials_16_id",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "materials_16_probability",
+      "off": 252,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "num1",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "probability1",
+      "off": 260,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "num2",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "probability2",
+      "off": 268,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "unknown_5",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_6",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "task_in",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "task_out",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "uninterruptable",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "npcgen_1_id_monster",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "npcgen_1_num",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "npcgen_1_radius",
+      "off": 300,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "npcgen_2_id_monster",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "npcgen_2_num",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "npcgen_2_radius",
+      "off": 312,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "npcgen_3_id_monster",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "npcgen_3_num",
+      "off": 320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "npcgen_3_radius",
+      "off": 324,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "npcgen_4_id_monster",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "npcgen_4_num",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "npcgen_4_radius",
+      "off": 336,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "aggros_1_monster_faction",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "aggros_1_radius",
+      "off": 344,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "aggros_1_num",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "role_in_war",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_7",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_8",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_9",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_10",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_11",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_12",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_13",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_14",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_15",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_16",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_17",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_18",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_19",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_20",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_21",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_22",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_23",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_24",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_25",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_26",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_27",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "permenent",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activate_controller_mode",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activate_controller_id_1",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activate_controller_id_2",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activate_controller_id_3",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activate_controller_id_4",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deactivate_controller_mode",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deactivate_controller_id_1",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deactivate_controller_id_2",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deactivate_controller_id_3",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deactivate_controller_id_4",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "close_collision_detection",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

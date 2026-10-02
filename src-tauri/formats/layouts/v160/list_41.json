@@ -1,0 +1,167 @@
+{
+  "key": "pie_love_config",
+  "name": "Pie Love Config",
+  "struct": "PIE_LOVE_CONFIG",
+  "size": 388,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "id"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "sns_config",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 64,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "fee_press_msg",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "发布信息消耗金钱"
+            },
+            {
+              "name": "id_press_msg_item",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "发布信息消耗物品id"
+            },
+            {
+              "name": "id2_press_msg_item",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "发布消息消耗物品id2"
+            },
+            {
+              "name": "id_press_msg_task",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "c": "发布信息触发任务id"
+            },
+            {
+              "name": "id_support_msg_item",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              },
+              "c": "投票支持信息消耗物品id"
+            },
+            {
+              "name": "id_support_msg_task",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              },
+              "c": "投票支持信息触发任务id"
+            },
+            {
+              "name": "id_against_msg_item",
+              "off": 24,
+              "t": {
+                "k": "i32"
+              },
+              "c": "投票反对信息消耗物品ID"
+            },
+            {
+              "name": "id_against_msg_task",
+              "off": 28,
+              "t": {
+                "k": "i32"
+              },
+              "c": "投票反对信息触发任务ID"
+            },
+            {
+              "name": "fee_apply_msg",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              },
+              "c": "申请信息消耗金钱"
+            },
+            {
+              "name": "id_apply_msg_item",
+              "off": 36,
+              "t": {
+                "k": "i32"
+              },
+              "c": "申请信息消耗物品ID"
+            },
+            {
+              "name": "id_apply_msg_task",
+              "off": 40,
+              "t": {
+                "k": "i32"
+              },
+              "c": "申请信息触发任务ID"
+            },
+            {
+              "name": "fee_response_msg",
+              "off": 44,
+              "t": {
+                "k": "i32"
+              },
+              "c": "留言板回复信息消耗金钱"
+            },
+            {
+              "name": "id_response_msg_item",
+              "off": 48,
+              "t": {
+                "k": "i32"
+              },
+              "c": "留言板回复信息消耗物品ID"
+            },
+            {
+              "name": "id_accept_apply_task1",
+              "off": 52,
+              "t": {
+                "k": "i32"
+              },
+              "c": "接受申请触发任务ID1"
+            },
+            {
+              "name": "id_accept_apply_task2",
+              "off": 56,
+              "t": {
+                "k": "i32"
+              },
+              "c": "接受申请触发任务ID2"
+            },
+            {
+              "name": "id_accept_apply_task3",
+              "off": 60,
+              "t": {
+                "k": "i32"
+              },
+              "c": "接受申请触发任务ID3"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

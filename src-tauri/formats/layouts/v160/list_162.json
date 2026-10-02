@@ -1,0 +1,52 @@
+{
+  "key": "task_special_award_config",
+  "name": "Task Special Award Config",
+  "struct": "TASK_SPECIAL_AWARD_CONFIG",
+  "size": 308,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "gfx_path",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "路径"
+    },
+    {
+      "name": "mini_game",
+      "off": 148,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 16,
+        "t": {
+          "k": "wstr",
+          "n": 8
+        }
+      },
+      "c": "名字，只给策划用"
+    }
+  ]
+}

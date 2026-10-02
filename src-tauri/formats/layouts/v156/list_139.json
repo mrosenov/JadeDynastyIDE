@@ -1,0 +1,241 @@
+{
+  "key": "rune_data_config",
+  "name": "Rune Data Config",
+  "struct": "RUNE_DATA_CONFIG",
+  "size": 2976,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "id"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "id_rune_reserve1",
+      "off": 68,
+      "t": {
+        "k": "u32"
+      }
+    },
+    {
+      "name": "id_rune_reserve2",
+      "off": 72,
+      "t": {
+        "k": "u32"
+      }
+    },
+    {
+      "name": "id_rune_reserve3",
+      "off": 76,
+      "t": {
+        "k": "u32"
+      }
+    },
+    {
+      "name": "id_rune_reserve4",
+      "off": 80,
+      "t": {
+        "k": "u32"
+      }
+    },
+    {
+      "name": "exp_identify",
+      "off": 84,
+      "t": {
+        "k": "u32"
+      },
+      "c": "鉴定服务增加的经验"
+    },
+    {
+      "name": "exp_return",
+      "off": 88,
+      "t": {
+        "k": "u32"
+      },
+      "c": "归元服务增加的经验"
+    },
+    {
+      "name": "exp_refresh",
+      "off": 92,
+      "t": {
+        "k": "u32"
+      },
+      "c": "洗练服务增加的经验"
+    },
+    {
+      "name": "exp",
+      "off": 96,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "元魂1-100级升级至下一级所需要的经验值"
+    },
+    {
+      "name": "equip_req",
+      "off": 496,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "lv_req",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "元魂1-100级佩戴所需等级"
+            },
+            {
+              "name": "rebount_count_req",
+              "off": 4,
+              "t": {
+                "k": "u32"
+              },
+              "c": "元魂1-100级佩戴所需飞升次数"
+            }
+          ]
+        }
+      },
+      "c": "元魂升级到2-101级佩戴所需飞升次数"
+    },
+    {
+      "name": "decomposeo_exp",
+      "off": 1296,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "分解平均档位1-100档获得的经验"
+    },
+    {
+      "name": "fixed_property",
+      "off": 1696,
+      "t": {
+        "k": "array",
+        "n": 60,
+        "stride": 20,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "level",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "等级"
+            },
+            {
+              "name": "attack",
+              "off": 4,
+              "t": {
+                "k": "u32"
+              },
+              "c": "攻击增加"
+            },
+            {
+              "name": "hp",
+              "off": 8,
+              "t": {
+                "k": "u32"
+              },
+              "c": "气血增加"
+            },
+            {
+              "name": "mp",
+              "off": 12,
+              "t": {
+                "k": "u32"
+              },
+              "c": "真气增加"
+            },
+            {
+              "name": "dp",
+              "off": 16,
+              "t": {
+                "k": "u32"
+              },
+              "c": "元力增加"
+            }
+          ]
+        }
+      },
+      "c": "元魂系统固定增益"
+    },
+    {
+      "name": "id_rune_identify",
+      "off": 2896,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "元魂鉴定所需物品id"
+    },
+    {
+      "name": "id_rune_refine",
+      "off": 2916,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "元魂洗练所需物品id"
+    },
+    {
+      "name": "id_rune_reset",
+      "off": 2936,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "元魂归元所需物品id"
+    },
+    {
+      "name": "id_rune_change_slot",
+      "off": 2956,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "元魂改变孔位所需物品id"
+    }
+  ]
+}

@@ -1,0 +1,6322 @@
+{
+  "name": "Faction Shop Config",
+  "struct": "FACTION_SHOP_CONFIG",
+  "size": 3668,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "faction_item_list_1_item_index",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_1_item_id",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_1_build_id",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_1_build_level",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_1_contribution",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_1_unk1",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_1_unk2",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_1_unk3",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_1_unk4",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_2_item_index",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_2_item_id",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_2_build_id",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_2_build_level",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_2_contribution",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_2_unk1",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_2_unk2",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_2_unk3",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_2_unk4",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_3_item_index",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_3_item_id",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_3_build_id",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_3_build_level",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_3_contribution",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_3_unk1",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_3_unk2",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_3_unk3",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_3_unk4",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_4_item_index",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_4_item_id",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_4_build_id",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_4_build_level",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_4_contribution",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_4_unk1",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_4_unk2",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_4_unk3",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_4_unk4",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_5_item_index",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_5_item_id",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_5_build_id",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_5_build_level",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_5_contribution",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_5_unk1",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_5_unk2",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_5_unk3",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_5_unk4",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_6_item_index",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_6_item_id",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_6_build_id",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_6_build_level",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_6_contribution",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_6_unk1",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_6_unk2",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_6_unk3",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_6_unk4",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_7_item_index",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_7_item_id",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_7_build_id",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_7_build_level",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_7_contribution",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_7_unk1",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_7_unk2",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_7_unk3",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_7_unk4",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_8_item_index",
+      "off": 320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_8_item_id",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_8_build_id",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_8_build_level",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_8_contribution",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_8_unk1",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_8_unk2",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_8_unk3",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_8_unk4",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_9_item_index",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_9_item_id",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_9_build_id",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_9_build_level",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_9_contribution",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_9_unk1",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_9_unk2",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_9_unk3",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_9_unk4",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_10_item_index",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_10_item_id",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_10_build_id",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_10_build_level",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_10_contribution",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_10_unk1",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_10_unk2",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_10_unk3",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_10_unk4",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_11_item_index",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_11_item_id",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_11_build_id",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_11_build_level",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_11_contribution",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_11_unk1",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_11_unk2",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_11_unk3",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_11_unk4",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_12_item_index",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_12_item_id",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_12_build_id",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_12_build_level",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_12_contribution",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_12_unk1",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_12_unk2",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_12_unk3",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_12_unk4",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_13_item_index",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_13_item_id",
+      "off": 504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_13_build_id",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_13_build_level",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_13_contribution",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_13_unk1",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_13_unk2",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_13_unk3",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_13_unk4",
+      "off": 532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_14_item_index",
+      "off": 536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_14_item_id",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_14_build_id",
+      "off": 544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_14_build_level",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_14_contribution",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_14_unk1",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_14_unk2",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_14_unk3",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_14_unk4",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_15_item_index",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_15_item_id",
+      "off": 576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_15_build_id",
+      "off": 580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_15_build_level",
+      "off": 584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_15_contribution",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_15_unk1",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_15_unk2",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_15_unk3",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_15_unk4",
+      "off": 604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_16_item_index",
+      "off": 608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_16_item_id",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_16_build_id",
+      "off": 616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_16_build_level",
+      "off": 620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_16_contribution",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_16_unk1",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_16_unk2",
+      "off": 632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_16_unk3",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_16_unk4",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_17_item_index",
+      "off": 644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_17_item_id",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_17_build_id",
+      "off": 652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_17_build_level",
+      "off": 656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_17_contribution",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_17_unk1",
+      "off": 664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_17_unk2",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_17_unk3",
+      "off": 672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_17_unk4",
+      "off": 676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_18_item_index",
+      "off": 680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_18_item_id",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_18_build_id",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_18_build_level",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_18_contribution",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_18_unk1",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_18_unk2",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_18_unk3",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_18_unk4",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_19_item_index",
+      "off": 716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_19_item_id",
+      "off": 720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_19_build_id",
+      "off": 724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_19_build_level",
+      "off": 728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_19_contribution",
+      "off": 732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_19_unk1",
+      "off": 736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_19_unk2",
+      "off": 740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_19_unk3",
+      "off": 744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_19_unk4",
+      "off": 748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_20_item_index",
+      "off": 752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_20_item_id",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_20_build_id",
+      "off": 760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_20_build_level",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_20_contribution",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_20_unk1",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_20_unk2",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_20_unk3",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_20_unk4",
+      "off": 784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_21_item_index",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_21_item_id",
+      "off": 792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_21_build_id",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_21_build_level",
+      "off": 800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_21_contribution",
+      "off": 804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_21_unk1",
+      "off": 808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_21_unk2",
+      "off": 812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_21_unk3",
+      "off": 816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_21_unk4",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_22_item_index",
+      "off": 824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_22_item_id",
+      "off": 828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_22_build_id",
+      "off": 832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_22_build_level",
+      "off": 836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_22_contribution",
+      "off": 840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_22_unk1",
+      "off": 844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_22_unk2",
+      "off": 848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_22_unk3",
+      "off": 852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_22_unk4",
+      "off": 856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_23_item_index",
+      "off": 860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_23_item_id",
+      "off": 864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_23_build_id",
+      "off": 868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_23_build_level",
+      "off": 872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_23_contribution",
+      "off": 876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_23_unk1",
+      "off": 880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_23_unk2",
+      "off": 884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_23_unk3",
+      "off": 888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_23_unk4",
+      "off": 892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_24_item_index",
+      "off": 896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_24_item_id",
+      "off": 900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_24_build_id",
+      "off": 904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_24_build_level",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_24_contribution",
+      "off": 912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_24_unk1",
+      "off": 916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_24_unk2",
+      "off": 920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_24_unk3",
+      "off": 924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_24_unk4",
+      "off": 928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_25_item_index",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_25_item_id",
+      "off": 936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_25_build_id",
+      "off": 940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_25_build_level",
+      "off": 944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_25_contribution",
+      "off": 948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_25_unk1",
+      "off": 952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_25_unk2",
+      "off": 956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_25_unk3",
+      "off": 960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_25_unk4",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_26_item_index",
+      "off": 968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_26_item_id",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_26_build_id",
+      "off": 976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_26_build_level",
+      "off": 980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_26_contribution",
+      "off": 984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_26_unk1",
+      "off": 988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_26_unk2",
+      "off": 992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_26_unk3",
+      "off": 996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_26_unk4",
+      "off": 1000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_27_item_index",
+      "off": 1004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_27_item_id",
+      "off": 1008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_27_build_id",
+      "off": 1012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_27_build_level",
+      "off": 1016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_27_contribution",
+      "off": 1020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_27_unk1",
+      "off": 1024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_27_unk2",
+      "off": 1028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_27_unk3",
+      "off": 1032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_27_unk4",
+      "off": 1036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_28_item_index",
+      "off": 1040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_28_item_id",
+      "off": 1044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_28_build_id",
+      "off": 1048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_28_build_level",
+      "off": 1052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_28_contribution",
+      "off": 1056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_28_unk1",
+      "off": 1060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_28_unk2",
+      "off": 1064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_28_unk3",
+      "off": 1068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_28_unk4",
+      "off": 1072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_29_item_index",
+      "off": 1076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_29_item_id",
+      "off": 1080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_29_build_id",
+      "off": 1084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_29_build_level",
+      "off": 1088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_29_contribution",
+      "off": 1092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_29_unk1",
+      "off": 1096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_29_unk2",
+      "off": 1100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_29_unk3",
+      "off": 1104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_29_unk4",
+      "off": 1108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_30_item_index",
+      "off": 1112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_30_item_id",
+      "off": 1116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_30_build_id",
+      "off": 1120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_30_build_level",
+      "off": 1124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_30_contribution",
+      "off": 1128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_30_unk1",
+      "off": 1132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_30_unk2",
+      "off": 1136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_30_unk3",
+      "off": 1140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_30_unk4",
+      "off": 1144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_31_item_index",
+      "off": 1148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_31_item_id",
+      "off": 1152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_31_build_id",
+      "off": 1156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_31_build_level",
+      "off": 1160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_31_contribution",
+      "off": 1164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_31_unk1",
+      "off": 1168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_31_unk2",
+      "off": 1172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_31_unk3",
+      "off": 1176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_31_unk4",
+      "off": 1180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_32_item_index",
+      "off": 1184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_32_item_id",
+      "off": 1188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_32_build_id",
+      "off": 1192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_32_build_level",
+      "off": 1196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_32_contribution",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_32_unk1",
+      "off": 1204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_32_unk2",
+      "off": 1208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_32_unk3",
+      "off": 1212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_32_unk4",
+      "off": 1216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_33_item_index",
+      "off": 1220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_33_item_id",
+      "off": 1224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_33_build_id",
+      "off": 1228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_33_build_level",
+      "off": 1232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_33_contribution",
+      "off": 1236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_33_unk1",
+      "off": 1240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_33_unk2",
+      "off": 1244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_33_unk3",
+      "off": 1248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_33_unk4",
+      "off": 1252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_34_item_index",
+      "off": 1256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_34_item_id",
+      "off": 1260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_34_build_id",
+      "off": 1264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_34_build_level",
+      "off": 1268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_34_contribution",
+      "off": 1272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_34_unk1",
+      "off": 1276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_34_unk2",
+      "off": 1280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_34_unk3",
+      "off": 1284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_34_unk4",
+      "off": 1288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_35_item_index",
+      "off": 1292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_35_item_id",
+      "off": 1296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_35_build_id",
+      "off": 1300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_35_build_level",
+      "off": 1304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_35_contribution",
+      "off": 1308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_35_unk1",
+      "off": 1312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_35_unk2",
+      "off": 1316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_35_unk3",
+      "off": 1320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_35_unk4",
+      "off": 1324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_36_item_index",
+      "off": 1328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_36_item_id",
+      "off": 1332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_36_build_id",
+      "off": 1336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_36_build_level",
+      "off": 1340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_36_contribution",
+      "off": 1344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_36_unk1",
+      "off": 1348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_36_unk2",
+      "off": 1352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_36_unk3",
+      "off": 1356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_36_unk4",
+      "off": 1360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_37_item_index",
+      "off": 1364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_37_item_id",
+      "off": 1368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_37_build_id",
+      "off": 1372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_37_build_level",
+      "off": 1376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_37_contribution",
+      "off": 1380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_37_unk1",
+      "off": 1384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_37_unk2",
+      "off": 1388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_37_unk3",
+      "off": 1392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_37_unk4",
+      "off": 1396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_38_item_index",
+      "off": 1400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_38_item_id",
+      "off": 1404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_38_build_id",
+      "off": 1408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_38_build_level",
+      "off": 1412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_38_contribution",
+      "off": 1416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_38_unk1",
+      "off": 1420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_38_unk2",
+      "off": 1424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_38_unk3",
+      "off": 1428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_38_unk4",
+      "off": 1432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_39_item_index",
+      "off": 1436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_39_item_id",
+      "off": 1440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_39_build_id",
+      "off": 1444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_39_build_level",
+      "off": 1448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_39_contribution",
+      "off": 1452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_39_unk1",
+      "off": 1456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_39_unk2",
+      "off": 1460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_39_unk3",
+      "off": 1464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_39_unk4",
+      "off": 1468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_40_item_index",
+      "off": 1472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_40_item_id",
+      "off": 1476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_40_build_id",
+      "off": 1480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_40_build_level",
+      "off": 1484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_40_contribution",
+      "off": 1488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_40_unk1",
+      "off": 1492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_40_unk2",
+      "off": 1496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_40_unk3",
+      "off": 1500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_40_unk4",
+      "off": 1504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_41_item_index",
+      "off": 1508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_41_item_id",
+      "off": 1512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_41_build_id",
+      "off": 1516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_41_build_level",
+      "off": 1520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_41_contribution",
+      "off": 1524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_41_unk1",
+      "off": 1528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_41_unk2",
+      "off": 1532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_41_unk3",
+      "off": 1536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_41_unk4",
+      "off": 1540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_42_item_index",
+      "off": 1544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_42_item_id",
+      "off": 1548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_42_build_id",
+      "off": 1552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_42_build_level",
+      "off": 1556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_42_contribution",
+      "off": 1560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_42_unk1",
+      "off": 1564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_42_unk2",
+      "off": 1568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_42_unk3",
+      "off": 1572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_42_unk4",
+      "off": 1576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_43_item_index",
+      "off": 1580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_43_item_id",
+      "off": 1584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_43_build_id",
+      "off": 1588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_43_build_level",
+      "off": 1592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_43_contribution",
+      "off": 1596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_43_unk1",
+      "off": 1600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_43_unk2",
+      "off": 1604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_43_unk3",
+      "off": 1608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_43_unk4",
+      "off": 1612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_44_item_index",
+      "off": 1616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_44_item_id",
+      "off": 1620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_44_build_id",
+      "off": 1624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_44_build_level",
+      "off": 1628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_44_contribution",
+      "off": 1632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_44_unk1",
+      "off": 1636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_44_unk2",
+      "off": 1640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_44_unk3",
+      "off": 1644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_44_unk4",
+      "off": 1648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_45_item_index",
+      "off": 1652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_45_item_id",
+      "off": 1656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_45_build_id",
+      "off": 1660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_45_build_level",
+      "off": 1664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_45_contribution",
+      "off": 1668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_45_unk1",
+      "off": 1672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_45_unk2",
+      "off": 1676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_45_unk3",
+      "off": 1680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_45_unk4",
+      "off": 1684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_46_item_index",
+      "off": 1688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_46_item_id",
+      "off": 1692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_46_build_id",
+      "off": 1696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_46_build_level",
+      "off": 1700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_46_contribution",
+      "off": 1704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_46_unk1",
+      "off": 1708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_46_unk2",
+      "off": 1712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_46_unk3",
+      "off": 1716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_46_unk4",
+      "off": 1720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_47_item_index",
+      "off": 1724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_47_item_id",
+      "off": 1728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_47_build_id",
+      "off": 1732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_47_build_level",
+      "off": 1736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_47_contribution",
+      "off": 1740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_47_unk1",
+      "off": 1744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_47_unk2",
+      "off": 1748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_47_unk3",
+      "off": 1752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_47_unk4",
+      "off": 1756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_48_item_index",
+      "off": 1760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_48_item_id",
+      "off": 1764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_48_build_id",
+      "off": 1768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_48_build_level",
+      "off": 1772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_48_contribution",
+      "off": 1776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_48_unk1",
+      "off": 1780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_48_unk2",
+      "off": 1784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_48_unk3",
+      "off": 1788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_48_unk4",
+      "off": 1792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_49_item_index",
+      "off": 1796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_49_item_id",
+      "off": 1800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_49_build_id",
+      "off": 1804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_49_build_level",
+      "off": 1808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_49_contribution",
+      "off": 1812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_49_unk1",
+      "off": 1816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_49_unk2",
+      "off": 1820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_49_unk3",
+      "off": 1824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_49_unk4",
+      "off": 1828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_50_item_index",
+      "off": 1832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_50_item_id",
+      "off": 1836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_50_build_id",
+      "off": 1840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_50_build_level",
+      "off": 1844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_50_contribution",
+      "off": 1848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_50_unk1",
+      "off": 1852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_50_unk2",
+      "off": 1856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_50_unk3",
+      "off": 1860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_50_unk4",
+      "off": 1864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_51_item_index",
+      "off": 1868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_51_item_id",
+      "off": 1872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_51_build_id",
+      "off": 1876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_51_build_level",
+      "off": 1880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_51_contribution",
+      "off": 1884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_51_unk1",
+      "off": 1888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_51_unk2",
+      "off": 1892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_51_unk3",
+      "off": 1896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_51_unk4",
+      "off": 1900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_52_item_index",
+      "off": 1904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_52_item_id",
+      "off": 1908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_52_build_id",
+      "off": 1912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_52_build_level",
+      "off": 1916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_52_contribution",
+      "off": 1920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_52_unk1",
+      "off": 1924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_52_unk2",
+      "off": 1928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_52_unk3",
+      "off": 1932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_52_unk4",
+      "off": 1936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_53_item_index",
+      "off": 1940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_53_item_id",
+      "off": 1944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_53_build_id",
+      "off": 1948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_53_build_level",
+      "off": 1952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_53_contribution",
+      "off": 1956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_53_unk1",
+      "off": 1960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_53_unk2",
+      "off": 1964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_53_unk3",
+      "off": 1968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_53_unk4",
+      "off": 1972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_54_item_index",
+      "off": 1976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_54_item_id",
+      "off": 1980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_54_build_id",
+      "off": 1984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_54_build_level",
+      "off": 1988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_54_contribution",
+      "off": 1992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_54_unk1",
+      "off": 1996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_54_unk2",
+      "off": 2000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_54_unk3",
+      "off": 2004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_54_unk4",
+      "off": 2008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_55_item_index",
+      "off": 2012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_55_item_id",
+      "off": 2016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_55_build_id",
+      "off": 2020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_55_build_level",
+      "off": 2024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_55_contribution",
+      "off": 2028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_55_unk1",
+      "off": 2032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_55_unk2",
+      "off": 2036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_55_unk3",
+      "off": 2040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_55_unk4",
+      "off": 2044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_56_item_index",
+      "off": 2048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_56_item_id",
+      "off": 2052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_56_build_id",
+      "off": 2056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_56_build_level",
+      "off": 2060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_56_contribution",
+      "off": 2064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_56_unk1",
+      "off": 2068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_56_unk2",
+      "off": 2072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_56_unk3",
+      "off": 2076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_56_unk4",
+      "off": 2080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_57_item_index",
+      "off": 2084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_57_item_id",
+      "off": 2088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_57_build_id",
+      "off": 2092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_57_build_level",
+      "off": 2096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_57_contribution",
+      "off": 2100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_57_unk1",
+      "off": 2104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_57_unk2",
+      "off": 2108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_57_unk3",
+      "off": 2112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_57_unk4",
+      "off": 2116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_58_item_index",
+      "off": 2120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_58_item_id",
+      "off": 2124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_58_build_id",
+      "off": 2128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_58_build_level",
+      "off": 2132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_58_contribution",
+      "off": 2136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_58_unk1",
+      "off": 2140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_58_unk2",
+      "off": 2144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_58_unk3",
+      "off": 2148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_58_unk4",
+      "off": 2152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_59_item_index",
+      "off": 2156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_59_item_id",
+      "off": 2160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_59_build_id",
+      "off": 2164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_59_build_level",
+      "off": 2168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_59_contribution",
+      "off": 2172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_59_unk1",
+      "off": 2176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_59_unk2",
+      "off": 2180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_59_unk3",
+      "off": 2184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_59_unk4",
+      "off": 2188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_60_item_index",
+      "off": 2192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_60_item_id",
+      "off": 2196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_60_build_id",
+      "off": 2200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_60_build_level",
+      "off": 2204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_60_contribution",
+      "off": 2208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_60_unk1",
+      "off": 2212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_60_unk2",
+      "off": 2216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_60_unk3",
+      "off": 2220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_60_unk4",
+      "off": 2224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_61_item_index",
+      "off": 2228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_61_item_id",
+      "off": 2232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_61_build_id",
+      "off": 2236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_61_build_level",
+      "off": 2240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_61_contribution",
+      "off": 2244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_61_unk1",
+      "off": 2248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_61_unk2",
+      "off": 2252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_61_unk3",
+      "off": 2256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_61_unk4",
+      "off": 2260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_62_item_index",
+      "off": 2264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_62_item_id",
+      "off": 2268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_62_build_id",
+      "off": 2272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_62_build_level",
+      "off": 2276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_62_contribution",
+      "off": 2280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_62_unk1",
+      "off": 2284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_62_unk2",
+      "off": 2288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_62_unk3",
+      "off": 2292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_62_unk4",
+      "off": 2296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_63_item_index",
+      "off": 2300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_63_item_id",
+      "off": 2304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_63_build_id",
+      "off": 2308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_63_build_level",
+      "off": 2312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_63_contribution",
+      "off": 2316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_63_unk1",
+      "off": 2320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_63_unk2",
+      "off": 2324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_63_unk3",
+      "off": 2328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_63_unk4",
+      "off": 2332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_64_item_index",
+      "off": 2336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_64_item_id",
+      "off": 2340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_64_build_id",
+      "off": 2344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_64_build_level",
+      "off": 2348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_64_contribution",
+      "off": 2352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_64_unk1",
+      "off": 2356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_64_unk2",
+      "off": 2360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_64_unk3",
+      "off": 2364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_64_unk4",
+      "off": 2368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_65_item_index",
+      "off": 2372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_65_item_id",
+      "off": 2376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_65_build_id",
+      "off": 2380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_65_build_level",
+      "off": 2384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_65_contribution",
+      "off": 2388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_65_unk1",
+      "off": 2392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_65_unk2",
+      "off": 2396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_65_unk3",
+      "off": 2400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_65_unk4",
+      "off": 2404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_66_item_index",
+      "off": 2408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_66_item_id",
+      "off": 2412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_66_build_id",
+      "off": 2416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_66_build_level",
+      "off": 2420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_66_contribution",
+      "off": 2424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_66_unk1",
+      "off": 2428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_66_unk2",
+      "off": 2432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_66_unk3",
+      "off": 2436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_66_unk4",
+      "off": 2440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_67_item_index",
+      "off": 2444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_67_item_id",
+      "off": 2448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_67_build_id",
+      "off": 2452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_67_build_level",
+      "off": 2456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_67_contribution",
+      "off": 2460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_67_unk1",
+      "off": 2464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_67_unk2",
+      "off": 2468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_67_unk3",
+      "off": 2472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_67_unk4",
+      "off": 2476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_68_item_index",
+      "off": 2480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_68_item_id",
+      "off": 2484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_68_build_id",
+      "off": 2488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_68_build_level",
+      "off": 2492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_68_contribution",
+      "off": 2496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_68_unk1",
+      "off": 2500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_68_unk2",
+      "off": 2504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_68_unk3",
+      "off": 2508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_68_unk4",
+      "off": 2512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_69_item_index",
+      "off": 2516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_69_item_id",
+      "off": 2520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_69_build_id",
+      "off": 2524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_69_build_level",
+      "off": 2528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_69_contribution",
+      "off": 2532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_69_unk1",
+      "off": 2536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_69_unk2",
+      "off": 2540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_69_unk3",
+      "off": 2544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_69_unk4",
+      "off": 2548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_70_item_index",
+      "off": 2552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_70_item_id",
+      "off": 2556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_70_build_id",
+      "off": 2560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_70_build_level",
+      "off": 2564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_70_contribution",
+      "off": 2568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_70_unk1",
+      "off": 2572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_70_unk2",
+      "off": 2576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_70_unk3",
+      "off": 2580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_70_unk4",
+      "off": 2584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_71_item_index",
+      "off": 2588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_71_item_id",
+      "off": 2592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_71_build_id",
+      "off": 2596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_71_build_level",
+      "off": 2600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_71_contribution",
+      "off": 2604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_71_unk1",
+      "off": 2608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_71_unk2",
+      "off": 2612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_71_unk3",
+      "off": 2616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_71_unk4",
+      "off": 2620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_72_item_index",
+      "off": 2624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_72_item_id",
+      "off": 2628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_72_build_id",
+      "off": 2632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_72_build_level",
+      "off": 2636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_72_contribution",
+      "off": 2640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_72_unk1",
+      "off": 2644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_72_unk2",
+      "off": 2648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_72_unk3",
+      "off": 2652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_72_unk4",
+      "off": 2656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_73_item_index",
+      "off": 2660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_73_item_id",
+      "off": 2664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_73_build_id",
+      "off": 2668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_73_build_level",
+      "off": 2672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_73_contribution",
+      "off": 2676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_73_unk1",
+      "off": 2680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_73_unk2",
+      "off": 2684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_73_unk3",
+      "off": 2688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_73_unk4",
+      "off": 2692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_74_item_index",
+      "off": 2696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_74_item_id",
+      "off": 2700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_74_build_id",
+      "off": 2704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_74_build_level",
+      "off": 2708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_74_contribution",
+      "off": 2712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_74_unk1",
+      "off": 2716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_74_unk2",
+      "off": 2720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_74_unk3",
+      "off": 2724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_74_unk4",
+      "off": 2728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_75_item_index",
+      "off": 2732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_75_item_id",
+      "off": 2736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_75_build_id",
+      "off": 2740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_75_build_level",
+      "off": 2744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_75_contribution",
+      "off": 2748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_75_unk1",
+      "off": 2752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_75_unk2",
+      "off": 2756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_75_unk3",
+      "off": 2760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_75_unk4",
+      "off": 2764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_76_item_index",
+      "off": 2768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_76_item_id",
+      "off": 2772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_76_build_id",
+      "off": 2776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_76_build_level",
+      "off": 2780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_76_contribution",
+      "off": 2784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_76_unk1",
+      "off": 2788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_76_unk2",
+      "off": 2792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_76_unk3",
+      "off": 2796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_76_unk4",
+      "off": 2800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_77_item_index",
+      "off": 2804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_77_item_id",
+      "off": 2808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_77_build_id",
+      "off": 2812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_77_build_level",
+      "off": 2816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_77_contribution",
+      "off": 2820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_77_unk1",
+      "off": 2824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_77_unk2",
+      "off": 2828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_77_unk3",
+      "off": 2832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_77_unk4",
+      "off": 2836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_78_item_index",
+      "off": 2840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_78_item_id",
+      "off": 2844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_78_build_id",
+      "off": 2848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_78_build_level",
+      "off": 2852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_78_contribution",
+      "off": 2856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_78_unk1",
+      "off": 2860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_78_unk2",
+      "off": 2864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_78_unk3",
+      "off": 2868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_78_unk4",
+      "off": 2872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_79_item_index",
+      "off": 2876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_79_item_id",
+      "off": 2880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_79_build_id",
+      "off": 2884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_79_build_level",
+      "off": 2888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_79_contribution",
+      "off": 2892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_79_unk1",
+      "off": 2896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_79_unk2",
+      "off": 2900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_79_unk3",
+      "off": 2904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_79_unk4",
+      "off": 2908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_80_item_index",
+      "off": 2912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_80_item_id",
+      "off": 2916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_80_build_id",
+      "off": 2920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_80_build_level",
+      "off": 2924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_80_contribution",
+      "off": 2928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_80_unk1",
+      "off": 2932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_80_unk2",
+      "off": 2936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_80_unk3",
+      "off": 2940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_80_unk4",
+      "off": 2944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_81_item_index",
+      "off": 2948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_81_item_id",
+      "off": 2952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_81_build_id",
+      "off": 2956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_81_build_level",
+      "off": 2960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_81_contribution",
+      "off": 2964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_81_unk1",
+      "off": 2968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_81_unk2",
+      "off": 2972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_81_unk3",
+      "off": 2976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_81_unk4",
+      "off": 2980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_82_item_index",
+      "off": 2984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_82_item_id",
+      "off": 2988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_82_build_id",
+      "off": 2992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_82_build_level",
+      "off": 2996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_82_contribution",
+      "off": 3000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_82_unk1",
+      "off": 3004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_82_unk2",
+      "off": 3008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_82_unk3",
+      "off": 3012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_82_unk4",
+      "off": 3016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_83_item_index",
+      "off": 3020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_83_item_id",
+      "off": 3024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_83_build_id",
+      "off": 3028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_83_build_level",
+      "off": 3032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_83_contribution",
+      "off": 3036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_83_unk1",
+      "off": 3040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_83_unk2",
+      "off": 3044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_83_unk3",
+      "off": 3048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_83_unk4",
+      "off": 3052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_84_item_index",
+      "off": 3056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_84_item_id",
+      "off": 3060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_84_build_id",
+      "off": 3064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_84_build_level",
+      "off": 3068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_84_contribution",
+      "off": 3072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_84_unk1",
+      "off": 3076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_84_unk2",
+      "off": 3080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_84_unk3",
+      "off": 3084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_84_unk4",
+      "off": 3088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_85_item_index",
+      "off": 3092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_85_item_id",
+      "off": 3096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_85_build_id",
+      "off": 3100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_85_build_level",
+      "off": 3104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_85_contribution",
+      "off": 3108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_85_unk1",
+      "off": 3112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_85_unk2",
+      "off": 3116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_85_unk3",
+      "off": 3120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_85_unk4",
+      "off": 3124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_86_item_index",
+      "off": 3128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_86_item_id",
+      "off": 3132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_86_build_id",
+      "off": 3136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_86_build_level",
+      "off": 3140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_86_contribution",
+      "off": 3144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_86_unk1",
+      "off": 3148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_86_unk2",
+      "off": 3152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_86_unk3",
+      "off": 3156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_86_unk4",
+      "off": 3160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_87_item_index",
+      "off": 3164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_87_item_id",
+      "off": 3168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_87_build_id",
+      "off": 3172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_87_build_level",
+      "off": 3176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_87_contribution",
+      "off": 3180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_87_unk1",
+      "off": 3184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_87_unk2",
+      "off": 3188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_87_unk3",
+      "off": 3192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_87_unk4",
+      "off": 3196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_88_item_index",
+      "off": 3200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_88_item_id",
+      "off": 3204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_88_build_id",
+      "off": 3208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_88_build_level",
+      "off": 3212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_88_contribution",
+      "off": 3216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_88_unk1",
+      "off": 3220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_88_unk2",
+      "off": 3224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_88_unk3",
+      "off": 3228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_88_unk4",
+      "off": 3232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_89_item_index",
+      "off": 3236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_89_item_id",
+      "off": 3240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_89_build_id",
+      "off": 3244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_89_build_level",
+      "off": 3248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_89_contribution",
+      "off": 3252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_89_unk1",
+      "off": 3256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_89_unk2",
+      "off": 3260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_89_unk3",
+      "off": 3264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_89_unk4",
+      "off": 3268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_90_item_index",
+      "off": 3272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_90_item_id",
+      "off": 3276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_90_build_id",
+      "off": 3280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_90_build_level",
+      "off": 3284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_90_contribution",
+      "off": 3288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_90_unk1",
+      "off": 3292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_90_unk2",
+      "off": 3296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_90_unk3",
+      "off": 3300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_90_unk4",
+      "off": 3304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_91_item_index",
+      "off": 3308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_91_item_id",
+      "off": 3312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_91_build_id",
+      "off": 3316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_91_build_level",
+      "off": 3320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_91_contribution",
+      "off": 3324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_91_unk1",
+      "off": 3328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_91_unk2",
+      "off": 3332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_91_unk3",
+      "off": 3336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_91_unk4",
+      "off": 3340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_92_item_index",
+      "off": 3344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_92_item_id",
+      "off": 3348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_92_build_id",
+      "off": 3352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_92_build_level",
+      "off": 3356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_92_contribution",
+      "off": 3360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_92_unk1",
+      "off": 3364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_92_unk2",
+      "off": 3368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_92_unk3",
+      "off": 3372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_92_unk4",
+      "off": 3376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_93_item_index",
+      "off": 3380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_93_item_id",
+      "off": 3384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_93_build_id",
+      "off": 3388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_93_build_level",
+      "off": 3392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_93_contribution",
+      "off": 3396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_93_unk1",
+      "off": 3400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_93_unk2",
+      "off": 3404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_93_unk3",
+      "off": 3408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_93_unk4",
+      "off": 3412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_94_item_index",
+      "off": 3416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_94_item_id",
+      "off": 3420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_94_build_id",
+      "off": 3424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_94_build_level",
+      "off": 3428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_94_contribution",
+      "off": 3432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_94_unk1",
+      "off": 3436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_94_unk2",
+      "off": 3440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_94_unk3",
+      "off": 3444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_94_unk4",
+      "off": 3448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_95_item_index",
+      "off": 3452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_95_item_id",
+      "off": 3456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_95_build_id",
+      "off": 3460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_95_build_level",
+      "off": 3464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_95_contribution",
+      "off": 3468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_95_unk1",
+      "off": 3472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_95_unk2",
+      "off": 3476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_95_unk3",
+      "off": 3480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_95_unk4",
+      "off": 3484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_96_item_index",
+      "off": 3488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_96_item_id",
+      "off": 3492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_96_build_id",
+      "off": 3496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_96_build_level",
+      "off": 3500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_96_contribution",
+      "off": 3504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_96_unk1",
+      "off": 3508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_96_unk2",
+      "off": 3512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_96_unk3",
+      "off": 3516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_96_unk4",
+      "off": 3520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_97_item_index",
+      "off": 3524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_97_item_id",
+      "off": 3528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_97_build_id",
+      "off": 3532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_97_build_level",
+      "off": 3536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_97_contribution",
+      "off": 3540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_97_unk1",
+      "off": 3544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_97_unk2",
+      "off": 3548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_97_unk3",
+      "off": 3552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_97_unk4",
+      "off": 3556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_98_item_index",
+      "off": 3560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_98_item_id",
+      "off": 3564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_98_build_id",
+      "off": 3568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_98_build_level",
+      "off": 3572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_98_contribution",
+      "off": 3576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_98_unk1",
+      "off": 3580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_98_unk2",
+      "off": 3584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_98_unk3",
+      "off": 3588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_98_unk4",
+      "off": 3592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_99_item_index",
+      "off": 3596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_99_item_id",
+      "off": 3600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_99_build_id",
+      "off": 3604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_99_build_level",
+      "off": 3608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_99_contribution",
+      "off": 3612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_99_unk1",
+      "off": 3616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_99_unk2",
+      "off": 3620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_99_unk3",
+      "off": 3624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_99_unk4",
+      "off": 3628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_100_item_index",
+      "off": 3632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_100_item_id",
+      "off": 3636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_100_build_id",
+      "off": 3640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_100_build_level",
+      "off": 3644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_100_contribution",
+      "off": 3648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_100_unk1",
+      "off": 3652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_100_unk2",
+      "off": 3656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_100_unk3",
+      "off": 3660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "faction_item_list_100_unk4",
+      "off": 3664,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

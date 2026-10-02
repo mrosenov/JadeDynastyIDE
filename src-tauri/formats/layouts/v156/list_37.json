@@ -1,0 +1,182 @@
+{
+  "key": "recipe_essence",
+  "name": "Recipe Essence",
+  "struct": "RECIPE_ESSENCE",
+  "size": 224,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "配方本体ID"
+    },
+    {
+      "name": "id_major_type",
+      "off": 4,
+      "t": {
+        "k": "u32"
+      },
+      "c": "配方大类别ID",
+      "refs": [
+        "RECIPE_MAJOR_TYPE"
+      ]
+    },
+    {
+      "name": "id_sub_type",
+      "off": 8,
+      "t": {
+        "k": "u32"
+      },
+      "c": "配方小类别ID",
+      "refs": [
+        "RECIPE_SUB_TYPE"
+      ]
+    },
+    {
+      "name": "name",
+      "off": 12,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "配方本体名称"
+    },
+    {
+      "name": "level",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "配方段数，生产时根据当前生产技能段数和此数值判断是否能够生产"
+    },
+    {
+      "name": "products",
+      "off": 80,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 16,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "probability",
+              "off": 0,
+              "t": {
+                "k": "f32"
+              },
+              "c": "生成概率（无自动归一化）"
+            },
+            {
+              "name": "id_to_make",
+              "off": 4,
+              "t": {
+                "k": "u32"
+              },
+              "c": "生成的东西ID"
+            },
+            {
+              "name": "min_num_make",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "生成的东西数目下限"
+            },
+            {
+              "name": "max_num_make",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "c": "生成的东西数目上限"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "price",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "c": "生产的费用"
+    },
+    {
+      "name": "duration",
+      "off": 132,
+      "t": {
+        "k": "f32"
+      },
+      "c": "生产的时间"
+    },
+    {
+      "name": "materials",
+      "off": 136,
+      "t": {
+        "k": "array",
+        "n": 6,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "原料id"
+            },
+            {
+              "name": "num",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "原料所需数目"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "recipe_class",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      },
+      "c": "配方类型"
+    },
+    {
+      "name": "required",
+      "off": 188,
+      "t": {
+        "k": "array",
+        "n": 7,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      }
+    },
+    {
+      "name": "cool_time",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      },
+      "c": "冷却时间（毫秒）"
+    },
+    {
+      "name": "cool_type",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

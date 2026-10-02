@@ -1,0 +1,775 @@
+{
+  "key": "equipment_essence",
+  "name": "Equipment Essence",
+  "struct": "EQUIPMENT_ESSENCE",
+  "size": 652,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "装备(类型)ID"
+    },
+    {
+      "name": "id_major_type",
+      "off": 4,
+      "t": {
+        "k": "u32"
+      },
+      "c": "装备大类别ID"
+    },
+    {
+      "name": "id_sub_type",
+      "off": 8,
+      "t": {
+        "k": "u32"
+      },
+      "c": "装备小类别ID"
+    },
+    {
+      "name": "name",
+      "off": 12,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "装备名称, 最多15个汉字"
+    },
+    {
+      "name": "equip_type",
+      "off": 76,
+      "t": {
+        "k": "u32"
+      },
+      "c": "装备类别，可能的有 0-武器，1-防具，2-饰品，3-时装，4-翅膀，5-法宝辅件"
+    },
+    {
+      "name": "equip_mask",
+      "off": 80,
+      "t": {
+        "k": "u32"
+      },
+      "c": "逻辑上可以装备的部位，由不同部位Mask组成，使用的部位代码为："
+    },
+    {
+      "name": "file_model_male",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "男模型路径"
+    },
+    {
+      "name": "file_model_female",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "c": "女模型路径"
+    },
+    {
+      "name": "file_model_male_armor_xuanyuan",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "c": "轩辕男帽子模型路径，暗系， pathid 占位用，Added 2012-07-24."
+    },
+    {
+      "name": "file_model_female_armor_xuanyuan",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "c": "轩辕 女帽子模型路径，暗系，pathid 占位用，Added 2012-07-24."
+    },
+    {
+      "name": "file_model_big_male",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "大体型男模型路径"
+    },
+    {
+      "name": "file_model_big_female",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "c": "大体型女模型路径"
+    },
+    {
+      "name": "file_model_small_male",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "c": "小体型男模型路径"
+    },
+    {
+      "name": "file_model_small_female",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "c": "小体型女模型路径"
+    },
+    {
+      "name": "file_model_tiny_male",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "微体型男模型路径"
+    },
+    {
+      "name": "file_model_tiny_female",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "c": "微体型女模型路径"
+    },
+    {
+      "name": "file_model_tetrapod_male",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "c": "四足体型男模型路径"
+    },
+    {
+      "name": "file_model_big_male_left",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "c": "大体型男左手边模型路径 主要用于太昊双手不同武器Added 2011-08-09."
+    },
+    {
+      "name": "file_model_big_female_left",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      },
+      "c": "大体型女左手边模型路径 主要用于太昊双手不同武器Added 2011-08-09."
+    },
+    {
+      "name": "file_model_back_male",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      },
+      "c": "背部男模型路径名 主要用于太昊/焚香背部模型效果Added 2011-08-09."
+    },
+    {
+      "name": "file_model_back_female",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      },
+      "c": "背部女模型路径名 主要用于太昊/焚香背部模型效果Added 2011-08-09."
+    },
+    {
+      "name": "file_model_female_taihao",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      },
+      "c": "太昊女时装路径名 专门用于太昊女时装的模型路径 Added 2011-08-09."
+    },
+    {
+      "name": "file_matter",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径"
+    },
+    {
+      "name": "file_icon",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径"
+    },
+    {
+      "name": "equip_location",
+      "off": 156,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模型覆盖部位，可能的有：0-不显示，1-头部，2-上衣，3-下衣，4-上衣带下衣，"
+    },
+    {
+      "name": "action_type",
+      "off": 160,
+      "t": {
+        "k": "u32"
+      },
+      "c": "武器的动作播放类型，可能的有: 0-空手, 1-短兵, 2-短法, 3-匕首, 4-长兵, 5-长法"
+    },
+    {
+      "name": "show_level",
+      "off": 164,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      },
+      "c": "装备品级描述"
+    },
+    {
+      "name": "level",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      },
+      "c": "装备等级"
+    },
+    {
+      "name": "character_combo_id",
+      "off": 200,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制, 从低位到高位的含义为：0-新手, 1-术士, 2-武士, 3-战士, 4-剑士, 5-牧师, 6-法师, 7-将军, 8-重骑士, 9-刺客, 10-剑圣, 11-贤者, 12-祭司, 13-秘法师, 14-召唤使"
+    },
+    {
+      "name": "character_combo_id2",
+      "off": 208,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制，扩展职业ID后新增加的职业，Added 2011-07-14"
+    },
+    {
+      "name": "char_lev_1",
+      "off": 216,
+      "t": {
+        "k": "u64"
+      }
+    },
+    {
+      "name": "char_lev_1_2",
+      "off": 224,
+      "t": {
+        "k": "u64"
+      },
+      "c": "转职业时的职业限制，扩展职业ID后的新职业限制，Added 2011-07-15."
+    },
+    {
+      "name": "char_lev_2",
+      "off": 232,
+      "t": {
+        "k": "u64"
+      }
+    },
+    {
+      "name": "char_lev_2_2",
+      "off": 240,
+      "t": {
+        "k": "u64"
+      },
+      "c": "转职业时的职业限制，扩展职业ID后的新职业限制，Added 2011-07-15."
+    },
+    {
+      "name": "char_lev_3",
+      "off": 248,
+      "t": {
+        "k": "u64"
+      }
+    },
+    {
+      "name": "char_lev_3_2",
+      "off": 256,
+      "t": {
+        "k": "u64"
+      },
+      "c": "转职业时的职业限制，扩展职业ID后的新职业限制，Added 2011-07-15."
+    },
+    {
+      "name": "require_gender",
+      "off": 264,
+      "t": {
+        "k": "u32"
+      },
+      "c": "性别限制，0-男，1-女，2-男女都可"
+    },
+    {
+      "name": "require_level",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      },
+      "c": "等级限制"
+    },
+    {
+      "name": "sect_mask",
+      "off": 272,
+      "t": {
+        "k": "u32"
+      },
+      "c": "门派要求"
+    },
+    {
+      "name": "sect_mask_1",
+      "off": 276,
+      "t": {
+        "k": "u32"
+      },
+      "c": "门派要求"
+    },
+    {
+      "name": "sect_mask_2",
+      "off": 280,
+      "t": {
+        "k": "u32"
+      },
+      "c": "门派要求"
+    },
+    {
+      "name": "sect_mask_3",
+      "off": 284,
+      "t": {
+        "k": "u32"
+      },
+      "c": "门派要求"
+    },
+    {
+      "name": "require_race",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      },
+      "c": "种族限制，0-人族，1-兽族， 2-都可以"
+    },
+    {
+      "name": "require_level2",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      },
+      "c": "修真等级限制"
+    },
+    {
+      "name": "renascence_count",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      },
+      "c": "转生次数要求"
+    },
+    {
+      "name": "god_devil_mask",
+      "off": 300,
+      "t": {
+        "k": "u32"
+      },
+      "c": "仙魔"
+    },
+    {
+      "name": "nation_position_mask",
+      "off": 304,
+      "t": {
+        "k": "u32"
+      },
+      "c": "职位要求"
+    },
+    {
+      "name": "title_require",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      },
+      "c": "称号"
+    },
+    {
+      "name": "require_repu",
+      "off": 312,
+      "t": {
+        "k": "array",
+        "n": 2,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "index",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "num",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "require_territory",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      },
+      "c": "社稷需求"
+    },
+    {
+      "name": "hp",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      },
+      "c": "生命"
+    },
+    {
+      "name": "mp",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      },
+      "c": "魔力"
+    },
+    {
+      "name": "dp",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      },
+      "c": "神力"
+    },
+    {
+      "name": "deity_power",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      },
+      "c": "神圣力"
+    },
+    {
+      "name": "min_dmg",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      },
+      "c": "最小攻击力"
+    },
+    {
+      "name": "max_dmg",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      },
+      "c": "最大攻击力"
+    },
+    {
+      "name": "defence",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      },
+      "c": "防御力"
+    },
+    {
+      "name": "attack",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      },
+      "c": "命中"
+    },
+    {
+      "name": "armor",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      },
+      "c": "闪躲"
+    },
+    {
+      "name": "attack_range",
+      "off": 368,
+      "t": {
+        "k": "f32"
+      },
+      "c": "攻击距离"
+    },
+    {
+      "name": "price",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "id_addon1",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      },
+      "c": "第1种附加属性的类型ID"
+    },
+    {
+      "name": "id_addon2",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      },
+      "c": "第2种附加属性的类型ID"
+    },
+    {
+      "name": "id_addon3",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      },
+      "c": "第3种附加属性的类型ID"
+    },
+    {
+      "name": "id_addon4",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      },
+      "c": "第4种附加属性的类型ID"
+    },
+    {
+      "name": "id_addon5",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      },
+      "c": "第5种附加属性的类型ID"
+    },
+    {
+      "name": "fee_estone",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      },
+      "c": "单次强化手续费"
+    },
+    {
+      "name": "fee_install_pstone",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      },
+      "c": "单次追加手续费"
+    },
+    {
+      "name": "fee_uninstall_pstone",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      },
+      "c": "单次拆卸追加石手续费"
+    },
+    {
+      "name": "fee_install_sstone",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      },
+      "c": "附加技能手续费"
+    },
+    {
+      "name": "fee_uninstall_sstone",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      },
+      "c": "单次拆卸技能石手续费"
+    },
+    {
+      "name": "id_estone",
+      "off": 420,
+      "t": {
+        "k": "u32"
+      },
+      "c": "可用的强化石"
+    },
+    {
+      "name": "ehanced_value",
+      "off": 424,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "1~20次强化后的数值"
+    },
+    {
+      "name": "hidden_prop",
+      "off": 504,
+      "t": {
+        "k": "array",
+        "n": 2,
+        "stride": 44,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "level",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "prop",
+              "off": 4,
+              "t": {
+                "k": "array",
+                "n": 5,
+                "stride": 8,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "id",
+                      "off": 0,
+                      "t": {
+                        "k": "i32"
+                      }
+                    },
+                    {
+                      "name": "probability",
+                      "off": 4,
+                      "t": {
+                        "k": "f32"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "blood_sacrifice",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      },
+      "c": "是否允许血祭 0表示不允许"
+    },
+    {
+      "name": "can_punching",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      },
+      "c": "是否允许打孔 0表示不允许"
+    },
+    {
+      "name": "color",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      },
+      "c": "是否允许染色 0表示不允许"
+    },
+    {
+      "name": "fixed_init_color",
+      "off": 604,
+      "t": {
+        "k": "i32"
+      },
+      "c": "是否固定初始颜色"
+    },
+    {
+      "name": "init_color_value",
+      "off": 608,
+      "t": {
+        "k": "i32"
+      },
+      "c": "初始颜色值"
+    },
+    {
+      "name": "soul_level",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      },
+      "c": "灵性等级"
+    },
+    {
+      "name": "hidden_addon",
+      "off": 616,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "level",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "精练等级"
+            },
+            {
+              "name": "addon",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "附加属性"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "gem_slot_identify",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      },
+      "c": "该饰品是否能进行宝石插槽鉴定， 0表示不允许，编辑器的缘故而使用int"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 644,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 648,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID"
+    }
+  ]
+}

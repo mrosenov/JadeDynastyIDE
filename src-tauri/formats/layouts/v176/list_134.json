@@ -1,0 +1,227 @@
+{
+  "key": "scroll_region_config",
+  "name": "Scroll Region Config",
+  "struct": "SCROLL_REGION_CONFIG",
+  "size": 3792,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模板ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "区域图标",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "区域图片",
+      "display": "icon"
+    },
+    {
+      "name": "region_desc",
+      "off": 76,
+      "t": {
+        "k": "wstr",
+        "n": 200
+      },
+      "c": "区域描述 最多200汉字"
+    },
+    {
+      "name": "region_level_prob",
+      "off": 476,
+      "t": {
+        "k": "array",
+        "n": 6,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "c": "区域等级初始出现概率，分别对应0-5等级时的概率，注意：概率总和为1"
+    },
+    {
+      "name": "region_level_up_prob",
+      "off": 500,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "c": "区域等级升级概率，分别对应1-5等级的升级概率"
+    },
+    {
+      "name": "region_award_list",
+      "off": 520,
+      "t": {
+        "k": "array",
+        "n": 6,
+        "stride": 160,
+        "t": {
+          "k": "array",
+          "n": 10,
+          "stride": 16,
+          "t": {
+            "k": "struct",
+            "fields": [
+              {
+                "name": "item_id",
+                "off": 0,
+                "t": {
+                  "k": "u32"
+                },
+                "c": "奖励物品ID"
+              },
+              {
+                "name": "item_count",
+                "off": 4,
+                "t": {
+                  "k": "u32"
+                },
+                "c": "奖励该ID的物品数量"
+              },
+              {
+                "name": "deliver_prob",
+                "off": 8,
+                "t": {
+                  "k": "f32"
+                },
+                "c": "发放该物品的概率"
+              },
+              {
+                "name": "event_id",
+                "off": 12,
+                "t": {
+                  "k": "i32"
+                },
+                "c": "对应奖励事件ID：0-普通奖励事件，1-9：特殊奖励事件"
+              }
+            ]
+          }
+        }
+      },
+      "c": "对应0-5(6个)等级的奖励列表，每个等级最多10种奖励"
+    },
+    {
+      "name": "region_pos",
+      "off": 1480,
+      "t": {
+        "k": "i32"
+      },
+      "c": "区域位置，一共12个，1-9为普通区域位置，10-12为隐藏区域位置"
+    },
+    {
+      "name": "hide_region_active_time",
+      "off": 1484,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "active_start_time",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "活动开启时间，年月日时分秒，--->最终以秒为单位，注意跨时区的问题"
+            },
+            {
+              "name": "active_stop_time",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "活动结束时间，年月日时分秒，--->最终以秒为单位，注意跨时区的问题"
+            }
+          ]
+        }
+      },
+      "c": "对于隐藏区域，分别表示该区域的活动时间段，[活动开启时间，活动结束时间]，可以填写多段，最大为3段"
+    },
+    {
+      "name": "hide_region_active_desc",
+      "off": 1508,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "隐藏区域活动开启介绍"
+    },
+    {
+      "name": "hide_region_unlock_item_id",
+      "off": 1708,
+      "t": {
+        "k": "u32"
+      },
+      "c": "隐藏区域解锁道具ID"
+    },
+    {
+      "name": "event_list",
+      "off": 1712,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 208,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "event_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "事件ID，0-普通， 1-9：特殊，策划填入，随意可重复"
+            },
+            {
+              "name": "event_icon",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "时间图片",
+              "display": "icon"
+            },
+            {
+              "name": "event_desc",
+              "off": 8,
+              "t": {
+                "k": "wstr",
+                "n": 100
+              },
+              "c": "事件描述"
+            }
+          ]
+        }
+      },
+      "c": "事件列表，最大10个事件信息"
+    }
+  ]
+}

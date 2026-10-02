@@ -46,11 +46,32 @@ link to that record (Alt+← goes back).
 | v165 | 318 | Laravel jdide, 186 typed | 1792 server, Elite JD client |
 | v176 | 294+ | Laravel jdide, 211 typed | none (list count unverified) |
 
-`enums.json` holds the shared value and bit-flag sets. A layout file is
-`{ id, version, source, markers: [{ before, kind }], lists: [def | null] }`.
-Each def is `{ name, struct, size, fields }`, and fields are `{ name, off, t, c?, e?, display?, refs? }`.
+Each layout is a folder, `layouts/<id>/`:
+
+```
+layouts/v165/
+  layout.json     { id, version, source, markers: [{ before, kind }], listCount }
+  list_0.json     the definition of list 0
+  list_222.json   …one file per defined list (missing = not defined)
+```
+
+At startup only `layout.json` and each list's name, struct and size are read. A list's fields
+are parsed the first time it is used. `enums.json` holds the shared value and bit-flag sets.
+Each list definition is `{ name, struct, size, fields }`, and fields are `{ name, off, t, c?, e?, display?, refs?, g?, when? }`.
 Here `t` is a type tree (scalars, `wstr`/`str`/`bytes`, nested `array` and `struct`), and
 `refs` names the target lists by struct, so a definition can be shared between versions.
+`when` holds conditional types, e.g.
+`[{ "field": "type", "in": [7, 8], "t": { "k": "f32" } }]`. The first rule whose sibling field
+holds one of the values (or none of them, with `"not": true`) decides the type. The type must keep the
+field size. Otherwise `t` applies.
+An optional `g` puts consecutive fields into a named, collapsible display group
+(collapsed by default). It never changes field names or offsets.
+
+The schema editor (top bar, far right) saves each list you edit as
+`%APPDATA%\com.jdide.app\layouts\<id>\list_<n>.json`. That file overrides that one list of
+the built-in layout, and every other list keeps coming from the built-in layout. For a
+version with no built-in layout, the editor also writes `<id>\layout.json` with the file's
+marker table. "Revert to built-in" deletes the list's file.
 
 ## Development
 
@@ -81,10 +102,17 @@ Order matters: generate the source layouts first, then import the Laravel
 structures. The import merges their enum/mask/ref hints into the source layouts.
 
 ```powershell
-node tools/gen-elements-schema.mjs "E:/Game Dev/JD/zx_source/zgame/gs/template" src-tauri/formats/layouts/v156.json "E:/Game Dev/JD/zxserver/zgame/gs/config/elements.data"
-node tools/gen-elements-schema.mjs "<extracted JD1447>/zgame/gs/template" src-tauri/formats/layouts/v156-signin.json
-node tools/import-jade-editor-profile.mjs "E:/Game Dev/JD/Tools/JadeEditorFOX/JadeEditorPython/formats/elements" src-tauri/formats/layouts/v112.json
+node tools/gen-elements-schema.mjs "E:/Game Dev/JD/zx_source/zgame/gs/template" v156 "E:/Game Dev/JD/zxserver/zgame/gs/config/elements.data"
+node tools/gen-elements-schema.mjs "<extracted JD1447>/zgame/gs/template" v156-signin
+node tools/import-jade-editor-profile.mjs "E:/Game Dev/JD/Tools/JadeEditorFOX/JadeEditorPython/formats/elements"
 node tools/import-laravel-structures.mjs "C:/Users/mitko/Herd/jdide/resources/structures/elements" src-tauri/formats "E:/Game Dev/JD/1559/gamed/config/elements.data" "E:/Games/ForsakenJD/element/data/elements.data" "E:/Game Dev/JD/1792/gamed/config/elements.data"
+```
+
+Then apply the conditional types from `tools/type-rules.json` (e.g. addon `param1` is a float for
+rate-like addon types):
+
+```powershell
+node tools/apply-type-rules.mjs
 ```
 
 Check how every layout of a file's version fits it:
@@ -93,5 +121,5 @@ Check how every layout of a file's version fits it:
 node tools/check-layouts.mjs <elements.data> [...]
 ```
 
-New layouts must also be added to `LAYOUT_SOURCES` in
-`src-tauri/src/elements/format.rs`.
+The whole `src-tauri/formats` folder is embedded at build time, so a new layout folder
+needs no code change.

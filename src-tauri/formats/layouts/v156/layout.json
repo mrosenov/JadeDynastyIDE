@@ -1,0 +1,32 @@
+{
+  "id": "v156",
+  "version": 156,
+  "source": "Server template sources (zx_source: exptypes.h, elementdataman.cpp)",
+  "markers": [
+    {
+      "before": 13,
+      "kind": "checksum"
+    },
+    {
+      "before": 23,
+      "kind": "exporter"
+    },
+    {
+      "before": 36,
+      "kind": "checksum"
+    },
+    {
+      "before": 56,
+      "kind": "tag"
+    },
+    {
+      "before": 62,
+      "kind": "checksum"
+    },
+    {
+      "before": 103,
+      "kind": "checksum"
+    }
+  ],
+  "listCount": 193
+}

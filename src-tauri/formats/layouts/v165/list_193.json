@@ -1,0 +1,38 @@
+{
+  "key": "colorant_default_config",
+  "name": "Colorant Default Config",
+  "struct": "COLORANT_DEFAULT_CONFIG",
+  "size": 108,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "colorant",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "染色剂ID"
+    }
+  ]
+}

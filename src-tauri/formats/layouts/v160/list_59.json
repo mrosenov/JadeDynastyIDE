@@ -1,0 +1,110 @@
+{
+  "key": "suite_essence",
+  "name": "Suite Essence",
+  "struct": "SUITE_ESSENCE",
+  "size": 316,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "套装(类型)ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "套装名称, 最多15个汉字"
+    },
+    {
+      "name": "max_equips",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "套装件数"
+    },
+    {
+      "name": "equipments",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 14,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "套装组件1~14",
+              "refs": [
+                "EQUIPMENT_ESSENCE",
+                "TALISMAN_MAINPART_ESSENCE",
+                "EQUIP_SOUL_ESSENCE"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "addons",
+      "off": 128,
+      "t": {
+        "k": "array",
+        "n": 13,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "2件至13件能激活的附加属性",
+              "refs": [
+                "EQUIPMENT_ADDON"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "file_gfx",
+      "off": 180,
+      "t": {
+        "k": "str",
+        "n": 128
+      },
+      "c": "满套后的效果"
+    },
+    {
+      "name": "hh_type",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      },
+      "c": "挂点"
+    },
+    {
+      "name": "equip_soul_suite",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      },
+      "c": "是否器魄套装，0为默认值：不是"
+    }
+  ]
+}

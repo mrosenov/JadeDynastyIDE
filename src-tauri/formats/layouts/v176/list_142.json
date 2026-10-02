@@ -1,0 +1,103 @@
+{
+  "key": "little_pet_upgrade_config",
+  "name": "Little Pet Upgrade Config",
+  "struct": "LITTLE_PET_UPGRADE_CONFIG",
+  "size": 148,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模板ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "feed_pet",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 2,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "feed_pet_item_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "饲养诛小仙所需道具"
+            },
+            {
+              "name": "gain_exp",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "饲养一次诛小仙所得经验"
+            }
+          ]
+        }
+      },
+      "c": "饲养宠物所需道具ID和一次饲养所得经验值"
+    },
+    {
+      "name": "default_file_model",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "诛小仙默认形象模型路径"
+    },
+    {
+      "name": "pet_upgrade_info_list",
+      "off": 88,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "file_model",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "该等级所对应的形象路径"
+            },
+            {
+              "name": "required_exp",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "从上一级升级到该级所需要的经验：如pet_upgrade_info_list[0].required_exp -->表示从0级升级1级所需经验值"
+            },
+            {
+              "name": "award_item",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "达到该等级可以领取的奖励物品ID"
+            }
+          ]
+        }
+      },
+      "c": "诛小仙升级配置信息列表，最多5个等级"
+    }
+  ]
+}

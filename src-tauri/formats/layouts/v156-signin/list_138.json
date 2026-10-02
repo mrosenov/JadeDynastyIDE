@@ -1,0 +1,303 @@
+{
+  "key": "tower_transcription_property_config",
+  "name": "Tower Transcription Property Config",
+  "struct": "TOWER_TRANSCRIPTION_PROPERTY_CONFIG",
+  "size": 568,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "副本类名称"
+    },
+    {
+      "name": "tower_layer",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "该配置表生效的层数，对应第几层"
+    },
+    {
+      "name": "monster_gen_prob",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "c": "老虎机选择怪物数量时各自出现的概率，依次：1，2，3，4个"
+    },
+    {
+      "name": "monster_range_center",
+      "off": 88,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "c": "刷怪范围为圆心，圆心坐标位置"
+    },
+    {
+      "name": "monster_range_radius",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "刷怪范围为圆心，圆半径"
+    },
+    {
+      "name": "renascence_pos",
+      "off": 104,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "c": "趴塔副本该层的复活点"
+    },
+    {
+      "name": "success_controller_id",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "达到胜利条件，开启的控制器ID"
+    },
+    {
+      "name": "monster_addon_property",
+      "off": 120,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 80,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "hp",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "血"
+            },
+            {
+              "name": "mp",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "魔"
+            },
+            {
+              "name": "attack",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "攻击"
+            },
+            {
+              "name": "defence",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "c": "防御"
+            },
+            {
+              "name": "addon_damage",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              },
+              "c": "附加伤害"
+            },
+            {
+              "name": "damage_resistance",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              },
+              "c": "伤害减免"
+            },
+            {
+              "name": "hit",
+              "off": 24,
+              "t": {
+                "k": "i32"
+              },
+              "c": "初始命中"
+            },
+            {
+              "name": "evade",
+              "off": 28,
+              "t": {
+                "k": "i32"
+              },
+              "c": "初始躲闪"
+            },
+            {
+              "name": "critical_rate",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              },
+              "c": "初始致命一击率 整形千分数"
+            },
+            {
+              "name": "critical_damage",
+              "off": 36,
+              "t": {
+                "k": "f32"
+              },
+              "c": "初始致命一击伤害"
+            },
+            {
+              "name": "resist",
+              "off": 40,
+              "t": {
+                "k": "array",
+                "n": 6,
+                "stride": 4,
+                "t": {
+                  "k": "i32"
+                }
+              },
+              "c": "初始抗性，分别对应：眩晕，虚弱，缓慢，沉默，睡眠，缠绕抗性"
+            },
+            {
+              "name": "anti_critical_rate",
+              "off": 64,
+              "t": {
+                "k": "i32"
+              },
+              "c": "减免致命一击率 整形千分数?"
+            },
+            {
+              "name": "anti_critical_damage",
+              "off": 68,
+              "t": {
+                "k": "f32"
+              },
+              "c": "减免致命一击伤害"
+            },
+            {
+              "name": "skill_armor_rate",
+              "off": 72,
+              "t": {
+                "k": "i32"
+              },
+              "c": "技能躲闪\t\t整形千分数?"
+            },
+            {
+              "name": "skill_attack_rate",
+              "off": 76,
+              "t": {
+                "k": "i32"
+              },
+              "c": "技能命中\t\t整形千分数?"
+            }
+          ]
+        }
+      },
+      "c": "老虎机选择怪物出现数量后，怪物增加的附加基础属性，分别对应怪物数：1，2，3.注意：怪物数为4时，没有增加属性"
+    },
+    {
+      "name": "monster_id_list",
+      "off": 360,
+      "t": {
+        "k": "array",
+        "n": 32,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "怪物库ID列表"
+    },
+    {
+      "name": "life_time_award",
+      "off": 488,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品ID"
+            },
+            {
+              "name": "item_count",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品数量"
+            }
+          ]
+        }
+      },
+      "c": "终生奖励物品列表"
+    },
+    {
+      "name": "single_time_award",
+      "off": 528,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品ID"
+            },
+            {
+              "name": "item_count",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品数量"
+            }
+          ]
+        }
+      },
+      "c": "单次奖励物品列表"
+    }
+  ]
+}

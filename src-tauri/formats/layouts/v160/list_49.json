@@ -1,0 +1,172 @@
+{
+  "key": "player_levelexp_config",
+  "name": "Player Levelexp Config",
+  "struct": "PLAYER_LEVELEXP_CONFIG",
+  "size": 10908,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "id"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "exp",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 200,
+        "stride": 8,
+        "t": {
+          "k": "f64"
+        }
+      },
+      "c": "升级至第1~200级每级所需要的经验值"
+    },
+    {
+      "name": "exp_lev_1",
+      "off": 1668,
+      "t": {
+        "k": "array",
+        "n": 200,
+        "stride": 8,
+        "t": {
+          "k": "f64"
+        }
+      },
+      "c": "1转升级至第1~200级每级所需要的经验值"
+    },
+    {
+      "name": "exp_lev_2",
+      "off": 3268,
+      "t": {
+        "k": "array",
+        "n": 200,
+        "stride": 8,
+        "t": {
+          "k": "f64"
+        }
+      },
+      "c": "2转升级至第1~200级每级所需要的经验值"
+    },
+    {
+      "name": "exp_lev_3",
+      "off": 4868,
+      "t": {
+        "k": "array",
+        "n": 200,
+        "stride": 8,
+        "t": {
+          "k": "f64"
+        }
+      },
+      "c": "3转升级至第1~200级每级所需要的经验值"
+    },
+    {
+      "name": "talisman_exp",
+      "off": 6468,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "法宝升级至第1~100级每级所需要的经验值"
+    },
+    {
+      "name": "prod_exp_need",
+      "off": 6868,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "生产等级升至1~10级需要经验"
+    },
+    {
+      "name": "prod_exp_gained",
+      "off": 6908,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 40,
+        "t": {
+          "k": "array",
+          "n": 10,
+          "stride": 4,
+          "t": {
+            "k": "i32"
+          }
+        }
+      },
+      "c": "生产XX级装备获得的经验, 可通过 prod_exp_gained[当前段数][配方段数]获取生产经验数值"
+    },
+    {
+      "name": "pet_exp",
+      "off": 7308,
+      "t": {
+        "k": "array",
+        "n": 200,
+        "stride": 8,
+        "t": {
+          "k": "f64"
+        }
+      },
+      "c": "宠物升级至第1~200级每级所需要的经验值"
+    },
+    {
+      "name": "deity",
+      "off": 8908,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 20,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "deity_exp",
+              "off": 0,
+              "t": {
+                "k": "f64"
+              },
+              "c": "元神升级需要的封神修为"
+            },
+            {
+              "name": "levelup_prob",
+              "off": 8,
+              "t": {
+                "k": "f32"
+              },
+              "c": "元神升级的概率"
+            },
+            {
+              "name": "failure_exp",
+              "off": 12,
+              "t": {
+                "k": "f64"
+              },
+              "c": "元神升级失败扣除的封神修为"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

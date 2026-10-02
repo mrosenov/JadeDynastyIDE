@@ -1,0 +1,358 @@
+{
+  "name": "Online Gift Bag Config",
+  "struct": "ONLINE_GIFT_BAG_CONFIG",
+  "size": 272,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Model_Path_ID",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Icon_Path_ID",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Award_Type",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Start_Time_Per_Day",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "End_Time_Per_Day",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Start_Time_Per_Interval",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "End_Time_Per_Interval",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Expire_Time",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Renascence_Count",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Require_Min_Level",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Require_Max_Level",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Require_Gender",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Character_Combo_ID",
+      "off": 116,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Character_Combo_ID_2",
+      "off": 124,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Character_Combo_ID_3",
+      "off": 132,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Require_Race",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_1_Gift_Baq_ID",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_1_Deliver_Interval",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_2_Gift_Baq_ID",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_2_Deliver_Interval",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_3_Gift_Baq_ID",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_3_Deliver_Interval",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_4_Gift_Baq_ID",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_4_Deliver_Interval",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_5_Gift_Baq_ID",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_5_Deliver_Interval",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_6_Gift_Baq_ID",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_6_Deliver_Interval",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_7_Gift_Baq_ID",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_7_Deliver_Interval",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_8_Gift_Baq_ID",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_8_Deliver_Interval",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_9_Gift_Baq_ID",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_9_Deliver_Interval",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_10_Gift_Baq_ID",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_10_Deliver_Interval",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_11_Gift_Baq_ID",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_11_Deliver_Interval",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_12_Gift_Baq_ID",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_12_Deliver_Interval",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_13_Gift_Baq_ID",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_13_Deliver_Interval",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_14_Gift_Baq_ID",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_14_Deliver_Interval",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_15_Gift_Baq_ID",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_15_Deliver_Interval",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_16_Gift_Baq_ID",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Small_Gift_Baqs_16_Deliver_Interval",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

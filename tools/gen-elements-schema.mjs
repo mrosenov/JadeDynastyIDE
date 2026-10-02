@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Generates an elements.data format profile from the server's template sources.
 //
-//   node tools/gen-elements-schema.mjs <template-dir> <layouts/ID.json> [elements.data to validate]
+//   node tools/gen-elements-schema.mjs <template-dir> <layout-id> [elements.data to validate]
+//
+// The layout is written to src-tauri/formats/layouts/<layout-id>/.
 //
 // <template-dir> must contain exptypes.h, elementdataman.h and elementdataman.cpp
 // (e.g. zx_source/zgame/gs/template). The list order comes from
@@ -11,10 +13,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { validateLayout } from "./lib/elements-file.mjs";
+import { writeLayout } from "./lib/layouts.mjs";
 
-const [templateDir, outPath, validatePath] = process.argv.slice(2);
-if (!templateDir || !outPath) {
-  console.error("usage: gen-elements-schema.mjs <template-dir> <out.json> [elements.data]");
+const [templateDir, layoutId, validatePath] = process.argv.slice(2);
+if (!templateDir || !layoutId) {
+  console.error("usage: gen-elements-schema.mjs <template-dir> <layout-id> [elements.data]");
   process.exit(1);
 }
 
@@ -370,7 +373,7 @@ const lists = order.lists.map(({ key, struct }) => {
   return { key, name: humanize(key), struct, size, fields: t.fields };
 });
 
-const id = path.basename(outPath, ".json");
+const id = layoutId;
 const layout = {
   id,
   version,
@@ -389,6 +392,5 @@ if (validatePath) {
   console.log(`validated ${lists.length} list layouts against ${validatePath}`);
 }
 
-fs.mkdirSync(path.dirname(outPath), { recursive: true });
-fs.writeFileSync(outPath, JSON.stringify(layout));
-console.log(`wrote ${outPath}: v${version}, ${lists.length} lists, markers ${order.markers.map((m) => m.kind[0] + m.before).join(" ")}`);
+const outDir = writeLayout(layout);
+console.log(`wrote ${outDir}: v${version}, ${lists.length} lists, markers ${order.markers.map((m) => m.kind[0] + m.before).join(" ")}`);

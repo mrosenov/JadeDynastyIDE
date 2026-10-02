@@ -1,0 +1,5622 @@
+{
+  "name": "Baby Property Config",
+  "struct": "BABY_PROPERTY_CONFIG",
+  "size": 3268,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "perception_ratio_1",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_2",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_3",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_4",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_5",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_6",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_7",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_8",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_9",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_10",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_11",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_12",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_13",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_14",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_15",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_16",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_17",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_18",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_19",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_20",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_21",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_22",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_23",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_24",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_25",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_26",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_27",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_28",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_29",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_30",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_31",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_32",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_33",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_34",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_35",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_36",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_37",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_38",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_39",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_40",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_41",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_42",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_43",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_44",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_45",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_46",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_47",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_48",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_49",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_50",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_51",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_52",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_53",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_54",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_55",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_56",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_57",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_58",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_59",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_60",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_61",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_62",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_63",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_64",
+      "off": 320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_65",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_66",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_67",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_68",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_69",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_70",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_71",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_72",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_73",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_74",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_75",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_76",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_77",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_78",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_79",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_80",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_81",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_82",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_83",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_84",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_85",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_86",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_87",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_88",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_89",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_90",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_91",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_92",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_93",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_94",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_95",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_96",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_97",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_98",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_99",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "perception_ratio_100",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_1",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_2",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_3",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_4",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_5",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_6",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_7",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_8",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_9",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_10",
+      "off": 504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_11",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_12",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_13",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_14",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_15",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_16",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_17",
+      "off": 532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_18",
+      "off": 536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_19",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_20",
+      "off": 544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_21",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_22",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_23",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_24",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_25",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_26",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_27",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_28",
+      "off": 576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_29",
+      "off": 580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_30",
+      "off": 584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_31",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_32",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_33",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_34",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_35",
+      "off": 604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_36",
+      "off": 608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_37",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_38",
+      "off": 616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_39",
+      "off": 620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_40",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_41",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_42",
+      "off": 632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_43",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_44",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_45",
+      "off": 644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_46",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_47",
+      "off": 652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_48",
+      "off": 656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_49",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_50",
+      "off": 664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_51",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_52",
+      "off": 672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_53",
+      "off": 676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_54",
+      "off": 680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_55",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_56",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_57",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_58",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_59",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_60",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_61",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_62",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_63",
+      "off": 716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_64",
+      "off": 720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_65",
+      "off": 724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_66",
+      "off": 728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_67",
+      "off": 732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_68",
+      "off": 736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_69",
+      "off": 740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_70",
+      "off": 744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_71",
+      "off": 748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_72",
+      "off": 752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_73",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_74",
+      "off": 760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_75",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_76",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_77",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_78",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_79",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_80",
+      "off": 784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_81",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_82",
+      "off": 792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_83",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_84",
+      "off": 800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_85",
+      "off": 804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_86",
+      "off": 808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_87",
+      "off": 812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_88",
+      "off": 816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_89",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_90",
+      "off": 824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_91",
+      "off": 828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_92",
+      "off": 832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_93",
+      "off": 836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_94",
+      "off": 840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_95",
+      "off": 844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_96",
+      "off": 848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_97",
+      "off": 852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_98",
+      "off": 856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_99",
+      "off": 860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "charm_ratio_100",
+      "off": 864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_1_attack_ratio",
+      "off": 868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_1_defence_ratio",
+      "off": 872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_1_hit_ratio",
+      "off": 876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_1_evade_ratio",
+      "off": 880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_1_crit_damage_ratio",
+      "off": 884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_1_crit_ratio",
+      "off": 888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_2_attack_ratio",
+      "off": 892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_2_defence_ratio",
+      "off": 896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_2_hit_ratio",
+      "off": 900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_2_evade_ratio",
+      "off": 904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_2_crit_damage_ratio",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_2_crit_ratio",
+      "off": 912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_3_attack_ratio",
+      "off": 916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_3_defence_ratio",
+      "off": 920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_3_hit_ratio",
+      "off": 924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_3_evade_ratio",
+      "off": 928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_3_crit_damage_ratio",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_3_crit_ratio",
+      "off": 936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_4_attack_ratio",
+      "off": 940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_4_defence_ratio",
+      "off": 944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_4_hit_ratio",
+      "off": 948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_4_evade_ratio",
+      "off": 952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_4_crit_damage_ratio",
+      "off": 956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_4_crit_ratio",
+      "off": 960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_5_attack_ratio",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_5_defence_ratio",
+      "off": 968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_5_hit_ratio",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_5_evade_ratio",
+      "off": 976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_5_crit_damage_ratio",
+      "off": 980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_5_crit_ratio",
+      "off": 984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_6_attack_ratio",
+      "off": 988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_6_defence_ratio",
+      "off": 992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_6_hit_ratio",
+      "off": 996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_6_evade_ratio",
+      "off": 1000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_6_crit_damage_ratio",
+      "off": 1004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_6_crit_ratio",
+      "off": 1008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_7_attack_ratio",
+      "off": 1012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_7_defence_ratio",
+      "off": 1016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_7_hit_ratio",
+      "off": 1020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_7_evade_ratio",
+      "off": 1024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_7_crit_damage_ratio",
+      "off": 1028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_7_crit_ratio",
+      "off": 1032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_8_attack_ratio",
+      "off": 1036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_8_defence_ratio",
+      "off": 1040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_8_hit_ratio",
+      "off": 1044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_8_evade_ratio",
+      "off": 1048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_8_crit_damage_ratio",
+      "off": 1052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_8_crit_ratio",
+      "off": 1056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_9_attack_ratio",
+      "off": 1060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_9_defence_ratio",
+      "off": 1064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_9_hit_ratio",
+      "off": 1068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_9_evade_ratio",
+      "off": 1072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_9_crit_damage_ratio",
+      "off": 1076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_9_crit_ratio",
+      "off": 1080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_10_attack_ratio",
+      "off": 1084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_10_defence_ratio",
+      "off": 1088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_10_hit_ratio",
+      "off": 1092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_10_evade_ratio",
+      "off": 1096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_10_crit_damage_ratio",
+      "off": 1100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_10_crit_ratio",
+      "off": 1104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_11_attack_ratio",
+      "off": 1108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_11_defence_ratio",
+      "off": 1112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_11_hit_ratio",
+      "off": 1116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_11_evade_ratio",
+      "off": 1120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_11_crit_damage_ratio",
+      "off": 1124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_11_crit_ratio",
+      "off": 1128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_12_attack_ratio",
+      "off": 1132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_12_defence_ratio",
+      "off": 1136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_12_hit_ratio",
+      "off": 1140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_12_evade_ratio",
+      "off": 1144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_12_crit_damage_ratio",
+      "off": 1148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_12_crit_ratio",
+      "off": 1152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_13_attack_ratio",
+      "off": 1156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_13_defence_ratio",
+      "off": 1160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_13_hit_ratio",
+      "off": 1164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_13_evade_ratio",
+      "off": 1168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_13_crit_damage_ratio",
+      "off": 1172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_13_crit_ratio",
+      "off": 1176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_14_attack_ratio",
+      "off": 1180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_14_defence_ratio",
+      "off": 1184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_14_hit_ratio",
+      "off": 1188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_14_evade_ratio",
+      "off": 1192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_14_crit_damage_ratio",
+      "off": 1196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_14_crit_ratio",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_15_attack_ratio",
+      "off": 1204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_15_defence_ratio",
+      "off": 1208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_15_hit_ratio",
+      "off": 1212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_15_evade_ratio",
+      "off": 1216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_15_crit_damage_ratio",
+      "off": 1220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_15_crit_ratio",
+      "off": 1224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_16_attack_ratio",
+      "off": 1228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_16_defence_ratio",
+      "off": 1232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_16_hit_ratio",
+      "off": 1236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_16_evade_ratio",
+      "off": 1240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_16_crit_damage_ratio",
+      "off": 1244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_16_crit_ratio",
+      "off": 1248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_17_attack_ratio",
+      "off": 1252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_17_defence_ratio",
+      "off": 1256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_17_hit_ratio",
+      "off": 1260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_17_evade_ratio",
+      "off": 1264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_17_crit_damage_ratio",
+      "off": 1268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_17_crit_ratio",
+      "off": 1272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_18_attack_ratio",
+      "off": 1276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_18_defence_ratio",
+      "off": 1280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_18_hit_ratio",
+      "off": 1284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_18_evade_ratio",
+      "off": 1288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_18_crit_damage_ratio",
+      "off": 1292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_18_crit_ratio",
+      "off": 1296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_19_attack_ratio",
+      "off": 1300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_19_defence_ratio",
+      "off": 1304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_19_hit_ratio",
+      "off": 1308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_19_evade_ratio",
+      "off": 1312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_19_crit_damage_ratio",
+      "off": 1316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_19_crit_ratio",
+      "off": 1320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_20_attack_ratio",
+      "off": 1324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_20_defence_ratio",
+      "off": 1328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_20_hit_ratio",
+      "off": 1332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_20_evade_ratio",
+      "off": 1336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_20_crit_damage_ratio",
+      "off": 1340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_20_crit_ratio",
+      "off": 1344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_21_attack_ratio",
+      "off": 1348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_21_defence_ratio",
+      "off": 1352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_21_hit_ratio",
+      "off": 1356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_21_evade_ratio",
+      "off": 1360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_21_crit_damage_ratio",
+      "off": 1364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_21_crit_ratio",
+      "off": 1368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_22_attack_ratio",
+      "off": 1372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_22_defence_ratio",
+      "off": 1376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_22_hit_ratio",
+      "off": 1380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_22_evade_ratio",
+      "off": 1384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_22_crit_damage_ratio",
+      "off": 1388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_22_crit_ratio",
+      "off": 1392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_23_attack_ratio",
+      "off": 1396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_23_defence_ratio",
+      "off": 1400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_23_hit_ratio",
+      "off": 1404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_23_evade_ratio",
+      "off": 1408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_23_crit_damage_ratio",
+      "off": 1412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_23_crit_ratio",
+      "off": 1416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_24_attack_ratio",
+      "off": 1420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_24_defence_ratio",
+      "off": 1424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_24_hit_ratio",
+      "off": 1428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_24_evade_ratio",
+      "off": 1432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_24_crit_damage_ratio",
+      "off": 1436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_24_crit_ratio",
+      "off": 1440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_25_attack_ratio",
+      "off": 1444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_25_defence_ratio",
+      "off": 1448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_25_hit_ratio",
+      "off": 1452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_25_evade_ratio",
+      "off": 1456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_25_crit_damage_ratio",
+      "off": 1460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_25_crit_ratio",
+      "off": 1464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_26_attack_ratio",
+      "off": 1468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_26_defence_ratio",
+      "off": 1472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_26_hit_ratio",
+      "off": 1476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_26_evade_ratio",
+      "off": 1480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_26_crit_damage_ratio",
+      "off": 1484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_26_crit_ratio",
+      "off": 1488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_27_attack_ratio",
+      "off": 1492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_27_defence_ratio",
+      "off": 1496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_27_hit_ratio",
+      "off": 1500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_27_evade_ratio",
+      "off": 1504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_27_crit_damage_ratio",
+      "off": 1508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_27_crit_ratio",
+      "off": 1512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_28_attack_ratio",
+      "off": 1516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_28_defence_ratio",
+      "off": 1520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_28_hit_ratio",
+      "off": 1524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_28_evade_ratio",
+      "off": 1528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_28_crit_damage_ratio",
+      "off": 1532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_28_crit_ratio",
+      "off": 1536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_29_attack_ratio",
+      "off": 1540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_29_defence_ratio",
+      "off": 1544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_29_hit_ratio",
+      "off": 1548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_29_evade_ratio",
+      "off": 1552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_29_crit_damage_ratio",
+      "off": 1556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_29_crit_ratio",
+      "off": 1560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_30_attack_ratio",
+      "off": 1564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_30_defence_ratio",
+      "off": 1568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_30_hit_ratio",
+      "off": 1572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_30_evade_ratio",
+      "off": 1576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_30_crit_damage_ratio",
+      "off": 1580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_30_crit_ratio",
+      "off": 1584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_31_attack_ratio",
+      "off": 1588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_31_defence_ratio",
+      "off": 1592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_31_hit_ratio",
+      "off": 1596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_31_evade_ratio",
+      "off": 1600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_31_crit_damage_ratio",
+      "off": 1604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_31_crit_ratio",
+      "off": 1608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_32_attack_ratio",
+      "off": 1612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_32_defence_ratio",
+      "off": 1616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_32_hit_ratio",
+      "off": 1620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_32_evade_ratio",
+      "off": 1624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_32_crit_damage_ratio",
+      "off": 1628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_32_crit_ratio",
+      "off": 1632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_33_attack_ratio",
+      "off": 1636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_33_defence_ratio",
+      "off": 1640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_33_hit_ratio",
+      "off": 1644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_33_evade_ratio",
+      "off": 1648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_33_crit_damage_ratio",
+      "off": 1652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_33_crit_ratio",
+      "off": 1656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_34_attack_ratio",
+      "off": 1660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_34_defence_ratio",
+      "off": 1664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_34_hit_ratio",
+      "off": 1668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_34_evade_ratio",
+      "off": 1672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_34_crit_damage_ratio",
+      "off": 1676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_34_crit_ratio",
+      "off": 1680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_35_attack_ratio",
+      "off": 1684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_35_defence_ratio",
+      "off": 1688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_35_hit_ratio",
+      "off": 1692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_35_evade_ratio",
+      "off": 1696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_35_crit_damage_ratio",
+      "off": 1700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_35_crit_ratio",
+      "off": 1704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_36_attack_ratio",
+      "off": 1708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_36_defence_ratio",
+      "off": 1712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_36_hit_ratio",
+      "off": 1716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_36_evade_ratio",
+      "off": 1720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_36_crit_damage_ratio",
+      "off": 1724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_36_crit_ratio",
+      "off": 1728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_37_attack_ratio",
+      "off": 1732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_37_defence_ratio",
+      "off": 1736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_37_hit_ratio",
+      "off": 1740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_37_evade_ratio",
+      "off": 1744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_37_crit_damage_ratio",
+      "off": 1748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_37_crit_ratio",
+      "off": 1752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_38_attack_ratio",
+      "off": 1756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_38_defence_ratio",
+      "off": 1760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_38_hit_ratio",
+      "off": 1764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_38_evade_ratio",
+      "off": 1768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_38_crit_damage_ratio",
+      "off": 1772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_38_crit_ratio",
+      "off": 1776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_39_attack_ratio",
+      "off": 1780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_39_defence_ratio",
+      "off": 1784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_39_hit_ratio",
+      "off": 1788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_39_evade_ratio",
+      "off": 1792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_39_crit_damage_ratio",
+      "off": 1796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_39_crit_ratio",
+      "off": 1800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_40_attack_ratio",
+      "off": 1804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_40_defence_ratio",
+      "off": 1808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_40_hit_ratio",
+      "off": 1812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_40_evade_ratio",
+      "off": 1816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_40_crit_damage_ratio",
+      "off": 1820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_40_crit_ratio",
+      "off": 1824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_41_attack_ratio",
+      "off": 1828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_41_defence_ratio",
+      "off": 1832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_41_hit_ratio",
+      "off": 1836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_41_evade_ratio",
+      "off": 1840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_41_crit_damage_ratio",
+      "off": 1844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_41_crit_ratio",
+      "off": 1848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_42_attack_ratio",
+      "off": 1852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_42_defence_ratio",
+      "off": 1856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_42_hit_ratio",
+      "off": 1860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_42_evade_ratio",
+      "off": 1864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_42_crit_damage_ratio",
+      "off": 1868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_42_crit_ratio",
+      "off": 1872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_43_attack_ratio",
+      "off": 1876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_43_defence_ratio",
+      "off": 1880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_43_hit_ratio",
+      "off": 1884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_43_evade_ratio",
+      "off": 1888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_43_crit_damage_ratio",
+      "off": 1892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_43_crit_ratio",
+      "off": 1896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_44_attack_ratio",
+      "off": 1900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_44_defence_ratio",
+      "off": 1904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_44_hit_ratio",
+      "off": 1908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_44_evade_ratio",
+      "off": 1912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_44_crit_damage_ratio",
+      "off": 1916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_44_crit_ratio",
+      "off": 1920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_45_attack_ratio",
+      "off": 1924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_45_defence_ratio",
+      "off": 1928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_45_hit_ratio",
+      "off": 1932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_45_evade_ratio",
+      "off": 1936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_45_crit_damage_ratio",
+      "off": 1940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_45_crit_ratio",
+      "off": 1944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_46_attack_ratio",
+      "off": 1948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_46_defence_ratio",
+      "off": 1952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_46_hit_ratio",
+      "off": 1956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_46_evade_ratio",
+      "off": 1960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_46_crit_damage_ratio",
+      "off": 1964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_46_crit_ratio",
+      "off": 1968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_47_attack_ratio",
+      "off": 1972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_47_defence_ratio",
+      "off": 1976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_47_hit_ratio",
+      "off": 1980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_47_evade_ratio",
+      "off": 1984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_47_crit_damage_ratio",
+      "off": 1988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_47_crit_ratio",
+      "off": 1992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_48_attack_ratio",
+      "off": 1996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_48_defence_ratio",
+      "off": 2000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_48_hit_ratio",
+      "off": 2004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_48_evade_ratio",
+      "off": 2008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_48_crit_damage_ratio",
+      "off": 2012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_48_crit_ratio",
+      "off": 2016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_49_attack_ratio",
+      "off": 2020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_49_defence_ratio",
+      "off": 2024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_49_hit_ratio",
+      "off": 2028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_49_evade_ratio",
+      "off": 2032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_49_crit_damage_ratio",
+      "off": 2036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_49_crit_ratio",
+      "off": 2040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_50_attack_ratio",
+      "off": 2044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_50_defence_ratio",
+      "off": 2048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_50_hit_ratio",
+      "off": 2052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_50_evade_ratio",
+      "off": 2056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_50_crit_damage_ratio",
+      "off": 2060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_50_crit_ratio",
+      "off": 2064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_51_attack_ratio",
+      "off": 2068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_51_defence_ratio",
+      "off": 2072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_51_hit_ratio",
+      "off": 2076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_51_evade_ratio",
+      "off": 2080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_51_crit_damage_ratio",
+      "off": 2084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_51_crit_ratio",
+      "off": 2088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_52_attack_ratio",
+      "off": 2092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_52_defence_ratio",
+      "off": 2096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_52_hit_ratio",
+      "off": 2100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_52_evade_ratio",
+      "off": 2104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_52_crit_damage_ratio",
+      "off": 2108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_52_crit_ratio",
+      "off": 2112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_53_attack_ratio",
+      "off": 2116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_53_defence_ratio",
+      "off": 2120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_53_hit_ratio",
+      "off": 2124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_53_evade_ratio",
+      "off": 2128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_53_crit_damage_ratio",
+      "off": 2132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_53_crit_ratio",
+      "off": 2136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_54_attack_ratio",
+      "off": 2140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_54_defence_ratio",
+      "off": 2144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_54_hit_ratio",
+      "off": 2148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_54_evade_ratio",
+      "off": 2152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_54_crit_damage_ratio",
+      "off": 2156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_54_crit_ratio",
+      "off": 2160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_55_attack_ratio",
+      "off": 2164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_55_defence_ratio",
+      "off": 2168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_55_hit_ratio",
+      "off": 2172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_55_evade_ratio",
+      "off": 2176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_55_crit_damage_ratio",
+      "off": 2180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_55_crit_ratio",
+      "off": 2184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_56_attack_ratio",
+      "off": 2188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_56_defence_ratio",
+      "off": 2192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_56_hit_ratio",
+      "off": 2196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_56_evade_ratio",
+      "off": 2200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_56_crit_damage_ratio",
+      "off": 2204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_56_crit_ratio",
+      "off": 2208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_57_attack_ratio",
+      "off": 2212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_57_defence_ratio",
+      "off": 2216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_57_hit_ratio",
+      "off": 2220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_57_evade_ratio",
+      "off": 2224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_57_crit_damage_ratio",
+      "off": 2228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_57_crit_ratio",
+      "off": 2232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_58_attack_ratio",
+      "off": 2236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_58_defence_ratio",
+      "off": 2240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_58_hit_ratio",
+      "off": 2244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_58_evade_ratio",
+      "off": 2248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_58_crit_damage_ratio",
+      "off": 2252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_58_crit_ratio",
+      "off": 2256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_59_attack_ratio",
+      "off": 2260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_59_defence_ratio",
+      "off": 2264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_59_hit_ratio",
+      "off": 2268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_59_evade_ratio",
+      "off": 2272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_59_crit_damage_ratio",
+      "off": 2276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_59_crit_ratio",
+      "off": 2280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_60_attack_ratio",
+      "off": 2284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_60_defence_ratio",
+      "off": 2288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_60_hit_ratio",
+      "off": 2292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_60_evade_ratio",
+      "off": 2296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_60_crit_damage_ratio",
+      "off": 2300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_60_crit_ratio",
+      "off": 2304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_61_attack_ratio",
+      "off": 2308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_61_defence_ratio",
+      "off": 2312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_61_hit_ratio",
+      "off": 2316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_61_evade_ratio",
+      "off": 2320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_61_crit_damage_ratio",
+      "off": 2324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_61_crit_ratio",
+      "off": 2328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_62_attack_ratio",
+      "off": 2332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_62_defence_ratio",
+      "off": 2336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_62_hit_ratio",
+      "off": 2340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_62_evade_ratio",
+      "off": 2344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_62_crit_damage_ratio",
+      "off": 2348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_62_crit_ratio",
+      "off": 2352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_63_attack_ratio",
+      "off": 2356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_63_defence_ratio",
+      "off": 2360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_63_hit_ratio",
+      "off": 2364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_63_evade_ratio",
+      "off": 2368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_63_crit_damage_ratio",
+      "off": 2372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_63_crit_ratio",
+      "off": 2376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_64_attack_ratio",
+      "off": 2380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_64_defence_ratio",
+      "off": 2384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_64_hit_ratio",
+      "off": 2388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_64_evade_ratio",
+      "off": 2392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_64_crit_damage_ratio",
+      "off": 2396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_64_crit_ratio",
+      "off": 2400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_65_attack_ratio",
+      "off": 2404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_65_defence_ratio",
+      "off": 2408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_65_hit_ratio",
+      "off": 2412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_65_evade_ratio",
+      "off": 2416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_65_crit_damage_ratio",
+      "off": 2420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_65_crit_ratio",
+      "off": 2424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_66_attack_ratio",
+      "off": 2428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_66_defence_ratio",
+      "off": 2432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_66_hit_ratio",
+      "off": 2436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_66_evade_ratio",
+      "off": 2440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_66_crit_damage_ratio",
+      "off": 2444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_66_crit_ratio",
+      "off": 2448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_67_attack_ratio",
+      "off": 2452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_67_defence_ratio",
+      "off": 2456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_67_hit_ratio",
+      "off": 2460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_67_evade_ratio",
+      "off": 2464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_67_crit_damage_ratio",
+      "off": 2468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_67_crit_ratio",
+      "off": 2472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_68_attack_ratio",
+      "off": 2476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_68_defence_ratio",
+      "off": 2480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_68_hit_ratio",
+      "off": 2484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_68_evade_ratio",
+      "off": 2488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_68_crit_damage_ratio",
+      "off": 2492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_68_crit_ratio",
+      "off": 2496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_69_attack_ratio",
+      "off": 2500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_69_defence_ratio",
+      "off": 2504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_69_hit_ratio",
+      "off": 2508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_69_evade_ratio",
+      "off": 2512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_69_crit_damage_ratio",
+      "off": 2516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_69_crit_ratio",
+      "off": 2520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_70_attack_ratio",
+      "off": 2524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_70_defence_ratio",
+      "off": 2528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_70_hit_ratio",
+      "off": 2532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_70_evade_ratio",
+      "off": 2536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_70_crit_damage_ratio",
+      "off": 2540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_70_crit_ratio",
+      "off": 2544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_71_attack_ratio",
+      "off": 2548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_71_defence_ratio",
+      "off": 2552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_71_hit_ratio",
+      "off": 2556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_71_evade_ratio",
+      "off": 2560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_71_crit_damage_ratio",
+      "off": 2564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_71_crit_ratio",
+      "off": 2568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_72_attack_ratio",
+      "off": 2572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_72_defence_ratio",
+      "off": 2576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_72_hit_ratio",
+      "off": 2580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_72_evade_ratio",
+      "off": 2584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_72_crit_damage_ratio",
+      "off": 2588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_72_crit_ratio",
+      "off": 2592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_73_attack_ratio",
+      "off": 2596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_73_defence_ratio",
+      "off": 2600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_73_hit_ratio",
+      "off": 2604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_73_evade_ratio",
+      "off": 2608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_73_crit_damage_ratio",
+      "off": 2612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_73_crit_ratio",
+      "off": 2616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_74_attack_ratio",
+      "off": 2620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_74_defence_ratio",
+      "off": 2624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_74_hit_ratio",
+      "off": 2628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_74_evade_ratio",
+      "off": 2632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_74_crit_damage_ratio",
+      "off": 2636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_74_crit_ratio",
+      "off": 2640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_75_attack_ratio",
+      "off": 2644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_75_defence_ratio",
+      "off": 2648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_75_hit_ratio",
+      "off": 2652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_75_evade_ratio",
+      "off": 2656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_75_crit_damage_ratio",
+      "off": 2660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_75_crit_ratio",
+      "off": 2664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_76_attack_ratio",
+      "off": 2668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_76_defence_ratio",
+      "off": 2672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_76_hit_ratio",
+      "off": 2676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_76_evade_ratio",
+      "off": 2680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_76_crit_damage_ratio",
+      "off": 2684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_76_crit_ratio",
+      "off": 2688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_77_attack_ratio",
+      "off": 2692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_77_defence_ratio",
+      "off": 2696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_77_hit_ratio",
+      "off": 2700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_77_evade_ratio",
+      "off": 2704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_77_crit_damage_ratio",
+      "off": 2708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_77_crit_ratio",
+      "off": 2712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_78_attack_ratio",
+      "off": 2716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_78_defence_ratio",
+      "off": 2720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_78_hit_ratio",
+      "off": 2724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_78_evade_ratio",
+      "off": 2728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_78_crit_damage_ratio",
+      "off": 2732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_78_crit_ratio",
+      "off": 2736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_79_attack_ratio",
+      "off": 2740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_79_defence_ratio",
+      "off": 2744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_79_hit_ratio",
+      "off": 2748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_79_evade_ratio",
+      "off": 2752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_79_crit_damage_ratio",
+      "off": 2756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_79_crit_ratio",
+      "off": 2760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_80_attack_ratio",
+      "off": 2764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_80_defence_ratio",
+      "off": 2768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_80_hit_ratio",
+      "off": 2772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_80_evade_ratio",
+      "off": 2776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_80_crit_damage_ratio",
+      "off": 2780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_80_crit_ratio",
+      "off": 2784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_81_attack_ratio",
+      "off": 2788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_81_defence_ratio",
+      "off": 2792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_81_hit_ratio",
+      "off": 2796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_81_evade_ratio",
+      "off": 2800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_81_crit_damage_ratio",
+      "off": 2804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_81_crit_ratio",
+      "off": 2808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_82_attack_ratio",
+      "off": 2812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_82_defence_ratio",
+      "off": 2816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_82_hit_ratio",
+      "off": 2820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_82_evade_ratio",
+      "off": 2824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_82_crit_damage_ratio",
+      "off": 2828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_82_crit_ratio",
+      "off": 2832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_83_attack_ratio",
+      "off": 2836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_83_defence_ratio",
+      "off": 2840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_83_hit_ratio",
+      "off": 2844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_83_evade_ratio",
+      "off": 2848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_83_crit_damage_ratio",
+      "off": 2852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_83_crit_ratio",
+      "off": 2856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_84_attack_ratio",
+      "off": 2860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_84_defence_ratio",
+      "off": 2864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_84_hit_ratio",
+      "off": 2868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_84_evade_ratio",
+      "off": 2872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_84_crit_damage_ratio",
+      "off": 2876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_84_crit_ratio",
+      "off": 2880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_85_attack_ratio",
+      "off": 2884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_85_defence_ratio",
+      "off": 2888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_85_hit_ratio",
+      "off": 2892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_85_evade_ratio",
+      "off": 2896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_85_crit_damage_ratio",
+      "off": 2900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_85_crit_ratio",
+      "off": 2904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_86_attack_ratio",
+      "off": 2908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_86_defence_ratio",
+      "off": 2912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_86_hit_ratio",
+      "off": 2916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_86_evade_ratio",
+      "off": 2920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_86_crit_damage_ratio",
+      "off": 2924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_86_crit_ratio",
+      "off": 2928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_87_attack_ratio",
+      "off": 2932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_87_defence_ratio",
+      "off": 2936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_87_hit_ratio",
+      "off": 2940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_87_evade_ratio",
+      "off": 2944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_87_crit_damage_ratio",
+      "off": 2948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_87_crit_ratio",
+      "off": 2952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_88_attack_ratio",
+      "off": 2956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_88_defence_ratio",
+      "off": 2960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_88_hit_ratio",
+      "off": 2964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_88_evade_ratio",
+      "off": 2968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_88_crit_damage_ratio",
+      "off": 2972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_88_crit_ratio",
+      "off": 2976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_89_attack_ratio",
+      "off": 2980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_89_defence_ratio",
+      "off": 2984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_89_hit_ratio",
+      "off": 2988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_89_evade_ratio",
+      "off": 2992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_89_crit_damage_ratio",
+      "off": 2996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_89_crit_ratio",
+      "off": 3000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_90_attack_ratio",
+      "off": 3004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_90_defence_ratio",
+      "off": 3008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_90_hit_ratio",
+      "off": 3012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_90_evade_ratio",
+      "off": 3016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_90_crit_damage_ratio",
+      "off": 3020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_90_crit_ratio",
+      "off": 3024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_91_attack_ratio",
+      "off": 3028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_91_defence_ratio",
+      "off": 3032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_91_hit_ratio",
+      "off": 3036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_91_evade_ratio",
+      "off": 3040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_91_crit_damage_ratio",
+      "off": 3044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_91_crit_ratio",
+      "off": 3048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_92_attack_ratio",
+      "off": 3052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_92_defence_ratio",
+      "off": 3056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_92_hit_ratio",
+      "off": 3060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_92_evade_ratio",
+      "off": 3064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_92_crit_damage_ratio",
+      "off": 3068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_92_crit_ratio",
+      "off": 3072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_93_attack_ratio",
+      "off": 3076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_93_defence_ratio",
+      "off": 3080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_93_hit_ratio",
+      "off": 3084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_93_evade_ratio",
+      "off": 3088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_93_crit_damage_ratio",
+      "off": 3092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_93_crit_ratio",
+      "off": 3096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_94_attack_ratio",
+      "off": 3100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_94_defence_ratio",
+      "off": 3104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_94_hit_ratio",
+      "off": 3108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_94_evade_ratio",
+      "off": 3112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_94_crit_damage_ratio",
+      "off": 3116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_94_crit_ratio",
+      "off": 3120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_95_attack_ratio",
+      "off": 3124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_95_defence_ratio",
+      "off": 3128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_95_hit_ratio",
+      "off": 3132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_95_evade_ratio",
+      "off": 3136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_95_crit_damage_ratio",
+      "off": 3140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_95_crit_ratio",
+      "off": 3144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_96_attack_ratio",
+      "off": 3148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_96_defence_ratio",
+      "off": 3152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_96_hit_ratio",
+      "off": 3156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_96_evade_ratio",
+      "off": 3160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_96_crit_damage_ratio",
+      "off": 3164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_96_crit_ratio",
+      "off": 3168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_97_attack_ratio",
+      "off": 3172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_97_defence_ratio",
+      "off": 3176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_97_hit_ratio",
+      "off": 3180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_97_evade_ratio",
+      "off": 3184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_97_crit_damage_ratio",
+      "off": 3188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_97_crit_ratio",
+      "off": 3192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_98_attack_ratio",
+      "off": 3196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_98_defence_ratio",
+      "off": 3200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_98_hit_ratio",
+      "off": 3204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_98_evade_ratio",
+      "off": 3208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_98_crit_damage_ratio",
+      "off": 3212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_98_crit_ratio",
+      "off": 3216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_99_attack_ratio",
+      "off": 3220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_99_defence_ratio",
+      "off": 3224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_99_hit_ratio",
+      "off": 3228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_99_evade_ratio",
+      "off": 3232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_99_crit_damage_ratio",
+      "off": 3236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_99_crit_ratio",
+      "off": 3240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_100_attack_ratio",
+      "off": 3244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_100_defence_ratio",
+      "off": 3248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_100_hit_ratio",
+      "off": 3252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_100_evade_ratio",
+      "off": 3256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_100_crit_damage_ratio",
+      "off": 3260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "deity_ratio_info_100_crit_ratio",
+      "off": 3264,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

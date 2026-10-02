@@ -1,0 +1,481 @@
+{
+  "key": "npc_essence",
+  "name": "Npc Essence",
+  "struct": "NPC_ESSENCE",
+  "size": 828,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "NPC(类型)ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "id_type",
+      "off": 68,
+      "t": {
+        "k": "u32"
+      },
+      "c": "NPC 类型, 从NPC_TYPE中选取"
+    },
+    {
+      "name": "desc",
+      "off": 72,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      },
+      "c": "NPC描述，显示在NPC名字之下，最多16个汉字"
+    },
+    {
+      "name": "refresh_time",
+      "off": 104,
+      "t": {
+        "k": "f32"
+      },
+      "c": "刷新时间"
+    },
+    {
+      "name": "attack_rule",
+      "off": 108,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是否被攻击 0-不可被攻击，1-可被攻击攻击变粉名，2-可被攻击攻击变红名"
+    },
+    {
+      "name": "file_model",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "c": "模型路径名",
+      "display": "path"
+    },
+    {
+      "name": "head_icon",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "头像"
+    },
+    {
+      "name": "id_src_monster",
+      "off": 120,
+      "t": {
+        "k": "u32"
+      },
+      "c": "基本属性来自的怪物ID，非零时表示使用该怪物属性替换本NPC的属性"
+    },
+    {
+      "name": "hello_msg",
+      "off": 124,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      },
+      "c": "开场白，是一个多行文本"
+    },
+    {
+      "name": "id_to_discover",
+      "off": 636,
+      "t": {
+        "k": "u32"
+      },
+      "c": "发现和传送服务的驿站ID"
+    },
+    {
+      "name": "domain_related",
+      "off": 640,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是否领土相关 0-否，1-是"
+    },
+    {
+      "name": "guard_npc",
+      "off": 644,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是否卫兵NPC  0-否，1-是"
+    },
+    {
+      "name": "is_vehicle",
+      "off": 648,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是否交通工具 0-否，1-是"
+    },
+    {
+      "name": "war_role_config",
+      "off": 652,
+      "t": {
+        "k": "u32"
+      },
+      "c": "城战角色属性表id"
+    },
+    {
+      "name": "id_talk_service",
+      "off": 656,
+      "t": {
+        "k": "u32"
+      },
+      "c": "交谈的服务ID"
+    },
+    {
+      "name": "id_sell_service",
+      "off": 660,
+      "t": {
+        "k": "u32"
+      },
+      "c": "出售商品的服务ID"
+    },
+    {
+      "name": "id_gshop_majortype",
+      "off": 664,
+      "t": {
+        "k": "u32"
+      },
+      "c": "百宝阁出售的大类号ID"
+    },
+    {
+      "name": "id_buy_service",
+      "off": 668,
+      "t": {
+        "k": "u32"
+      },
+      "c": "收购商品的服务ID"
+    },
+    {
+      "name": "id_task_out_service",
+      "off": 672,
+      "t": {
+        "k": "u32"
+      },
+      "c": "任务相关的服务ID: 发放任务服务"
+    },
+    {
+      "name": "id_task_in_service",
+      "off": 676,
+      "t": {
+        "k": "u32"
+      },
+      "c": "任务相关的服务ID: 验证完成任务服务"
+    },
+    {
+      "name": "id_task_matter_service",
+      "off": 680,
+      "t": {
+        "k": "u32"
+      },
+      "c": "任务相关的服务ID: 发放任务物品服务"
+    },
+    {
+      "name": "id_heal_service",
+      "off": 684,
+      "t": {
+        "k": "u32"
+      },
+      "c": "治疗的服务ID"
+    },
+    {
+      "name": "id_transmit_service",
+      "off": 688,
+      "t": {
+        "k": "u32"
+      },
+      "c": "传送的服务ID"
+    },
+    {
+      "name": "id_proxy_service",
+      "off": 692,
+      "t": {
+        "k": "u32"
+      },
+      "c": "代售的服务ID"
+    },
+    {
+      "name": "id_storage_service",
+      "off": 696,
+      "t": {
+        "k": "u32"
+      },
+      "c": "仓库的服务ID"
+    },
+    {
+      "name": "id_war_towerbuild_service",
+      "off": 700,
+      "t": {
+        "k": "u32"
+      },
+      "c": "城战炮塔建造的服务ID"
+    },
+    {
+      "name": "id_resetprop_service",
+      "off": 704,
+      "t": {
+        "k": "u32"
+      },
+      "c": "洗点服务ID"
+    },
+    {
+      "name": "id_equipbind_service",
+      "off": 708,
+      "t": {
+        "k": "u32"
+      },
+      "c": "装备绑定服务"
+    },
+    {
+      "name": "id_equipdestroy_service",
+      "off": 712,
+      "t": {
+        "k": "u32"
+      },
+      "c": "装备销毁服务"
+    },
+    {
+      "name": "id_equipundestroy_service",
+      "off": 716,
+      "t": {
+        "k": "u32"
+      },
+      "c": "装备解除销毁服务"
+    },
+    {
+      "name": "id_war_archer_service",
+      "off": 720,
+      "t": {
+        "k": "u32"
+      },
+      "c": "城战购买弓箭手服务"
+    },
+    {
+      "name": "id_item_trade_service",
+      "off": 724,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "物物交易服务"
+    },
+    {
+      "name": "id_equip_soul_service",
+      "off": 740,
+      "t": {
+        "k": "u32"
+      },
+      "c": "器魄融合服务ID：0表示不开启此服务"
+    },
+    {
+      "name": "id_consign_service",
+      "off": 744,
+      "t": {
+        "k": "u32"
+      },
+      "c": "商品寄售服务ID"
+    },
+    {
+      "name": "id_reputation_shop_service",
+      "off": 748,
+      "t": {
+        "k": "u32"
+      },
+      "c": "声望商店ID"
+    },
+    {
+      "name": "id_trans_dest_service",
+      "off": 752,
+      "t": {
+        "k": "i32"
+      },
+      "c": "界面传送服务"
+    },
+    {
+      "name": "id_open_trans",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      },
+      "c": "打开某个传送区域"
+    },
+    {
+      "name": "combined_services",
+      "off": 760,
+      "t": {
+        "k": "u32"
+      },
+      "c": "简单服务组合：其中的每一位代表一个不需要参数的服务，可能的有：",
+      "e": "combined_services"
+    },
+    {
+      "name": "combined_services2",
+      "off": 764,
+      "t": {
+        "k": "u32"
+      },
+      "c": "简单服务组合：其中的每一位代表一个不需要参数的服务：",
+      "e": "combined_services2"
+    },
+    {
+      "name": "combined_services3",
+      "off": 768,
+      "t": {
+        "k": "u32"
+      },
+      "c": "简单服务组合：其中的每一位代表一个不需要参数的服务：",
+      "e": "combined_services3"
+    },
+    {
+      "name": "has_pkvalue_service",
+      "off": 772,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是否提供洗PK值服务"
+    },
+    {
+      "name": "fee_per_pkvalue",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      },
+      "c": "每洗一点PK值所需的花费"
+    },
+    {
+      "name": "service_install",
+      "off": 780,
+      "t": {
+        "k": "bool"
+      },
+      "c": "是否提供镶嵌服务"
+    },
+    {
+      "name": "service_uninstall",
+      "off": 781,
+      "t": {
+        "k": "bool"
+      },
+      "c": "是否提供拆卸服务"
+    },
+    {
+      "name": "service_temp1",
+      "off": 782,
+      "t": {
+        "k": "bool"
+      },
+      "c": "占位"
+    },
+    {
+      "name": "service_temp2",
+      "off": 783,
+      "t": {
+        "k": "bool"
+      },
+      "c": "占位"
+    },
+    {
+      "name": "id_mine",
+      "off": 784,
+      "t": {
+        "k": "u32"
+      },
+      "c": "附带的矿"
+    },
+    {
+      "name": "id_interaction_object",
+      "off": 788,
+      "t": {
+        "k": "u32"
+      },
+      "c": "可交互物体"
+    },
+    {
+      "name": "collision_in_server",
+      "off": 792,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是否参与碰撞"
+    },
+    {
+      "name": "vehicle_min_length",
+      "off": 796,
+      "t": {
+        "k": "f32"
+      },
+      "c": "交通工具的最小长度"
+    },
+    {
+      "name": "vehicle_min_width",
+      "off": 800,
+      "t": {
+        "k": "f32"
+      },
+      "c": "交通工具的最小宽度"
+    },
+    {
+      "name": "vehicle_min_height",
+      "off": 804,
+      "t": {
+        "k": "f32"
+      },
+      "c": "交通工具的最小高度"
+    },
+    {
+      "name": "vehicle_max_length",
+      "off": 808,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "vehicle_max_width",
+      "off": 812,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "vehicle_max_height",
+      "off": 816,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "id_territory",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      },
+      "c": "所属区域id，领土战专用，默认为0表示非领土战区域npc"
+    },
+    {
+      "name": "id_transcription",
+      "off": 824,
+      "t": {
+        "k": "i32"
+      },
+      "c": "副本模板ID，默认情况下为：0表示没有副本发放服务 Added 2011-07-20."
+    }
+  ]
+}

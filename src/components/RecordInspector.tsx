@@ -4,6 +4,10 @@ import { LAYOUT_LABEL, hex, layoutHelp } from "../elements/format";
 import { FieldTree } from "./FieldTree";
 import { type Path, allPaths, nodeAt, pathAt } from "../elements/fieldPaths";
 import { HexView } from "./HexView";
+import { ArrowLeft, ChevronsDownUp, ChevronsUpDown } from "lucide-react";
+import { ReadingsCard } from "./ReadingsCard";
+import { isUndefinedNode, undefinedSpan } from "../elements/readings";
+import type { FieldSpec } from "../schema/model";
 
 interface Props {
   list: ListSummary;
@@ -12,15 +16,23 @@ interface Props {
   canGoBack: boolean;
   onBack: () => void;
   onFollow: (list: number, row: number) => void;
+  /** Open the schema editor with a field defined at this offset. */
+  onDefine: (list: number, offset: number, spec: FieldSpec) => void;
 }
 
-export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow }: Props) {
+export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine }: Props) {
   const [expanded, setExpanded] = useState<Set<Path>>(new Set());
   const [selected, setSelected] = useState<Path | null>(null);
   const [hovered, setHovered] = useState<Path | null>(null);
+  // Offset whose possible readings are shown (undefined bytes only). It stays
+  // while browsing records of the list, to compare readings between records.
+  const [readOffset, setReadOffset] = useState<number | null>(null);
 
   // Keep the expansion state while browsing records of the same list.
-  useEffect(() => setExpanded(new Set()), [list.index]);
+  useEffect(() => {
+    setExpanded(new Set());
+    setReadOffset(null);
+  }, [list.index]);
   useEffect(() => setHovered(null), [detail]);
 
   if (!row || !detail) {
@@ -44,7 +56,16 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
     if (!chain.length) return;
     setExpanded((prev) => new Set([...prev, ...chain.slice(0, -1)]));
     setSelected(chain[chain.length - 1]);
+    setReadOffset(undefinedSpan(detail.nodes, offset) ? offset : null);
   };
+
+  const selectNode = (path: Path) => {
+    setSelected(path);
+    const node = nodeAt(detail.nodes, path);
+    setReadOffset(node && isUndefinedNode(node) ? node.off : null);
+  };
+
+  const span = readOffset !== null ? undefinedSpan(detail.nodes, readOffset) : null;
 
   const active = nodeAt(detail.nodes, hovered ?? selected ?? "") ?? null;
   const focused = selected ? nodeAt(detail.nodes, selected) : null;
@@ -56,7 +77,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
         <div className="inspector-title">
           {canGoBack && (
             <button className="back" onClick={onBack} title="Back to the previous record (Alt+←)">
-              ←
+              <ArrowLeft size={15} />
             </button>
           )}
           <h2 className="truncate">{row.name || <span className="muted">Unnamed record</span>}</h2>
@@ -104,10 +125,10 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           <span className="pane-title">Fields</span>
           <span className="spacer" />
           <button className="link" onClick={() => setExpanded(new Set(allPaths(detail.nodes)))}>
-            Expand all
+            <ChevronsUpDown size={13} /> Expand all
           </button>
           <button className="link" onClick={() => setExpanded(new Set())}>
-            Collapse all
+            <ChevronsDownUp size={13} /> Collapse all
           </button>
         </div>
         <FieldTree
@@ -115,10 +136,22 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           expanded={expanded}
           selected={selected}
           onToggle={toggle}
-          onSelect={setSelected}
+          onSelect={selectNode}
           onHover={setHovered}
           onFollow={onFollow}
         />
+        <div className="readings-slot">
+          {span && readOffset !== null && (
+            <ReadingsCard
+              bytes={detail.bytes}
+              offset={readOffset}
+              span={span}
+              actionLabel="Define in Schema Editor"
+              onOffset={setReadOffset}
+              onDefine={(offset, spec) => onDefine(list.index, offset, spec)}
+            />
+          )}
+        </div>
         <div className="subhead">
           <span className="pane-title">Bytes</span>
           <span className="spacer" />

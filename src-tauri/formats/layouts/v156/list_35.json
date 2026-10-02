@@ -1,0 +1,25 @@
+{
+  "key": "recipe_major_type",
+  "name": "Recipe Major Type",
+  "struct": "RECIPE_MAJOR_TYPE",
+  "size": 68,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "配方大类别ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "配方大类别名称"
+    }
+  ]
+}

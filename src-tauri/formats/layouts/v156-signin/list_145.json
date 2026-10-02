@@ -1,0 +1,161 @@
+{
+  "key": "pk2012_guess_config",
+  "name": "Pk2012 Guess Config",
+  "struct": "PK2012_GUESS_CONFIG",
+  "size": 136,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模板ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "first_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "冠军ID"
+    },
+    {
+      "name": "second_id",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "亚军ID"
+    },
+    {
+      "name": "third_id",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "季军ID"
+    },
+    {
+      "name": "guess_start_time",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "竞猜开始时间"
+    },
+    {
+      "name": "guess_end_time",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "竞猜截止时间"
+    },
+    {
+      "name": "accept_award_start_time",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "c": "领奖开始时间"
+    },
+    {
+      "name": "accept_award_end_time",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "c": "领奖截止时间"
+    },
+    {
+      "name": "champion_guess_item",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "c": "冠军投注道具"
+    },
+    {
+      "name": "champion_guess_itemNum",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "每投1注消耗道具数量"
+    },
+    {
+      "name": "champion_guess_award",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "c": "冠军竞猜礼包"
+    },
+    {
+      "name": "award_back_ratio",
+      "off": 108,
+      "t": {
+        "k": "f32"
+      },
+      "c": "返奖率"
+    },
+    {
+      "name": "guess_item",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "c": "竞猜道具"
+    },
+    {
+      "name": "guess_item_num",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "竞猜道具消耗数量"
+    },
+    {
+      "name": "guess_award_item",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "c": "三强竞猜礼包"
+    },
+    {
+      "name": "guess_award_item3",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "c": "三强全中礼包"
+    },
+    {
+      "name": "guess_award_item2",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "c": "猜中两强礼包"
+    },
+    {
+      "name": "guess_award_item1",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      },
+      "c": "猜中一强礼包"
+    }
+  ]
+}

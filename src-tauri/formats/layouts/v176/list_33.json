@@ -1,0 +1,22 @@
+{
+  "name": "Unknown33",
+  "struct": "UNKNOWN33",
+  "size": 68,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "f1",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    }
+  ]
+}

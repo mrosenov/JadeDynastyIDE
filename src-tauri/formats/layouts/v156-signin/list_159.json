@@ -1,0 +1,260 @@
+{
+  "key": "sale_promotion_item_essence",
+  "name": "Sale Promotion Item Essence",
+  "struct": "SALE_PROMOTION_ITEM_ESSENCE",
+  "size": 5264,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "ui_name",
+      "off": 68,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      },
+      "c": "界面文字, 2013-04-17"
+    },
+    {
+      "name": "file_matter",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径名",
+      "display": "icon"
+    },
+    {
+      "name": "element_list",
+      "off": 108,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 256,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "valid_time_start",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "有效期起始时间"
+            },
+            {
+              "name": "valid_time_end",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "有效期结束时间"
+            },
+            {
+              "name": "get_count",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "可重复领取次数"
+            },
+            {
+              "name": "condition_type",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "c": "前提或消耗条件类型，稍后策划给具体表示"
+            },
+            {
+              "name": "condition_arg1",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              },
+              "c": "前提或消耗条件参数1"
+            },
+            {
+              "name": "condition_arg2",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              },
+              "c": "前提或消耗条件参数2"
+            },
+            {
+              "name": "award_item1",
+              "off": 24,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品1"
+            },
+            {
+              "name": "award_item1_count",
+              "off": 28,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品数量1"
+            },
+            {
+              "name": "award_item1_valid_time",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品有效期1"
+            },
+            {
+              "name": "award_item1_is_bind",
+              "off": 36,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品是否绑定1"
+            },
+            {
+              "name": "award_item2",
+              "off": 40,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品2"
+            },
+            {
+              "name": "award_item2_count",
+              "off": 44,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品数量2"
+            },
+            {
+              "name": "award_item2_valid_time",
+              "off": 48,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品有效期2"
+            },
+            {
+              "name": "award_item2_is_bind",
+              "off": 52,
+              "t": {
+                "k": "i32"
+              },
+              "c": "奖励物品是否绑定2"
+            },
+            {
+              "name": "desc",
+              "off": 56,
+              "t": {
+                "k": "wstr",
+                "n": 100
+              },
+              "c": "策划定义描述，可能包含图片、链接等信息"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "extra_award_need_count",
+      "off": 5228,
+      "t": {
+        "k": "i32"
+      },
+      "c": "获取额外奖励所需领取次数"
+    },
+    {
+      "name": "extra_award_id",
+      "off": 5232,
+      "t": {
+        "k": "i32"
+      },
+      "c": "额外奖励"
+    },
+    {
+      "name": "extra_award_num",
+      "off": 5236,
+      "t": {
+        "k": "i32"
+      },
+      "c": "额外奖励"
+    },
+    {
+      "name": "extra_award_valid_time",
+      "off": 5240,
+      "t": {
+        "k": "i32"
+      },
+      "c": "额外奖励"
+    },
+    {
+      "name": "extra_award_is_bind",
+      "off": 5244,
+      "t": {
+        "k": "i32"
+      },
+      "c": "额外奖励"
+    },
+    {
+      "name": "price",
+      "off": 5248,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 5252,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 5256,
+      "t": {
+        "k": "i32"
+      },
+      "c": "该药品的堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 5260,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

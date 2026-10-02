@@ -1,0 +1,36 @@
+{
+  "name": "Npc Equip Undestroy Service",
+  "struct": "NPC_EQUIP_UNDESTROY_SERVICE",
+  "size": 76,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Object_Need_ID",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Sell_Price",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

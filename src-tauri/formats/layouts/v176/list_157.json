@@ -1,0 +1,7835 @@
+{
+  "name": "Liveness Config",
+  "struct": "LIVENESS_CONFIG",
+  "size": 7824,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Scores_1",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_2",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_3",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_4",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_5",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_6",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_7",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_8",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_9",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_10",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_11",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_12",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_13",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_14",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Scores_15",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_1",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_2",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_3",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gifts_4",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_1_Name",
+      "off": 144,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_1_Type_Activity",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_1_Require_Level",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_1_Renascence_Count",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_1_Type_Judge",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_1_Reguire_ID",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_2_Name",
+      "off": 208,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_2_Type_Activity",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_2_Require_Level",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_2_Renascence_Count",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_2_Type_Judge",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_2_Reguire_ID",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_3_Name",
+      "off": 272,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_3_Type_Activity",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_3_Require_Level",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_3_Renascence_Count",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_3_Type_Judge",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_3_Reguire_ID",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_4_Name",
+      "off": 336,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_4_Type_Activity",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_4_Require_Level",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_4_Renascence_Count",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_4_Type_Judge",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_4_Reguire_ID",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_5_Name",
+      "off": 400,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_5_Type_Activity",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_5_Require_Level",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_5_Renascence_Count",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_5_Type_Judge",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_5_Reguire_ID",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_6_Name",
+      "off": 464,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_6_Type_Activity",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_6_Require_Level",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_6_Renascence_Count",
+      "off": 504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_6_Type_Judge",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_6_Reguire_ID",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_7_Name",
+      "off": 528,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_7_Type_Activity",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_7_Require_Level",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_7_Renascence_Count",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_7_Type_Judge",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_7_Reguire_ID",
+      "off": 580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_8_Name",
+      "off": 592,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_8_Type_Activity",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_8_Require_Level",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_8_Renascence_Count",
+      "off": 632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_8_Type_Judge",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_8_Reguire_ID",
+      "off": 644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_9_Name",
+      "off": 656,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_9_Type_Activity",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_9_Require_Level",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_9_Renascence_Count",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_9_Type_Judge",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_9_Reguire_ID",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_10_Name",
+      "off": 720,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_10_Type_Activity",
+      "off": 752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_10_Require_Level",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_10_Renascence_Count",
+      "off": 760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_10_Type_Judge",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_10_Reguire_ID",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_11_Name",
+      "off": 784,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_11_Type_Activity",
+      "off": 816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_11_Require_Level",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_11_Renascence_Count",
+      "off": 824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_11_Type_Judge",
+      "off": 828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_11_Reguire_ID",
+      "off": 836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_12_Name",
+      "off": 848,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_12_Type_Activity",
+      "off": 880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_12_Require_Level",
+      "off": 884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_12_Renascence_Count",
+      "off": 888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_12_Type_Judge",
+      "off": 892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_12_Reguire_ID",
+      "off": 900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_13_Name",
+      "off": 912,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_13_Type_Activity",
+      "off": 944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_13_Require_Level",
+      "off": 948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_13_Renascence_Count",
+      "off": 952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_13_Type_Judge",
+      "off": 956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_13_Reguire_ID",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_14_Name",
+      "off": 976,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_14_Type_Activity",
+      "off": 1008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_14_Require_Level",
+      "off": 1012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_14_Renascence_Count",
+      "off": 1016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_14_Type_Judge",
+      "off": 1020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_14_Reguire_ID",
+      "off": 1028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_15_Name",
+      "off": 1040,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_15_Type_Activity",
+      "off": 1072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_15_Require_Level",
+      "off": 1076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_15_Renascence_Count",
+      "off": 1080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_15_Type_Judge",
+      "off": 1084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_15_Reguire_ID",
+      "off": 1092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_16_Name",
+      "off": 1104,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_16_Type_Activity",
+      "off": 1136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_16_Require_Level",
+      "off": 1140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_16_Renascence_Count",
+      "off": 1144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_16_Type_Judge",
+      "off": 1148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_16_Reguire_ID",
+      "off": 1156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_17_Name",
+      "off": 1168,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_17_Type_Activity",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_17_Require_Level",
+      "off": 1204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_17_Renascence_Count",
+      "off": 1208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_17_Type_Judge",
+      "off": 1212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_17_Reguire_ID",
+      "off": 1220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_18_Name",
+      "off": 1232,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_18_Type_Activity",
+      "off": 1264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_18_Require_Level",
+      "off": 1268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_18_Renascence_Count",
+      "off": 1272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_18_Type_Judge",
+      "off": 1276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_18_Reguire_ID",
+      "off": 1284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_19_Name",
+      "off": 1296,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_19_Type_Activity",
+      "off": 1328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_19_Require_Level",
+      "off": 1332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_19_Renascence_Count",
+      "off": 1336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_19_Type_Judge",
+      "off": 1340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_19_Reguire_ID",
+      "off": 1348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_20_Name",
+      "off": 1360,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_20_Type_Activity",
+      "off": 1392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_20_Require_Level",
+      "off": 1396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_20_Renascence_Count",
+      "off": 1400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_20_Type_Judge",
+      "off": 1404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_20_Reguire_ID",
+      "off": 1412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_21_Name",
+      "off": 1424,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_21_Type_Activity",
+      "off": 1456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_21_Require_Level",
+      "off": 1460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_21_Renascence_Count",
+      "off": 1464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_21_Type_Judge",
+      "off": 1468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_21_Reguire_ID",
+      "off": 1476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_22_Name",
+      "off": 1488,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_22_Type_Activity",
+      "off": 1520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_22_Require_Level",
+      "off": 1524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_22_Renascence_Count",
+      "off": 1528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_22_Type_Judge",
+      "off": 1532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_22_Reguire_ID",
+      "off": 1540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_23_Name",
+      "off": 1552,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_23_Type_Activity",
+      "off": 1584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_23_Require_Level",
+      "off": 1588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_23_Renascence_Count",
+      "off": 1592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_23_Type_Judge",
+      "off": 1596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_23_Reguire_ID",
+      "off": 1604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_24_Name",
+      "off": 1616,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_24_Type_Activity",
+      "off": 1648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_24_Require_Level",
+      "off": 1652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_24_Renascence_Count",
+      "off": 1656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_24_Type_Judge",
+      "off": 1660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_24_Reguire_ID",
+      "off": 1668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_25_Name",
+      "off": 1680,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_25_Type_Activity",
+      "off": 1712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_25_Require_Level",
+      "off": 1716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_25_Renascence_Count",
+      "off": 1720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_25_Type_Judge",
+      "off": 1724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_25_Reguire_ID",
+      "off": 1732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_26_Name",
+      "off": 1744,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_26_Type_Activity",
+      "off": 1776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_26_Require_Level",
+      "off": 1780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_26_Renascence_Count",
+      "off": 1784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_26_Type_Judge",
+      "off": 1788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_26_Reguire_ID",
+      "off": 1796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_27_Name",
+      "off": 1808,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_27_Type_Activity",
+      "off": 1840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_27_Require_Level",
+      "off": 1844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_27_Renascence_Count",
+      "off": 1848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_27_Type_Judge",
+      "off": 1852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_27_Reguire_ID",
+      "off": 1860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_28_Name",
+      "off": 1872,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_28_Type_Activity",
+      "off": 1904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_28_Require_Level",
+      "off": 1908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_28_Renascence_Count",
+      "off": 1912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_28_Type_Judge",
+      "off": 1916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_28_Reguire_ID",
+      "off": 1924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_29_Name",
+      "off": 1936,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_29_Type_Activity",
+      "off": 1968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_29_Require_Level",
+      "off": 1972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_29_Renascence_Count",
+      "off": 1976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_29_Type_Judge",
+      "off": 1980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_29_Reguire_ID",
+      "off": 1988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 1996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_30_Name",
+      "off": 2000,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_30_Type_Activity",
+      "off": 2032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_30_Require_Level",
+      "off": 2036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_30_Renascence_Count",
+      "off": 2040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_30_Type_Judge",
+      "off": 2044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_30_Reguire_ID",
+      "off": 2052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_31_Name",
+      "off": 2064,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_31_Type_Activity",
+      "off": 2096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_31_Require_Level",
+      "off": 2100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_31_Renascence_Count",
+      "off": 2104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_31_Type_Judge",
+      "off": 2108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_31_Reguire_ID",
+      "off": 2116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_32_Name",
+      "off": 2128,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_32_Type_Activity",
+      "off": 2160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_32_Require_Level",
+      "off": 2164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_32_Renascence_Count",
+      "off": 2168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_32_Type_Judge",
+      "off": 2172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_32_Reguire_ID",
+      "off": 2180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_33_Name",
+      "off": 2192,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_33_Type_Activity",
+      "off": 2224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_33_Require_Level",
+      "off": 2228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_33_Renascence_Count",
+      "off": 2232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_33_Type_Judge",
+      "off": 2236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_33_Reguire_ID",
+      "off": 2244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_34_Name",
+      "off": 2256,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_34_Type_Activity",
+      "off": 2288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_34_Require_Level",
+      "off": 2292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_34_Renascence_Count",
+      "off": 2296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_34_Type_Judge",
+      "off": 2300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_34_Reguire_ID",
+      "off": 2308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_35_Name",
+      "off": 2320,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_35_Type_Activity",
+      "off": 2352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_35_Require_Level",
+      "off": 2356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_35_Renascence_Count",
+      "off": 2360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_35_Type_Judge",
+      "off": 2364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_35_Reguire_ID",
+      "off": 2372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_36_Name",
+      "off": 2384,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_36_Type_Activity",
+      "off": 2416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_36_Require_Level",
+      "off": 2420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_36_Renascence_Count",
+      "off": 2424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_36_Type_Judge",
+      "off": 2428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_36_Reguire_ID",
+      "off": 2436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_37_Name",
+      "off": 2448,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_37_Type_Activity",
+      "off": 2480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_37_Require_Level",
+      "off": 2484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_37_Renascence_Count",
+      "off": 2488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_37_Type_Judge",
+      "off": 2492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_37_Reguire_ID",
+      "off": 2500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_38_Name",
+      "off": 2512,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_38_Type_Activity",
+      "off": 2544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_38_Require_Level",
+      "off": 2548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_38_Renascence_Count",
+      "off": 2552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_38_Type_Judge",
+      "off": 2556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_38_Reguire_ID",
+      "off": 2564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_39_Name",
+      "off": 2576,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_39_Type_Activity",
+      "off": 2608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_39_Require_Level",
+      "off": 2612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_39_Renascence_Count",
+      "off": 2616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_39_Type_Judge",
+      "off": 2620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_39_Reguire_ID",
+      "off": 2628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_40_Name",
+      "off": 2640,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_40_Type_Activity",
+      "off": 2672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_40_Require_Level",
+      "off": 2676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_40_Renascence_Count",
+      "off": 2680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_40_Type_Judge",
+      "off": 2684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_40_Reguire_ID",
+      "off": 2692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_41_Name",
+      "off": 2704,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_41_Type_Activity",
+      "off": 2736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_41_Require_Level",
+      "off": 2740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_41_Renascence_Count",
+      "off": 2744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_41_Type_Judge",
+      "off": 2748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_41_Reguire_ID",
+      "off": 2756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_42_Name",
+      "off": 2768,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_42_Type_Activity",
+      "off": 2800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_42_Require_Level",
+      "off": 2804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_42_Renascence_Count",
+      "off": 2808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_42_Type_Judge",
+      "off": 2812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_42_Reguire_ID",
+      "off": 2820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_43_Name",
+      "off": 2832,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_43_Type_Activity",
+      "off": 2864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_43_Require_Level",
+      "off": 2868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_43_Renascence_Count",
+      "off": 2872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_43_Type_Judge",
+      "off": 2876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_43_Reguire_ID",
+      "off": 2884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_44_Name",
+      "off": 2896,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_44_Type_Activity",
+      "off": 2928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_44_Require_Level",
+      "off": 2932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_44_Renascence_Count",
+      "off": 2936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_44_Type_Judge",
+      "off": 2940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_44_Reguire_ID",
+      "off": 2948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 2956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_45_Name",
+      "off": 2960,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_45_Type_Activity",
+      "off": 2992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_45_Require_Level",
+      "off": 2996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_45_Renascence_Count",
+      "off": 3000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_45_Type_Judge",
+      "off": 3004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_45_Reguire_ID",
+      "off": 3012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_46_Name",
+      "off": 3024,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_46_Type_Activity",
+      "off": 3056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_46_Require_Level",
+      "off": 3060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_46_Renascence_Count",
+      "off": 3064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_46_Type_Judge",
+      "off": 3068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_46_Reguire_ID",
+      "off": 3076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_47_Name",
+      "off": 3088,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_47_Type_Activity",
+      "off": 3120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_47_Require_Level",
+      "off": 3124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_47_Renascence_Count",
+      "off": 3128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_47_Type_Judge",
+      "off": 3132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_47_Reguire_ID",
+      "off": 3140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_48_Name",
+      "off": 3152,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_48_Type_Activity",
+      "off": 3184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_48_Require_Level",
+      "off": 3188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_48_Renascence_Count",
+      "off": 3192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_48_Type_Judge",
+      "off": 3196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_48_Reguire_ID",
+      "off": 3204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_49_Name",
+      "off": 3216,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_49_Type_Activity",
+      "off": 3248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_49_Require_Level",
+      "off": 3252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_49_Renascence_Count",
+      "off": 3256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_49_Type_Judge",
+      "off": 3260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_49_Reguire_ID",
+      "off": 3268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_50_Name",
+      "off": 3280,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_50_Type_Activity",
+      "off": 3312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_50_Require_Level",
+      "off": 3316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_50_Renascence_Count",
+      "off": 3320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_50_Type_Judge",
+      "off": 3324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_50_Reguire_ID",
+      "off": 3332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_51_Name",
+      "off": 3344,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_51_Type_Activity",
+      "off": 3376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_51_Require_Level",
+      "off": 3380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_51_Renascence_Count",
+      "off": 3384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_51_Type_Judge",
+      "off": 3388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_51_Reguire_ID",
+      "off": 3396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_52_Name",
+      "off": 3408,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_52_Type_Activity",
+      "off": 3440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_52_Require_Level",
+      "off": 3444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_52_Renascence_Count",
+      "off": 3448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_52_Type_Judge",
+      "off": 3452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_52_Reguire_ID",
+      "off": 3460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_53_Name",
+      "off": 3472,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_53_Type_Activity",
+      "off": 3504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_53_Require_Level",
+      "off": 3508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_53_Renascence_Count",
+      "off": 3512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_53_Type_Judge",
+      "off": 3516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_53_Reguire_ID",
+      "off": 3524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_54_Name",
+      "off": 3536,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_54_Type_Activity",
+      "off": 3568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_54_Require_Level",
+      "off": 3572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_54_Renascence_Count",
+      "off": 3576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_54_Type_Judge",
+      "off": 3580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_54_Reguire_ID",
+      "off": 3588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_55_Name",
+      "off": 3600,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_55_Type_Activity",
+      "off": 3632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_55_Require_Level",
+      "off": 3636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_55_Renascence_Count",
+      "off": 3640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_55_Type_Judge",
+      "off": 3644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_55_Reguire_ID",
+      "off": 3652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_56_Name",
+      "off": 3664,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_56_Type_Activity",
+      "off": 3696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_56_Require_Level",
+      "off": 3700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_56_Renascence_Count",
+      "off": 3704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_56_Type_Judge",
+      "off": 3708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_56_Reguire_ID",
+      "off": 3716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_57_Name",
+      "off": 3728,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_57_Type_Activity",
+      "off": 3760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_57_Require_Level",
+      "off": 3764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_57_Renascence_Count",
+      "off": 3768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_57_Type_Judge",
+      "off": 3772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_57_Reguire_ID",
+      "off": 3780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_58_Name",
+      "off": 3792,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_58_Type_Activity",
+      "off": 3824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_58_Require_Level",
+      "off": 3828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_58_Renascence_Count",
+      "off": 3832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_58_Type_Judge",
+      "off": 3836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_58_Reguire_ID",
+      "off": 3844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_59_Name",
+      "off": 3856,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_59_Type_Activity",
+      "off": 3888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_59_Require_Level",
+      "off": 3892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_59_Renascence_Count",
+      "off": 3896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_59_Type_Judge",
+      "off": 3900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_59_Reguire_ID",
+      "off": 3908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_60_Name",
+      "off": 3920,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_60_Type_Activity",
+      "off": 3952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_60_Require_Level",
+      "off": 3956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_60_Renascence_Count",
+      "off": 3960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_60_Type_Judge",
+      "off": 3964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_60_Reguire_ID",
+      "off": 3972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 3980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_61_Name",
+      "off": 3984,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_61_Type_Activity",
+      "off": 4016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_61_Require_Level",
+      "off": 4020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_61_Renascence_Count",
+      "off": 4024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_61_Type_Judge",
+      "off": 4028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_61_Reguire_ID",
+      "off": 4036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_62_Name",
+      "off": 4048,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_62_Type_Activity",
+      "off": 4080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_62_Require_Level",
+      "off": 4084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_62_Renascence_Count",
+      "off": 4088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_62_Type_Judge",
+      "off": 4092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_62_Reguire_ID",
+      "off": 4100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_63_Name",
+      "off": 4112,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_63_Type_Activity",
+      "off": 4144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_63_Require_Level",
+      "off": 4148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_63_Renascence_Count",
+      "off": 4152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_63_Type_Judge",
+      "off": 4156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_63_Reguire_ID",
+      "off": 4164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_64_Name",
+      "off": 4176,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_64_Type_Activity",
+      "off": 4208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_64_Require_Level",
+      "off": 4212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_64_Renascence_Count",
+      "off": 4216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_64_Type_Judge",
+      "off": 4220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_64_Reguire_ID",
+      "off": 4228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_65_Name",
+      "off": 4240,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_65_Type_Activity",
+      "off": 4272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_65_Require_Level",
+      "off": 4276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_65_Renascence_Count",
+      "off": 4280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_65_Type_Judge",
+      "off": 4284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_65_Reguire_ID",
+      "off": 4292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_66_Name",
+      "off": 4304,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_66_Type_Activity",
+      "off": 4336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_66_Require_Level",
+      "off": 4340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_66_Renascence_Count",
+      "off": 4344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_66_Type_Judge",
+      "off": 4348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_66_Reguire_ID",
+      "off": 4356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_67_Name",
+      "off": 4368,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_67_Type_Activity",
+      "off": 4400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_67_Require_Level",
+      "off": 4404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_67_Renascence_Count",
+      "off": 4408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_67_Type_Judge",
+      "off": 4412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_67_Reguire_ID",
+      "off": 4420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_68_Name",
+      "off": 4432,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_68_Type_Activity",
+      "off": 4464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_68_Require_Level",
+      "off": 4468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_68_Renascence_Count",
+      "off": 4472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_68_Type_Judge",
+      "off": 4476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_68_Reguire_ID",
+      "off": 4484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_69_Name",
+      "off": 4496,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_69_Type_Activity",
+      "off": 4528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_69_Require_Level",
+      "off": 4532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_69_Renascence_Count",
+      "off": 4536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_69_Type_Judge",
+      "off": 4540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_69_Reguire_ID",
+      "off": 4548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_70_Name",
+      "off": 4560,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_70_Type_Activity",
+      "off": 4592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_70_Require_Level",
+      "off": 4596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_70_Renascence_Count",
+      "off": 4600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_70_Type_Judge",
+      "off": 4604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_70_Reguire_ID",
+      "off": 4612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_71_Name",
+      "off": 4624,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_71_Type_Activity",
+      "off": 4656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_71_Require_Level",
+      "off": 4660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_71_Renascence_Count",
+      "off": 4664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_71_Type_Judge",
+      "off": 4668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_71_Reguire_ID",
+      "off": 4676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_72_Name",
+      "off": 4688,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_72_Type_Activity",
+      "off": 4720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_72_Require_Level",
+      "off": 4724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_72_Renascence_Count",
+      "off": 4728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_72_Type_Judge",
+      "off": 4732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_72_Reguire_ID",
+      "off": 4740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_73_Name",
+      "off": 4752,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_73_Type_Activity",
+      "off": 4784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_73_Require_Level",
+      "off": 4788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_73_Renascence_Count",
+      "off": 4792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_73_Type_Judge",
+      "off": 4796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_73_Reguire_ID",
+      "off": 4804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_74_Name",
+      "off": 4816,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_74_Type_Activity",
+      "off": 4848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_74_Require_Level",
+      "off": 4852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_74_Renascence_Count",
+      "off": 4856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_74_Type_Judge",
+      "off": 4860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_74_Reguire_ID",
+      "off": 4868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_75_Name",
+      "off": 4880,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_75_Type_Activity",
+      "off": 4912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_75_Require_Level",
+      "off": 4916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_75_Renascence_Count",
+      "off": 4920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_75_Type_Judge",
+      "off": 4924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_75_Reguire_ID",
+      "off": 4932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_76_Name",
+      "off": 4944,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_76_Type_Activity",
+      "off": 4976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_76_Require_Level",
+      "off": 4980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_76_Renascence_Count",
+      "off": 4984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_76_Type_Judge",
+      "off": 4988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 4992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_76_Reguire_ID",
+      "off": 4996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_77_Name",
+      "off": 5008,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_77_Type_Activity",
+      "off": 5040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_77_Require_Level",
+      "off": 5044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_77_Renascence_Count",
+      "off": 5048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_77_Type_Judge",
+      "off": 5052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_77_Reguire_ID",
+      "off": 5060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_78_Name",
+      "off": 5072,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_78_Type_Activity",
+      "off": 5104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_78_Require_Level",
+      "off": 5108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_78_Renascence_Count",
+      "off": 5112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_78_Type_Judge",
+      "off": 5116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_78_Reguire_ID",
+      "off": 5124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_79_Name",
+      "off": 5136,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_79_Type_Activity",
+      "off": 5168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_79_Require_Level",
+      "off": 5172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_79_Renascence_Count",
+      "off": 5176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_79_Type_Judge",
+      "off": 5180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_79_Reguire_ID",
+      "off": 5188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_80_Name",
+      "off": 5200,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_80_Type_Activity",
+      "off": 5232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_80_Require_Level",
+      "off": 5236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_80_Renascence_Count",
+      "off": 5240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_80_Type_Judge",
+      "off": 5244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_80_Reguire_ID",
+      "off": 5252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_81_Name",
+      "off": 5264,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_81_Type_Activity",
+      "off": 5296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_81_Require_Level",
+      "off": 5300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_81_Renascence_Count",
+      "off": 5304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_81_Type_Judge",
+      "off": 5308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_81_Reguire_ID",
+      "off": 5316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_82_Name",
+      "off": 5328,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_82_Type_Activity",
+      "off": 5360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_82_Require_Level",
+      "off": 5364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_82_Renascence_Count",
+      "off": 5368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_82_Type_Judge",
+      "off": 5372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_82_Reguire_ID",
+      "off": 5380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_83_Name",
+      "off": 5392,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_83_Type_Activity",
+      "off": 5424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_83_Require_Level",
+      "off": 5428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_83_Renascence_Count",
+      "off": 5432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_83_Type_Judge",
+      "off": 5436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_83_Reguire_ID",
+      "off": 5444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_84_Name",
+      "off": 5456,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_84_Type_Activity",
+      "off": 5488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_84_Require_Level",
+      "off": 5492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_84_Renascence_Count",
+      "off": 5496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_84_Type_Judge",
+      "off": 5500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_84_Reguire_ID",
+      "off": 5508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_85_Name",
+      "off": 5520,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_85_Type_Activity",
+      "off": 5552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_85_Require_Level",
+      "off": 5556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_85_Renascence_Count",
+      "off": 5560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_85_Type_Judge",
+      "off": 5564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_85_Reguire_ID",
+      "off": 5572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_86_Name",
+      "off": 5584,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_86_Type_Activity",
+      "off": 5616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_86_Require_Level",
+      "off": 5620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_86_Renascence_Count",
+      "off": 5624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_86_Type_Judge",
+      "off": 5628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_86_Reguire_ID",
+      "off": 5636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_87_Name",
+      "off": 5648,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_87_Type_Activity",
+      "off": 5680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_87_Require_Level",
+      "off": 5684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_87_Renascence_Count",
+      "off": 5688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_87_Type_Judge",
+      "off": 5692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_87_Reguire_ID",
+      "off": 5700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_88_Name",
+      "off": 5712,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_88_Type_Activity",
+      "off": 5744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_88_Require_Level",
+      "off": 5748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_88_Renascence_Count",
+      "off": 5752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_88_Type_Judge",
+      "off": 5756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_88_Reguire_ID",
+      "off": 5764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_89_Name",
+      "off": 5776,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_89_Type_Activity",
+      "off": 5808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_89_Require_Level",
+      "off": 5812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_89_Renascence_Count",
+      "off": 5816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_89_Type_Judge",
+      "off": 5820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_89_Reguire_ID",
+      "off": 5828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_90_Name",
+      "off": 5840,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_90_Type_Activity",
+      "off": 5872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_90_Require_Level",
+      "off": 5876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_90_Renascence_Count",
+      "off": 5880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_90_Type_Judge",
+      "off": 5884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_90_Reguire_ID",
+      "off": 5892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_91_Name",
+      "off": 5904,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_91_Type_Activity",
+      "off": 5936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_91_Require_Level",
+      "off": 5940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_91_Renascence_Count",
+      "off": 5944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_91_Type_Judge",
+      "off": 5948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_91_Reguire_ID",
+      "off": 5956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 5964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_92_Name",
+      "off": 5968,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_92_Type_Activity",
+      "off": 6000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_92_Require_Level",
+      "off": 6004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_92_Renascence_Count",
+      "off": 6008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_92_Type_Judge",
+      "off": 6012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_92_Reguire_ID",
+      "off": 6020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_93_Name",
+      "off": 6032,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_93_Type_Activity",
+      "off": 6064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_93_Require_Level",
+      "off": 6068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_93_Renascence_Count",
+      "off": 6072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_93_Type_Judge",
+      "off": 6076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_93_Reguire_ID",
+      "off": 6084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_94_Name",
+      "off": 6096,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_94_Type_Activity",
+      "off": 6128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_94_Require_Level",
+      "off": 6132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_94_Renascence_Count",
+      "off": 6136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_94_Type_Judge",
+      "off": 6140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_94_Reguire_ID",
+      "off": 6148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_95_Name",
+      "off": 6160,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_95_Type_Activity",
+      "off": 6192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_95_Require_Level",
+      "off": 6196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_95_Renascence_Count",
+      "off": 6200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_95_Type_Judge",
+      "off": 6204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_95_Reguire_ID",
+      "off": 6212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_96_Name",
+      "off": 6224,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_96_Type_Activity",
+      "off": 6256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_96_Require_Level",
+      "off": 6260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_96_Renascence_Count",
+      "off": 6264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_96_Type_Judge",
+      "off": 6268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_96_Reguire_ID",
+      "off": 6276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_97_Name",
+      "off": 6288,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_97_Type_Activity",
+      "off": 6320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_97_Require_Level",
+      "off": 6324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_97_Renascence_Count",
+      "off": 6328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_97_Type_Judge",
+      "off": 6332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_97_Reguire_ID",
+      "off": 6340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_98_Name",
+      "off": 6352,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_98_Type_Activity",
+      "off": 6384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_98_Require_Level",
+      "off": 6388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_98_Renascence_Count",
+      "off": 6392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_98_Type_Judge",
+      "off": 6396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_98_Reguire_ID",
+      "off": 6404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_99_Name",
+      "off": 6416,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_99_Type_Activity",
+      "off": 6448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_99_Require_Level",
+      "off": 6452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_99_Renascence_Count",
+      "off": 6456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_99_Type_Judge",
+      "off": 6460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_99_Reguire_ID",
+      "off": 6468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_100_Name",
+      "off": 6480,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_100_Type_Activity",
+      "off": 6512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_100_Require_Level",
+      "off": 6516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_100_Renascence_Count",
+      "off": 6520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_100_Type_Judge",
+      "off": 6524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_100_Reguire_ID",
+      "off": 6532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_101_Name",
+      "off": 6544,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_101_Type_Activity",
+      "off": 6576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_101_Require_Level",
+      "off": 6580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_101_Renascence_Count",
+      "off": 6584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_101_Type_Judge",
+      "off": 6588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_101_Reguire_ID",
+      "off": 6596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_102_Name",
+      "off": 6608,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_102_Type_Activity",
+      "off": 6640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_102_Require_Level",
+      "off": 6644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_102_Renascence_Count",
+      "off": 6648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_102_Type_Judge",
+      "off": 6652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_102_Reguire_ID",
+      "off": 6660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_103_Name",
+      "off": 6672,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_103_Type_Activity",
+      "off": 6704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_103_Require_Level",
+      "off": 6708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_103_Renascence_Count",
+      "off": 6712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_103_Type_Judge",
+      "off": 6716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_103_Reguire_ID",
+      "off": 6724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_104_Name",
+      "off": 6736,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_104_Type_Activity",
+      "off": 6768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_104_Require_Level",
+      "off": 6772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_104_Renascence_Count",
+      "off": 6776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_104_Type_Judge",
+      "off": 6780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_104_Reguire_ID",
+      "off": 6788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_105_Name",
+      "off": 6800,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_105_Type_Activity",
+      "off": 6832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_105_Require_Level",
+      "off": 6836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_105_Renascence_Count",
+      "off": 6840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_105_Type_Judge",
+      "off": 6844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_105_Reguire_ID",
+      "off": 6852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_106_Name",
+      "off": 6864,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_106_Type_Activity",
+      "off": 6896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_106_Require_Level",
+      "off": 6900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_106_Renascence_Count",
+      "off": 6904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_106_Type_Judge",
+      "off": 6908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_106_Reguire_ID",
+      "off": 6916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_107_Name",
+      "off": 6928,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_107_Type_Activity",
+      "off": 6960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_107_Require_Level",
+      "off": 6964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_107_Renascence_Count",
+      "off": 6968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_107_Type_Judge",
+      "off": 6972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_107_Reguire_ID",
+      "off": 6980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 6988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_108_Name",
+      "off": 6992,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_108_Type_Activity",
+      "off": 7024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_108_Require_Level",
+      "off": 7028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_108_Renascence_Count",
+      "off": 7032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_108_Type_Judge",
+      "off": 7036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_108_Reguire_ID",
+      "off": 7044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_109_Name",
+      "off": 7056,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_109_Type_Activity",
+      "off": 7088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_109_Require_Level",
+      "off": 7092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_109_Renascence_Count",
+      "off": 7096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_109_Type_Judge",
+      "off": 7100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_109_Reguire_ID",
+      "off": 7108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_110_Name",
+      "off": 7120,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_110_Type_Activity",
+      "off": 7152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_110_Require_Level",
+      "off": 7156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_110_Renascence_Count",
+      "off": 7160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_110_Type_Judge",
+      "off": 7164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_110_Reguire_ID",
+      "off": 7172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_111_Name",
+      "off": 7184,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_111_Type_Activity",
+      "off": 7216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_111_Require_Level",
+      "off": 7220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_111_Renascence_Count",
+      "off": 7224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_111_Type_Judge",
+      "off": 7228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_111_Reguire_ID",
+      "off": 7236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_112_Name",
+      "off": 7248,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_112_Type_Activity",
+      "off": 7280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_112_Require_Level",
+      "off": 7284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_112_Renascence_Count",
+      "off": 7288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_112_Type_Judge",
+      "off": 7292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_112_Reguire_ID",
+      "off": 7300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_113_Name",
+      "off": 7312,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_113_Type_Activity",
+      "off": 7344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_113_Require_Level",
+      "off": 7348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_113_Renascence_Count",
+      "off": 7352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_113_Type_Judge",
+      "off": 7356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_113_Reguire_ID",
+      "off": 7364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_114_Name",
+      "off": 7376,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_114_Type_Activity",
+      "off": 7408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_114_Require_Level",
+      "off": 7412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_114_Renascence_Count",
+      "off": 7416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_114_Type_Judge",
+      "off": 7420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_114_Reguire_ID",
+      "off": 7428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_115_Name",
+      "off": 7440,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_115_Type_Activity",
+      "off": 7472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_115_Require_Level",
+      "off": 7476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_115_Renascence_Count",
+      "off": 7480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_115_Type_Judge",
+      "off": 7484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_115_Reguire_ID",
+      "off": 7492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_116_Name",
+      "off": 7504,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_116_Type_Activity",
+      "off": 7536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_116_Require_Level",
+      "off": 7540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_116_Renascence_Count",
+      "off": 7544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_116_Type_Judge",
+      "off": 7548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_116_Reguire_ID",
+      "off": 7556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_117_Name",
+      "off": 7568,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_117_Type_Activity",
+      "off": 7600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_117_Require_Level",
+      "off": 7604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_117_Renascence_Count",
+      "off": 7608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_117_Type_Judge",
+      "off": 7612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_117_Reguire_ID",
+      "off": 7620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_118_Name",
+      "off": 7632,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_118_Type_Activity",
+      "off": 7664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_118_Require_Level",
+      "off": 7668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_118_Renascence_Count",
+      "off": 7672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_118_Type_Judge",
+      "off": 7676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_118_Reguire_ID",
+      "off": 7684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_119_Name",
+      "off": 7696,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_119_Type_Activity",
+      "off": 7728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_119_Require_Level",
+      "off": 7732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_119_Renascence_Count",
+      "off": 7736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_119_Type_Judge",
+      "off": 7740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_119_Reguire_ID",
+      "off": 7748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_120_Name",
+      "off": 7760,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Element_List_120_Type_Activity",
+      "off": 7792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_120_Require_Level",
+      "off": 7796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_120_Renascence_Count",
+      "off": 7800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_120_Type_Judge",
+      "off": 7804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Element_List_120_Reguire_ID",
+      "off": 7812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Unknown",
+      "off": 7820,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

@@ -1,0 +1,332 @@
+{
+  "key": "instancing_battle_config",
+  "name": "Instancing Battle Config",
+  "struct": "INSTANCING_BATTLE_CONFIG",
+  "size": 2172,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名字，最多15个汉字"
+    },
+    {
+      "name": "map_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "战场id"
+    },
+    {
+      "name": "desc",
+      "off": 72,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      },
+      "c": "战场说明"
+    },
+    {
+      "name": "file_map",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "c": "地图存储路径",
+      "display": "path"
+    },
+    {
+      "name": "active_fee",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "c": "激活花费金钱"
+    },
+    {
+      "name": "active_item",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "c": "激活战场的道具"
+    },
+    {
+      "name": "apply_time",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "报名时间"
+    },
+    {
+      "name": "run_time",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "c": "进行时间"
+    },
+    {
+      "name": "renascence_count",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "c": "转生次数要求"
+    },
+    {
+      "name": "level_lower_limit",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "c": "等级下限"
+    },
+    {
+      "name": "level_upper_limit",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      },
+      "c": "等级上限"
+    },
+    {
+      "name": "max_player",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      },
+      "c": "战场人数上限"
+    },
+    {
+      "name": "open_player_num",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      },
+      "c": "提前开启人数下限"
+    },
+    {
+      "name": "open_player_num2",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      },
+      "c": "自动开启人数下限"
+    },
+    {
+      "name": "victory_controller",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      },
+      "c": "战场胜利条件，控制器被激活"
+    },
+    {
+      "name": "reopen_time",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      },
+      "c": "重新开启时间间隔"
+    },
+    {
+      "name": "relation_limit",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      },
+      "c": "进入战场限制"
+    },
+    {
+      "name": "sect_limit",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      },
+      "c": "门派限制"
+    },
+    {
+      "name": "forbid_food",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      },
+      "c": "禁食限制",
+      "e": "forbid_food"
+    },
+    {
+      "name": "valid_tollgate_num",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      },
+      "c": "有效关卡的数量"
+    },
+    {
+      "name": "tollgate",
+      "off": 172,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 88,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "tollgate_name",
+              "off": 0,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              },
+              "c": "关卡名称"
+            },
+            {
+              "name": "score",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              },
+              "c": "积分，过关时奖励的积分"
+            },
+            {
+              "name": "time_limit",
+              "off": 36,
+              "t": {
+                "k": "i32"
+              },
+              "c": "时间"
+            },
+            {
+              "name": "score_per_sec",
+              "off": 40,
+              "t": {
+                "k": "i32"
+              },
+              "c": "每分钟对应分数"
+            },
+            {
+              "name": "introduce",
+              "off": 44,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              },
+              "c": "简介"
+            },
+            {
+              "name": "open_controller",
+              "off": 76,
+              "t": {
+                "k": "i32"
+              },
+              "c": "开启条件，控制器被开启"
+            },
+            {
+              "name": "finish_controller",
+              "off": 80,
+              "t": {
+                "k": "i32"
+              },
+              "c": "完成控制器"
+            },
+            {
+              "name": "death_penlty",
+              "off": 84,
+              "t": {
+                "k": "i32"
+              },
+              "c": "死亡惩罚的分数"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "monster",
+      "off": 1932,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "monster_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "怪物id"
+            },
+            {
+              "name": "score",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "怪物积分"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "award_level",
+      "off": 2092,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 16,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "victory_score_level",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "victory_task_id",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "failure_score_level",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "failure_task_id",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

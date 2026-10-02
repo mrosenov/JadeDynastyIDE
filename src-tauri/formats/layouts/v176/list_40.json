@@ -1,0 +1,932 @@
+{
+  "name": "Param Adjust Config",
+  "struct": "PARAM_ADJUST_CONFIG",
+  "size": 588,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Adjust_Config_ID",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_1_Level",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_1_EXP",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_1_Money",
+      "off": 80,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_1_Matter",
+      "off": 84,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_1_Atk",
+      "off": 88,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_2_Level",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_2_EXP",
+      "off": 96,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_2_Money",
+      "off": 100,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_2_Matter",
+      "off": 104,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_2_Atk",
+      "off": 108,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_3_Level",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_3_EXP",
+      "off": 116,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_3_Money",
+      "off": 120,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_3_Matter",
+      "off": 124,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_3_Atk",
+      "off": 128,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_4_Level",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_4_EXP",
+      "off": 136,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_4_Money",
+      "off": 140,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_4_Matter",
+      "off": 144,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_4_Atk",
+      "off": 148,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_5_Level",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_5_EXP",
+      "off": 156,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_5_Money",
+      "off": 160,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_5_Matter",
+      "off": 164,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_5_Atk",
+      "off": 168,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_6_Level",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_6_EXP",
+      "off": 176,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_6_Money",
+      "off": 180,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_6_Matter",
+      "off": 184,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_6_Atk",
+      "off": 188,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_7_Level",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_7_EXP",
+      "off": 196,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_7_Money",
+      "off": 200,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_7_Matter",
+      "off": 204,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_7_Atk",
+      "off": 208,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_8_Level",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_8_EXP",
+      "off": 216,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_8_Money",
+      "off": 220,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_8_Matter",
+      "off": 224,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_8_Atk",
+      "off": 228,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_9_Level",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_9_EXP",
+      "off": 236,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_9_Money",
+      "off": 240,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_9_Matter",
+      "off": 244,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_9_Atk",
+      "off": 248,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_10_Level",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_10_EXP",
+      "off": 256,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_10_Money",
+      "off": 260,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_10_Matter",
+      "off": 264,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_10_Atk",
+      "off": 268,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_11_Level",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_11_EXP",
+      "off": 276,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_11_Money",
+      "off": 280,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_11_Matter",
+      "off": 284,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_11_Atk",
+      "off": 288,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_12_Level",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_12_EXP",
+      "off": 296,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_12_Money",
+      "off": 300,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_12_Matter",
+      "off": 304,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_12_Atk",
+      "off": 308,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_13_Level",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_13_EXP",
+      "off": 316,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_13_Money",
+      "off": 320,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_13_Matter",
+      "off": 324,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_13_Atk",
+      "off": 328,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_14_Level",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_14_EXP",
+      "off": 336,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_14_Money",
+      "off": 340,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_14_Matter",
+      "off": 344,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_14_Atk",
+      "off": 348,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_15_Level",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_15_EXP",
+      "off": 356,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_15_Money",
+      "off": 360,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_15_Matter",
+      "off": 364,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_15_Atk",
+      "off": 368,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_16_Level",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_16_EXP",
+      "off": 376,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_16_Money",
+      "off": 380,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_16_Matter",
+      "off": 384,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_16_Atk",
+      "off": 388,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Count_1_Adjust_EXP",
+      "off": 392,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Count_2_Adjust_EXP",
+      "off": 396,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Count_3_Adjust_EXP",
+      "off": 400,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Count_4_Adjust_EXP",
+      "off": 404,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Count_5_Adjust_EXP",
+      "off": 408,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Count_6_Adjust_EXP",
+      "off": 412,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Count_7_Adjust_EXP",
+      "off": 416,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Count_8_Adjust_EXP",
+      "off": 420,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Count_9_Adjust_EXP",
+      "off": 424,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Count_10_Adjust_EXP",
+      "off": 428,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Count_11_Adjust_EXP",
+      "off": 432,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Pro_Count_1_Adjust_EXP",
+      "off": 436,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Pro_Count_2_Adjust_EXP",
+      "off": 440,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Pro_Count_3_Adjust_EXP",
+      "off": 444,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Pro_Count_4_Adjust_EXP",
+      "off": 448,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Pro_Count_5_Adjust_EXP",
+      "off": 452,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Pro_Count_6_Adjust_EXP",
+      "off": 456,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Pro_Count_7_Adjust_EXP",
+      "off": 460,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Pro_Count_8_Adjust_EXP",
+      "off": 464,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Team_Pro_Count_9_Adjust_EXP",
+      "off": 468,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_1_Level",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_1_EXP",
+      "off": 476,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_2_Level",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_2_EXP",
+      "off": 484,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_3_Level",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_3_EXP",
+      "off": 492,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_4_Level",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_4_EXP",
+      "off": 500,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_5_Level",
+      "off": 504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_5_EXP",
+      "off": 508,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_6_Level",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_6_EXP",
+      "off": 516,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_7_Level",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_7_EXP",
+      "off": 524,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_8_Level",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_8_EXP",
+      "off": 532,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_9_Level",
+      "off": 536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level_Diff_Produce_9_EXP",
+      "off": 540,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk1",
+      "off": 544,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk2",
+      "off": 548,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk3",
+      "off": 552,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk4",
+      "off": 556,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk5",
+      "off": 560,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk6",
+      "off": 564,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk7",
+      "off": 568,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk8",
+      "off": 572,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk9",
+      "off": 576,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk10",
+      "off": 580,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Unk11",
+      "off": 584,
+      "t": {
+        "k": "f32"
+      }
+    }
+  ]
+}

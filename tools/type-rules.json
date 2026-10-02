@@ -1,0 +1,97 @@
+{
+  "_comment": [
+    "Conditional field types applied to every layout by tools/apply-type-rules.mjs.",
+    "Each entry targets a top-level field of the lists matching `struct` (or `list` name).",
+    "Addon param1 float types: the Jade Editor's value1_float_type_ids, plus 55-60 and 64",
+    "which hold floats in every record of the v156, v160 and v165 files checked."
+  ],
+  "rules": [
+    {
+      "struct": "EQUIPMENT_ADDON",
+      "field": "param1",
+      "when": [
+        {
+          "field": "type",
+          "in": [
+            7,
+            8,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            29,
+            31,
+            33,
+            40,
+            41,
+            42,
+            43,
+            44,
+            47,
+            48,
+            49,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            64
+          ],
+          "t": {
+            "k": "f32"
+          }
+        }
+      ]
+    },
+    {
+      "list": "AddedAttribute",
+      "field": "Value1",
+      "when": [
+        {
+          "field": "Type",
+          "in": [
+            7,
+            8,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            29,
+            31,
+            33,
+            40,
+            41,
+            42,
+            43,
+            44,
+            47,
+            48,
+            49
+          ],
+          "t": {
+            "k": "f32"
+          }
+        }
+      ]
+    }
+  ]
+}

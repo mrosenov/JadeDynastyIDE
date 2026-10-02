@@ -1,0 +1,129 @@
+{
+  "name": "Title Prop Config",
+  "struct": "TITLE_PROP_CONFIG",
+  "size": 112,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Title",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Attribute_1",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_2",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_3",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_4",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_5",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_6",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_7",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_8",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_9",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_10",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    }
+  ]
+}

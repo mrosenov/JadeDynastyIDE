@@ -1,0 +1,346 @@
+{
+  "key": "mine_essence",
+  "name": "Mine Essence",
+  "struct": "MINE_ESSENCE",
+  "size": 380,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "矿(类型)ID"
+    },
+    {
+      "name": "id_type",
+      "off": 4,
+      "t": {
+        "k": "u32"
+      },
+      "c": "类别ID",
+      "refs": [
+        "MINE_TYPE"
+      ]
+    },
+    {
+      "name": "name",
+      "off": 8,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "level",
+      "off": 72,
+      "t": {
+        "k": "u32"
+      },
+      "c": "等级"
+    },
+    {
+      "name": "level_required",
+      "off": 76,
+      "t": {
+        "k": "u32"
+      },
+      "c": "等级限制"
+    },
+    {
+      "name": "id_equipment_required",
+      "off": 80,
+      "t": {
+        "k": "u32"
+      },
+      "c": "所需要的工具类型"
+    },
+    {
+      "name": "eliminate_tool",
+      "off": 84,
+      "t": {
+        "k": "u32"
+      },
+      "c": "消耗采掘用具(true or false)"
+    },
+    {
+      "name": "time_min",
+      "off": 88,
+      "t": {
+        "k": "u32"
+      },
+      "c": "采矿时间下限（秒）"
+    },
+    {
+      "name": "time_max",
+      "off": 92,
+      "t": {
+        "k": "u32"
+      },
+      "c": "采矿时间上限（秒）"
+    },
+    {
+      "name": "exp",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "c": "每次采集所获的经验"
+    },
+    {
+      "name": "skillpoint",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "每次采集所获的技能点"
+    },
+    {
+      "name": "cursor_icon",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "c": "采矿时显示的鼠标的图标（如果为0，则用默认的图标）"
+    },
+    {
+      "name": "file_model",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "c": "模型路径名",
+      "display": "path"
+    },
+    {
+      "name": "materials",
+      "off": 112,
+      "t": {
+        "k": "array",
+        "n": 16,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "原料ID"
+            },
+            {
+              "name": "probability",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              },
+              "c": "挖出概率 (总和为1)"
+            }
+          ]
+        }
+      },
+      "c": "挖掘出的原料表"
+    },
+    {
+      "name": "num1",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      },
+      "c": "原料数目1"
+    },
+    {
+      "name": "probability1",
+      "off": 244,
+      "t": {
+        "k": "f32"
+      },
+      "c": "概率1"
+    },
+    {
+      "name": "num2",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      },
+      "c": "原料数目2"
+    },
+    {
+      "name": "probability2",
+      "off": 252,
+      "t": {
+        "k": "f32"
+      },
+      "c": "概率2"
+    },
+    {
+      "name": "task_in",
+      "off": 256,
+      "t": {
+        "k": "u32"
+      },
+      "c": "需要的任务id"
+    },
+    {
+      "name": "task_out",
+      "off": 260,
+      "t": {
+        "k": "u32"
+      },
+      "c": "采集后相关任务id"
+    },
+    {
+      "name": "uninterruptable",
+      "off": 264,
+      "t": {
+        "k": "u32"
+      },
+      "c": "采集过程不可中断, false-可以中断, true-不可中断"
+    },
+    {
+      "name": "npcgen",
+      "off": 268,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id_monster",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "产生怪物id"
+            },
+            {
+              "name": "num",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "产生怪物数目"
+            },
+            {
+              "name": "radius",
+              "off": 8,
+              "t": {
+                "k": "f32"
+              },
+              "c": "产生半径（米）"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "aggros",
+      "off": 316,
+      "t": {
+        "k": "array",
+        "n": 1,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "monster_faction",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "仇恨的怪物详细派系"
+            },
+            {
+              "name": "radius",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              },
+              "c": "仇恨半径（米）"
+            },
+            {
+              "name": "num",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "仇恨数值"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "role_in_war",
+      "off": 328,
+      "t": {
+        "k": "u32"
+      },
+      "c": "城战中所扮演的角色"
+    },
+    {
+      "name": "permenent",
+      "off": 332,
+      "t": {
+        "k": "u32"
+      },
+      "c": "采集后矿物不消失，false-消失，true-不消失"
+    },
+    {
+      "name": "activate_controller_mode",
+      "off": 336,
+      "t": {
+        "k": "u32"
+      },
+      "c": "开启怪物控制器方式"
+    },
+    {
+      "name": "activate_controller_id",
+      "off": 340,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "开启怪物控制器id"
+    },
+    {
+      "name": "deactivate_controller_mode",
+      "off": 356,
+      "t": {
+        "k": "u32"
+      },
+      "c": "关闭怪物控制器方式"
+    },
+    {
+      "name": "deactivate_controller_id",
+      "off": 360,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "关闭怪物控制器id"
+    },
+    {
+      "name": "close_collision_detection",
+      "off": 376,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是否关闭碰撞检测, 0-不关闭, 1-关闭"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "key": "reciperoll_sub_type",
+  "name": "Reciperoll Sub Type",
+  "struct": "RECIPEROLL_SUB_TYPE",
+  "size": 68,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    }
+  ]
+}

@@ -1,0 +1,383 @@
+{
+  "key": "talisman_mainpart_essence",
+  "name": "Talisman Mainpart Essence",
+  "struct": "TALISMAN_MAINPART_ESSENCE",
+  "size": 324,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "法宝主件ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "法宝主件名称, 最多15个汉字"
+    },
+    {
+      "name": "file_model",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 7,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "法宝主件模型路径1 - 4",
+      "display": "path"
+    },
+    {
+      "name": "file_matter",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径",
+      "display": "icon"
+    },
+    {
+      "name": "color_change",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "c": "颜色是否随机变化：只针对飞剑 0：无颜色变化， 1：颜色随机变化"
+    },
+    {
+      "name": "show_level",
+      "off": 108,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      },
+      "c": "法宝主件品级描述"
+    },
+    {
+      "name": "level",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      },
+      "c": "法宝主件等级"
+    },
+    {
+      "name": "init_level",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      },
+      "c": "初始等级"
+    },
+    {
+      "name": "character_combo_id",
+      "off": 148,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制, 从低位到高位的含义为：0-新手, 1-术士, 2-武士, 3-战士, 4-剑士, 5-牧师, 6-法师, 7-将军, 8-重骑士, 9-刺客, 10-剑圣, 11-贤者, 12-祭司, 13-秘法师, 14-召唤使",
+      "e": "character_combo_id"
+    },
+    {
+      "name": "character_combo_id2",
+      "off": 156,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制，扩展职业ID后的新职业限制，Added 2011-07-14.",
+      "e": "character_combo_id2"
+    },
+    {
+      "name": "char_lev_1",
+      "off": 164,
+      "t": {
+        "k": "u64"
+      }
+    },
+    {
+      "name": "char_lev_1_2",
+      "off": 172,
+      "t": {
+        "k": "u64"
+      },
+      "c": "转职业时的职业限制，扩展职业ID后的新职业限制，Added 2011-07-14."
+    },
+    {
+      "name": "char_lev_2",
+      "off": 180,
+      "t": {
+        "k": "u64"
+      }
+    },
+    {
+      "name": "char_lev_2_2",
+      "off": 188,
+      "t": {
+        "k": "u64"
+      },
+      "c": "转职业时的职业限制，扩展职业ID后的新职业限制，Added 2011-07-14."
+    },
+    {
+      "name": "char_lev_3",
+      "off": 196,
+      "t": {
+        "k": "u64"
+      }
+    },
+    {
+      "name": "char_lev_3_2",
+      "off": 204,
+      "t": {
+        "k": "u64"
+      },
+      "c": "转职业时的职业限制，扩展职业ID后的新职业限制，Added 2011-07-14."
+    },
+    {
+      "name": "require_gender",
+      "off": 212,
+      "t": {
+        "k": "u32"
+      },
+      "c": "性别限制，0-男，1-女，2-男女都可",
+      "e": "gender"
+    },
+    {
+      "name": "require_level",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      },
+      "c": "等级限制"
+    },
+    {
+      "name": "sect_mask",
+      "off": 220,
+      "t": {
+        "k": "u32"
+      },
+      "c": "门派要求",
+      "e": "sect_mask"
+    },
+    {
+      "name": "sect_mask_1",
+      "off": 224,
+      "t": {
+        "k": "u32"
+      },
+      "c": "门派要求",
+      "e": "sect_mask"
+    },
+    {
+      "name": "sect_mask_2",
+      "off": 228,
+      "t": {
+        "k": "u32"
+      },
+      "c": "门派要求",
+      "e": "sect_mask"
+    },
+    {
+      "name": "sect_mask_3",
+      "off": 232,
+      "t": {
+        "k": "u32"
+      },
+      "c": "门派要求",
+      "e": "sect_mask"
+    },
+    {
+      "name": "require_race",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      },
+      "c": "种族限制，0-人族，1-兽族， 2-都可以",
+      "e": "race"
+    },
+    {
+      "name": "require_level2",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      },
+      "c": "修真等级限制"
+    },
+    {
+      "name": "renascence_count",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      },
+      "c": "转生次数要求"
+    },
+    {
+      "name": "god_devil_mask",
+      "off": 248,
+      "t": {
+        "k": "u32"
+      },
+      "c": "仙魔",
+      "e": "god_devil_mask"
+    },
+    {
+      "name": "title_require",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      },
+      "c": "称号"
+    },
+    {
+      "name": "max_level",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      },
+      "c": "最大成长等级"
+    },
+    {
+      "name": "max_level2",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      },
+      "c": "最大成长等级2"
+    },
+    {
+      "name": "energy_recover_speed",
+      "off": 264,
+      "t": {
+        "k": "f32"
+      },
+      "c": "法宝精力增长速度"
+    },
+    {
+      "name": "energy_recover_factor",
+      "off": 268,
+      "t": {
+        "k": "f32"
+      },
+      "c": "非战斗状态法宝精力增长速度衰减系数"
+    },
+    {
+      "name": "energy_drop_speed",
+      "off": 272,
+      "t": {
+        "k": "f32"
+      },
+      "c": "法宝精力下降速度"
+    },
+    {
+      "name": "fee_levelup",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      },
+      "c": "升级手续费"
+    },
+    {
+      "name": "fee_expfood",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      },
+      "c": "血炼手续费"
+    },
+    {
+      "name": "fee_reset",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      },
+      "c": "重置手续费"
+    },
+    {
+      "name": "is_aircraft",
+      "off": 288,
+      "t": {
+        "k": "u32"
+      }
+    },
+    {
+      "name": "fly_speed",
+      "off": 292,
+      "t": {
+        "k": "f32"
+      },
+      "c": "飞行速度"
+    },
+    {
+      "name": "fly_mode",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      },
+      "c": "飞行模式"
+    },
+    {
+      "name": "fly_energy_drop_speed",
+      "off": 300,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "fly_exp_added",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      },
+      "c": "每30秒增加飞剑经验值"
+    },
+    {
+      "name": "price",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 320,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

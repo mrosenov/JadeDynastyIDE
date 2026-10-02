@@ -1,0 +1,487 @@
+{
+  "name": "Talent Scroll Skill Config",
+  "struct": "TALENT_SCROLL_SKILL_CONFIG",
+  "size": 8452,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Skill_Info_1_ID",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "Skill_Info_1_Level",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_1_Prob",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_1_Desc",
+      "off": 80,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_2_ID",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_2_Level",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_2_Prob",
+      "off": 600,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_2_Desc",
+      "off": 604,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_3_ID",
+      "off": 1116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_3_Level",
+      "off": 1120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_3_Prob",
+      "off": 1124,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_3_Desc",
+      "off": 1128,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_4_ID",
+      "off": 1640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_4_Level",
+      "off": 1644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_4_Prob",
+      "off": 1648,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_4_Desc",
+      "off": 1652,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_5_ID",
+      "off": 2164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_5_Level",
+      "off": 2168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_5_Prob",
+      "off": 2172,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_5_Desc",
+      "off": 2176,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_6_ID",
+      "off": 2688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_6_Level",
+      "off": 2692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_6_Prob",
+      "off": 2696,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_6_Desc",
+      "off": 2700,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_7_ID",
+      "off": 3212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_7_Level",
+      "off": 3216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_7_Prob",
+      "off": 3220,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_7_Desc",
+      "off": 3224,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_8_ID",
+      "off": 3736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_8_Level",
+      "off": 3740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_8_Prob",
+      "off": 3744,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_8_Desc",
+      "off": 3748,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_9_ID",
+      "off": 4260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_9_Level",
+      "off": 4264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_9_Prob",
+      "off": 4268,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_9_Desc",
+      "off": 4272,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_10_ID",
+      "off": 4784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_10_Level",
+      "off": 4788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_10_Prob",
+      "off": 4792,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_10_Desc",
+      "off": 4796,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_11_ID",
+      "off": 5308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_11_Level",
+      "off": 5312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_11_Prob",
+      "off": 5316,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_11_Desc",
+      "off": 5320,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_12_ID",
+      "off": 5832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_12_Level",
+      "off": 5836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_12_Prob",
+      "off": 5840,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_12_Desc",
+      "off": 5844,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_13_ID",
+      "off": 6356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_13_Level",
+      "off": 6360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_13_Prob",
+      "off": 6364,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_13_Desc",
+      "off": 6368,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_14_ID",
+      "off": 6880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_14_Level",
+      "off": 6884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_14_Prob",
+      "off": 6888,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_14_Desc",
+      "off": 6892,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_15_ID",
+      "off": 7404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_15_Level",
+      "off": 7408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_15_Prob",
+      "off": 7412,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_15_Desc",
+      "off": 7416,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "Skill_Info_16_ID",
+      "off": 7928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_16_Level",
+      "off": 7932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill_Info_16_Prob",
+      "off": 7936,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skill_Info_16_Desc",
+      "off": 7940,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    }
+  ]
+}

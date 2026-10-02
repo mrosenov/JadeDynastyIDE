@@ -1,0 +1,62 @@
+{
+  "key": "rune_comb_property",
+  "name": "Rune Comb Property",
+  "struct": "RUNE_COMB_PROPERTY",
+  "size": 148,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "id"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "max_ids",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "符文数"
+    },
+    {
+      "name": "ids",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "符文id1~10"
+    },
+    {
+      "name": "addons",
+      "off": 112,
+      "t": {
+        "k": "array",
+        "n": 9,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "跟套装属性不同，小于max_ids个id不激活任何属性",
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    }
+  ]
+}

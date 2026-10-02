@@ -1,0 +1,1338 @@
+{
+  "name": "Talent Scroll Config",
+  "struct": "TALENT_SCROLL_CONFIG",
+  "size": 820,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "prop_prob_1",
+      "off": 68,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "prop_prob_2",
+      "off": 72,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "prop_prob_3",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "prop_prob_4",
+      "off": 80,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "spe_prob",
+      "off": 84,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_1_prop_id",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_1_max_value",
+      "off": 92,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_1_min_value",
+      "off": 96,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_1_add_value",
+      "off": 100,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_1_prob",
+      "off": 104,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_2_prop_id",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_2_max_value",
+      "off": 112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_2_min_value",
+      "off": 116,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_2_add_value",
+      "off": 120,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_2_prob",
+      "off": 124,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_3_prop_id",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_3_max_value",
+      "off": 132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_3_min_value",
+      "off": 136,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_3_add_value",
+      "off": 140,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_3_prob",
+      "off": 144,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_4_prop_id",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_4_max_value",
+      "off": 152,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_4_min_value",
+      "off": 156,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_4_add_value",
+      "off": 160,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_4_prob",
+      "off": 164,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_5_prop_id",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_5_max_value",
+      "off": 172,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_5_min_value",
+      "off": 176,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_5_add_value",
+      "off": 180,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_5_prob",
+      "off": 184,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_6_prop_id",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_6_max_value",
+      "off": 192,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_6_min_value",
+      "off": 196,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_6_add_value",
+      "off": 200,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_6_prob",
+      "off": 204,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_7_prop_id",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_7_max_value",
+      "off": 212,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_7_min_value",
+      "off": 216,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_7_add_value",
+      "off": 220,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_7_prob",
+      "off": 224,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_8_prop_id",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_8_max_value",
+      "off": 232,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_8_min_value",
+      "off": 236,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_8_add_value",
+      "off": 240,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_8_prob",
+      "off": 244,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_9_prop_id",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_9_max_value",
+      "off": 252,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_9_min_value",
+      "off": 256,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_9_add_value",
+      "off": 260,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_9_prob",
+      "off": 264,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_10_prop_id",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_10_max_value",
+      "off": 272,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_10_min_value",
+      "off": 276,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_10_add_value",
+      "off": 280,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_10_prob",
+      "off": 284,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_11_prop_id",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_11_max_value",
+      "off": 292,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_11_min_value",
+      "off": 296,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_11_add_value",
+      "off": 300,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_11_prob",
+      "off": 304,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_12_prop_id",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_12_max_value",
+      "off": 312,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_12_min_value",
+      "off": 316,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_12_add_value",
+      "off": 320,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_12_prob",
+      "off": 324,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_13_prop_id",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_13_max_value",
+      "off": 332,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_13_min_value",
+      "off": 336,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_13_add_value",
+      "off": 340,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_13_prob",
+      "off": 344,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_14_prop_id",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_14_max_value",
+      "off": 352,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_14_min_value",
+      "off": 356,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_14_add_value",
+      "off": 360,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_14_prob",
+      "off": 364,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_15_prop_id",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_15_max_value",
+      "off": 372,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_15_min_value",
+      "off": 376,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_15_add_value",
+      "off": 380,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_15_prob",
+      "off": 384,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_16_prop_id",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_16_max_value",
+      "off": 392,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_16_min_value",
+      "off": 396,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_16_add_value",
+      "off": 400,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_16_prob",
+      "off": 404,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_17_prop_id",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_17_max_value",
+      "off": 412,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_17_min_value",
+      "off": 416,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_17_add_value",
+      "off": 420,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_17_prob",
+      "off": 424,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_18_prop_id",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_18_max_value",
+      "off": 432,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_18_min_value",
+      "off": 436,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_18_add_value",
+      "off": 440,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_18_prob",
+      "off": 444,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_19_prop_id",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_19_max_value",
+      "off": 452,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_19_min_value",
+      "off": 456,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_19_add_value",
+      "off": 460,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_19_prob",
+      "off": 464,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_20_prop_id",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_20_max_value",
+      "off": 472,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_20_min_value",
+      "off": 476,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_20_add_value",
+      "off": 480,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_20_prob",
+      "off": 484,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_21_prop_id",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_21_max_value",
+      "off": 492,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_21_min_value",
+      "off": 496,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_21_add_value",
+      "off": 500,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_21_prob",
+      "off": 504,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_22_prop_id",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_22_max_value",
+      "off": 512,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_22_min_value",
+      "off": 516,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_22_add_value",
+      "off": 520,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_22_prob",
+      "off": 524,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_23_prop_id",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_23_max_value",
+      "off": 532,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_23_min_value",
+      "off": 536,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_23_add_value",
+      "off": 540,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_23_prob",
+      "off": 544,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_24_prop_id",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_24_max_value",
+      "off": 552,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_24_min_value",
+      "off": 556,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_24_add_value",
+      "off": 560,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_24_prob",
+      "off": 564,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_25_prop_id",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_25_max_value",
+      "off": 572,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_25_min_value",
+      "off": 576,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_25_add_value",
+      "off": 580,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_25_prob",
+      "off": 584,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_26_prop_id",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_26_max_value",
+      "off": 592,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_26_min_value",
+      "off": 596,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_26_add_value",
+      "off": 600,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_26_prob",
+      "off": 604,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_27_prop_id",
+      "off": 608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_27_max_value",
+      "off": 612,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_27_min_value",
+      "off": 616,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_27_add_value",
+      "off": 620,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_27_prob",
+      "off": 624,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_28_prop_id",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_28_max_value",
+      "off": 632,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_28_min_value",
+      "off": 636,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_28_add_value",
+      "off": 640,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_28_prob",
+      "off": 644,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_29_prop_id",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_29_max_value",
+      "off": 652,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_29_min_value",
+      "off": 656,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_29_add_value",
+      "off": 660,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_29_prob",
+      "off": 664,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_30_prop_id",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_30_max_value",
+      "off": 672,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_30_min_value",
+      "off": 676,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_30_add_value",
+      "off": 680,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_30_prob",
+      "off": 684,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_31_prop_id",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_31_max_value",
+      "off": 692,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_31_min_value",
+      "off": 696,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_31_add_value",
+      "off": 700,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_31_prob",
+      "off": 704,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_32_prop_id",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "property_32_max_value",
+      "off": 712,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_32_min_value",
+      "off": 716,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_32_add_value",
+      "off": 720,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "property_32_prob",
+      "off": 724,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_prob_1",
+      "off": 728,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_prob_2",
+      "off": 732,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_prob_3",
+      "off": 736,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_prob_4",
+      "off": 740,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_prob_5",
+      "off": 744,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_1",
+      "off": 748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_2",
+      "off": 752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_3",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_4",
+      "off": 760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_5",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_6",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_7",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_8",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_9",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_10",
+      "off": 784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_11",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_12",
+      "off": 792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_13",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_14",
+      "off": 800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_15",
+      "off": 804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_16",
+      "off": 808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_17",
+      "off": 812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "profession_addon_skill_18",
+      "off": 816,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "key": "online_gift_bag_config",
+  "name": "Online Gift Bag Config",
+  "struct": "ONLINE_GIFT_BAG_CONFIG",
+  "size": 264,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模板ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉落在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径",
+      "display": "icon"
+    },
+    {
+      "name": "award_type",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "奖励的类型：0：活动奖励；1：每日奖励"
+    },
+    {
+      "name": "start_time_per_day",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "每日奖励时的开启时间"
+    },
+    {
+      "name": "end_time_per_day",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "每日奖励时的结束时间"
+    },
+    {
+      "name": "start_time_per_interval",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "c": "活动奖励时的开启时间"
+    },
+    {
+      "name": "end_time_per_interval",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "c": "活动奖励时的结束时间"
+    },
+    {
+      "name": "expire_time",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "c": "奖励领取的截止时间，主要用于活动奖励类型，每日奖励每日0点清除"
+    },
+    {
+      "name": "renascence_count",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "转生次数要求"
+    },
+    {
+      "name": "require_min_level",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "c": "等级下限"
+    },
+    {
+      "name": "require_max_level",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "c": "等级上限"
+    },
+    {
+      "name": "require_gender",
+      "off": 112,
+      "t": {
+        "k": "u32"
+      },
+      "c": "性别限制，0-男，1-女，2-男女都可",
+      "e": "gender"
+    },
+    {
+      "name": "character_combo_id",
+      "off": 116,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制，通过掩码实现",
+      "e": "character_combo_id"
+    },
+    {
+      "name": "character_combo_id2",
+      "off": 124,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制，扩展需求",
+      "e": "character_combo_id2"
+    },
+    {
+      "name": "require_race",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      },
+      "c": "种族限制，0-人族，1-兽族， 2-都可以",
+      "e": "race"
+    },
+    {
+      "name": "small_gift_bags",
+      "off": 136,
+      "t": {
+        "k": "array",
+        "n": 16,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "gift_bag_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "小礼包id"
+            },
+            {
+              "name": "deliver_interval",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "小礼包发放间隔，都是以上一个小礼包发放后开始计算，时间单位：秒"
+            }
+          ]
+        }
+      },
+      "c": "最多16个小礼包"
+    }
+  ]
+}

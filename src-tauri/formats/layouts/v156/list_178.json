@@ -1,0 +1,219 @@
+{
+  "key": "interaction_object_essence",
+  "name": "Interaction Object Essence",
+  "struct": "INTERACTION_OBJECT_ESSENCE",
+  "size": 188,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径",
+      "display": "icon"
+    },
+    {
+      "name": "main_body",
+      "off": 76,
+      "t": {
+        "k": "u32"
+      },
+      "c": "以谁为主体操作"
+    },
+    {
+      "name": "client_main_body",
+      "off": 80,
+      "t": {
+        "k": "u32"
+      },
+      "c": "客户端挂点主体"
+    },
+    {
+      "name": "hook",
+      "off": 84,
+      "t": {
+        "k": "array",
+        "n": 6,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "挂点关联的挂点模板"
+    },
+    {
+      "name": "max_interaction_num",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "c": "最多可互动次数"
+    },
+    {
+      "name": "disappear",
+      "off": 112,
+      "t": {
+        "k": "u32"
+      },
+      "c": "到达互动上限次数是否消失"
+    },
+    {
+      "name": "require_item_id",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动需要的物品"
+    },
+    {
+      "name": "require_task_id",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动需要的任务"
+    },
+    {
+      "name": "require_level",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动需要的人物等级"
+    },
+    {
+      "name": "require_gender",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动性别限制，0-男，1-女，2-男女都可",
+      "e": "gender"
+    },
+    {
+      "name": "character_combo_id",
+      "off": 132,
+      "t": {
+        "k": "u64"
+      },
+      "c": "互动职业限制",
+      "e": "character_combo_id"
+    },
+    {
+      "name": "character_combo_id2",
+      "off": 140,
+      "t": {
+        "k": "u64"
+      },
+      "c": "互动职业限制",
+      "e": "character_combo_id2"
+    },
+    {
+      "name": "consum_item_id",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动消耗的物品"
+    },
+    {
+      "name": "open_time",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      },
+      "c": "开启互动的准备时间"
+    },
+    {
+      "name": "interaction_time",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动时间"
+    },
+    {
+      "name": "finish_time",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      },
+      "c": "结束互动准备时间"
+    },
+    {
+      "name": "monster_id",
+      "off": 164,
+      "t": {
+        "k": "u32"
+      },
+      "c": "套用的怪物模板"
+    },
+    {
+      "name": "path_id",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      },
+      "c": "关联路径"
+    },
+    {
+      "name": "move_enable",
+      "off": 172,
+      "t": {
+        "k": "u32"
+      },
+      "c": "移动可用"
+    },
+    {
+      "name": "velocity",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      },
+      "c": "移动速度"
+    },
+    {
+      "name": "auto_end",
+      "off": 180,
+      "t": {
+        "k": "u32"
+      },
+      "c": "到达地点是否自动结束"
+    },
+    {
+      "name": "new_item_id",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      },
+      "c": "完成互动后转变为新互动物体"
+    }
+  ]
+}

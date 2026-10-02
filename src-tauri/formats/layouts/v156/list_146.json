@@ -1,0 +1,81 @@
+{
+  "key": "collision_raid_transfigure_config",
+  "name": "Collision Raid Transfigure Config",
+  "struct": "COLLISION_RAID_TRANSFIGURE_CONFIG",
+  "size": 4388,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模板ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "transfigure_info_list",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 216,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "transfigure_id",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "变身ID，index"
+            },
+            {
+              "name": "file_matter",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "变身模型路径"
+            },
+            {
+              "name": "file_icon",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "选体型图标路径"
+            },
+            {
+              "name": "mass",
+              "off": 12,
+              "t": {
+                "k": "u32"
+              },
+              "c": "变身后角色质量"
+            },
+            {
+              "name": "description",
+              "off": 16,
+              "t": {
+                "k": "wstr",
+                "n": 100
+              },
+              "c": "改体型的描述信息最多100个汉字"
+            }
+          ]
+        }
+      },
+      "c": "变身信息列表"
+    }
+  ]
+}

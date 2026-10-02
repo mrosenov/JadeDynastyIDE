@@ -1,0 +1,264 @@
+{
+  "key": "pet_bedge_essence",
+  "name": "Pet Bedge Essence",
+  "struct": "PET_BEDGE_ESSENCE",
+  "size": 256,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "(类型)ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径",
+      "display": "icon"
+    },
+    {
+      "name": "file_head_icon",
+      "off": 76,
+      "t": {
+        "k": "array",
+        "n": 7,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "头像图标",
+      "display": "icon"
+    },
+    {
+      "name": "file_to_shown",
+      "off": 104,
+      "t": {
+        "k": "array",
+        "n": 7,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "不同星级形象",
+      "display": "path"
+    },
+    {
+      "name": "desc",
+      "off": 132,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      },
+      "c": "宠物描述，显示在宠物名字之下，最多16个汉字"
+    },
+    {
+      "name": "size",
+      "off": 164,
+      "t": {
+        "k": "f32"
+      },
+      "c": "宠物大小"
+    },
+    {
+      "name": "pet_type",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宠物种族"
+    },
+    {
+      "name": "name_color",
+      "off": 172,
+      "t": {
+        "k": "u32"
+      }
+    },
+    {
+      "name": "show_level",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      },
+      "c": "显示等级"
+    },
+    {
+      "name": "immune_type",
+      "off": 180,
+      "t": {
+        "k": "u32"
+      },
+      "e": "immune_type"
+    },
+    {
+      "name": "level",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宠物初始等级"
+    },
+    {
+      "name": "sight_range",
+      "off": 188,
+      "t": {
+        "k": "f32"
+      },
+      "c": "视野"
+    },
+    {
+      "name": "dmp_pos",
+      "off": 192,
+      "t": {
+        "k": "f32"
+      },
+      "c": "伤害点"
+    },
+    {
+      "name": "attack_range",
+      "off": 196,
+      "t": {
+        "k": "f32"
+      },
+      "c": "攻击距离"
+    },
+    {
+      "name": "intimacy_inc_speed",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      },
+      "c": "亲密度增长速度"
+    },
+    {
+      "name": "hunger_speed1",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      },
+      "c": "非战斗下饱食度降低速度"
+    },
+    {
+      "name": "hunger_speed2",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      },
+      "c": "战斗下饱食度降低速度"
+    },
+    {
+      "name": "hp_gen1",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      },
+      "c": "非战斗回血速度"
+    },
+    {
+      "name": "hp_gen2",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      },
+      "c": "战斗回血速度"
+    },
+    {
+      "name": "mp_gen1",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      },
+      "c": "非战斗回魔速度"
+    },
+    {
+      "name": "mp_gen2",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      },
+      "c": "战斗回魔速度"
+    },
+    {
+      "name": "stand_mode",
+      "off": 228,
+      "t": {
+        "k": "u32"
+      },
+      "c": "站立方式，可能的有：四足站立、双足站立、悬空飞行等"
+    },
+    {
+      "name": "walk_speed",
+      "off": 232,
+      "t": {
+        "k": "f32"
+      },
+      "c": "慢速移动速度(M/S)"
+    },
+    {
+      "name": "run_speed",
+      "off": 236,
+      "t": {
+        "k": "f32"
+      },
+      "c": "快速移动速度(M/S)"
+    },
+    {
+      "name": "price",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 252,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

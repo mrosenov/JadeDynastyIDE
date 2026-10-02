@@ -1,0 +1,87 @@
+{
+  "key": "week_currency_award_config",
+  "name": "Week Currency Award Config",
+  "struct": "WEEK_CURRNCY_AWARD_CONFIG",
+  "size": 428,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "week_currncy_awrd_info",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 15,
+        "stride": 24,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "inception_rank",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "竞技场排名起始"
+            },
+            {
+              "name": "cutoff_rank",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "竞技场排名截止"
+            },
+            {
+              "name": "receive_currency_id",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "可领取的兑换币ID"
+            },
+            {
+              "name": "receive_currnecy_num",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "c": "可领取的兑换币数量"
+            },
+            {
+              "name": "week_receive_num",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              },
+              "c": "每周可领取次数"
+            },
+            {
+              "name": "time_limit",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              },
+              "c": "时间限制"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "key": "drop_interval_config",
+  "name": "Drop Interval Config",
+  "struct": "DROP_INTERNAL_CONFIG",
+  "size": 488,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模板ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "time_of_duration",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "持续时间"
+    },
+    {
+      "name": "start_time",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "开始时间"
+    },
+    {
+      "name": "item_id",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉落物品id"
+    },
+    {
+      "name": "item_num",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "产出上限"
+    },
+    {
+      "name": "speak_words",
+      "off": 84,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "产出喊话"
+    },
+    {
+      "name": "remain_words",
+      "off": 284,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "余量喊话"
+    },
+    {
+      "name": "remain_speak_interval",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      },
+      "c": "余量喊话间隔(秒)"
+    }
+  ]
+}

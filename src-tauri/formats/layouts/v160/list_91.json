@@ -1,0 +1,114 @@
+{
+  "key": "renasence_skill_config",
+  "name": "Renasence Skill Config",
+  "struct": "RENASCENCE_SKILL_CONFIG",
+  "size": 228,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "id"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "occup_lev_0",
+      "off": 68,
+      "t": {
+        "k": "u64"
+      },
+      "c": "shit！敢加上注释不？以后别人要修改代码都找不到！！！"
+    },
+    {
+      "name": "occup_lev_0_2",
+      "off": 76,
+      "t": {
+        "k": "u64"
+      },
+      "c": "0 转职业所限制的职业掩码，扩展职业ID后的新职业掩码，Added 2011-07-14."
+    },
+    {
+      "name": "occup_lev_1",
+      "off": 84,
+      "t": {
+        "k": "u64"
+      }
+    },
+    {
+      "name": "occup_lev_1_2",
+      "off": 92,
+      "t": {
+        "k": "u64"
+      },
+      "c": "1 转职业所限制的职业ID掩码，扩展职业ID后的新职业掩码，Added 2011-07-14."
+    },
+    {
+      "name": "occup_lev_2",
+      "off": 100,
+      "t": {
+        "k": "u64"
+      }
+    },
+    {
+      "name": "occup_lev_2_2",
+      "off": 108,
+      "t": {
+        "k": "u64"
+      },
+      "c": "2 转职业所限制的职业ID掩码，扩展职业ID后的新职业掩码，Added 2011-07-14."
+    },
+    {
+      "name": "occup_lev_3",
+      "off": 116,
+      "t": {
+        "k": "u64"
+      }
+    },
+    {
+      "name": "occup_lev_3_2",
+      "off": 124,
+      "t": {
+        "k": "u64"
+      },
+      "c": "3 转职业所限制的职业ID掩码，扩展职业ID后的新职业掩码，Added 2011-07-14."
+    },
+    {
+      "name": "skills",
+      "off": 132,
+      "t": {
+        "k": "array",
+        "n": 12,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "lev",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "key": "player_skill_point_config",
+  "name": "Player Skill Point Config",
+  "struct": "PLAYER_SKILL_POINT_CONFIG",
+  "size": 3268,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "id"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "skill_point",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 200,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      }
+    },
+    {
+      "name": "skill_point_1",
+      "off": 868,
+      "t": {
+        "k": "array",
+        "n": 200,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      }
+    },
+    {
+      "name": "skill_point_2",
+      "off": 1668,
+      "t": {
+        "k": "array",
+        "n": 200,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      }
+    },
+    {
+      "name": "skill_point_3",
+      "off": 2468,
+      "t": {
+        "k": "array",
+        "n": 200,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      }
+    }
+  ]
+}

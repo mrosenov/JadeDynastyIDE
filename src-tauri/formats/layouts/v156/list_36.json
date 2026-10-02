@@ -1,0 +1,25 @@
+{
+  "key": "recipe_sub_type",
+  "name": "Recipe Sub Type",
+  "struct": "RECIPE_SUB_TYPE",
+  "size": 68,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "配方小类别ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "配方小类别名称"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "key": "prop_add_config",
+  "name": "Prop Add Config",
+  "struct": "PROP_ADD_CONFIG",
+  "size": 188,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "prop_add_limit",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 30,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "增益上限"
+    }
+  ]
+}

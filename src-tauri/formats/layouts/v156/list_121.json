@@ -1,0 +1,33 @@
+{
+  "key": "npc_consign_service",
+  "name": "Npc Consign Service",
+  "struct": "NPC_CONSIGN_SERVICE",
+  "size": 72,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "id"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "deposit",
+      "off": 68,
+      "t": {
+        "k": "u32"
+      },
+      "c": "保证金"
+    }
+  ]
+}

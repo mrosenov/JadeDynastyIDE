@@ -1,0 +1,188 @@
+{
+  "key": "equip_soul_essence",
+  "name": "Equip Soul Essence",
+  "struct": "EQUIP_SOUL_ESSENCE",
+  "size": 152,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径",
+      "display": "icon"
+    },
+    {
+      "name": "equip_mask",
+      "off": 76,
+      "t": {
+        "k": "u32"
+      },
+      "c": "可镶嵌部位",
+      "e": "equip_mask"
+    },
+    {
+      "name": "level_required",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "等级限制"
+    },
+    {
+      "name": "soul_type",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "器魄种类，（0-9）"
+    },
+    {
+      "name": "soul_level",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "c": "器魄本身的级别，（0-16），默认为0，表示器魄的档次"
+    },
+    {
+      "name": "character_combo_id",
+      "off": 92,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制, 从低位到高位的含义为：0-新手, 1-术士, 2-武士, 3-战士, 4-剑士, 5-牧师, 6-法师, 7-将军, 8-重骑士, 9-刺客, 10-剑圣, 11-贤者, 12-祭司, 13-秘法师, 14-召唤使",
+      "e": "character_combo_id"
+    },
+    {
+      "name": "character_combo_id2",
+      "off": 100,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制, 扩展职业ID后的新职业掩码，Added 2011-07-14.",
+      "e": "character_combo_id2"
+    },
+    {
+      "name": "sect_mask",
+      "off": 108,
+      "t": {
+        "k": "u32"
+      },
+      "c": "可镶嵌的门派 客户端显示",
+      "e": "sect_mask"
+    },
+    {
+      "name": "require_race",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "c": "种族限制，0-人族，1-兽族， 2-都可以",
+      "e": "race"
+    },
+    {
+      "name": "hole_type",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "孔位\t\t0:全部；1：金  2：木 3：水 4：火 5：土"
+    },
+    {
+      "name": "id_addon1",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "c": "效果附加属性",
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "cost_soul",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "c": "占用的魂力"
+    },
+    {
+      "name": "price",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "fee_install",
+      "off": 136,
+      "t": {
+        "k": "f32"
+      },
+      "c": "铸魂手续费"
+    },
+    {
+      "name": "fee_uninstall",
+      "off": 140,
+      "t": {
+        "k": "f32"
+      },
+      "c": "洗魂手续费"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 148,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "key": "liveness_config",
+  "name": "Liveness Config",
+  "struct": "LIVENESS_CONFIG",
+  "size": 6384,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模板ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多31个汉字"
+    },
+    {
+      "name": "scores",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 15,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "每个活动分值"
+    },
+    {
+      "name": "gifts",
+      "off": 128,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "四个礼包 0-25、26-50、51-75、76-100"
+    },
+    {
+      "name": "element_list",
+      "off": 144,
+      "t": {
+        "k": "array",
+        "n": 120,
+        "stride": 52,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "name",
+              "off": 0,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              },
+              "c": "名称，最多15个汉字，专用于策划查找"
+            },
+            {
+              "name": "type_activity",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              },
+              "c": "活动类别"
+            },
+            {
+              "name": "require_level",
+              "off": 36,
+              "t": {
+                "k": "i32"
+              },
+              "c": "修真等级限制"
+            },
+            {
+              "name": "renascence_count",
+              "off": 40,
+              "t": {
+                "k": "i32"
+              },
+              "c": "转生次数要求"
+            },
+            {
+              "name": "type_judge",
+              "off": 44,
+              "t": {
+                "k": "i32"
+              },
+              "c": "判定类型，决定require_id解释方式：0-任务id，1-进入地图id"
+            },
+            {
+              "name": "require_id",
+              "off": 48,
+              "t": {
+                "k": "i32"
+              },
+              "c": "判断完成的任务id/进入地图id"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,5622 @@
+{
+  "name": "Convert Equip Config",
+  "struct": "CONVERT_EQUIP_CONFIG",
+  "size": 3268,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "item_list_1_equip_require_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_1_stone_id",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_1_stone_amount",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_1_output_equip_id",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_2_equip_require_id",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_2_stone_id",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_2_stone_amount",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_2_output_equip_id",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_3_equip_require_id",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_3_stone_id",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_3_stone_amount",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_3_output_equip_id",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_4_equip_require_id",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_4_stone_id",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_4_stone_amount",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_4_output_equip_id",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_5_equip_require_id",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_5_stone_id",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_5_stone_amount",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_5_output_equip_id",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_6_equip_require_id",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_6_stone_id",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_6_stone_amount",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_6_output_equip_id",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_7_equip_require_id",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_7_stone_id",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_7_stone_amount",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_7_output_equip_id",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_8_equip_require_id",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_8_stone_id",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_8_stone_amount",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_8_output_equip_id",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_9_equip_require_id",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_9_stone_id",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_9_stone_amount",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_9_output_equip_id",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_10_equip_require_id",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_10_stone_id",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_10_stone_amount",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_10_output_equip_id",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_11_equip_require_id",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_11_stone_id",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_11_stone_amount",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_11_output_equip_id",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_12_equip_require_id",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_12_stone_id",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_12_stone_amount",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_12_output_equip_id",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_13_equip_require_id",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_13_stone_id",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_13_stone_amount",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_13_output_equip_id",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_14_equip_require_id",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_14_stone_id",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_14_stone_amount",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_14_output_equip_id",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_15_equip_require_id",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_15_stone_id",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_15_stone_amount",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_15_output_equip_id",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_16_equip_require_id",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_16_stone_id",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_16_stone_amount",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_16_output_equip_id",
+      "off": 320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_17_equip_require_id",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_17_stone_id",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_17_stone_amount",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_17_output_equip_id",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_18_equip_require_id",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_18_stone_id",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_18_stone_amount",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_18_output_equip_id",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_19_equip_require_id",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_19_stone_id",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_19_stone_amount",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_19_output_equip_id",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_20_equip_require_id",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_20_stone_id",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_20_stone_amount",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_20_output_equip_id",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_21_equip_require_id",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_21_stone_id",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_21_stone_amount",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_21_output_equip_id",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_22_equip_require_id",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_22_stone_id",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_22_stone_amount",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_22_output_equip_id",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_23_equip_require_id",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_23_stone_id",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_23_stone_amount",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_23_output_equip_id",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_24_equip_require_id",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_24_stone_id",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_24_stone_amount",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_24_output_equip_id",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_25_equip_require_id",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_25_stone_id",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_25_stone_amount",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_25_output_equip_id",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_26_equip_require_id",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_26_stone_id",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_26_stone_amount",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_26_output_equip_id",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_27_equip_require_id",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_27_stone_id",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_27_stone_amount",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_27_output_equip_id",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_28_equip_require_id",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_28_stone_id",
+      "off": 504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_28_stone_amount",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_28_output_equip_id",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_29_equip_require_id",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_29_stone_id",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_29_stone_amount",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_29_output_equip_id",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_30_equip_require_id",
+      "off": 532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_30_stone_id",
+      "off": 536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_30_stone_amount",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_30_output_equip_id",
+      "off": 544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_31_equip_require_id",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_31_stone_id",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_31_stone_amount",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_31_output_equip_id",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_32_equip_require_id",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_32_stone_id",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_32_stone_amount",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_32_output_equip_id",
+      "off": 576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_33_equip_require_id",
+      "off": 580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_33_stone_id",
+      "off": 584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_33_stone_amount",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_33_output_equip_id",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_34_equip_require_id",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_34_stone_id",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_34_stone_amount",
+      "off": 604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_34_output_equip_id",
+      "off": 608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_35_equip_require_id",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_35_stone_id",
+      "off": 616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_35_stone_amount",
+      "off": 620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_35_output_equip_id",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_36_equip_require_id",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_36_stone_id",
+      "off": 632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_36_stone_amount",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_36_output_equip_id",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_37_equip_require_id",
+      "off": 644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_37_stone_id",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_37_stone_amount",
+      "off": 652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_37_output_equip_id",
+      "off": 656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_38_equip_require_id",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_38_stone_id",
+      "off": 664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_38_stone_amount",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_38_output_equip_id",
+      "off": 672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_39_equip_require_id",
+      "off": 676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_39_stone_id",
+      "off": 680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_39_stone_amount",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_39_output_equip_id",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_40_equip_require_id",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_40_stone_id",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_40_stone_amount",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_40_output_equip_id",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_41_equip_require_id",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_41_stone_id",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_41_stone_amount",
+      "off": 716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_41_output_equip_id",
+      "off": 720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_42_equip_require_id",
+      "off": 724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_42_stone_id",
+      "off": 728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_42_stone_amount",
+      "off": 732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_42_output_equip_id",
+      "off": 736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_43_equip_require_id",
+      "off": 740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_43_stone_id",
+      "off": 744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_43_stone_amount",
+      "off": 748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_43_output_equip_id",
+      "off": 752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_44_equip_require_id",
+      "off": 756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_44_stone_id",
+      "off": 760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_44_stone_amount",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_44_output_equip_id",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_45_equip_require_id",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_45_stone_id",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_45_stone_amount",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_45_output_equip_id",
+      "off": 784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_46_equip_require_id",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_46_stone_id",
+      "off": 792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_46_stone_amount",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_46_output_equip_id",
+      "off": 800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_47_equip_require_id",
+      "off": 804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_47_stone_id",
+      "off": 808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_47_stone_amount",
+      "off": 812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_47_output_equip_id",
+      "off": 816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_48_equip_require_id",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_48_stone_id",
+      "off": 824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_48_stone_amount",
+      "off": 828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_48_output_equip_id",
+      "off": 832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_49_equip_require_id",
+      "off": 836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_49_stone_id",
+      "off": 840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_49_stone_amount",
+      "off": 844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_49_output_equip_id",
+      "off": 848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_50_equip_require_id",
+      "off": 852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_50_stone_id",
+      "off": 856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_50_stone_amount",
+      "off": 860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_50_output_equip_id",
+      "off": 864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_51_equip_require_id",
+      "off": 868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_51_stone_id",
+      "off": 872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_51_stone_amount",
+      "off": 876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_51_output_equip_id",
+      "off": 880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_52_equip_require_id",
+      "off": 884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_52_stone_id",
+      "off": 888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_52_stone_amount",
+      "off": 892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_52_output_equip_id",
+      "off": 896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_53_equip_require_id",
+      "off": 900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_53_stone_id",
+      "off": 904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_53_stone_amount",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_53_output_equip_id",
+      "off": 912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_54_equip_require_id",
+      "off": 916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_54_stone_id",
+      "off": 920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_54_stone_amount",
+      "off": 924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_54_output_equip_id",
+      "off": 928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_55_equip_require_id",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_55_stone_id",
+      "off": 936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_55_stone_amount",
+      "off": 940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_55_output_equip_id",
+      "off": 944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_56_equip_require_id",
+      "off": 948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_56_stone_id",
+      "off": 952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_56_stone_amount",
+      "off": 956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_56_output_equip_id",
+      "off": 960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_57_equip_require_id",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_57_stone_id",
+      "off": 968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_57_stone_amount",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_57_output_equip_id",
+      "off": 976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_58_equip_require_id",
+      "off": 980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_58_stone_id",
+      "off": 984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_58_stone_amount",
+      "off": 988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_58_output_equip_id",
+      "off": 992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_59_equip_require_id",
+      "off": 996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_59_stone_id",
+      "off": 1000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_59_stone_amount",
+      "off": 1004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_59_output_equip_id",
+      "off": 1008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_60_equip_require_id",
+      "off": 1012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_60_stone_id",
+      "off": 1016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_60_stone_amount",
+      "off": 1020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_60_output_equip_id",
+      "off": 1024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_61_equip_require_id",
+      "off": 1028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_61_stone_id",
+      "off": 1032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_61_stone_amount",
+      "off": 1036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_61_output_equip_id",
+      "off": 1040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_62_equip_require_id",
+      "off": 1044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_62_stone_id",
+      "off": 1048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_62_stone_amount",
+      "off": 1052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_62_output_equip_id",
+      "off": 1056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_63_equip_require_id",
+      "off": 1060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_63_stone_id",
+      "off": 1064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_63_stone_amount",
+      "off": 1068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_63_output_equip_id",
+      "off": 1072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_64_equip_require_id",
+      "off": 1076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_64_stone_id",
+      "off": 1080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_64_stone_amount",
+      "off": 1084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_64_output_equip_id",
+      "off": 1088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_65_equip_require_id",
+      "off": 1092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_65_stone_id",
+      "off": 1096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_65_stone_amount",
+      "off": 1100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_65_output_equip_id",
+      "off": 1104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_66_equip_require_id",
+      "off": 1108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_66_stone_id",
+      "off": 1112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_66_stone_amount",
+      "off": 1116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_66_output_equip_id",
+      "off": 1120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_67_equip_require_id",
+      "off": 1124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_67_stone_id",
+      "off": 1128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_67_stone_amount",
+      "off": 1132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_67_output_equip_id",
+      "off": 1136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_68_equip_require_id",
+      "off": 1140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_68_stone_id",
+      "off": 1144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_68_stone_amount",
+      "off": 1148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_68_output_equip_id",
+      "off": 1152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_69_equip_require_id",
+      "off": 1156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_69_stone_id",
+      "off": 1160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_69_stone_amount",
+      "off": 1164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_69_output_equip_id",
+      "off": 1168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_70_equip_require_id",
+      "off": 1172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_70_stone_id",
+      "off": 1176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_70_stone_amount",
+      "off": 1180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_70_output_equip_id",
+      "off": 1184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_71_equip_require_id",
+      "off": 1188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_71_stone_id",
+      "off": 1192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_71_stone_amount",
+      "off": 1196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_71_output_equip_id",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_72_equip_require_id",
+      "off": 1204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_72_stone_id",
+      "off": 1208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_72_stone_amount",
+      "off": 1212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_72_output_equip_id",
+      "off": 1216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_73_equip_require_id",
+      "off": 1220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_73_stone_id",
+      "off": 1224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_73_stone_amount",
+      "off": 1228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_73_output_equip_id",
+      "off": 1232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_74_equip_require_id",
+      "off": 1236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_74_stone_id",
+      "off": 1240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_74_stone_amount",
+      "off": 1244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_74_output_equip_id",
+      "off": 1248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_75_equip_require_id",
+      "off": 1252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_75_stone_id",
+      "off": 1256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_75_stone_amount",
+      "off": 1260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_75_output_equip_id",
+      "off": 1264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_76_equip_require_id",
+      "off": 1268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_76_stone_id",
+      "off": 1272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_76_stone_amount",
+      "off": 1276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_76_output_equip_id",
+      "off": 1280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_77_equip_require_id",
+      "off": 1284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_77_stone_id",
+      "off": 1288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_77_stone_amount",
+      "off": 1292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_77_output_equip_id",
+      "off": 1296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_78_equip_require_id",
+      "off": 1300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_78_stone_id",
+      "off": 1304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_78_stone_amount",
+      "off": 1308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_78_output_equip_id",
+      "off": 1312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_79_equip_require_id",
+      "off": 1316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_79_stone_id",
+      "off": 1320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_79_stone_amount",
+      "off": 1324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_79_output_equip_id",
+      "off": 1328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_80_equip_require_id",
+      "off": 1332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_80_stone_id",
+      "off": 1336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_80_stone_amount",
+      "off": 1340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_80_output_equip_id",
+      "off": 1344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_81_equip_require_id",
+      "off": 1348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_81_stone_id",
+      "off": 1352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_81_stone_amount",
+      "off": 1356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_81_output_equip_id",
+      "off": 1360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_82_equip_require_id",
+      "off": 1364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_82_stone_id",
+      "off": 1368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_82_stone_amount",
+      "off": 1372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_82_output_equip_id",
+      "off": 1376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_83_equip_require_id",
+      "off": 1380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_83_stone_id",
+      "off": 1384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_83_stone_amount",
+      "off": 1388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_83_output_equip_id",
+      "off": 1392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_84_equip_require_id",
+      "off": 1396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_84_stone_id",
+      "off": 1400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_84_stone_amount",
+      "off": 1404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_84_output_equip_id",
+      "off": 1408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_85_equip_require_id",
+      "off": 1412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_85_stone_id",
+      "off": 1416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_85_stone_amount",
+      "off": 1420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_85_output_equip_id",
+      "off": 1424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_86_equip_require_id",
+      "off": 1428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_86_stone_id",
+      "off": 1432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_86_stone_amount",
+      "off": 1436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_86_output_equip_id",
+      "off": 1440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_87_equip_require_id",
+      "off": 1444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_87_stone_id",
+      "off": 1448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_87_stone_amount",
+      "off": 1452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_87_output_equip_id",
+      "off": 1456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_88_equip_require_id",
+      "off": 1460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_88_stone_id",
+      "off": 1464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_88_stone_amount",
+      "off": 1468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_88_output_equip_id",
+      "off": 1472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_89_equip_require_id",
+      "off": 1476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_89_stone_id",
+      "off": 1480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_89_stone_amount",
+      "off": 1484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_89_output_equip_id",
+      "off": 1488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_90_equip_require_id",
+      "off": 1492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_90_stone_id",
+      "off": 1496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_90_stone_amount",
+      "off": 1500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_90_output_equip_id",
+      "off": 1504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_91_equip_require_id",
+      "off": 1508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_91_stone_id",
+      "off": 1512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_91_stone_amount",
+      "off": 1516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_91_output_equip_id",
+      "off": 1520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_92_equip_require_id",
+      "off": 1524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_92_stone_id",
+      "off": 1528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_92_stone_amount",
+      "off": 1532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_92_output_equip_id",
+      "off": 1536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_93_equip_require_id",
+      "off": 1540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_93_stone_id",
+      "off": 1544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_93_stone_amount",
+      "off": 1548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_93_output_equip_id",
+      "off": 1552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_94_equip_require_id",
+      "off": 1556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_94_stone_id",
+      "off": 1560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_94_stone_amount",
+      "off": 1564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_94_output_equip_id",
+      "off": 1568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_95_equip_require_id",
+      "off": 1572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_95_stone_id",
+      "off": 1576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_95_stone_amount",
+      "off": 1580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_95_output_equip_id",
+      "off": 1584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_96_equip_require_id",
+      "off": 1588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_96_stone_id",
+      "off": 1592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_96_stone_amount",
+      "off": 1596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_96_output_equip_id",
+      "off": 1600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_97_equip_require_id",
+      "off": 1604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_97_stone_id",
+      "off": 1608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_97_stone_amount",
+      "off": 1612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_97_output_equip_id",
+      "off": 1616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_98_equip_require_id",
+      "off": 1620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_98_stone_id",
+      "off": 1624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_98_stone_amount",
+      "off": 1628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_98_output_equip_id",
+      "off": 1632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_99_equip_require_id",
+      "off": 1636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_99_stone_id",
+      "off": 1640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_99_stone_amount",
+      "off": 1644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_99_output_equip_id",
+      "off": 1648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_100_equip_require_id",
+      "off": 1652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_100_stone_id",
+      "off": 1656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_100_stone_amount",
+      "off": 1660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_100_output_equip_id",
+      "off": 1664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_101_equip_require_id",
+      "off": 1668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_101_stone_id",
+      "off": 1672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_101_stone_amount",
+      "off": 1676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_101_output_equip_id",
+      "off": 1680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_102_equip_require_id",
+      "off": 1684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_102_stone_id",
+      "off": 1688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_102_stone_amount",
+      "off": 1692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_102_output_equip_id",
+      "off": 1696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_103_equip_require_id",
+      "off": 1700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_103_stone_id",
+      "off": 1704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_103_stone_amount",
+      "off": 1708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_103_output_equip_id",
+      "off": 1712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_104_equip_require_id",
+      "off": 1716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_104_stone_id",
+      "off": 1720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_104_stone_amount",
+      "off": 1724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_104_output_equip_id",
+      "off": 1728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_105_equip_require_id",
+      "off": 1732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_105_stone_id",
+      "off": 1736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_105_stone_amount",
+      "off": 1740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_105_output_equip_id",
+      "off": 1744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_106_equip_require_id",
+      "off": 1748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_106_stone_id",
+      "off": 1752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_106_stone_amount",
+      "off": 1756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_106_output_equip_id",
+      "off": 1760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_107_equip_require_id",
+      "off": 1764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_107_stone_id",
+      "off": 1768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_107_stone_amount",
+      "off": 1772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_107_output_equip_id",
+      "off": 1776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_108_equip_require_id",
+      "off": 1780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_108_stone_id",
+      "off": 1784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_108_stone_amount",
+      "off": 1788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_108_output_equip_id",
+      "off": 1792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_109_equip_require_id",
+      "off": 1796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_109_stone_id",
+      "off": 1800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_109_stone_amount",
+      "off": 1804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_109_output_equip_id",
+      "off": 1808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_110_equip_require_id",
+      "off": 1812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_110_stone_id",
+      "off": 1816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_110_stone_amount",
+      "off": 1820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_110_output_equip_id",
+      "off": 1824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_111_equip_require_id",
+      "off": 1828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_111_stone_id",
+      "off": 1832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_111_stone_amount",
+      "off": 1836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_111_output_equip_id",
+      "off": 1840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_112_equip_require_id",
+      "off": 1844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_112_stone_id",
+      "off": 1848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_112_stone_amount",
+      "off": 1852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_112_output_equip_id",
+      "off": 1856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_113_equip_require_id",
+      "off": 1860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_113_stone_id",
+      "off": 1864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_113_stone_amount",
+      "off": 1868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_113_output_equip_id",
+      "off": 1872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_114_equip_require_id",
+      "off": 1876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_114_stone_id",
+      "off": 1880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_114_stone_amount",
+      "off": 1884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_114_output_equip_id",
+      "off": 1888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_115_equip_require_id",
+      "off": 1892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_115_stone_id",
+      "off": 1896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_115_stone_amount",
+      "off": 1900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_115_output_equip_id",
+      "off": 1904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_116_equip_require_id",
+      "off": 1908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_116_stone_id",
+      "off": 1912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_116_stone_amount",
+      "off": 1916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_116_output_equip_id",
+      "off": 1920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_117_equip_require_id",
+      "off": 1924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_117_stone_id",
+      "off": 1928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_117_stone_amount",
+      "off": 1932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_117_output_equip_id",
+      "off": 1936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_118_equip_require_id",
+      "off": 1940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_118_stone_id",
+      "off": 1944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_118_stone_amount",
+      "off": 1948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_118_output_equip_id",
+      "off": 1952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_119_equip_require_id",
+      "off": 1956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_119_stone_id",
+      "off": 1960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_119_stone_amount",
+      "off": 1964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_119_output_equip_id",
+      "off": 1968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_120_equip_require_id",
+      "off": 1972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_120_stone_id",
+      "off": 1976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_120_stone_amount",
+      "off": 1980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_120_output_equip_id",
+      "off": 1984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_121_equip_require_id",
+      "off": 1988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_121_stone_id",
+      "off": 1992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_121_stone_amount",
+      "off": 1996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_121_output_equip_id",
+      "off": 2000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_122_equip_require_id",
+      "off": 2004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_122_stone_id",
+      "off": 2008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_122_stone_amount",
+      "off": 2012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_122_output_equip_id",
+      "off": 2016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_123_equip_require_id",
+      "off": 2020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_123_stone_id",
+      "off": 2024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_123_stone_amount",
+      "off": 2028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_123_output_equip_id",
+      "off": 2032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_124_equip_require_id",
+      "off": 2036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_124_stone_id",
+      "off": 2040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_124_stone_amount",
+      "off": 2044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_124_output_equip_id",
+      "off": 2048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_125_equip_require_id",
+      "off": 2052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_125_stone_id",
+      "off": 2056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_125_stone_amount",
+      "off": 2060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_125_output_equip_id",
+      "off": 2064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_126_equip_require_id",
+      "off": 2068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_126_stone_id",
+      "off": 2072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_126_stone_amount",
+      "off": 2076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_126_output_equip_id",
+      "off": 2080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_127_equip_require_id",
+      "off": 2084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_127_stone_id",
+      "off": 2088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_127_stone_amount",
+      "off": 2092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_127_output_equip_id",
+      "off": 2096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_128_equip_require_id",
+      "off": 2100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_128_stone_id",
+      "off": 2104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_128_stone_amount",
+      "off": 2108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_128_output_equip_id",
+      "off": 2112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_129_equip_require_id",
+      "off": 2116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_129_stone_id",
+      "off": 2120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_129_stone_amount",
+      "off": 2124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_129_output_equip_id",
+      "off": 2128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_130_equip_require_id",
+      "off": 2132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_130_stone_id",
+      "off": 2136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_130_stone_amount",
+      "off": 2140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_130_output_equip_id",
+      "off": 2144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_131_equip_require_id",
+      "off": 2148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_131_stone_id",
+      "off": 2152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_131_stone_amount",
+      "off": 2156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_131_output_equip_id",
+      "off": 2160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_132_equip_require_id",
+      "off": 2164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_132_stone_id",
+      "off": 2168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_132_stone_amount",
+      "off": 2172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_132_output_equip_id",
+      "off": 2176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_133_equip_require_id",
+      "off": 2180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_133_stone_id",
+      "off": 2184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_133_stone_amount",
+      "off": 2188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_133_output_equip_id",
+      "off": 2192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_134_equip_require_id",
+      "off": 2196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_134_stone_id",
+      "off": 2200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_134_stone_amount",
+      "off": 2204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_134_output_equip_id",
+      "off": 2208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_135_equip_require_id",
+      "off": 2212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_135_stone_id",
+      "off": 2216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_135_stone_amount",
+      "off": 2220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_135_output_equip_id",
+      "off": 2224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_136_equip_require_id",
+      "off": 2228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_136_stone_id",
+      "off": 2232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_136_stone_amount",
+      "off": 2236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_136_output_equip_id",
+      "off": 2240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_137_equip_require_id",
+      "off": 2244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_137_stone_id",
+      "off": 2248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_137_stone_amount",
+      "off": 2252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_137_output_equip_id",
+      "off": 2256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_138_equip_require_id",
+      "off": 2260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_138_stone_id",
+      "off": 2264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_138_stone_amount",
+      "off": 2268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_138_output_equip_id",
+      "off": 2272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_139_equip_require_id",
+      "off": 2276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_139_stone_id",
+      "off": 2280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_139_stone_amount",
+      "off": 2284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_139_output_equip_id",
+      "off": 2288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_140_equip_require_id",
+      "off": 2292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_140_stone_id",
+      "off": 2296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_140_stone_amount",
+      "off": 2300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_140_output_equip_id",
+      "off": 2304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_141_equip_require_id",
+      "off": 2308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_141_stone_id",
+      "off": 2312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_141_stone_amount",
+      "off": 2316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_141_output_equip_id",
+      "off": 2320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_142_equip_require_id",
+      "off": 2324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_142_stone_id",
+      "off": 2328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_142_stone_amount",
+      "off": 2332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_142_output_equip_id",
+      "off": 2336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_143_equip_require_id",
+      "off": 2340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_143_stone_id",
+      "off": 2344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_143_stone_amount",
+      "off": 2348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_143_output_equip_id",
+      "off": 2352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_144_equip_require_id",
+      "off": 2356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_144_stone_id",
+      "off": 2360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_144_stone_amount",
+      "off": 2364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_144_output_equip_id",
+      "off": 2368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_145_equip_require_id",
+      "off": 2372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_145_stone_id",
+      "off": 2376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_145_stone_amount",
+      "off": 2380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_145_output_equip_id",
+      "off": 2384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_146_equip_require_id",
+      "off": 2388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_146_stone_id",
+      "off": 2392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_146_stone_amount",
+      "off": 2396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_146_output_equip_id",
+      "off": 2400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_147_equip_require_id",
+      "off": 2404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_147_stone_id",
+      "off": 2408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_147_stone_amount",
+      "off": 2412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_147_output_equip_id",
+      "off": 2416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_148_equip_require_id",
+      "off": 2420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_148_stone_id",
+      "off": 2424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_148_stone_amount",
+      "off": 2428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_148_output_equip_id",
+      "off": 2432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_149_equip_require_id",
+      "off": 2436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_149_stone_id",
+      "off": 2440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_149_stone_amount",
+      "off": 2444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_149_output_equip_id",
+      "off": 2448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_150_equip_require_id",
+      "off": 2452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_150_stone_id",
+      "off": 2456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_150_stone_amount",
+      "off": 2460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_150_output_equip_id",
+      "off": 2464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_151_equip_require_id",
+      "off": 2468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_151_stone_id",
+      "off": 2472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_151_stone_amount",
+      "off": 2476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_151_output_equip_id",
+      "off": 2480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_152_equip_require_id",
+      "off": 2484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_152_stone_id",
+      "off": 2488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_152_stone_amount",
+      "off": 2492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_152_output_equip_id",
+      "off": 2496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_153_equip_require_id",
+      "off": 2500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_153_stone_id",
+      "off": 2504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_153_stone_amount",
+      "off": 2508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_153_output_equip_id",
+      "off": 2512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_154_equip_require_id",
+      "off": 2516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_154_stone_id",
+      "off": 2520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_154_stone_amount",
+      "off": 2524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_154_output_equip_id",
+      "off": 2528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_155_equip_require_id",
+      "off": 2532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_155_stone_id",
+      "off": 2536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_155_stone_amount",
+      "off": 2540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_155_output_equip_id",
+      "off": 2544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_156_equip_require_id",
+      "off": 2548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_156_stone_id",
+      "off": 2552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_156_stone_amount",
+      "off": 2556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_156_output_equip_id",
+      "off": 2560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_157_equip_require_id",
+      "off": 2564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_157_stone_id",
+      "off": 2568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_157_stone_amount",
+      "off": 2572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_157_output_equip_id",
+      "off": 2576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_158_equip_require_id",
+      "off": 2580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_158_stone_id",
+      "off": 2584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_158_stone_amount",
+      "off": 2588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_158_output_equip_id",
+      "off": 2592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_159_equip_require_id",
+      "off": 2596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_159_stone_id",
+      "off": 2600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_159_stone_amount",
+      "off": 2604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_159_output_equip_id",
+      "off": 2608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_160_equip_require_id",
+      "off": 2612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_160_stone_id",
+      "off": 2616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_160_stone_amount",
+      "off": 2620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_160_output_equip_id",
+      "off": 2624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_161_equip_require_id",
+      "off": 2628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_161_stone_id",
+      "off": 2632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_161_stone_amount",
+      "off": 2636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_161_output_equip_id",
+      "off": 2640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_162_equip_require_id",
+      "off": 2644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_162_stone_id",
+      "off": 2648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_162_stone_amount",
+      "off": 2652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_162_output_equip_id",
+      "off": 2656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_163_equip_require_id",
+      "off": 2660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_163_stone_id",
+      "off": 2664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_163_stone_amount",
+      "off": 2668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_163_output_equip_id",
+      "off": 2672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_164_equip_require_id",
+      "off": 2676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_164_stone_id",
+      "off": 2680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_164_stone_amount",
+      "off": 2684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_164_output_equip_id",
+      "off": 2688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_165_equip_require_id",
+      "off": 2692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_165_stone_id",
+      "off": 2696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_165_stone_amount",
+      "off": 2700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_165_output_equip_id",
+      "off": 2704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_166_equip_require_id",
+      "off": 2708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_166_stone_id",
+      "off": 2712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_166_stone_amount",
+      "off": 2716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_166_output_equip_id",
+      "off": 2720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_167_equip_require_id",
+      "off": 2724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_167_stone_id",
+      "off": 2728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_167_stone_amount",
+      "off": 2732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_167_output_equip_id",
+      "off": 2736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_168_equip_require_id",
+      "off": 2740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_168_stone_id",
+      "off": 2744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_168_stone_amount",
+      "off": 2748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_168_output_equip_id",
+      "off": 2752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_169_equip_require_id",
+      "off": 2756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_169_stone_id",
+      "off": 2760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_169_stone_amount",
+      "off": 2764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_169_output_equip_id",
+      "off": 2768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_170_equip_require_id",
+      "off": 2772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_170_stone_id",
+      "off": 2776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_170_stone_amount",
+      "off": 2780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_170_output_equip_id",
+      "off": 2784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_171_equip_require_id",
+      "off": 2788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_171_stone_id",
+      "off": 2792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_171_stone_amount",
+      "off": 2796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_171_output_equip_id",
+      "off": 2800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_172_equip_require_id",
+      "off": 2804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_172_stone_id",
+      "off": 2808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_172_stone_amount",
+      "off": 2812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_172_output_equip_id",
+      "off": 2816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_173_equip_require_id",
+      "off": 2820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_173_stone_id",
+      "off": 2824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_173_stone_amount",
+      "off": 2828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_173_output_equip_id",
+      "off": 2832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_174_equip_require_id",
+      "off": 2836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_174_stone_id",
+      "off": 2840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_174_stone_amount",
+      "off": 2844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_174_output_equip_id",
+      "off": 2848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_175_equip_require_id",
+      "off": 2852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_175_stone_id",
+      "off": 2856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_175_stone_amount",
+      "off": 2860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_175_output_equip_id",
+      "off": 2864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_176_equip_require_id",
+      "off": 2868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_176_stone_id",
+      "off": 2872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_176_stone_amount",
+      "off": 2876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_176_output_equip_id",
+      "off": 2880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_177_equip_require_id",
+      "off": 2884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_177_stone_id",
+      "off": 2888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_177_stone_amount",
+      "off": 2892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_177_output_equip_id",
+      "off": 2896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_178_equip_require_id",
+      "off": 2900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_178_stone_id",
+      "off": 2904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_178_stone_amount",
+      "off": 2908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_178_output_equip_id",
+      "off": 2912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_179_equip_require_id",
+      "off": 2916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_179_stone_id",
+      "off": 2920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_179_stone_amount",
+      "off": 2924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_179_output_equip_id",
+      "off": 2928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_180_equip_require_id",
+      "off": 2932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_180_stone_id",
+      "off": 2936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_180_stone_amount",
+      "off": 2940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_180_output_equip_id",
+      "off": 2944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_181_equip_require_id",
+      "off": 2948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_181_stone_id",
+      "off": 2952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_181_stone_amount",
+      "off": 2956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_181_output_equip_id",
+      "off": 2960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_182_equip_require_id",
+      "off": 2964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_182_stone_id",
+      "off": 2968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_182_stone_amount",
+      "off": 2972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_182_output_equip_id",
+      "off": 2976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_183_equip_require_id",
+      "off": 2980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_183_stone_id",
+      "off": 2984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_183_stone_amount",
+      "off": 2988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_183_output_equip_id",
+      "off": 2992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_184_equip_require_id",
+      "off": 2996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_184_stone_id",
+      "off": 3000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_184_stone_amount",
+      "off": 3004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_184_output_equip_id",
+      "off": 3008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_185_equip_require_id",
+      "off": 3012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_185_stone_id",
+      "off": 3016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_185_stone_amount",
+      "off": 3020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_185_output_equip_id",
+      "off": 3024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_186_equip_require_id",
+      "off": 3028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_186_stone_id",
+      "off": 3032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_186_stone_amount",
+      "off": 3036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_186_output_equip_id",
+      "off": 3040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_187_equip_require_id",
+      "off": 3044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_187_stone_id",
+      "off": 3048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_187_stone_amount",
+      "off": 3052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_187_output_equip_id",
+      "off": 3056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_188_equip_require_id",
+      "off": 3060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_188_stone_id",
+      "off": 3064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_188_stone_amount",
+      "off": 3068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_188_output_equip_id",
+      "off": 3072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_189_equip_require_id",
+      "off": 3076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_189_stone_id",
+      "off": 3080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_189_stone_amount",
+      "off": 3084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_189_output_equip_id",
+      "off": 3088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_190_equip_require_id",
+      "off": 3092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_190_stone_id",
+      "off": 3096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_190_stone_amount",
+      "off": 3100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_190_output_equip_id",
+      "off": 3104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_191_equip_require_id",
+      "off": 3108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_191_stone_id",
+      "off": 3112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_191_stone_amount",
+      "off": 3116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_191_output_equip_id",
+      "off": 3120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_192_equip_require_id",
+      "off": 3124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_192_stone_id",
+      "off": 3128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_192_stone_amount",
+      "off": 3132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_192_output_equip_id",
+      "off": 3136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_193_equip_require_id",
+      "off": 3140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_193_stone_id",
+      "off": 3144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_193_stone_amount",
+      "off": 3148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_193_output_equip_id",
+      "off": 3152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_194_equip_require_id",
+      "off": 3156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_194_stone_id",
+      "off": 3160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_194_stone_amount",
+      "off": 3164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_194_output_equip_id",
+      "off": 3168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_195_equip_require_id",
+      "off": 3172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_195_stone_id",
+      "off": 3176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_195_stone_amount",
+      "off": 3180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_195_output_equip_id",
+      "off": 3184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_196_equip_require_id",
+      "off": 3188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_196_stone_id",
+      "off": 3192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_196_stone_amount",
+      "off": 3196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_196_output_equip_id",
+      "off": 3200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_197_equip_require_id",
+      "off": 3204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_197_stone_id",
+      "off": 3208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_197_stone_amount",
+      "off": 3212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_197_output_equip_id",
+      "off": 3216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_198_equip_require_id",
+      "off": 3220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_198_stone_id",
+      "off": 3224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_198_stone_amount",
+      "off": 3228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_198_output_equip_id",
+      "off": 3232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_199_equip_require_id",
+      "off": 3236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_199_stone_id",
+      "off": 3240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_199_stone_amount",
+      "off": 3244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_199_output_equip_id",
+      "off": 3248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_200_equip_require_id",
+      "off": 3252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_200_stone_id",
+      "off": 3256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_200_stone_amount",
+      "off": 3260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_list_200_output_equip_id",
+      "off": 3264,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

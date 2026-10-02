@@ -7,7 +7,10 @@ import { bytes, count } from "./elements/format";
 import { ListSidebar } from "./components/ListSidebar";
 import { RecordTable } from "./components/RecordTable";
 import { RecordInspector } from "./components/RecordInspector";
+import { SchemaEditor } from "./components/SchemaEditor";
+import type { FieldSpec } from "./schema/model";
 import "./App.css";
+import { Braces, FolderOpen, Gem } from "lucide-react";
 
 const LAST_PATH_KEY = "jdide.lastPath";
 
@@ -72,6 +75,8 @@ export default function App() {
   // Row to select once the list being opened has loaded (for followed links).
   const pendingRow = useRef<number | null>(null);
   const [history, setHistory] = useState<Location[]>([]);
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [editorIntent, setEditorIntent] = useState<{ list: number; offset: number; spec: FieldSpec } | null>(null);
 
   const loadFile = useCallback(async (path: string) => {
     setLoading(path);
@@ -168,11 +173,25 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [listIndex, recordIndex]);
+  }, [listIndex, recordIndex, summary]);
 
   const selectList = (index: number) => {
     setRecordIndex(null);
     setListIndex(index);
+  };
+
+  // A schema was saved: the file was re-read with the new layouts. Keep the
+  // current list and record selected while everything reloads.
+  const onSchemaSaved = (next: FileSummary) => {
+    rowsCache.current.clear();
+    pendingRow.current = recordIndex;
+    setSummary(next);
+  };
+
+  const closeEditor = (list: number) => {
+    setEditorOpen(false);
+    setEditorIntent(null);
+    if (list !== listIndex) selectList(list);
   };
 
   const goTo = useCallback(
@@ -221,12 +240,12 @@ export default function App() {
       <header className="topbar">
         <div className="brand">
           <span className="logo" aria-hidden>
-            ◆
+            <Gem size={18} />
           </span>
           JD IDE
         </div>
         <button className="btn primary" onClick={chooseFile} title="Open elements.data (Ctrl+O)">
-          Open…
+          <FolderOpen size={15} /> Open…
         </button>
         {summary && (
           <div className="file-chip" title={summary.path}>
@@ -244,6 +263,14 @@ export default function App() {
         )}
         <span className="spacer" />
         {loading && <span className="muted">Reading {fileName(loading)}…</span>}
+        <button
+          className={"btn" + (editorOpen ? " active" : "")}
+          onClick={() => (editorOpen ? closeEditor(listIndex ?? 0) : setEditorOpen(true))}
+          disabled={!summary || !list}
+          title={summary ? "Write your own schema for this file's lists" : "Open a file to edit its schema"}
+        >
+          <Braces size={15} /> Schema editor
+        </button>
       </header>
 
       {error && (
@@ -255,7 +282,18 @@ export default function App() {
         </div>
       )}
 
-      {summary && list ? (
+      {summary && list && editorOpen ? (
+        <main className="editor-main">
+          <SchemaEditor
+            summary={summary}
+            initialList={editorIntent?.list ?? list.index}
+            intent={editorIntent}
+            initialRow={recordIndex ?? 0}
+            onSaved={onSchemaSaved}
+            onClose={closeEditor}
+          />
+        </main>
+      ) : summary && list ? (
         <main className="workspace">
           <ListSidebar lists={summary.lists} selected={listIndex} onSelect={selectList} />
           <RecordTable list={list} rows={rows} selected={recordIndex} onSelect={setRecordIndex} />
@@ -266,13 +304,17 @@ export default function App() {
             canGoBack={history.length > 0}
             onBack={back}
             onFollow={follow}
+            onDefine={(list, offset, spec) => {
+              setEditorIntent({ list, offset, spec });
+              setEditorOpen(true);
+            }}
           />
         </main>
       ) : (
         <main className="welcome">
           <div className="drop-card">
             <div className="drop-icon" aria-hidden>
-              ◆
+              <Gem size={30} />
             </div>
             <h1>Open an elements.data file</h1>
             <p className="muted">
@@ -281,7 +323,7 @@ export default function App() {
             </p>
             <div className="drop-actions">
               <button className="btn primary" onClick={chooseFile}>
-                Choose file…
+                <FolderOpen size={15} /> Choose file…
               </button>
               {lastPath && (
                 <button className="btn" onClick={() => loadFile(lastPath)} title={lastPath}>

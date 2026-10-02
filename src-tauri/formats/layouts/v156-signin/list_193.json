@@ -1,0 +1,103 @@
+{
+  "key": "sign_in_config",
+  "name": "Sign In Config",
+  "struct": "SIGN_IN_CONFIG",
+  "size": 136,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "sign_start_time",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "签到起始时间"
+    },
+    {
+      "name": "sign_end_time",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "签到结束时间"
+    },
+    {
+      "name": "exchange_end_time",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "兑奖结束时间"
+    },
+    {
+      "name": "sign_score",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "签到获得积分"
+    },
+    {
+      "name": "sign_package",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "签到礼包ID"
+    },
+    {
+      "name": "package_list",
+      "off": 88,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "package_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "礼包ID"
+            },
+            {
+              "name": "score_consume",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "消耗积分"
+            },
+            {
+              "name": "exchange_count",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "兑换次数"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

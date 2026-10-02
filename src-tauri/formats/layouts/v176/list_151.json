@@ -1,0 +1,86 @@
+{
+  "key": "ui_transfer_config",
+  "name": "Ui Transfer Config",
+  "struct": "UI_TRANSFER_CONFIG",
+  "size": 14404,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模板ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "trans_point_list",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 256,
+        "stride": 56,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "trans_id",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "ID，index"
+            },
+            {
+              "name": "name",
+              "off": 4,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              },
+              "c": "名字"
+            },
+            {
+              "name": "map_id",
+              "off": 36,
+              "t": {
+                "k": "u32"
+              },
+              "c": "目标地图号"
+            },
+            {
+              "name": "pos",
+              "off": 40,
+              "t": {
+                "k": "array",
+                "n": 3,
+                "stride": 4,
+                "t": {
+                  "k": "f32"
+                }
+              },
+              "c": "目标坐标"
+            },
+            {
+              "name": "fee",
+              "off": 52,
+              "t": {
+                "k": "i32"
+              },
+              "c": "费用"
+            }
+          ]
+        }
+      },
+      "c": "传送目标点列表"
+    }
+  ]
+}

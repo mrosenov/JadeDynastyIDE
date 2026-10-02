@@ -1,0 +1,274 @@
+{
+  "key": "interaction_object_hook_config",
+  "name": "Interaction Object Hook Config",
+  "struct": "INTERACTION_OBJECT_HOOK_CONFIG",
+  "size": 2368,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "object_hook_name",
+      "off": 68,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "物品挂点名称"
+    },
+    {
+      "name": "character_hook_name",
+      "off": 268,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "人物挂点名称"
+    },
+    {
+      "name": "start_task_id",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动开始触发的任务"
+    },
+    {
+      "name": "start_open_controller_id",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动开始开启的控制器"
+    },
+    {
+      "name": "start_close_controller_id",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动开开始关闭的控制器"
+    },
+    {
+      "name": "prepare_time",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      },
+      "c": "准备时间"
+    },
+    {
+      "name": "start_object_action",
+      "off": 484,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "互动开始时物品播放的动作"
+    },
+    {
+      "name": "start_character_action",
+      "off": 684,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "互动开始时人物播放的动作"
+    },
+    {
+      "name": "static_object_action",
+      "off": 884,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "互动静止时物品播放的动作"
+    },
+    {
+      "name": "static_character_action",
+      "off": 1084,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "互动静止时人物播放的动作"
+    },
+    {
+      "name": "move_object_action",
+      "off": 1284,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "互动移动时物品播放的动作"
+    },
+    {
+      "name": "move_character_action",
+      "off": 1484,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "互动激动时人物播放的动作"
+    },
+    {
+      "name": "end_object_action",
+      "off": 1684,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "互动结束物品播放的动作"
+    },
+    {
+      "name": "end_character_action",
+      "off": 1884,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "互动结束人物播放的动作"
+    },
+    {
+      "name": "end_task_id",
+      "off": 2084,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动结束触发的任务"
+    },
+    {
+      "name": "end_open_controller_id",
+      "off": 2088,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动结束开启的控制器"
+    },
+    {
+      "name": "end_close_controller_id",
+      "off": 2092,
+      "t": {
+        "k": "i32"
+      },
+      "c": "互动结束关闭的控制器"
+    },
+    {
+      "name": "item_info",
+      "off": 2096,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "互动结束获得的物品"
+            },
+            {
+              "name": "prop",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              },
+              "c": "获得物品的概率"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "accident",
+      "off": 2136,
+      "t": {
+        "k": "u32"
+      },
+      "c": "意外终止行为"
+    },
+    {
+      "name": "showbutton",
+      "off": 2140,
+      "t": {
+        "k": "u32"
+      },
+      "c": "互动结束是否显示按钮"
+    },
+    {
+      "name": "buttontext",
+      "off": 2144,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      },
+      "c": "结束按钮的文字"
+    },
+    {
+      "name": "absx",
+      "off": 2344,
+      "t": {
+        "k": "i32"
+      },
+      "c": "结束时玩家去往的绝对坐标x"
+    },
+    {
+      "name": "absy",
+      "off": 2348,
+      "t": {
+        "k": "i32"
+      },
+      "c": "结束时玩家去往的绝对坐标y"
+    },
+    {
+      "name": "absz",
+      "off": 2352,
+      "t": {
+        "k": "i32"
+      },
+      "c": "结束时玩家去往的绝对坐标z"
+    },
+    {
+      "name": "relativex",
+      "off": 2356,
+      "t": {
+        "k": "i32"
+      },
+      "c": "结束时玩家去往的相对坐标x"
+    },
+    {
+      "name": "relativey",
+      "off": 2360,
+      "t": {
+        "k": "i32"
+      },
+      "c": "结束时玩家去往的相对坐标y"
+    },
+    {
+      "name": "relativez",
+      "off": 2364,
+      "t": {
+        "k": "i32"
+      },
+      "c": "结束时玩家去往的相对坐标z"
+    }
+  ]
+}

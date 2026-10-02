@@ -1,0 +1,310 @@
+{
+  "key": "building_essence",
+  "name": "Building Essence",
+  "struct": "BUILDING_ESSENCE",
+  "size": 2284,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "constructing_model",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "正在建筑中的等级模型"
+    },
+    {
+      "name": "building_desc",
+      "off": 72,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      },
+      "c": "建筑描述"
+    },
+    {
+      "name": "up_building",
+      "off": 584,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 340,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "ordinary",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "普通建筑图像"
+            },
+            {
+              "name": "hightlight",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "高亮建筑图像"
+            },
+            {
+              "name": "grass_num",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "升级等级需要的灵草数量"
+            },
+            {
+              "name": "mine_num",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "c": "升级等级需要的矿石数量"
+            },
+            {
+              "name": "monster_food_num",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              },
+              "c": "升级等级需要的兽粮数量"
+            },
+            {
+              "name": "monster_core_num",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              },
+              "c": "升级等级需要的怪核数量"
+            },
+            {
+              "name": "money_num",
+              "off": 24,
+              "t": {
+                "k": "i32"
+              },
+              "c": "升级等级需要的元宝数量"
+            },
+            {
+              "name": "req_building",
+              "off": 28,
+              "t": {
+                "k": "array",
+                "n": 10,
+                "stride": 8,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "building_id",
+                      "off": 0,
+                      "t": {
+                        "k": "u32"
+                      },
+                      "c": "升级等级需要的建筑"
+                    },
+                    {
+                      "name": "level",
+                      "off": 4,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "c": "升级等级需要的建筑等级"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "building_model",
+              "off": 108,
+              "t": {
+                "k": "i32"
+              },
+              "c": "建筑模型"
+            },
+            {
+              "name": "task_id",
+              "off": 112,
+              "t": {
+                "k": "i32"
+              },
+              "c": "升级时可接任务"
+            },
+            {
+              "name": "finish_num",
+              "off": 116,
+              "t": {
+                "k": "i32"
+              },
+              "c": "升级任务完成次数"
+            },
+            {
+              "name": "item",
+              "off": 120,
+              "t": {
+                "k": "array",
+                "n": 5,
+                "stride": 12,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "item_id",
+                      "off": 0,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "c": "增加物品ID"
+                    },
+                    {
+                      "name": "item_num",
+                      "off": 4,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "c": "增加物品数量"
+                    },
+                    {
+                      "name": "time",
+                      "off": 8,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "c": "增加物品时间"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "added_grass_num",
+              "off": 180,
+              "t": {
+                "k": "i32"
+              },
+              "c": "增加灵草数量"
+            },
+            {
+              "name": "added_grass_time",
+              "off": 184,
+              "t": {
+                "k": "i32"
+              },
+              "c": "增加灵草时间"
+            },
+            {
+              "name": "add_mine_num",
+              "off": 188,
+              "t": {
+                "k": "i32"
+              },
+              "c": "增加矿石数量"
+            },
+            {
+              "name": "add_mine_time",
+              "off": 192,
+              "t": {
+                "k": "i32"
+              },
+              "c": "增加矿石时间"
+            },
+            {
+              "name": "add_monster_core_num",
+              "off": 196,
+              "t": {
+                "k": "i32"
+              },
+              "c": "增加兽核数量"
+            },
+            {
+              "name": "add_mosnter_core_tiem",
+              "off": 200,
+              "t": {
+                "k": "i32"
+              },
+              "c": "增加兽核时间"
+            },
+            {
+              "name": "add_mosnter_food_num",
+              "off": 204,
+              "t": {
+                "k": "i32"
+              },
+              "c": "增加兽粮数量"
+            },
+            {
+              "name": "add_monster_food_time",
+              "off": 208,
+              "t": {
+                "k": "i32"
+              },
+              "c": "增加兽粮时间"
+            },
+            {
+              "name": "add_money_num",
+              "off": 212,
+              "t": {
+                "k": "i32"
+              },
+              "c": "增加元宝数量"
+            },
+            {
+              "name": "add_money_time",
+              "off": 216,
+              "t": {
+                "k": "i32"
+              },
+              "c": "增加元宝时间"
+            },
+            {
+              "name": "controller_open",
+              "off": 220,
+              "t": {
+                "k": "array",
+                "n": 15,
+                "stride": 4,
+                "t": {
+                  "k": "i32"
+                }
+              },
+              "c": "开启控制器的ID"
+            },
+            {
+              "name": "controller_close",
+              "off": 280,
+              "t": {
+                "k": "array",
+                "n": 15,
+                "stride": 4,
+                "t": {
+                  "k": "i32"
+                }
+              },
+              "c": "关闭控制器的ID"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

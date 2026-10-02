@@ -1,0 +1,222 @@
+{
+  "key": "pet_armor_essence",
+  "name": "Pet Armor Essence",
+  "struct": "PET_ARMOR_ESSENCE",
+  "size": 300,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径",
+      "display": "icon"
+    },
+    {
+      "name": "desc",
+      "off": 76,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      },
+      "c": "描述, 最多16个汉字"
+    },
+    {
+      "name": "pet_type_mask",
+      "off": 108,
+      "t": {
+        "k": "u32"
+      },
+      "c": "宠物类别限制"
+    },
+    {
+      "name": "lev_required",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "astro_type",
+      "off": 116,
+      "t": {
+        "k": "u32"
+      },
+      "c": "主星相限定"
+    },
+    {
+      "name": "astro_level",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "c": "星等限定;"
+    },
+    {
+      "name": "equip_location",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "fee_enhance",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宠物装备强化费用"
+    },
+    {
+      "name": "int_props",
+      "off": 132,
+      "t": {
+        "k": "array",
+        "n": 12,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "maximum",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "上限"
+            },
+            {
+              "name": "minimum",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "下限"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "float_props",
+      "off": 228,
+      "t": {
+        "k": "array",
+        "n": 2,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "maximum",
+              "off": 0,
+              "t": {
+                "k": "f32"
+              },
+              "c": "上限"
+            },
+            {
+              "name": "minimum",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              },
+              "c": "下限"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "addon_skills",
+      "off": 244,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "EQUIPMENT_ADDON"
+              ]
+            },
+            {
+              "name": "level",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "price",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 296,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

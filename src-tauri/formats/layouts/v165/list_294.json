@@ -1,0 +1,526 @@
+{
+  "name": "New Dye Config",
+  "struct": "NEW_DYE_CONFIG",
+  "size": 7460,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "config_1_text",
+      "off": 68,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_1_colorant_id",
+      "off": 580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_1_unknown_1",
+      "off": 584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_1_unknown_2",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_1_unknown_3",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_2_text",
+      "off": 596,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_2_colorant_id",
+      "off": 1108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_2_unknown_1",
+      "off": 1112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_2_unknown_2",
+      "off": 1116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_2_unknown_3",
+      "off": 1120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_3_text",
+      "off": 1124,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_3_colorant_id",
+      "off": 1636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_3_unknown_1",
+      "off": 1640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_3_unknown_2",
+      "off": 1644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_3_unknown_3",
+      "off": 1648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_4_text",
+      "off": 1652,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_4_colorant_id",
+      "off": 2164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_4_unknown_1",
+      "off": 2168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_4_unknown_2",
+      "off": 2172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_4_unknown_3",
+      "off": 2176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_5_text",
+      "off": 2180,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_5_colorant_id",
+      "off": 2692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_5_unknown_1",
+      "off": 2696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_5_unknown_2",
+      "off": 2700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_5_unknown_3",
+      "off": 2704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_6_text",
+      "off": 2708,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_6_colorant_id",
+      "off": 3220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_6_unknown_1",
+      "off": 3224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_6_unknown_2",
+      "off": 3228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_6_unknown_3",
+      "off": 3232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_7_text",
+      "off": 3236,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_7_colorant_id",
+      "off": 3748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_7_unknown_1",
+      "off": 3752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_7_unknown_2",
+      "off": 3756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_7_unknown_3",
+      "off": 3760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_8_text",
+      "off": 3764,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_8_colorant_id",
+      "off": 4276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_8_unknown_1",
+      "off": 4280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_8_unknown_2",
+      "off": 4284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_8_unknown_3",
+      "off": 4288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_9_text",
+      "off": 4292,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_9_colorant_id",
+      "off": 4804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_9_unknown_1",
+      "off": 4808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_9_unknown_2",
+      "off": 4812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_9_unknown_3",
+      "off": 4816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_10_text",
+      "off": 4820,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_10_colorant_id",
+      "off": 5332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_10_unknown_1",
+      "off": 5336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_10_unknown_2",
+      "off": 5340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_10_unknown_3",
+      "off": 5344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_11_text",
+      "off": 5348,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_11_colorant_id",
+      "off": 5860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_11_unknown_1",
+      "off": 5864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_11_unknown_2",
+      "off": 5868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_11_unknown_3",
+      "off": 5872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_12_text",
+      "off": 5876,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_12_colorant_id",
+      "off": 6388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_12_unknown_1",
+      "off": 6392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_12_unknown_2",
+      "off": 6396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_12_unknown_3",
+      "off": 6400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_13_text",
+      "off": 6404,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_13_colorant_id",
+      "off": 6916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_13_unknown_1",
+      "off": 6920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_13_unknown_2",
+      "off": 6924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_13_unknown_3",
+      "off": 6928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_14_text",
+      "off": 6932,
+      "t": {
+        "k": "wstr",
+        "n": 256
+      }
+    },
+    {
+      "name": "config_14_colorant_id",
+      "off": 7444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_14_unknown_1",
+      "off": 7448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_14_unknown_2",
+      "off": 7452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "config_14_unknown_3",
+      "off": 7456,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

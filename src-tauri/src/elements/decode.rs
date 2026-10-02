@@ -35,6 +35,59 @@ pub struct Node {
     /// Bytes not described by the layout.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub unknown: bool,
+    /// A display group of consecutive fields (see `Field::g`).
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub group: bool,
+    /// For fields with conditional types: why this type was chosen,
+    /// e.g. "type = 7 → float".
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cond: Option<String>,
+}
+
+fn group_node(name: String, members: Vec<Node>) -> Node {
+    let off = members.iter().map(|n| n.off).min().unwrap_or(0);
+    let end = members.iter().map(|n| n.off + n.size).max().unwrap_or(off);
+    let fields = members.iter().filter(|n| !n.unknown).count();
+    Node {
+        name,
+        off,
+        size: end - off,
+        ty: "group".into(),
+        value: Some(format!("{fields} field{}", if fields == 1 { "" } else { "s" })),
+        hint: None,
+        link: None,
+        display: None,
+        comment: None,
+        children: Some(members),
+        unknown: false,
+        group: true,
+        cond: None,
+    }
+}
+
+/// Wraps runs of consecutive nodes tagged with the same group into one node.
+fn grouped(items: Vec<(Option<String>, Node)>) -> Vec<Node> {
+    let mut out = Vec::new();
+    let mut run: Option<(String, Vec<Node>)> = None;
+    for (g, node) in items {
+        if let (Some((name, members)), Some(g)) = (run.as_mut(), g.as_deref()) {
+            if name == g {
+                members.push(node);
+                continue;
+            }
+        }
+        if let Some((name, members)) = run.take() {
+            out.push(group_node(name, members));
+        }
+        match g {
+            Some(g) => run = Some((g, vec![node])),
+            None => out.push(node),
+        }
+    }
+    if let Some((name, members)) = run {
+        out.push(group_node(name, members));
+    }
+    out
 }
 
 pub fn read_wstr(bytes: &[u8]) -> String {
@@ -137,6 +190,8 @@ impl Ctx<'_> {
             comment: field.and_then(|f| f.c.clone()),
             children: None,
             unknown: false,
+            group: false,
+            cond: None,
         };
         if off + size > self.bytes.len() {
             node.value = Some("(past end of record)".into());
@@ -177,7 +232,37 @@ impl Ctx<'_> {
     }
 
     fn fields(&self, fields: &[Field], base: usize) -> Vec<Node> {
-        fields.iter().map(|f| self.node(f.name.clone(), &f.t, base + f.off, Some(f))).collect()
+        grouped(fields.iter().map(|f| (f.g.clone(), self.typed(f, fields, base))).collect())
+    }
+
+    /// Decodes a field, applying its conditional type rules: the first rule
+    /// whose sibling field holds a listed value picks the type.
+    fn typed(&self, f: &Field, siblings: &[Field], base: usize) -> Node {
+        if f.when.is_empty() {
+            return self.node(f.name.clone(), &f.t, base + f.off, Some(f));
+        }
+        let value_of = |name: &str| {
+            let s = siblings.iter().find(|s| s.name == name)?;
+            let at = base + s.off;
+            if at + s.t.size() > self.bytes.len() {
+                return None;
+            }
+            scalar(&s.t, self.bytes, at)?.1
+        };
+        let mut chosen = &f.t;
+        let mut why = None;
+        for rule in &f.when {
+            let Some(v) = value_of(&rule.field) else { continue };
+            if rule.matches(v) {
+                chosen = &rule.t;
+                why = Some(format!("{} = {v} → {}", rule.field, rule.t.label()));
+                break;
+            }
+            why.get_or_insert_with(|| format!("{} = {v} → {}", rule.field, f.t.label()));
+        }
+        let mut node = self.node(f.name.clone(), chosen, base + f.off, Some(f));
+        node.cond = why;
+        node
     }
 }
 
@@ -202,6 +287,8 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
                     comment: None,
                     children: None,
                     unknown: true,
+                    group: false,
+                    cond: None,
                 }
             })
             .collect()
@@ -219,6 +306,8 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
         comment: None,
         children,
         unknown: true,
+        group: false,
+        cond: None,
     }
 }
 
@@ -229,19 +318,23 @@ pub fn decode_record(bytes: &[u8], fields: &[Field], annotate: &Annotator) -> Ve
     let mut sorted: Vec<&Field> = fields.iter().filter(|f| f.off < bytes.len()).collect();
     sorted.sort_by_key(|f| f.off);
 
-    let mut nodes = Vec::new();
+    let mut nodes: Vec<(Option<String>, Node)> = Vec::new();
     let mut cursor = 0;
+    let mut previous_group: Option<&str> = None;
     for f in sorted {
         if f.off > cursor {
-            nodes.push(gap_node(bytes, cursor, f.off - cursor));
+            // A gap between two fields of one group stays inside the group.
+            let g = previous_group.filter(|&p| f.g.as_deref() == Some(p)).map(str::to_string);
+            nodes.push((g, gap_node(bytes, cursor, f.off - cursor)));
         }
-        nodes.push(ctx.node(f.name.clone(), &f.t, f.off, Some(f)));
+        nodes.push((f.g.clone(), ctx.typed(f, fields, 0)));
         cursor = cursor.max(f.off + f.t.size());
+        previous_group = f.g.as_deref();
     }
     if cursor < bytes.len() {
-        nodes.push(gap_node(bytes, cursor, bytes.len() - cursor));
+        nodes.push((None, gap_node(bytes, cursor, bytes.len() - cursor)));
     }
-    nodes
+    grouped(nodes)
 }
 
 /// Finds a likely display name in a record without a layout: a UTF-16 string
@@ -255,4 +348,55 @@ pub fn guess_name(bytes: &[u8]) -> Option<String> {
             && raw[text.encode_utf16().count() * 2..].iter().all(|&b| b == 0);
         plausible.then_some(text)
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn field(name: &str, off: usize, g: Option<&str>) -> Field {
+        Field { name: name.into(), off, t: Ty::I32, c: None, e: None, display: None, refs: vec![], g: g.map(Into::into), when: vec![] }
+    }
+
+    #[test]
+    fn consecutive_fields_of_a_group_share_one_node() {
+        let fields = [
+            field("id", 0, None),
+            field("addon1", 4, Some("Addons")),
+            field("addon2", 8, Some("Addons")),
+            // a gap at 12..16 between two members stays in the group
+            field("addon3", 16, Some("Addons")),
+            field("price", 20, None),
+        ];
+        let bytes = [1u8; 28];
+        let nodes = decode_record(&bytes, &fields, &|_, _| Annotation::default());
+        let names: Vec<&str> = nodes.iter().map(|n| n.name.as_str()).collect();
+        assert_eq!(names, ["id", "Addons", "price", "unknown @0x18"]);
+        let group = &nodes[1];
+        assert!(group.group);
+        assert_eq!((group.off, group.size), (4, 16));
+        let members: Vec<&str> = group.children.as_ref().unwrap().iter().map(|n| n.name.as_str()).collect();
+        assert_eq!(members, ["addon1", "addon2", "unknown @0xc", "addon3"]);
+        assert_eq!(group.value.as_deref(), Some("3 fields"));
+    }
+
+    #[test]
+    fn type_rules_pick_the_type_per_record() {
+        use crate::elements::format::TypeRule;
+        let mut param = field("param", 4, None);
+        param.when = vec![TypeRule { field: "type".into(), values: vec![7, 8], not: false, t: Ty::F32 }];
+        let fields = [field("type", 0, None), param];
+        let record = |ty: i32, bits: u32| [ty.to_le_bytes(), bits.to_le_bytes()].concat();
+        let none = |_: &Field, _: i64| Annotation::default();
+
+        let as_float = decode_record(&record(7, 1.5f32.to_bits()), &fields, &none);
+        assert_eq!(as_float[1].ty, "float");
+        assert_eq!(as_float[1].value.as_deref(), Some("1.5"));
+        assert_eq!(as_float[1].cond.as_deref(), Some("type = 7 → float"));
+
+        let as_int = decode_record(&record(3, 42), &fields, &none);
+        assert_eq!(as_int[1].ty, "int32");
+        assert_eq!(as_int[1].value.as_deref(), Some("42"));
+        assert_eq!(as_int[1].cond.as_deref(), Some("type = 3 → int32"));
+    }
 }

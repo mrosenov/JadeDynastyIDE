@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import type { ListSummary } from "../elements/types";
 import { LAYOUT_LABEL, count } from "../elements/format";
+import { Pencil } from "lucide-react";
 
 interface Props {
   lists: ListSummary[];
@@ -54,6 +55,7 @@ export function ListSidebar({ lists, selected, onSelect }: Props) {
               l.structName ?? l.name,
               `${l.itemSize} bytes × ${count(l.count)}`,
               LAYOUT_LABEL[l.layout] + (l.layoutId ? ` (${l.layoutId})` : ""),
+              l.custom ? "Edited in the schema editor" : null,
             ]
               .filter(Boolean)
               .join("\n")}
@@ -63,7 +65,14 @@ export function ListSidebar({ lists, selected, onSelect }: Props) {
             <span className={"list-name" + (l.layout === "borrowed" || l.layout === "grown" ? " approx" : "")}>
               {l.name}
             </span>
-            <span className="list-count">{count(l.count)}</span>
+            <span className="list-count">
+              {l.custom && (
+                <span className="custom-mark" title="Your schema">
+                  <Pencil size={11} />
+                </span>
+              )}
+              {count(l.count)}
+            </span>
           </button>
         ))}
         {visible.length === 0 && <div className="empty-note">No lists match.</div>}

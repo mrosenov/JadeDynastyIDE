@@ -1,0 +1,298 @@
+{
+  "key": "gift_bag_lottery_deliver_essence",
+  "name": "Gift Bag Lottery Deliver Essence",
+  "struct": "GIFT_BAG_LOTTERY_DELIVER_ESSENCE",
+  "size": 572,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径",
+      "display": "icon"
+    },
+    {
+      "name": "level_everLimit",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "曾经的等级的下限（适合飞升之后的判断）"
+    },
+    {
+      "name": "level_required",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "当前等级下限"
+    },
+    {
+      "name": "level_upperLimit",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "当前等级上限"
+    },
+    {
+      "name": "require_gender",
+      "off": 88,
+      "t": {
+        "k": "u32"
+      },
+      "c": "性别限制，0-男，1-女，2-男女都可",
+      "e": "gender"
+    },
+    {
+      "name": "renascence_count",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "c": "转生次数要求"
+    },
+    {
+      "name": "character_combo_id",
+      "off": 96,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制",
+      "e": "character_combo_id"
+    },
+    {
+      "name": "character_combo_id2",
+      "off": 104,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制, 扩展职业ID后的新职业掩码，Added 2011-07-14.",
+      "e": "character_combo_id2"
+    },
+    {
+      "name": "god_devil_mask",
+      "off": 112,
+      "t": {
+        "k": "u32"
+      },
+      "c": "仙魔 造化限制仙/佛/魔/备选1/2/3",
+      "e": "god_devil_mask"
+    },
+    {
+      "name": "open_time",
+      "off": 116,
+      "t": {
+        "k": "u32"
+      },
+      "c": "开启需要的时间"
+    },
+    {
+      "name": "probability",
+      "off": 120,
+      "t": {
+        "k": "f32"
+      },
+      "c": "开启成功的概率"
+    },
+    {
+      "name": "success_disappear",
+      "off": 124,
+      "t": {
+        "k": "u32"
+      },
+      "c": "成功开启后消失(1为是，0为否)"
+    },
+    {
+      "name": "faliure_disappear",
+      "off": 128,
+      "t": {
+        "k": "u32"
+      },
+      "c": "开启失败后消失(1为是，0为否)"
+    },
+    {
+      "name": "id1_object_need",
+      "off": 132,
+      "t": {
+        "k": "u32"
+      },
+      "c": "开启需要物品1"
+    },
+    {
+      "name": "id1_object_num",
+      "off": 136,
+      "t": {
+        "k": "u32"
+      },
+      "c": "开启需要物品1的数量"
+    },
+    {
+      "name": "id2_object_need",
+      "off": 140,
+      "t": {
+        "k": "u32"
+      },
+      "c": "开启需要物品2"
+    },
+    {
+      "name": "id2_object_num",
+      "off": 144,
+      "t": {
+        "k": "u32"
+      },
+      "c": "开启需要物品2的数量"
+    },
+    {
+      "name": "money_need",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      },
+      "c": "开启需要金钱"
+    },
+    {
+      "name": "num_object",
+      "off": 152,
+      "t": {
+        "k": "u32"
+      },
+      "c": "内含物品的总数"
+    },
+    {
+      "name": "gifts",
+      "off": 156,
+      "t": {
+        "k": "array",
+        "n": 16,
+        "stride": 24,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id_object",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "物品id"
+            },
+            {
+              "name": "probability",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              },
+              "c": "物品产出概率"
+            },
+            {
+              "name": "num_min",
+              "off": 8,
+              "t": {
+                "k": "u32"
+              },
+              "c": "物品的数量下限"
+            },
+            {
+              "name": "num_max",
+              "off": 12,
+              "t": {
+                "k": "u32"
+              },
+              "c": "物品的数量上限"
+            },
+            {
+              "name": "is_bind",
+              "off": 16,
+              "t": {
+                "k": "u32"
+              },
+              "c": "物品是否绑定"
+            },
+            {
+              "name": "effect_time",
+              "off": 20,
+              "t": {
+                "k": "u32"
+              },
+              "c": "物品的时效（单位为秒，0为永久）"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "normalize_group",
+      "off": 540,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      }
+    },
+    {
+      "name": "price",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 568,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

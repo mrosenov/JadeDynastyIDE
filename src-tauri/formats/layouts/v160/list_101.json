@@ -1,0 +1,80 @@
+{
+  "key": "score_to_rank_config",
+  "name": "Score To Rank Config",
+  "struct": "SCORE_TO_RANK_CONFIG",
+  "size": 476,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "map_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "对应的地图号"
+    },
+    {
+      "name": "controller",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "战场开启激活的控制器"
+    },
+    {
+      "name": "score2rank",
+      "off": 76,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 40,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "score",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "该军衔所需积分"
+            },
+            {
+              "name": "task_id",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "战场结束后，该军衔触发的任务id"
+            },
+            {
+              "name": "rank_name",
+              "off": 8,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              },
+              "c": "军衔名称，最多15个汉字"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

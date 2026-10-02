@@ -1,0 +1,15 @@
+{
+  "name": "Unknown51",
+  "struct": "UNKNOWN51",
+  "size": 1024,
+  "fields": [
+    {
+      "name": "Unk1",
+      "off": 0,
+      "t": {
+        "k": "wstr",
+        "n": 512
+      }
+    }
+  ]
+}

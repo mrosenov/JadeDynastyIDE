@@ -1,0 +1,104 @@
+{
+  "key": "npc_transmit_service",
+  "name": "Npc Transmit Service",
+  "struct": "NPC_TRANSMIT_SERVICE",
+  "size": 968,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "服务(类型)ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "targets",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 16,
+        "stride": 56,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id_world",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "目标点世界ID"
+            },
+            {
+              "name": "name",
+              "off": 4,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              },
+              "c": "目标点名称1"
+            },
+            {
+              "name": "x",
+              "off": 36,
+              "t": {
+                "k": "f32"
+              },
+              "c": "目标点x坐标"
+            },
+            {
+              "name": "y",
+              "off": 40,
+              "t": {
+                "k": "f32"
+              },
+              "c": "目标点y坐标"
+            },
+            {
+              "name": "z",
+              "off": 44,
+              "t": {
+                "k": "f32"
+              },
+              "c": "目标点z坐标"
+            },
+            {
+              "name": "fee",
+              "off": 48,
+              "t": {
+                "k": "i32"
+              },
+              "c": "费用"
+            },
+            {
+              "name": "required_level",
+              "off": 52,
+              "t": {
+                "k": "i32"
+              },
+              "c": "等级要求"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "id_dialog",
+      "off": 964,
+      "t": {
+        "k": "u32"
+      },
+      "c": "对话ID"
+    }
+  ]
+}

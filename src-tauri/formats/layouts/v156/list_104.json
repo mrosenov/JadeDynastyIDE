@@ -1,0 +1,115 @@
+{
+  "key": "battle_score_config",
+  "name": "Battle Score Config",
+  "struct": "BATTLE_SCORE_CONFIG",
+  "size": 548,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "map_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "对应的地图号"
+    },
+    {
+      "name": "scores",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "score",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "获取的积分"
+            }
+          ]
+        }
+      },
+      "c": "杀死军衔1-10级获取的积分"
+    },
+    {
+      "name": "ext_score",
+      "off": 112,
+      "t": {
+        "k": "array",
+        "n": 8,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "ext_score",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              }
+            }
+          ]
+        }
+      },
+      "c": "连续杀死3-10人获取的额外积分"
+    },
+    {
+      "name": "monster_scores",
+      "off": 144,
+      "t": {
+        "k": "array",
+        "n": 50,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "monster_id",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              }
+            },
+            {
+              "name": "monster_score",
+              "off": 4,
+              "t": {
+                "k": "u32"
+              }
+            }
+          ]
+        }
+      },
+      "c": "杀死特定id的怪物获取的积分"
+    },
+    {
+      "name": "victory_score",
+      "off": 544,
+      "t": {
+        "k": "u32"
+      },
+      "c": "获得最终胜利获取的积分"
+    }
+  ]
+}

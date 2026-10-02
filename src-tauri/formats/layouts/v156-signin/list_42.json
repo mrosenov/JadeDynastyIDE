@@ -1,0 +1,174 @@
+{
+  "key": "taskdice_essence",
+  "name": "Taskdice Essence",
+  "struct": "TASKDICE_ESSENCE",
+  "size": 396,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "(类型)ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径",
+      "display": "icon"
+    },
+    {
+      "name": "task_lists",
+      "off": 76,
+      "t": {
+        "k": "array",
+        "n": 8,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "任务id"
+            },
+            {
+              "name": "probability",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              },
+              "c": "产生该任务的概率"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "type",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "map_trigger",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      },
+      "c": "触发地图id"
+    },
+    {
+      "name": "pos_trigger",
+      "off": 148,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "c": "触发点"
+    },
+    {
+      "name": "radius_trigger",
+      "off": 160,
+      "t": {
+        "k": "f32"
+      },
+      "c": "触发半径"
+    },
+    {
+      "name": "trigger_point",
+      "off": 164,
+      "t": {
+        "k": "array",
+        "n": 8,
+        "stride": 28,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "map_id",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "地图号"
+            },
+            {
+              "name": "pos_min",
+              "off": 4,
+              "t": {
+                "k": "array",
+                "n": 3,
+                "stride": 4,
+                "t": {
+                  "k": "f32"
+                }
+              },
+              "c": "左下角"
+            },
+            {
+              "name": "pos_max",
+              "off": 16,
+              "t": {
+                "k": "array",
+                "n": 3,
+                "stride": 4,
+                "t": {
+                  "k": "f32"
+                }
+              },
+              "c": "右上角"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "pile_num_max",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 392,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

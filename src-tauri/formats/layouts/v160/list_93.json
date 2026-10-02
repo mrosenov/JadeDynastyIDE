@@ -1,0 +1,127 @@
+{
+  "key": "aircraft_essence",
+  "name": "Aircraft Essence",
+  "struct": "AIRCRAFT_ESSENCE",
+  "size": 124,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "(类型)ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径名",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径名",
+      "display": "icon"
+    },
+    {
+      "name": "file_model",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "模型文件",
+      "display": "path"
+    },
+    {
+      "name": "price",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "level_required",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "c": "等级限制"
+    },
+    {
+      "name": "character_combo_id",
+      "off": 92,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制",
+      "e": "character_combo_id"
+    },
+    {
+      "name": "character_combo_id2",
+      "off": 100,
+      "t": {
+        "k": "u64"
+      },
+      "c": "职业限制，扩展职业ID后的新职业掩码，Added 2011-07-14.",
+      "e": "character_combo_id2"
+    },
+    {
+      "name": "speed",
+      "off": 108,
+      "t": {
+        "k": "f32"
+      },
+      "c": "移动速度"
+    },
+    {
+      "name": "fly_mode",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "c": "飞行模式"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 120,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

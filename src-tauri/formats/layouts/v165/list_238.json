@@ -1,0 +1,1646 @@
+{
+  "name": "Amulet Config",
+  "struct": "AMULET_CONFIG",
+  "size": 996,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "prop_probability_1",
+      "off": 68,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "prop_probability_2",
+      "off": 72,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "prop_probability_3",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "prop_probability_4",
+      "off": 80,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_1_prop_id",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_1_max_value",
+      "off": 88,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_1_min_value",
+      "off": 92,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_1_add_value",
+      "off": 96,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_1_probability",
+      "off": 100,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_2_prop_id",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_2_max_value",
+      "off": 108,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_2_min_value",
+      "off": 112,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_2_add_value",
+      "off": 116,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_2_probability",
+      "off": 120,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_3_prop_id",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_3_max_value",
+      "off": 128,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_3_min_value",
+      "off": 132,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_3_add_value",
+      "off": 136,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_3_probability",
+      "off": 140,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_4_prop_id",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_4_max_value",
+      "off": 148,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_4_min_value",
+      "off": 152,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_4_add_value",
+      "off": 156,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_4_probability",
+      "off": 160,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_5_prop_id",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_5_max_value",
+      "off": 168,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_5_min_value",
+      "off": 172,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_5_add_value",
+      "off": 176,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_5_probability",
+      "off": 180,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_6_prop_id",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_6_max_value",
+      "off": 188,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_6_min_value",
+      "off": 192,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_6_add_value",
+      "off": 196,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_6_probability",
+      "off": 200,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_7_prop_id",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_7_max_value",
+      "off": 208,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_7_min_value",
+      "off": 212,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_7_add_value",
+      "off": 216,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_7_probability",
+      "off": 220,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_8_prop_id",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_8_max_value",
+      "off": 228,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_8_min_value",
+      "off": 232,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_8_add_value",
+      "off": 236,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_8_probability",
+      "off": 240,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_9_prop_id",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_9_max_value",
+      "off": 248,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_9_min_value",
+      "off": 252,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_9_add_value",
+      "off": 256,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_9_probability",
+      "off": 260,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_10_prop_id",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_10_max_value",
+      "off": 268,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_10_min_value",
+      "off": 272,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_10_add_value",
+      "off": 276,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_10_probability",
+      "off": 280,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_11_prop_id",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_11_max_value",
+      "off": 288,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_11_min_value",
+      "off": 292,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_11_add_value",
+      "off": 296,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_11_probability",
+      "off": 300,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_12_prop_id",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "base_prop_list_12_max_value",
+      "off": 308,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_12_min_value",
+      "off": 312,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_12_add_value",
+      "off": 316,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "base_prop_list_12_probability",
+      "off": 320,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_level",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_1_prop_id",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_1_probability",
+      "off": 332,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_1_value",
+      "off": 336,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_2_prop_id",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_2_probability",
+      "off": 344,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_2_value",
+      "off": 348,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_3_prop_id",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_3_probability",
+      "off": 356,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_3_value",
+      "off": 360,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_4_prop_id",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_4_probability",
+      "off": 368,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_4_value",
+      "off": 372,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_5_prop_id",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_5_probability",
+      "off": 380,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_5_value",
+      "off": 384,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_6_prop_id",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_6_probability",
+      "off": 392,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_6_value",
+      "off": 396,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_7_prop_id",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_7_probability",
+      "off": 404,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_7_value",
+      "off": 408,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_8_prop_id",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_8_probability",
+      "off": 416,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_8_value",
+      "off": 420,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_9_prop_id",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_9_probability",
+      "off": 428,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_9_value",
+      "off": 432,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_10_prop_id",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_10_probability",
+      "off": 440,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_1_props_10_value",
+      "off": 444,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_level",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_1_prop_id",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_1_probability",
+      "off": 456,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_1_value",
+      "off": 460,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_2_prop_id",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_2_probability",
+      "off": 468,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_2_value",
+      "off": 472,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_3_prop_id",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_3_probability",
+      "off": 480,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_3_value",
+      "off": 484,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_4_prop_id",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_4_probability",
+      "off": 492,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_4_value",
+      "off": 496,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_5_prop_id",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_5_probability",
+      "off": 504,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_5_value",
+      "off": 508,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_6_prop_id",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_6_probability",
+      "off": 516,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_6_value",
+      "off": 520,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_7_prop_id",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_7_probability",
+      "off": 528,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_7_value",
+      "off": 532,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_8_prop_id",
+      "off": 536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_8_probability",
+      "off": 540,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_8_value",
+      "off": 544,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_9_prop_id",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_9_probability",
+      "off": 552,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_9_value",
+      "off": 556,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_10_prop_id",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_10_probability",
+      "off": 564,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_2_props_10_value",
+      "off": 568,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_level",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_1_prop_id",
+      "off": 576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_1_probability",
+      "off": 580,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_1_value",
+      "off": 584,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_2_prop_id",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_2_probability",
+      "off": 592,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_2_value",
+      "off": 596,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_3_prop_id",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_3_probability",
+      "off": 604,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_3_value",
+      "off": 608,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_4_prop_id",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_4_probability",
+      "off": 616,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_4_value",
+      "off": 620,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_5_prop_id",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_5_probability",
+      "off": 628,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_5_value",
+      "off": 632,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_6_prop_id",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_6_probability",
+      "off": 640,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_6_value",
+      "off": 644,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_7_prop_id",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_7_probability",
+      "off": 652,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_7_value",
+      "off": 656,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_8_prop_id",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_8_probability",
+      "off": 664,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_8_value",
+      "off": 668,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_9_prop_id",
+      "off": 672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_9_probability",
+      "off": 676,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_9_value",
+      "off": 680,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_10_prop_id",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_10_probability",
+      "off": 688,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_3_props_10_value",
+      "off": 692,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_level",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_1_prop_id",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_1_probability",
+      "off": 704,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_1_value",
+      "off": 708,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_2_prop_id",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_2_probability",
+      "off": 716,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_2_value",
+      "off": 720,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_3_prop_id",
+      "off": 724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_3_probability",
+      "off": 728,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_3_value",
+      "off": 732,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_4_prop_id",
+      "off": 736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_4_probability",
+      "off": 740,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_4_value",
+      "off": 744,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_5_prop_id",
+      "off": 748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_5_probability",
+      "off": 752,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_5_value",
+      "off": 756,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_6_prop_id",
+      "off": 760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_6_probability",
+      "off": 764,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_6_value",
+      "off": 768,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_7_prop_id",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_7_probability",
+      "off": 776,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_7_value",
+      "off": 780,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_8_prop_id",
+      "off": 784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_8_probability",
+      "off": 788,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_8_value",
+      "off": 792,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_9_prop_id",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_9_probability",
+      "off": 800,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_9_value",
+      "off": 804,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_10_prop_id",
+      "off": 808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_10_probability",
+      "off": 812,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_4_props_10_value",
+      "off": 816,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_level",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_1_prop_id",
+      "off": 824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_1_probability",
+      "off": 828,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_1_value",
+      "off": 832,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_2_prop_id",
+      "off": 836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_2_probability",
+      "off": 840,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_2_value",
+      "off": 844,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_3_prop_id",
+      "off": 848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_3_probability",
+      "off": 852,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_3_value",
+      "off": 856,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_4_prop_id",
+      "off": 860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_4_probability",
+      "off": 864,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_4_value",
+      "off": 868,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_5_prop_id",
+      "off": 872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_5_probability",
+      "off": 876,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_5_value",
+      "off": 880,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_6_prop_id",
+      "off": 884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_6_probability",
+      "off": 888,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_6_value",
+      "off": 892,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_7_prop_id",
+      "off": 896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_7_probability",
+      "off": 900,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_7_value",
+      "off": 904,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_8_prop_id",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_8_probability",
+      "off": 912,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_8_value",
+      "off": 916,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_9_prop_id",
+      "off": 920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_9_probability",
+      "off": 924,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_9_value",
+      "off": 928,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_10_prop_id",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_10_probability",
+      "off": 936,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hide_prop_list_5_props_10_value",
+      "off": 940,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_probability_1",
+      "off": 944,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_probability_2",
+      "off": 948,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_probability_3",
+      "off": 952,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_probability_4",
+      "off": 956,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "level_probability_5",
+      "off": 960,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hole_level_1",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hole_level_2",
+      "off": 968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hole_level_3",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hole_level_4",
+      "off": 976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hole_level_5",
+      "off": 980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hole_level_6",
+      "off": 984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hole_level_7",
+      "off": 988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hole_level_8",
+      "off": 992,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

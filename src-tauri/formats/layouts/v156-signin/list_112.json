@@ -1,0 +1,111 @@
+{
+  "key": "life_skill_config",
+  "name": "Life Skill Config",
+  "struct": "LIFE_SKILL_CONFIG",
+  "size": 1476,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "skill_config",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 32,
+        "stride": 44,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "character_combo_id",
+              "off": 0,
+              "t": {
+                "k": "u64"
+              },
+              "c": "职业限制"
+            },
+            {
+              "name": "character_combo_id2",
+              "off": 8,
+              "t": {
+                "k": "u64"
+              },
+              "c": "职业限制, 扩展职业ID后的新职业掩码，Added 2011-07-14."
+            },
+            {
+              "name": "require_gender",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              },
+              "c": "性别限制"
+            },
+            {
+              "name": "renascence_count",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              },
+              "c": "飞升次数限制"
+            },
+            {
+              "name": "require_level",
+              "off": 24,
+              "t": {
+                "k": "i32"
+              },
+              "c": "等级限制"
+            },
+            {
+              "name": "remove_renascence",
+              "off": 28,
+              "t": {
+                "k": "i32"
+              },
+              "c": "失去技能飞升次数要求"
+            },
+            {
+              "name": "remove_level",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              },
+              "c": "失去技能人物等级"
+            },
+            {
+              "name": "skill_id",
+              "off": 36,
+              "t": {
+                "k": "i32"
+              },
+              "c": "技能id"
+            },
+            {
+              "name": "skill_level",
+              "off": 40,
+              "t": {
+                "k": "i32"
+              },
+              "c": "技能等级"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

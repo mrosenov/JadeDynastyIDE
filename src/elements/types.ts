@@ -24,6 +24,8 @@ export interface ListSummary {
   layout: LayoutFit;
   layoutId: string | null;
   layoutSize: number | null;
+  /** The definition comes from a user layout written in the schema editor. */
+  custom: boolean;
 }
 
 export interface FileSummary {
@@ -37,6 +39,7 @@ export interface FileSummary {
   layoutId: string | null;
   layoutSource: string | null;
   layoutUnverified: boolean;
+  layoutCustom: boolean;
   markersFrom: string | null;
   talkCount: number;
   lists: ListSummary[];
@@ -62,6 +65,10 @@ export interface FieldNode {
   comment?: string;
   children?: FieldNode[];
   unknown?: boolean;
+  /** A display group of fields rather than a value. */
+  group?: boolean;
+  /** Why a conditional type was chosen, e.g. "type = 7 → float". */
+  cond?: string;
 }
 
 export interface RecordDetail {
@@ -73,4 +80,83 @@ export interface RecordDetail {
   layoutSize: number | null;
   bytes: number[];
   nodes: FieldNode[];
+}
+
+// ---------------------------------------------------------------- schemas
+
+/** A field type as stored in layouts (src-tauri/src/elements/format.rs). */
+export type Ty =
+  | { k: "i8" | "u8" | "bool" | "i16" | "u16" | "i32" | "u32" | "f32" | "f64" | "i64" | "u64" }
+  | { k: "wstr" | "str" | "bytes"; n: number }
+  | { k: "array"; n: number; stride: number; t: Ty }
+  | { k: "struct"; fields: Field[] };
+
+export interface Field {
+  name: string;
+  off: number;
+  t: Ty;
+  c?: string;
+  e?: string;
+  display?: string;
+  refs?: string[];
+  /** Display group shared by consecutive fields. */
+  g?: string;
+  /** Conditional types: the first matching rule decides how the field is read. */
+  when?: TypeRule[];
+}
+
+/** "If sibling `field` is (not) one of `in`, read the field as `t`." */
+export interface TypeRule {
+  field: string;
+  in: number[];
+  not?: boolean;
+  t: Ty;
+}
+
+export interface ListDef {
+  key?: string;
+  name: string;
+  struct?: string;
+  size?: number;
+  fields?: Field[];
+}
+
+export interface ListSchema {
+  list: number;
+  itemSize: number;
+  count: number;
+  targetLayout: string;
+  targetExists: boolean;
+  def: ListDef | null;
+  defLayout: string | null;
+  fit: LayoutFit;
+  custom: boolean;
+  hasBuiltin: boolean;
+}
+
+export interface EnumInfo {
+  key: string;
+  label: string;
+  flags: boolean;
+  count: number;
+}
+
+export interface SchemaContext {
+  enums: EnumInfo[];
+  structs: string[];
+  userDir: string;
+  errors: string[];
+}
+
+/** The same list slot as defined by another layout. */
+export interface ImportCandidate {
+  layoutId: string;
+  version: number;
+  name: string;
+  structName: string | null;
+  /** Bytes the definition describes. */
+  size: number;
+  /** Record size of the list in the open file. */
+  itemSize: number;
+  def: ListDef;
 }

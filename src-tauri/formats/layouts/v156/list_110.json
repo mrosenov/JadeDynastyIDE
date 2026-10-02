@@ -1,0 +1,169 @@
+{
+  "key": "change_shape_prop_config",
+  "name": "Change Shape Prop Config",
+  "struct": "CHANGE_SHAPE_PROP_CONFIG",
+  "size": 140,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "monster_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "对应的变身怪物id"
+    },
+    {
+      "name": "action_type",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "动作方案（精英怪or普通怪）"
+    },
+    {
+      "name": "is_replace_name",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "是否替换怪物名字"
+    },
+    {
+      "name": "move_type",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "控制移动的方式（1-变身后可以控制移动；2-无法控制移动；3-随机走动）"
+    },
+    {
+      "name": "recover_prop",
+      "off": 84,
+      "t": {
+        "k": "f32"
+      },
+      "c": "受到攻击的复原概率"
+    },
+    {
+      "name": "change_faction",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "c": "变身后是否改变阵营 0：不改变 1：改变（改变结果取下面的两个值）"
+    },
+    {
+      "name": "faction",
+      "off": 92,
+      "t": {
+        "k": "u32"
+      },
+      "c": "变身后的所属阵营"
+    },
+    {
+      "name": "enemy_faction",
+      "off": 96,
+      "t": {
+        "k": "u32"
+      },
+      "c": "变身后的敌对阵营"
+    },
+    {
+      "name": "shield_skill",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "变身后屏蔽技能"
+    },
+    {
+      "name": "can_use_medicine",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "c": "可否加红蓝药"
+    },
+    {
+      "name": "can_run_helper",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "c": "可否天人合一"
+    },
+    {
+      "name": "can_fight",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "c": "是否可战斗"
+    },
+    {
+      "name": "is_fly",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "是否飞行类变身"
+    },
+    {
+      "name": "hp_cost",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "c": "消耗气血"
+    },
+    {
+      "name": "mp_cost",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "c": "消耗真气"
+    },
+    {
+      "name": "is_equip_invalid",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "c": "装备是否失效 0：不失效 1：失效"
+    },
+    {
+      "name": "is_replace_prop",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      },
+      "c": "是否替换人物本体属性 0：不替换，1：替换"
+    },
+    {
+      "name": "is_buff_positive",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      },
+      "c": "变身buff的效果，0：负面效果 1：正面效果"
+    }
+  ]
+}

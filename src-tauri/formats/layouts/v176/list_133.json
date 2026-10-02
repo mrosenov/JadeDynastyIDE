@@ -1,0 +1,139 @@
+{
+  "key": "small_online_gift_bag_essence",
+  "name": "Small Online Gift Bag Essence",
+  "struct": "SMALL_ONLINE_GIFT_BAG_ESSENCE",
+  "size": 356,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模板ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉落在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径",
+      "display": "icon"
+    },
+    {
+      "name": "open_time",
+      "off": 76,
+      "t": {
+        "k": "u32"
+      },
+      "c": "开启礼包需要的时间"
+    },
+    {
+      "name": "item_num",
+      "off": 80,
+      "t": {
+        "k": "u32"
+      },
+      "c": "礼包内的物品个数"
+    },
+    {
+      "name": "item_configs",
+      "off": 84,
+      "t": {
+        "k": "array",
+        "n": 16,
+        "stride": 16,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "物品ID"
+            },
+            {
+              "name": "item_count",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "物品数量"
+            },
+            {
+              "name": "is_bind",
+              "off": 8,
+              "t": {
+                "k": "u32"
+              },
+              "c": "物品是否绑定"
+            },
+            {
+              "name": "effect_time",
+              "off": 12,
+              "t": {
+                "k": "u32"
+              },
+              "c": "物品的时效（单位为秒，0为永久）"
+            }
+          ]
+        }
+      },
+      "c": "物品属性，最多16种物品"
+    },
+    {
+      "name": "price",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 352,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

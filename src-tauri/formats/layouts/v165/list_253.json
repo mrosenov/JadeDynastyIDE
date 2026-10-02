@@ -1,0 +1,6630 @@
+{
+  "name": "New Fashion Pack Essence",
+  "struct": "NEW_FASHION_PACK_ESSENCE",
+  "size": 4132,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "item_duration",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "unknown_1",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_character_combo_id_1",
+      "off": 84,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_1_character_combo_id_2",
+      "off": 92,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_1_require_gender",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_require_ascension",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_require_min_level",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_require_max_level",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_1_award_id",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_1_award_amount",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_2_award_id",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_2_award_amount",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_3_award_id",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_3_award_amount",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_4_award_id",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_4_award_amount",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_5_award_id",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_5_award_amount",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_6_award_id",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_6_award_amount",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_7_award_id",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_7_award_amount",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_8_award_id",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_8_award_amount",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_9_award_id",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_9_award_amount",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_10_award_id",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_1_award_10_award_amount",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_character_combo_id_1",
+      "off": 196,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_2_character_combo_id_2",
+      "off": 204,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_2_require_gender",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_require_ascension",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_require_min_level",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_require_max_level",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_1_award_id",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_1_award_amount",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_2_award_id",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_2_award_amount",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_3_award_id",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_3_award_amount",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_4_award_id",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_4_award_amount",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_5_award_id",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_5_award_amount",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_6_award_id",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_6_award_amount",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_7_award_id",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_7_award_amount",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_8_award_id",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_8_award_amount",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_9_award_id",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_9_award_amount",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_10_award_id",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_2_award_10_award_amount",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_character_combo_id_1",
+      "off": 308,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_3_character_combo_id_2",
+      "off": 316,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_3_require_gender",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_require_ascension",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_require_min_level",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_require_max_level",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_1_award_id",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_1_award_amount",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_2_award_id",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_2_award_amount",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_3_award_id",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_3_award_amount",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_4_award_id",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_4_award_amount",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_5_award_id",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_5_award_amount",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_6_award_id",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_6_award_amount",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_7_award_id",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_7_award_amount",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_8_award_id",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_8_award_amount",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_9_award_id",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_9_award_amount",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_10_award_id",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_3_award_10_award_amount",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_character_combo_id_1",
+      "off": 420,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_4_character_combo_id_2",
+      "off": 428,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_4_require_gender",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_require_ascension",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_require_min_level",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_require_max_level",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_1_award_id",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_1_award_amount",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_2_award_id",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_2_award_amount",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_3_award_id",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_3_award_amount",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_4_award_id",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_4_award_amount",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_5_award_id",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_5_award_amount",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_6_award_id",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_6_award_amount",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_7_award_id",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_7_award_amount",
+      "off": 504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_8_award_id",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_8_award_amount",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_9_award_id",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_9_award_amount",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_10_award_id",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_4_award_10_award_amount",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_character_combo_id_1",
+      "off": 532,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_5_character_combo_id_2",
+      "off": 540,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_5_require_gender",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_require_ascension",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_require_min_level",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_require_max_level",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_1_award_id",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_1_award_amount",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_2_award_id",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_2_award_amount",
+      "off": 576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_3_award_id",
+      "off": 580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_3_award_amount",
+      "off": 584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_4_award_id",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_4_award_amount",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_5_award_id",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_5_award_amount",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_6_award_id",
+      "off": 604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_6_award_amount",
+      "off": 608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_7_award_id",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_7_award_amount",
+      "off": 616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_8_award_id",
+      "off": 620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_8_award_amount",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_9_award_id",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_9_award_amount",
+      "off": 632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_10_award_id",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_5_award_10_award_amount",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_character_combo_id_1",
+      "off": 644,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_6_character_combo_id_2",
+      "off": 652,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_6_require_gender",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_require_ascension",
+      "off": 664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_require_min_level",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_require_max_level",
+      "off": 672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_1_award_id",
+      "off": 676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_1_award_amount",
+      "off": 680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_2_award_id",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_2_award_amount",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_3_award_id",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_3_award_amount",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_4_award_id",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_4_award_amount",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_5_award_id",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_5_award_amount",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_6_award_id",
+      "off": 716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_6_award_amount",
+      "off": 720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_7_award_id",
+      "off": 724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_7_award_amount",
+      "off": 728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_8_award_id",
+      "off": 732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_8_award_amount",
+      "off": 736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_9_award_id",
+      "off": 740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_9_award_amount",
+      "off": 744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_10_award_id",
+      "off": 748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_6_award_10_award_amount",
+      "off": 752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_character_combo_id_1",
+      "off": 756,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_7_character_combo_id_2",
+      "off": 764,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_7_require_gender",
+      "off": 772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_require_ascension",
+      "off": 776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_require_min_level",
+      "off": 780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_require_max_level",
+      "off": 784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_1_award_id",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_1_award_amount",
+      "off": 792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_2_award_id",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_2_award_amount",
+      "off": 800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_3_award_id",
+      "off": 804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_3_award_amount",
+      "off": 808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_4_award_id",
+      "off": 812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_4_award_amount",
+      "off": 816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_5_award_id",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_5_award_amount",
+      "off": 824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_6_award_id",
+      "off": 828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_6_award_amount",
+      "off": 832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_7_award_id",
+      "off": 836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_7_award_amount",
+      "off": 840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_8_award_id",
+      "off": 844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_8_award_amount",
+      "off": 848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_9_award_id",
+      "off": 852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_9_award_amount",
+      "off": 856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_10_award_id",
+      "off": 860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_7_award_10_award_amount",
+      "off": 864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_character_combo_id_1",
+      "off": 868,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_8_character_combo_id_2",
+      "off": 876,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_8_require_gender",
+      "off": 884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_require_ascension",
+      "off": 888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_require_min_level",
+      "off": 892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_require_max_level",
+      "off": 896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_1_award_id",
+      "off": 900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_1_award_amount",
+      "off": 904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_2_award_id",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_2_award_amount",
+      "off": 912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_3_award_id",
+      "off": 916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_3_award_amount",
+      "off": 920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_4_award_id",
+      "off": 924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_4_award_amount",
+      "off": 928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_5_award_id",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_5_award_amount",
+      "off": 936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_6_award_id",
+      "off": 940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_6_award_amount",
+      "off": 944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_7_award_id",
+      "off": 948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_7_award_amount",
+      "off": 952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_8_award_id",
+      "off": 956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_8_award_amount",
+      "off": 960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_9_award_id",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_9_award_amount",
+      "off": 968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_10_award_id",
+      "off": 972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_8_award_10_award_amount",
+      "off": 976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_character_combo_id_1",
+      "off": 980,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_9_character_combo_id_2",
+      "off": 988,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_9_require_gender",
+      "off": 996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_require_ascension",
+      "off": 1000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_require_min_level",
+      "off": 1004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_require_max_level",
+      "off": 1008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_1_award_id",
+      "off": 1012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_1_award_amount",
+      "off": 1016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_2_award_id",
+      "off": 1020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_2_award_amount",
+      "off": 1024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_3_award_id",
+      "off": 1028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_3_award_amount",
+      "off": 1032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_4_award_id",
+      "off": 1036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_4_award_amount",
+      "off": 1040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_5_award_id",
+      "off": 1044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_5_award_amount",
+      "off": 1048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_6_award_id",
+      "off": 1052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_6_award_amount",
+      "off": 1056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_7_award_id",
+      "off": 1060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_7_award_amount",
+      "off": 1064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_8_award_id",
+      "off": 1068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_8_award_amount",
+      "off": 1072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_9_award_id",
+      "off": 1076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_9_award_amount",
+      "off": 1080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_10_award_id",
+      "off": 1084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_9_award_10_award_amount",
+      "off": 1088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_character_combo_id_1",
+      "off": 1092,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_10_character_combo_id_2",
+      "off": 1100,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_10_require_gender",
+      "off": 1108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_require_ascension",
+      "off": 1112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_require_min_level",
+      "off": 1116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_require_max_level",
+      "off": 1120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_1_award_id",
+      "off": 1124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_1_award_amount",
+      "off": 1128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_2_award_id",
+      "off": 1132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_2_award_amount",
+      "off": 1136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_3_award_id",
+      "off": 1140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_3_award_amount",
+      "off": 1144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_4_award_id",
+      "off": 1148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_4_award_amount",
+      "off": 1152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_5_award_id",
+      "off": 1156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_5_award_amount",
+      "off": 1160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_6_award_id",
+      "off": 1164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_6_award_amount",
+      "off": 1168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_7_award_id",
+      "off": 1172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_7_award_amount",
+      "off": 1176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_8_award_id",
+      "off": 1180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_8_award_amount",
+      "off": 1184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_9_award_id",
+      "off": 1188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_9_award_amount",
+      "off": 1192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_10_award_id",
+      "off": 1196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_10_award_10_award_amount",
+      "off": 1200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_character_combo_id_1",
+      "off": 1204,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_11_character_combo_id_2",
+      "off": 1212,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_11_require_gender",
+      "off": 1220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_require_ascension",
+      "off": 1224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_require_min_level",
+      "off": 1228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_require_max_level",
+      "off": 1232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_1_award_id",
+      "off": 1236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_1_award_amount",
+      "off": 1240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_2_award_id",
+      "off": 1244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_2_award_amount",
+      "off": 1248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_3_award_id",
+      "off": 1252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_3_award_amount",
+      "off": 1256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_4_award_id",
+      "off": 1260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_4_award_amount",
+      "off": 1264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_5_award_id",
+      "off": 1268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_5_award_amount",
+      "off": 1272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_6_award_id",
+      "off": 1276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_6_award_amount",
+      "off": 1280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_7_award_id",
+      "off": 1284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_7_award_amount",
+      "off": 1288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_8_award_id",
+      "off": 1292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_8_award_amount",
+      "off": 1296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_9_award_id",
+      "off": 1300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_9_award_amount",
+      "off": 1304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_10_award_id",
+      "off": 1308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_11_award_10_award_amount",
+      "off": 1312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_character_combo_id_1",
+      "off": 1316,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_12_character_combo_id_2",
+      "off": 1324,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_12_require_gender",
+      "off": 1332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_require_ascension",
+      "off": 1336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_require_min_level",
+      "off": 1340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_require_max_level",
+      "off": 1344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_1_award_id",
+      "off": 1348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_1_award_amount",
+      "off": 1352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_2_award_id",
+      "off": 1356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_2_award_amount",
+      "off": 1360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_3_award_id",
+      "off": 1364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_3_award_amount",
+      "off": 1368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_4_award_id",
+      "off": 1372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_4_award_amount",
+      "off": 1376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_5_award_id",
+      "off": 1380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_5_award_amount",
+      "off": 1384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_6_award_id",
+      "off": 1388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_6_award_amount",
+      "off": 1392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_7_award_id",
+      "off": 1396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_7_award_amount",
+      "off": 1400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_8_award_id",
+      "off": 1404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_8_award_amount",
+      "off": 1408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_9_award_id",
+      "off": 1412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_9_award_amount",
+      "off": 1416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_10_award_id",
+      "off": 1420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_12_award_10_award_amount",
+      "off": 1424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_character_combo_id_1",
+      "off": 1428,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_13_character_combo_id_2",
+      "off": 1436,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_13_require_gender",
+      "off": 1444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_require_ascension",
+      "off": 1448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_require_min_level",
+      "off": 1452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_require_max_level",
+      "off": 1456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_1_award_id",
+      "off": 1460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_1_award_amount",
+      "off": 1464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_2_award_id",
+      "off": 1468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_2_award_amount",
+      "off": 1472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_3_award_id",
+      "off": 1476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_3_award_amount",
+      "off": 1480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_4_award_id",
+      "off": 1484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_4_award_amount",
+      "off": 1488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_5_award_id",
+      "off": 1492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_5_award_amount",
+      "off": 1496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_6_award_id",
+      "off": 1500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_6_award_amount",
+      "off": 1504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_7_award_id",
+      "off": 1508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_7_award_amount",
+      "off": 1512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_8_award_id",
+      "off": 1516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_8_award_amount",
+      "off": 1520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_9_award_id",
+      "off": 1524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_9_award_amount",
+      "off": 1528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_10_award_id",
+      "off": 1532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_13_award_10_award_amount",
+      "off": 1536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_character_combo_id_1",
+      "off": 1540,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_14_character_combo_id_2",
+      "off": 1548,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_14_require_gender",
+      "off": 1556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_require_ascension",
+      "off": 1560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_require_min_level",
+      "off": 1564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_require_max_level",
+      "off": 1568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_1_award_id",
+      "off": 1572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_1_award_amount",
+      "off": 1576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_2_award_id",
+      "off": 1580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_2_award_amount",
+      "off": 1584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_3_award_id",
+      "off": 1588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_3_award_amount",
+      "off": 1592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_4_award_id",
+      "off": 1596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_4_award_amount",
+      "off": 1600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_5_award_id",
+      "off": 1604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_5_award_amount",
+      "off": 1608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_6_award_id",
+      "off": 1612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_6_award_amount",
+      "off": 1616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_7_award_id",
+      "off": 1620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_7_award_amount",
+      "off": 1624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_8_award_id",
+      "off": 1628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_8_award_amount",
+      "off": 1632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_9_award_id",
+      "off": 1636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_9_award_amount",
+      "off": 1640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_10_award_id",
+      "off": 1644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_14_award_10_award_amount",
+      "off": 1648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_character_combo_id_1",
+      "off": 1652,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_15_character_combo_id_2",
+      "off": 1660,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_15_require_gender",
+      "off": 1668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_require_ascension",
+      "off": 1672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_require_min_level",
+      "off": 1676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_require_max_level",
+      "off": 1680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_1_award_id",
+      "off": 1684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_1_award_amount",
+      "off": 1688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_2_award_id",
+      "off": 1692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_2_award_amount",
+      "off": 1696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_3_award_id",
+      "off": 1700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_3_award_amount",
+      "off": 1704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_4_award_id",
+      "off": 1708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_4_award_amount",
+      "off": 1712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_5_award_id",
+      "off": 1716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_5_award_amount",
+      "off": 1720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_6_award_id",
+      "off": 1724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_6_award_amount",
+      "off": 1728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_7_award_id",
+      "off": 1732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_7_award_amount",
+      "off": 1736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_8_award_id",
+      "off": 1740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_8_award_amount",
+      "off": 1744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_9_award_id",
+      "off": 1748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_9_award_amount",
+      "off": 1752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_10_award_id",
+      "off": 1756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_15_award_10_award_amount",
+      "off": 1760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_character_combo_id_1",
+      "off": 1764,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_16_character_combo_id_2",
+      "off": 1772,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_16_require_gender",
+      "off": 1780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_require_ascension",
+      "off": 1784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_require_min_level",
+      "off": 1788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_require_max_level",
+      "off": 1792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_1_award_id",
+      "off": 1796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_1_award_amount",
+      "off": 1800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_2_award_id",
+      "off": 1804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_2_award_amount",
+      "off": 1808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_3_award_id",
+      "off": 1812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_3_award_amount",
+      "off": 1816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_4_award_id",
+      "off": 1820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_4_award_amount",
+      "off": 1824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_5_award_id",
+      "off": 1828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_5_award_amount",
+      "off": 1832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_6_award_id",
+      "off": 1836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_6_award_amount",
+      "off": 1840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_7_award_id",
+      "off": 1844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_7_award_amount",
+      "off": 1848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_8_award_id",
+      "off": 1852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_8_award_amount",
+      "off": 1856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_9_award_id",
+      "off": 1860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_9_award_amount",
+      "off": 1864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_10_award_id",
+      "off": 1868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_16_award_10_award_amount",
+      "off": 1872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_character_combo_id_1",
+      "off": 1876,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_17_character_combo_id_2",
+      "off": 1884,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_17_require_gender",
+      "off": 1892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_require_ascension",
+      "off": 1896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_require_min_level",
+      "off": 1900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_require_max_level",
+      "off": 1904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_1_award_id",
+      "off": 1908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_1_award_amount",
+      "off": 1912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_2_award_id",
+      "off": 1916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_2_award_amount",
+      "off": 1920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_3_award_id",
+      "off": 1924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_3_award_amount",
+      "off": 1928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_4_award_id",
+      "off": 1932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_4_award_amount",
+      "off": 1936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_5_award_id",
+      "off": 1940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_5_award_amount",
+      "off": 1944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_6_award_id",
+      "off": 1948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_6_award_amount",
+      "off": 1952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_7_award_id",
+      "off": 1956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_7_award_amount",
+      "off": 1960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_8_award_id",
+      "off": 1964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_8_award_amount",
+      "off": 1968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_9_award_id",
+      "off": 1972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_9_award_amount",
+      "off": 1976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_10_award_id",
+      "off": 1980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_17_award_10_award_amount",
+      "off": 1984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_character_combo_id_1",
+      "off": 1988,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_18_character_combo_id_2",
+      "off": 1996,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_18_require_gender",
+      "off": 2004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_require_ascension",
+      "off": 2008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_require_min_level",
+      "off": 2012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_require_max_level",
+      "off": 2016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_1_award_id",
+      "off": 2020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_1_award_amount",
+      "off": 2024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_2_award_id",
+      "off": 2028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_2_award_amount",
+      "off": 2032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_3_award_id",
+      "off": 2036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_3_award_amount",
+      "off": 2040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_4_award_id",
+      "off": 2044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_4_award_amount",
+      "off": 2048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_5_award_id",
+      "off": 2052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_5_award_amount",
+      "off": 2056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_6_award_id",
+      "off": 2060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_6_award_amount",
+      "off": 2064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_7_award_id",
+      "off": 2068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_7_award_amount",
+      "off": 2072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_8_award_id",
+      "off": 2076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_8_award_amount",
+      "off": 2080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_9_award_id",
+      "off": 2084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_9_award_amount",
+      "off": 2088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_10_award_id",
+      "off": 2092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_18_award_10_award_amount",
+      "off": 2096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_character_combo_id_1",
+      "off": 2100,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_19_character_combo_id_2",
+      "off": 2108,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_19_require_gender",
+      "off": 2116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_require_ascension",
+      "off": 2120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_require_min_level",
+      "off": 2124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_require_max_level",
+      "off": 2128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_1_award_id",
+      "off": 2132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_1_award_amount",
+      "off": 2136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_2_award_id",
+      "off": 2140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_2_award_amount",
+      "off": 2144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_3_award_id",
+      "off": 2148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_3_award_amount",
+      "off": 2152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_4_award_id",
+      "off": 2156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_4_award_amount",
+      "off": 2160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_5_award_id",
+      "off": 2164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_5_award_amount",
+      "off": 2168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_6_award_id",
+      "off": 2172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_6_award_amount",
+      "off": 2176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_7_award_id",
+      "off": 2180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_7_award_amount",
+      "off": 2184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_8_award_id",
+      "off": 2188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_8_award_amount",
+      "off": 2192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_9_award_id",
+      "off": 2196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_9_award_amount",
+      "off": 2200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_10_award_id",
+      "off": 2204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_19_award_10_award_amount",
+      "off": 2208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_character_combo_id_1",
+      "off": 2212,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_20_character_combo_id_2",
+      "off": 2220,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_20_require_gender",
+      "off": 2228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_require_ascension",
+      "off": 2232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_require_min_level",
+      "off": 2236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_require_max_level",
+      "off": 2240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_1_award_id",
+      "off": 2244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_1_award_amount",
+      "off": 2248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_2_award_id",
+      "off": 2252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_2_award_amount",
+      "off": 2256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_3_award_id",
+      "off": 2260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_3_award_amount",
+      "off": 2264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_4_award_id",
+      "off": 2268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_4_award_amount",
+      "off": 2272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_5_award_id",
+      "off": 2276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_5_award_amount",
+      "off": 2280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_6_award_id",
+      "off": 2284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_6_award_amount",
+      "off": 2288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_7_award_id",
+      "off": 2292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_7_award_amount",
+      "off": 2296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_8_award_id",
+      "off": 2300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_8_award_amount",
+      "off": 2304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_9_award_id",
+      "off": 2308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_9_award_amount",
+      "off": 2312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_10_award_id",
+      "off": 2316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_20_award_10_award_amount",
+      "off": 2320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_character_combo_id_1",
+      "off": 2324,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_21_character_combo_id_2",
+      "off": 2332,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_21_require_gender",
+      "off": 2340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_require_ascension",
+      "off": 2344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_require_min_level",
+      "off": 2348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_require_max_level",
+      "off": 2352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_1_award_id",
+      "off": 2356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_1_award_amount",
+      "off": 2360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_2_award_id",
+      "off": 2364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_2_award_amount",
+      "off": 2368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_3_award_id",
+      "off": 2372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_3_award_amount",
+      "off": 2376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_4_award_id",
+      "off": 2380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_4_award_amount",
+      "off": 2384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_5_award_id",
+      "off": 2388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_5_award_amount",
+      "off": 2392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_6_award_id",
+      "off": 2396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_6_award_amount",
+      "off": 2400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_7_award_id",
+      "off": 2404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_7_award_amount",
+      "off": 2408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_8_award_id",
+      "off": 2412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_8_award_amount",
+      "off": 2416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_9_award_id",
+      "off": 2420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_9_award_amount",
+      "off": 2424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_10_award_id",
+      "off": 2428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_21_award_10_award_amount",
+      "off": 2432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_character_combo_id_1",
+      "off": 2436,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_22_character_combo_id_2",
+      "off": 2444,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_22_require_gender",
+      "off": 2452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_require_ascension",
+      "off": 2456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_require_min_level",
+      "off": 2460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_require_max_level",
+      "off": 2464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_1_award_id",
+      "off": 2468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_1_award_amount",
+      "off": 2472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_2_award_id",
+      "off": 2476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_2_award_amount",
+      "off": 2480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_3_award_id",
+      "off": 2484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_3_award_amount",
+      "off": 2488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_4_award_id",
+      "off": 2492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_4_award_amount",
+      "off": 2496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_5_award_id",
+      "off": 2500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_5_award_amount",
+      "off": 2504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_6_award_id",
+      "off": 2508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_6_award_amount",
+      "off": 2512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_7_award_id",
+      "off": 2516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_7_award_amount",
+      "off": 2520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_8_award_id",
+      "off": 2524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_8_award_amount",
+      "off": 2528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_9_award_id",
+      "off": 2532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_9_award_amount",
+      "off": 2536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_10_award_id",
+      "off": 2540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_22_award_10_award_amount",
+      "off": 2544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_character_combo_id_1",
+      "off": 2548,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_23_character_combo_id_2",
+      "off": 2556,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_23_require_gender",
+      "off": 2564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_require_ascension",
+      "off": 2568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_require_min_level",
+      "off": 2572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_require_max_level",
+      "off": 2576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_1_award_id",
+      "off": 2580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_1_award_amount",
+      "off": 2584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_2_award_id",
+      "off": 2588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_2_award_amount",
+      "off": 2592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_3_award_id",
+      "off": 2596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_3_award_amount",
+      "off": 2600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_4_award_id",
+      "off": 2604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_4_award_amount",
+      "off": 2608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_5_award_id",
+      "off": 2612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_5_award_amount",
+      "off": 2616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_6_award_id",
+      "off": 2620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_6_award_amount",
+      "off": 2624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_7_award_id",
+      "off": 2628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_7_award_amount",
+      "off": 2632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_8_award_id",
+      "off": 2636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_8_award_amount",
+      "off": 2640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_9_award_id",
+      "off": 2644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_9_award_amount",
+      "off": 2648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_10_award_id",
+      "off": 2652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_23_award_10_award_amount",
+      "off": 2656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_character_combo_id_1",
+      "off": 2660,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_24_character_combo_id_2",
+      "off": 2668,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_24_require_gender",
+      "off": 2676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_require_ascension",
+      "off": 2680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_require_min_level",
+      "off": 2684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_require_max_level",
+      "off": 2688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_1_award_id",
+      "off": 2692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_1_award_amount",
+      "off": 2696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_2_award_id",
+      "off": 2700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_2_award_amount",
+      "off": 2704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_3_award_id",
+      "off": 2708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_3_award_amount",
+      "off": 2712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_4_award_id",
+      "off": 2716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_4_award_amount",
+      "off": 2720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_5_award_id",
+      "off": 2724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_5_award_amount",
+      "off": 2728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_6_award_id",
+      "off": 2732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_6_award_amount",
+      "off": 2736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_7_award_id",
+      "off": 2740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_7_award_amount",
+      "off": 2744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_8_award_id",
+      "off": 2748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_8_award_amount",
+      "off": 2752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_9_award_id",
+      "off": 2756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_9_award_amount",
+      "off": 2760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_10_award_id",
+      "off": 2764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_24_award_10_award_amount",
+      "off": 2768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_character_combo_id_1",
+      "off": 2772,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_25_character_combo_id_2",
+      "off": 2780,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_25_require_gender",
+      "off": 2788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_require_ascension",
+      "off": 2792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_require_min_level",
+      "off": 2796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_require_max_level",
+      "off": 2800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_1_award_id",
+      "off": 2804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_1_award_amount",
+      "off": 2808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_2_award_id",
+      "off": 2812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_2_award_amount",
+      "off": 2816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_3_award_id",
+      "off": 2820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_3_award_amount",
+      "off": 2824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_4_award_id",
+      "off": 2828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_4_award_amount",
+      "off": 2832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_5_award_id",
+      "off": 2836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_5_award_amount",
+      "off": 2840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_6_award_id",
+      "off": 2844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_6_award_amount",
+      "off": 2848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_7_award_id",
+      "off": 2852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_7_award_amount",
+      "off": 2856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_8_award_id",
+      "off": 2860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_8_award_amount",
+      "off": 2864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_9_award_id",
+      "off": 2868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_9_award_amount",
+      "off": 2872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_10_award_id",
+      "off": 2876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_25_award_10_award_amount",
+      "off": 2880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_character_combo_id_1",
+      "off": 2884,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_26_character_combo_id_2",
+      "off": 2892,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_26_require_gender",
+      "off": 2900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_require_ascension",
+      "off": 2904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_require_min_level",
+      "off": 2908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_require_max_level",
+      "off": 2912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_1_award_id",
+      "off": 2916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_1_award_amount",
+      "off": 2920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_2_award_id",
+      "off": 2924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_2_award_amount",
+      "off": 2928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_3_award_id",
+      "off": 2932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_3_award_amount",
+      "off": 2936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_4_award_id",
+      "off": 2940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_4_award_amount",
+      "off": 2944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_5_award_id",
+      "off": 2948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_5_award_amount",
+      "off": 2952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_6_award_id",
+      "off": 2956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_6_award_amount",
+      "off": 2960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_7_award_id",
+      "off": 2964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_7_award_amount",
+      "off": 2968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_8_award_id",
+      "off": 2972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_8_award_amount",
+      "off": 2976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_9_award_id",
+      "off": 2980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_9_award_amount",
+      "off": 2984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_10_award_id",
+      "off": 2988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_26_award_10_award_amount",
+      "off": 2992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_character_combo_id_1",
+      "off": 2996,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_27_character_combo_id_2",
+      "off": 3004,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_27_require_gender",
+      "off": 3012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_require_ascension",
+      "off": 3016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_require_min_level",
+      "off": 3020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_require_max_level",
+      "off": 3024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_1_award_id",
+      "off": 3028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_1_award_amount",
+      "off": 3032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_2_award_id",
+      "off": 3036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_2_award_amount",
+      "off": 3040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_3_award_id",
+      "off": 3044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_3_award_amount",
+      "off": 3048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_4_award_id",
+      "off": 3052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_4_award_amount",
+      "off": 3056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_5_award_id",
+      "off": 3060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_5_award_amount",
+      "off": 3064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_6_award_id",
+      "off": 3068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_6_award_amount",
+      "off": 3072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_7_award_id",
+      "off": 3076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_7_award_amount",
+      "off": 3080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_8_award_id",
+      "off": 3084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_8_award_amount",
+      "off": 3088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_9_award_id",
+      "off": 3092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_9_award_amount",
+      "off": 3096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_10_award_id",
+      "off": 3100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_27_award_10_award_amount",
+      "off": 3104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_character_combo_id_1",
+      "off": 3108,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_28_character_combo_id_2",
+      "off": 3116,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_28_require_gender",
+      "off": 3124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_require_ascension",
+      "off": 3128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_require_min_level",
+      "off": 3132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_require_max_level",
+      "off": 3136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_1_award_id",
+      "off": 3140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_1_award_amount",
+      "off": 3144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_2_award_id",
+      "off": 3148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_2_award_amount",
+      "off": 3152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_3_award_id",
+      "off": 3156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_3_award_amount",
+      "off": 3160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_4_award_id",
+      "off": 3164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_4_award_amount",
+      "off": 3168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_5_award_id",
+      "off": 3172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_5_award_amount",
+      "off": 3176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_6_award_id",
+      "off": 3180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_6_award_amount",
+      "off": 3184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_7_award_id",
+      "off": 3188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_7_award_amount",
+      "off": 3192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_8_award_id",
+      "off": 3196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_8_award_amount",
+      "off": 3200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_9_award_id",
+      "off": 3204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_9_award_amount",
+      "off": 3208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_10_award_id",
+      "off": 3212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_28_award_10_award_amount",
+      "off": 3216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_character_combo_id_1",
+      "off": 3220,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_29_character_combo_id_2",
+      "off": 3228,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_29_require_gender",
+      "off": 3236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_require_ascension",
+      "off": 3240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_require_min_level",
+      "off": 3244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_require_max_level",
+      "off": 3248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_1_award_id",
+      "off": 3252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_1_award_amount",
+      "off": 3256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_2_award_id",
+      "off": 3260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_2_award_amount",
+      "off": 3264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_3_award_id",
+      "off": 3268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_3_award_amount",
+      "off": 3272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_4_award_id",
+      "off": 3276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_4_award_amount",
+      "off": 3280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_5_award_id",
+      "off": 3284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_5_award_amount",
+      "off": 3288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_6_award_id",
+      "off": 3292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_6_award_amount",
+      "off": 3296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_7_award_id",
+      "off": 3300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_7_award_amount",
+      "off": 3304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_8_award_id",
+      "off": 3308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_8_award_amount",
+      "off": 3312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_9_award_id",
+      "off": 3316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_9_award_amount",
+      "off": 3320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_10_award_id",
+      "off": 3324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_29_award_10_award_amount",
+      "off": 3328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_character_combo_id_1",
+      "off": 3332,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_30_character_combo_id_2",
+      "off": 3340,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_30_require_gender",
+      "off": 3348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_require_ascension",
+      "off": 3352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_require_min_level",
+      "off": 3356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_require_max_level",
+      "off": 3360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_1_award_id",
+      "off": 3364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_1_award_amount",
+      "off": 3368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_2_award_id",
+      "off": 3372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_2_award_amount",
+      "off": 3376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_3_award_id",
+      "off": 3380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_3_award_amount",
+      "off": 3384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_4_award_id",
+      "off": 3388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_4_award_amount",
+      "off": 3392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_5_award_id",
+      "off": 3396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_5_award_amount",
+      "off": 3400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_6_award_id",
+      "off": 3404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_6_award_amount",
+      "off": 3408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_7_award_id",
+      "off": 3412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_7_award_amount",
+      "off": 3416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_8_award_id",
+      "off": 3420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_8_award_amount",
+      "off": 3424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_9_award_id",
+      "off": 3428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_9_award_amount",
+      "off": 3432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_10_award_id",
+      "off": 3436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_30_award_10_award_amount",
+      "off": 3440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_character_combo_id_1",
+      "off": 3444,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_31_character_combo_id_2",
+      "off": 3452,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_31_require_gender",
+      "off": 3460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_require_ascension",
+      "off": 3464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_require_min_level",
+      "off": 3468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_require_max_level",
+      "off": 3472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_1_award_id",
+      "off": 3476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_1_award_amount",
+      "off": 3480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_2_award_id",
+      "off": 3484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_2_award_amount",
+      "off": 3488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_3_award_id",
+      "off": 3492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_3_award_amount",
+      "off": 3496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_4_award_id",
+      "off": 3500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_4_award_amount",
+      "off": 3504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_5_award_id",
+      "off": 3508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_5_award_amount",
+      "off": 3512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_6_award_id",
+      "off": 3516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_6_award_amount",
+      "off": 3520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_7_award_id",
+      "off": 3524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_7_award_amount",
+      "off": 3528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_8_award_id",
+      "off": 3532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_8_award_amount",
+      "off": 3536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_9_award_id",
+      "off": 3540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_9_award_amount",
+      "off": 3544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_10_award_id",
+      "off": 3548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_31_award_10_award_amount",
+      "off": 3552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_character_combo_id_1",
+      "off": 3556,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_32_character_combo_id_2",
+      "off": 3564,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_32_require_gender",
+      "off": 3572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_require_ascension",
+      "off": 3576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_require_min_level",
+      "off": 3580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_require_max_level",
+      "off": 3584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_1_award_id",
+      "off": 3588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_1_award_amount",
+      "off": 3592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_2_award_id",
+      "off": 3596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_2_award_amount",
+      "off": 3600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_3_award_id",
+      "off": 3604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_3_award_amount",
+      "off": 3608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_4_award_id",
+      "off": 3612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_4_award_amount",
+      "off": 3616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_5_award_id",
+      "off": 3620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_5_award_amount",
+      "off": 3624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_6_award_id",
+      "off": 3628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_6_award_amount",
+      "off": 3632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_7_award_id",
+      "off": 3636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_7_award_amount",
+      "off": 3640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_8_award_id",
+      "off": 3644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_8_award_amount",
+      "off": 3648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_9_award_id",
+      "off": 3652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_9_award_amount",
+      "off": 3656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_10_award_id",
+      "off": 3660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_32_award_10_award_amount",
+      "off": 3664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_character_combo_id_1",
+      "off": 3668,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_33_character_combo_id_2",
+      "off": 3676,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_33_require_gender",
+      "off": 3684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_require_ascension",
+      "off": 3688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_require_min_level",
+      "off": 3692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_require_max_level",
+      "off": 3696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_1_award_id",
+      "off": 3700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_1_award_amount",
+      "off": 3704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_2_award_id",
+      "off": 3708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_2_award_amount",
+      "off": 3712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_3_award_id",
+      "off": 3716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_3_award_amount",
+      "off": 3720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_4_award_id",
+      "off": 3724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_4_award_amount",
+      "off": 3728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_5_award_id",
+      "off": 3732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_5_award_amount",
+      "off": 3736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_6_award_id",
+      "off": 3740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_6_award_amount",
+      "off": 3744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_7_award_id",
+      "off": 3748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_7_award_amount",
+      "off": 3752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_8_award_id",
+      "off": 3756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_8_award_amount",
+      "off": 3760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_9_award_id",
+      "off": 3764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_9_award_amount",
+      "off": 3768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_10_award_id",
+      "off": 3772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_33_award_10_award_amount",
+      "off": 3776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_character_combo_id_1",
+      "off": 3780,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_34_character_combo_id_2",
+      "off": 3788,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_34_require_gender",
+      "off": 3796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_require_ascension",
+      "off": 3800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_require_min_level",
+      "off": 3804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_require_max_level",
+      "off": 3808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_1_award_id",
+      "off": 3812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_1_award_amount",
+      "off": 3816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_2_award_id",
+      "off": 3820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_2_award_amount",
+      "off": 3824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_3_award_id",
+      "off": 3828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_3_award_amount",
+      "off": 3832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_4_award_id",
+      "off": 3836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_4_award_amount",
+      "off": 3840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_5_award_id",
+      "off": 3844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_5_award_amount",
+      "off": 3848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_6_award_id",
+      "off": 3852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_6_award_amount",
+      "off": 3856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_7_award_id",
+      "off": 3860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_7_award_amount",
+      "off": 3864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_8_award_id",
+      "off": 3868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_8_award_amount",
+      "off": 3872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_9_award_id",
+      "off": 3876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_9_award_amount",
+      "off": 3880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_10_award_id",
+      "off": 3884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_34_award_10_award_amount",
+      "off": 3888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_character_combo_id_1",
+      "off": 3892,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_35_character_combo_id_2",
+      "off": 3900,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_35_require_gender",
+      "off": 3908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_require_ascension",
+      "off": 3912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_require_min_level",
+      "off": 3916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_require_max_level",
+      "off": 3920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_1_award_id",
+      "off": 3924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_1_award_amount",
+      "off": 3928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_2_award_id",
+      "off": 3932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_2_award_amount",
+      "off": 3936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_3_award_id",
+      "off": 3940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_3_award_amount",
+      "off": 3944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_4_award_id",
+      "off": 3948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_4_award_amount",
+      "off": 3952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_5_award_id",
+      "off": 3956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_5_award_amount",
+      "off": 3960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_6_award_id",
+      "off": 3964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_6_award_amount",
+      "off": 3968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_7_award_id",
+      "off": 3972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_7_award_amount",
+      "off": 3976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_8_award_id",
+      "off": 3980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_8_award_amount",
+      "off": 3984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_9_award_id",
+      "off": 3988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_9_award_amount",
+      "off": 3992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_10_award_id",
+      "off": 3996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_35_award_10_award_amount",
+      "off": 4000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_character_combo_id_1",
+      "off": 4004,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_36_character_combo_id_2",
+      "off": 4012,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "option_36_require_gender",
+      "off": 4020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_require_ascension",
+      "off": 4024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_require_min_level",
+      "off": 4028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_require_max_level",
+      "off": 4032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_1_award_id",
+      "off": 4036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_1_award_amount",
+      "off": 4040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_2_award_id",
+      "off": 4044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_2_award_amount",
+      "off": 4048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_3_award_id",
+      "off": 4052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_3_award_amount",
+      "off": 4056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_4_award_id",
+      "off": 4060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_4_award_amount",
+      "off": 4064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_5_award_id",
+      "off": 4068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_5_award_amount",
+      "off": 4072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_6_award_id",
+      "off": 4076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_6_award_amount",
+      "off": 4080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_7_award_id",
+      "off": 4084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_7_award_amount",
+      "off": 4088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_8_award_id",
+      "off": 4092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_8_award_amount",
+      "off": 4096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_9_award_id",
+      "off": 4100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_9_award_amount",
+      "off": 4104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_10_award_id",
+      "off": 4108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "option_36_award_10_award_amount",
+      "off": 4112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "price",
+      "off": 4116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "shop_price",
+      "off": 4120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pile_num_max",
+      "off": 4124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 4128,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

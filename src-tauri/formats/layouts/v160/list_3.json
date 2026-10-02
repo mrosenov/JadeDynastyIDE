@@ -1,0 +1,1169 @@
+{
+  "name": "Equipment Essence",
+  "struct": "EQUIPMENT_ESSENCE",
+  "size": 720,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Type",
+      "off": 4,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_MAJOR_TYPE"
+      ]
+    },
+    {
+      "name": "Sub_Type",
+      "off": 8,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_SUB_TYPE"
+      ]
+    },
+    {
+      "name": "Name",
+      "off": 12,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Equip_Type",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Equip_Mask",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "e": "equip_mask"
+    },
+    {
+      "name": "file_model_male",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_female",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_male_armor_xuanyuan",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_female_armor_xuanyuan",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_big_male",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_big_female",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_small_male",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_small_female",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_tiny_male",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_tiny_female",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_tetrapod_male",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_male",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_female",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_back_male",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_back_female",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_male_changdao",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_female_taihao",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_female_changdao",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_male_judao",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_female_judao",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_male_gong",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_female_gong",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_male_back_sha",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_female_back_sha",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_male_back_sha01",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_female_back_sha01",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_male_back_sha02",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_master_female_back_sha02",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_gevrin1_male",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_model_gevrin1_female",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "Drop_Path_ID",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "Icon_Path_ID",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      },
+      "display": "icon"
+    },
+    {
+      "name": "Equip_Loacation",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Action_Type",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Title",
+      "off": 220,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "Level",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Grade",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Char_Combo_ID",
+      "off": 260,
+      "t": {
+        "k": "i64"
+      },
+      "e": "character_combo_id"
+    },
+    {
+      "name": "Char_Combo_ID_2",
+      "off": 268,
+      "t": {
+        "k": "i64"
+      },
+      "e": "character_combo_id2"
+    },
+    {
+      "name": "Char_Level_1",
+      "off": 276,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Char_Level_1_2",
+      "off": 284,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Char_Level_2",
+      "off": 292,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Char_Level_2_2",
+      "off": 300,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Char_Level_3",
+      "off": 308,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Char_Level_3_3",
+      "off": 316,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Req_Gender",
+      "off": 324,
+      "t": {
+        "k": "i32"
+      },
+      "e": "gender"
+    },
+    {
+      "name": "Req_Level",
+      "off": 328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_Faction",
+      "off": 332,
+      "t": {
+        "k": "i32"
+      },
+      "e": "sect_mask"
+    },
+    {
+      "name": "Req_Faction_2",
+      "off": 336,
+      "t": {
+        "k": "i32"
+      },
+      "e": "sect_mask"
+    },
+    {
+      "name": "Req_Faction_3",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      },
+      "e": "sect_mask"
+    },
+    {
+      "name": "Req_Faction_4",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      },
+      "e": "sect_mask"
+    },
+    {
+      "name": "Req_Race",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      },
+      "e": "race"
+    },
+    {
+      "name": "Req_Tier",
+      "off": 352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_Ascended",
+      "off": 356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "God_Devil_Mask",
+      "off": 360,
+      "t": {
+        "k": "i32"
+      },
+      "e": "god_devil_mask"
+    },
+    {
+      "name": "Coronation_Pos",
+      "off": 364,
+      "t": {
+        "k": "i32"
+      },
+      "e": "nation_position_mask"
+    },
+    {
+      "name": "Req_Title",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_Reputation_1",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_Reputation_Amt_1",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_Reputation_2",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_Reputation_Amt_2",
+      "off": 384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_Territory",
+      "off": 388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Health",
+      "off": 392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Spirit",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Vigor",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Chroma_Power",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Min_Atk_Power",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Max_Atk_Power",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Defense",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Accuracy",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Evasion",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Atack_Range",
+      "off": 428,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Sell_Price",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Buy_Price",
+      "off": 436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Bonus_Attribute_1",
+      "off": 440,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Bonus_Attribute_2",
+      "off": 444,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Bonus_Attribute_3",
+      "off": 448,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Bonus_Attribute_4",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Bonus_Attribute_5",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Bonus_Attribute_6",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Refine_Price",
+      "off": 464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Imbune_Price",
+      "off": 468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Imbune_Price_Remove",
+      "off": 472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "SStone_Price",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "SStone_Price_Remove",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Refine_Tailsman",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "ESTONE_ESSENCE"
+      ]
+    },
+    {
+      "name": "REF1",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF2",
+      "off": 492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF3",
+      "off": 496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF4",
+      "off": 500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF5",
+      "off": 504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF6",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF7",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF8",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF9",
+      "off": 520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF10",
+      "off": 524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF11",
+      "off": 528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF12",
+      "off": 532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF13",
+      "off": 536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF14",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF15",
+      "off": 544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF16",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF17",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF18",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF19",
+      "off": 560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "REF20",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Refine_Level_1",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Attribute_ID_1_1",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_Chance_1_1",
+      "off": 576,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Attribute_ID_1_2",
+      "off": 580,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_Chance_1_2",
+      "off": 584,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Attribute_ID_1_3",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_Chance_1_3",
+      "off": 592,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Attribute_ID_1_4",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_Chance_1_4",
+      "off": 600,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Attribute_ID_1_5",
+      "off": 604,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_Chance_1_5",
+      "off": 608,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Refine_Level_2",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Attribute_ID_2_1",
+      "off": 616,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_Chance_2_1",
+      "off": 620,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Attribute_ID_2_2",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_Chance_2_2",
+      "off": 628,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Attribute_ID_2_3",
+      "off": 632,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_Chance_2_3",
+      "off": 636,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Attribute_ID_2_4",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_Chance_2_4",
+      "off": 644,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Attribute_ID_2_5",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Attribute_Chance_2_5",
+      "off": 652,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Bloodbound",
+      "off": 656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Can_Punching",
+      "off": 660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Dyeable",
+      "off": 664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Dyed_Fixed_Color",
+      "off": 668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Dyed",
+      "off": 672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Soul_Level",
+      "off": 676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Refine_Level_1_2",
+      "off": 680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Attribute_ID_1",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Refine_Level_2_2",
+      "off": 688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Attribute_ID_2",
+      "off": 692,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Refine_Level_3",
+      "off": 696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Attribute_ID_3",
+      "off": 700,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ]
+    },
+    {
+      "name": "Unknown_7",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Gem_Slot_Identifiable",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Stack_Amt",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Trade_Behavior",
+      "off": 716,
+      "t": {
+        "k": "i32"
+      },
+      "e": "trade_behavior"
+    }
+  ]
+}

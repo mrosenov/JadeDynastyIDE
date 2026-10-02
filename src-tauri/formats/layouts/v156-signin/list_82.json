@@ -1,0 +1,78 @@
+{
+  "key": "npc_war_buy_archer_service",
+  "name": "Npc War Buy Archer Service",
+  "struct": "NPC_WAR_BUY_ARCHER_SERVICE",
+  "size": 168,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "服务(类型)ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "price",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "消耗金钱"
+    },
+    {
+      "name": "war_material_id",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "消耗资源种类"
+    },
+    {
+      "name": "war_material_count",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "消耗资源数量"
+    },
+    {
+      "name": "item_wanted",
+      "off": 80,
+      "t": {
+        "k": "u32"
+      },
+      "c": "需要包裹中有某物品"
+    },
+    {
+      "name": "remove_one_item",
+      "off": 84,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是否扣掉1个该物品"
+    },
+    {
+      "name": "controller_id",
+      "off": 88,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "控制器id"
+    }
+  ]
+}

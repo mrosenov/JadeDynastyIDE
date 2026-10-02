@@ -1,0 +1,320 @@
+{
+  "key": "tower_transcription_config",
+  "name": "Tower Transcription Config",
+  "struct": "TOWER_TRANSCRIPTION_CONFIG",
+  "size": 772,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "副本类名称"
+    },
+    {
+      "name": "max_finish_count",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "副本每天完成次数限制"
+    },
+    {
+      "name": "map_id",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "副本地图编号id"
+    },
+    {
+      "name": "open_room_item_id",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "开启副本房间所需要的物品id"
+    },
+    {
+      "name": "open_room_item_count",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "开启副本房间所需要的物品数量"
+    },
+    {
+      "name": "room_active_time",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "开启房间时限，时间到并满足条件将开启副本"
+    },
+    {
+      "name": "player_min_level",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "c": "进入副本玩家的等级下限"
+    },
+    {
+      "name": "player_max_level",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "c": "进入副本玩家的等级上限"
+    },
+    {
+      "name": "character_combo_id",
+      "off": 96,
+      "t": {
+        "k": "u64"
+      },
+      "c": "进入副本玩家的职业限制，profession_id:0 -- 63",
+      "e": "character_combo_id"
+    },
+    {
+      "name": "character_combo_id2",
+      "off": 104,
+      "t": {
+        "k": "u64"
+      },
+      "c": "进入副本玩家的职业限制，profession_id:64 -- 127",
+      "e": "character_combo_id2"
+    },
+    {
+      "name": "god_devil_mask",
+      "off": 112,
+      "t": {
+        "k": "u32"
+      },
+      "c": "进入副本玩家的造化限制，仙/佛/魔：1/2/3",
+      "e": "god_devil_mask"
+    },
+    {
+      "name": "renascence_count",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "进入副本玩家的转生次数限制，0表示没有限制"
+    },
+    {
+      "name": "required_race",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "c": "种族限制，0-人族，1-兽族， 2-都可以",
+      "e": "race"
+    },
+    {
+      "name": "required_money",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "c": "进入副本所需要收取的金钱"
+    },
+    {
+      "name": "required_reputation",
+      "off": 128,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "reputation_type",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "所需要的声望类型id"
+            },
+            {
+              "name": "reputation_value",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "所需要该类型的声望值"
+            }
+          ]
+        }
+      },
+      "c": "进入副本所需要的声望类型和声望值"
+    },
+    {
+      "name": "required_item_id",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      },
+      "c": "进入副本所需要的物品id"
+    },
+    {
+      "name": "required_item_count",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      },
+      "c": "进入副本所需要的物品数量"
+    },
+    {
+      "name": "is_item_need_consumed",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      },
+      "c": "所需要的物品是否消耗， 0：不消耗；1：消耗"
+    },
+    {
+      "name": "min_player_num",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      },
+      "c": "开启副本的人数下限"
+    },
+    {
+      "name": "max_player_num",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      },
+      "c": "开启副本的人数上限"
+    },
+    {
+      "name": "invincible_time",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      },
+      "c": "传入副本后无敌等待时间，从副本正式开启时开始计时"
+    },
+    {
+      "name": "wait_time_before_leave",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      },
+      "c": "死亡传出副本的等待时间"
+    },
+    {
+      "name": "total_exist_time",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      },
+      "c": "副本从开启到自动关闭的总时间，0：表示没有时间限制"
+    },
+    {
+      "name": "controller_id",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      },
+      "c": "副本胜利条件控制器id，控制器激活，副本结束"
+    },
+    {
+      "name": "award_task_id",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      },
+      "c": "副本胜利奖励任务id"
+    },
+    {
+      "name": "forbiddon_items_id",
+      "off": 200,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "禁用物品id列表"
+    },
+    {
+      "name": "forbiddon_skill_id",
+      "off": 240,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "禁用技能id列表"
+    },
+    {
+      "name": "tower_layer_count",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      },
+      "c": "趴塔副本总层数"
+    },
+    {
+      "name": "opened_tower_layer_num",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      },
+      "c": "趴塔副本开启层数"
+    },
+    {
+      "name": "tower_pass_count",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      },
+      "c": "趴塔副本管卡数"
+    },
+    {
+      "name": "enable_skill_id",
+      "off": 292,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "趴塔副本内额外可用技能ID列表 最多20个"
+    },
+    {
+      "name": "property_config_id",
+      "off": 372,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "趴塔副本每层属性配置表ID 最多100层"
+    }
+  ]
+}

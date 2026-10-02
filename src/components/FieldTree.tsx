@@ -1,5 +1,6 @@
 import type { FieldNode } from "../elements/types";
 import { type Path, flatten } from "../elements/fieldPaths";
+import { ChevronRight, GitBranch } from "lucide-react";
 
 interface Props {
   nodes: FieldNode[];
@@ -27,7 +28,7 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
           <div
             key={path}
             className={
-              "field-row field-grid" + (path === selected ? " active" : "") + (node.unknown ? " unknown" : "")
+              "field-row field-grid" + (path === selected ? " active" : "") + (node.unknown ? " unknown" : "") + (node.group ? " group" : "")
             }
             onClick={() => onSelect(path)}
             onDoubleClick={() => node.children && onToggle(path)}
@@ -44,7 +45,7 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
                   }}
                   aria-label={open ? "Collapse" : "Expand"}
                 >
-                  ▸
+                  <ChevronRight size={15} />
                 </button>
               ) : (
                 <span className="caret-space" />
@@ -70,6 +71,11 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
                   <span className="hint">{node.hint}</span>
                 ))}
               {node.display && <span className="role">{node.display}</span>}
+              {node.cond && (
+                <span className="cond-chip" title={`Conditional type: ${node.cond}`}>
+                  <GitBranch size={11} /> {node.cond}
+                </span>
+              )}
             </span>
             <span className="muted mono truncate">{node.ty}</span>
             <span className="muted mono">{node.off.toString(16).toUpperCase().padStart(4, "0")}</span>

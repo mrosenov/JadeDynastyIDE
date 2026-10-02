@@ -1,0 +1,143 @@
+{
+  "key": "king_war_config",
+  "name": "King War Config",
+  "struct": "KING_WAR_CONFIG",
+  "size": 572,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "king_continue_item",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "国王连任奖励"
+    },
+    {
+      "name": "king_continue_item_num",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "奖励数量"
+    },
+    {
+      "name": "monster",
+      "off": 76,
+      "t": {
+        "k": "array",
+        "n": 2,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "monser_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "副战场怪物id"
+            },
+            {
+              "name": "hp_delta",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "生命改变量"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "king_shop",
+      "off": 92,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "num",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "score",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      },
+      "c": "国王积分购买模板"
+    },
+    {
+      "name": "normal_shop",
+      "off": 332,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "num",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "score",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      },
+      "c": "个人积分购买模板"
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+{
+  "key": "medicine_essence",
+  "name": "Medicine Essence",
+  "struct": "MEDICINE_ESSENCE",
+  "size": 188,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "药品(类型)ID"
+    },
+    {
+      "name": "id_major_type",
+      "off": 4,
+      "t": {
+        "k": "u32"
+      },
+      "c": "药品大类别ID",
+      "refs": [
+        "MEDICINE_MAJOR_TYPE"
+      ]
+    },
+    {
+      "name": "id_sub_type",
+      "off": 8,
+      "t": {
+        "k": "u32"
+      },
+      "c": "药品小类别ID",
+      "refs": [
+        "MEDICINE_SUB_TYPE"
+      ]
+    },
+    {
+      "name": "name",
+      "off": 12,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "药品名称, 最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径名",
+      "display": "icon"
+    },
+    {
+      "name": "require_level",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "玩家的级别要求"
+    },
+    {
+      "name": "renascence_count",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "c": "转生次数要求"
+    },
+    {
+      "name": "cool_time",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "c": "冷却时间（毫秒）"
+    },
+    {
+      "name": "only_in_war",
+      "off": 96,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是否城战专用"
+    },
+    {
+      "name": "type",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "药物类别，六种：0-瞬回HP，1-瞬回MP，2-瞬回HP及MP，"
+    },
+    {
+      "name": "hp",
+      "off": 104,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "HP，瞬回的表示上限，非瞬回的表示连续四次的分别补给量"
+    },
+    {
+      "name": "mp",
+      "off": 120,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "MP，瞬回的表示上限，非瞬回的表示连续四次的分别补给量"
+    },
+    {
+      "name": "dp",
+      "off": 136,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "DP, 瞬回的表示上限，非瞬回的表示连续四次的分别补给量"
+    },
+    {
+      "name": "map_restrict",
+      "off": 152,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "可用地图"
+    },
+    {
+      "name": "price",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      },
+      "c": "该药品的堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 184,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

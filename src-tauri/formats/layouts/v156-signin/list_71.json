@@ -1,0 +1,695 @@
+{
+  "key": "special_id_config",
+  "name": "Special Id Config",
+  "struct": "SPECIAL_ID_CONFIG",
+  "size": 452,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "id"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "version",
+      "off": 68,
+      "t": {
+        "k": "u32"
+      },
+      "c": "elementdata version used by game designers"
+    },
+    {
+      "name": "id_tmpl_jinfashen_config",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "金身法身逆向兑换配置表id"
+    },
+    {
+      "name": "monster_drop_prob",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      },
+      "c": "怪物掉落金钱概率"
+    },
+    {
+      "name": "id_money_matter",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "金钱物品的id"
+    },
+    {
+      "name": "id_speaker",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "千里传音的id"
+    },
+    {
+      "name": "id_destroying_matter",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "c": "摧毁物品的id"
+    },
+    {
+      "name": "id_townscroll",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "c": "传送遁地符的id"
+    },
+    {
+      "name": "id_attacker_droptable",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "c": "攻方玩家死亡掉落表"
+    },
+    {
+      "name": "id_defender_droptable",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "守方玩家死亡掉落表"
+    },
+    {
+      "name": "id_talisman_reset_matter",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "c": "法宝洗练符"
+    },
+    {
+      "name": "fee_talisman_merge",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "c": "法宝熔炼手续费"
+    },
+    {
+      "name": "fee_talisman_enchant",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "c": "法宝灌魔手续费"
+    },
+    {
+      "name": "id_war_material1",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "城战物资1需要ID"
+    },
+    {
+      "name": "id_war_material2",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "c": "城战物资2需要ID"
+    },
+    {
+      "name": "fee_pet_gained",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宠物驯养手续费"
+    },
+    {
+      "name": "fee_pet_free",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宠物放生手续费"
+    },
+    {
+      "name": "fee_pet_refine",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宠物修炼手续费"
+    },
+    {
+      "name": "fee_pet_rename",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宠物改名手续费"
+    },
+    {
+      "name": "id_male_war_statue",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      },
+      "c": "男城战雕像id"
+    },
+    {
+      "name": "id_female_war_statue",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      },
+      "c": "女城战雕像id"
+    },
+    {
+      "name": "id_vehicle_upgrade_item",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      },
+      "c": "驯化物品"
+    },
+    {
+      "name": "fee_lock",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      },
+      "c": "加锁费用"
+    },
+    {
+      "name": "fee_unlock",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      },
+      "c": "解锁费用"
+    },
+    {
+      "name": "unlock_item_id",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      },
+      "c": "解锁道具id"
+    },
+    {
+      "name": "unlocking_item_id",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "id_damaged_item",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      },
+      "c": "破损的物品"
+    },
+    {
+      "name": "id_repair_damaged_item",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      },
+      "c": "修复破损的物品"
+    },
+    {
+      "name": "id_bleed_identity_host_item",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      },
+      "c": "滴血认主道具id"
+    },
+    {
+      "name": "fee_restore_soul",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      },
+      "c": "恢复每点魄力的手续费"
+    },
+    {
+      "name": "id_lowgrade_soul_stone",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      },
+      "c": "低级元魂珠"
+    },
+    {
+      "name": "id_highgrade_soul_stone",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      },
+      "c": "高级元魂珠"
+    },
+    {
+      "name": "id_enter_arena_item",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      },
+      "c": "普通竞技场报名物品id"
+    },
+    {
+      "name": "id_enter_arena_reborn_item",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      },
+      "c": "飞升竞技场报名物品id"
+    },
+    {
+      "name": "id_change_face_item",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      },
+      "c": "更换形象消耗道具的id"
+    },
+    {
+      "name": "id_speaker2",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      },
+      "c": "千里传音id2"
+    },
+    {
+      "name": "id_unique_bid_item",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      },
+      "c": "唯一最低价拍卖的出价符"
+    },
+    {
+      "name": "fee_gem_refine",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石精炼手续费"
+    },
+    {
+      "name": "fee_gem_extract",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石萃取手续费"
+    },
+    {
+      "name": "fee_gem_tessellation",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石镶嵌手续费"
+    },
+    {
+      "name": "fee_gem_single_dismantle",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石单次拆除手续费"
+    },
+    {
+      "name": "fee_gem_smelt",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石熔炼手续费"
+    },
+    {
+      "name": "fee_gem_slot_identify",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石插槽鉴定手续费"
+    },
+    {
+      "name": "fee_gem_slot_customize",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石插槽定制手续费"
+    },
+    {
+      "name": "fee_gem_slot_rebuild",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石插槽重铸手续费"
+    },
+    {
+      "name": "gem_upgrade_upper_limit",
+      "off": 244,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石升品上限"
+    },
+    {
+      "name": "id_gem_smelt_article",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石熔炼道具ID"
+    },
+    {
+      "name": "id_gem_smelt_article_1",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石熔炼道具ID，可为非绑定道具等 Added 2011-04-01"
+    },
+    {
+      "name": "id_gem_smelt_article_2",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石熔炼道具ID，可作为其他特殊用处 Added 2011-04-01"
+    },
+    {
+      "name": "id_gem_refine_article",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石精炼道具ID"
+    },
+    {
+      "name": "id_gem_refine_article_1",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石精炼道具ID, 可作为非绑定道具等 Added 2011-04-01"
+    },
+    {
+      "name": "id_gem_refine_article_2",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石精炼道具ID, 可作为其他特殊用处道具 Added 2011-04-01"
+    },
+    {
+      "name": "id_gem_slot_lock_article",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石插槽重铸时锁定道具ID"
+    },
+    {
+      "name": "id_gem_slot_lock_article_1",
+      "off": 276,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石插槽重铸时锁定道具ID, 可作为非绑定道具等 Added 2011-04-01"
+    },
+    {
+      "name": "id_gem_slot_lock_article_2",
+      "off": 280,
+      "t": {
+        "k": "i32"
+      },
+      "c": "宝石插槽重铸时锁定道具ID, 其他特殊用处道具 Added 2011-04-01"
+    },
+    {
+      "name": "id_gem_slot_rebuild_article",
+      "off": 284,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "宝石插槽重铸所需道具ID,有三项，可作普通，非绑定，特殊用途等 Added 2011-05-03"
+    },
+    {
+      "name": "id_consign_role_item",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      },
+      "c": "角色寄售所需消耗的物品ID\tAdded 2012-03-23."
+    },
+    {
+      "name": "consign_role_item_count",
+      "off": 300,
+      "t": {
+        "k": "i32"
+      },
+      "c": "角色寄售所需消耗物品的数量\tAdded 2012-03-23."
+    },
+    {
+      "name": "consign_role_type",
+      "off": 304,
+      "t": {
+        "k": "i32"
+      },
+      "c": "角色寄售所需要使用类别 Added 2012-03-23."
+    },
+    {
+      "name": "id_treasure_region_upgrade_item",
+      "off": 308,
+      "t": {
+        "k": "i32"
+      },
+      "c": "诛仙古卷挖宝区域升级所需要消耗的物品的ID Added 2012-03-23."
+    },
+    {
+      "name": "id_speaker_special",
+      "off": 312,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "大喇叭id"
+    },
+    {
+      "name": "id_speaker_special_anony",
+      "off": 324,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "匿名大喇叭id"
+    },
+    {
+      "name": "id_change_name",
+      "off": 336,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "改名道具id"
+    },
+    {
+      "name": "id_change_name_family",
+      "off": 348,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "家族改名道具id"
+    },
+    {
+      "name": "id_change_name_guild",
+      "off": 360,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "帮派改名道具id"
+    },
+    {
+      "name": "id_equip_hole",
+      "off": 372,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "装备打孔道具（镶嵌星座）"
+    },
+    {
+      "name": "id_xingzuo_levelup",
+      "off": 384,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "星座升级道具"
+    },
+    {
+      "name": "fee_xingzuo_add",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      },
+      "c": "星座镶嵌手续费"
+    },
+    {
+      "name": "fee_xingzuo_remove",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      },
+      "c": "星座摘除手续费"
+    },
+    {
+      "name": "fee_xingzuo_identify",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      },
+      "c": "星座鉴定手续费"
+    },
+    {
+      "name": "id_fix_prop_lose",
+      "off": 408,
+      "t": {
+        "k": "i32"
+      },
+      "c": "修复天残号(未满150飞升)所需道具id"
+    },
+    {
+      "name": "id_rose_free",
+      "off": 412,
+      "t": {
+        "k": "i32"
+      },
+      "c": "免费玫瑰花id"
+    },
+    {
+      "name": "id_rose_money",
+      "off": 416,
+      "t": {
+        "k": "i32"
+      },
+      "c": "元宝玫瑰花id"
+    },
+    {
+      "name": "id_rename_equip_Props1",
+      "off": 420,
+      "t": {
+        "k": "i32"
+      },
+      "c": "+12装备重命名道具1id"
+    },
+    {
+      "name": "id_rename_equip_Props2",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      },
+      "c": "+12装备重命名道具2id"
+    },
+    {
+      "name": "id_rune2013_fragment",
+      "off": 428,
+      "t": {
+        "k": "array",
+        "n": 2,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "符文碎片id"
+    },
+    {
+      "name": "id_rune2013_erase",
+      "off": 436,
+      "t": {
+        "k": "array",
+        "n": 2,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "移除符文id"
+    },
+    {
+      "name": "id_rune2013_merge_extra_num",
+      "off": 444,
+      "t": {
+        "k": "array",
+        "n": 2,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "额外符文融合次数id"
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+{
+  "key": "flag_buff_item",
+  "name": "Flag Buff Item",
+  "struct": "FLAG_BUFF_ITEM_ESSENCE",
+  "size": 192,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径名",
+      "display": "icon"
+    },
+    {
+      "name": "npc_id",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "召唤出来npcid"
+    },
+    {
+      "name": "require_level",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "等级限制"
+    },
+    {
+      "name": "exit_time",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "存在时间(s)"
+    },
+    {
+      "name": "cool_time",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "c": "冷却时间(s)"
+    },
+    {
+      "name": "dmg",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "c": "攻击"
+    },
+    {
+      "name": "defence",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "c": "防御"
+    },
+    {
+      "name": "hp",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "c": "气血"
+    },
+    {
+      "name": "mp",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "c": "真气"
+    },
+    {
+      "name": "extra_defence",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "c": "减免伤害"
+    },
+    {
+      "name": "crit_rate",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "c": "致命一击率(千分数)"
+    },
+    {
+      "name": "crit_damage",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "c": "致命一击伤害(千分数)"
+    },
+    {
+      "name": "anti_stunt",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "c": "眩晕抗性"
+    },
+    {
+      "name": "anti_weak",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "c": "虚弱抗性"
+    },
+    {
+      "name": "anti_slow",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "c": "定身抗性"
+    },
+    {
+      "name": "anti_silence",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      },
+      "c": "沉默抗性"
+    },
+    {
+      "name": "anti_sleep",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      },
+      "c": "睡眠抗性"
+    },
+    {
+      "name": "anti_twist",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      },
+      "c": "缠绕抗性"
+    },
+    {
+      "name": "skill_attack_rate",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      },
+      "c": "技能命中(千分数)"
+    },
+    {
+      "name": "skill_armor_rate",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      },
+      "c": "技能躲闪(千分数)"
+    },
+    {
+      "name": "cult_defense",
+      "off": 152,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "御仙魔佛(千分数)"
+    },
+    {
+      "name": "cult_attack",
+      "off": 164,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "克仙魔佛(千分数)"
+    },
+    {
+      "name": "price",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 188,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

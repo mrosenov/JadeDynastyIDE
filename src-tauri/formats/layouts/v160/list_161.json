@@ -1,0 +1,155 @@
+{
+  "key": "lottery_tangyuan_item_essence",
+  "name": "Lottery Tangyuan Item Essence",
+  "struct": "LOTTERY_TANGYUAN_ITEM_ESSENCE",
+  "size": 388,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "掉在地上的模型路径",
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "图标路径",
+      "display": "icon"
+    },
+    {
+      "name": "open_item",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "c": "开启消耗物品id"
+    },
+    {
+      "name": "open_item_num",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "c": "开启消耗物品数量"
+    },
+    {
+      "name": "exp_get",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "c": "开启一次获得经验"
+    },
+    {
+      "name": "exp_level",
+      "off": 88,
+      "t": {
+        "k": "array",
+        "n": 7,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "c": "升级到1-7级所需经验"
+    },
+    {
+      "name": "group_gifts",
+      "off": 116,
+      "t": {
+        "k": "array",
+        "n": 8,
+        "stride": 32,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "gifts",
+              "off": 0,
+              "t": {
+                "k": "array",
+                "n": 4,
+                "stride": 8,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "id",
+                      "off": 0,
+                      "t": {
+                        "k": "u32"
+                      }
+                    },
+                    {
+                      "name": "num",
+                      "off": 4,
+                      "t": {
+                        "k": "u32"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "price",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      },
+      "c": "卖店价"
+    },
+    {
+      "name": "shop_price",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      },
+      "c": "店卖价"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 380,
+      "t": {
+        "k": "i32"
+      },
+      "c": "堆叠上限"
+    },
+    {
+      "name": "proc_type",
+      "off": 384,
+      "t": {
+        "k": "u32"
+      },
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "key": "collision_raid_award_config",
+  "name": "Collision Raid Award Config",
+  "struct": "COLLISION_RAID_AWARD_CONFIG",
+  "size": 472,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "模板ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "daily_award_item",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "每日奖励物品"
+    },
+    {
+      "name": "award_list",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 20,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_id",
+              "off": 0,
+              "t": {
+                "k": "u32"
+              },
+              "c": "奖励物品id"
+            },
+            {
+              "name": "item_num",
+              "off": 4,
+              "t": {
+                "k": "u32"
+              },
+              "c": "奖励物品数量"
+            },
+            {
+              "name": "score1_num",
+              "off": 8,
+              "t": {
+                "k": "u32"
+              },
+              "c": "所需A积分"
+            },
+            {
+              "name": "score2_num",
+              "off": 12,
+              "t": {
+                "k": "u32"
+              },
+              "c": "所需B积分"
+            },
+            {
+              "name": "win_num",
+              "off": 16,
+              "t": {
+                "k": "u32"
+              },
+              "c": "所需获胜场次"
+            }
+          ]
+        }
+      },
+      "c": "奖励"
+    }
+  ]
+}

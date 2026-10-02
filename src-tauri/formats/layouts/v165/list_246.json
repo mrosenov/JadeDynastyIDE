@@ -1,0 +1,5272 @@
+{
+  "name": "Equipment Identify Config",
+  "struct": "EQUIPMENT_IDENTIFY_CONFIG",
+  "size": 4268,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "identify_config_1_equipment_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_1_character_combo_id",
+      "off": 72,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_1_character_combo_id_2",
+      "off": 80,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_1_require_gender",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_1_equip_prod_id",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_2_equipment_id",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_2_character_combo_id",
+      "off": 100,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_2_character_combo_id_2",
+      "off": 108,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_2_require_gender",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_2_equip_prod_id",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_3_equipment_id",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_3_character_combo_id",
+      "off": 128,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_3_character_combo_id_2",
+      "off": 136,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_3_require_gender",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_3_equip_prod_id",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_4_equipment_id",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_4_character_combo_id",
+      "off": 156,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_4_character_combo_id_2",
+      "off": 164,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_4_require_gender",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_4_equip_prod_id",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_5_equipment_id",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_5_character_combo_id",
+      "off": 184,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_5_character_combo_id_2",
+      "off": 192,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_5_require_gender",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_5_equip_prod_id",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_6_equipment_id",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_6_character_combo_id",
+      "off": 212,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_6_character_combo_id_2",
+      "off": 220,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_6_require_gender",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_6_equip_prod_id",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_7_equipment_id",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_7_character_combo_id",
+      "off": 240,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_7_character_combo_id_2",
+      "off": 248,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_7_require_gender",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_7_equip_prod_id",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_8_equipment_id",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_8_character_combo_id",
+      "off": 268,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_8_character_combo_id_2",
+      "off": 276,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_8_require_gender",
+      "off": 284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_8_equip_prod_id",
+      "off": 288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_9_equipment_id",
+      "off": 292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_9_character_combo_id",
+      "off": 296,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_9_character_combo_id_2",
+      "off": 304,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_9_require_gender",
+      "off": 312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_9_equip_prod_id",
+      "off": 316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_10_equipment_id",
+      "off": 320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_10_character_combo_id",
+      "off": 324,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_10_character_combo_id_2",
+      "off": 332,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_10_require_gender",
+      "off": 340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_10_equip_prod_id",
+      "off": 344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_11_equipment_id",
+      "off": 348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_11_character_combo_id",
+      "off": 352,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_11_character_combo_id_2",
+      "off": 360,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_11_require_gender",
+      "off": 368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_11_equip_prod_id",
+      "off": 372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_12_equipment_id",
+      "off": 376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_12_character_combo_id",
+      "off": 380,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_12_character_combo_id_2",
+      "off": 388,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_12_require_gender",
+      "off": 396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_12_equip_prod_id",
+      "off": 400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_13_equipment_id",
+      "off": 404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_13_character_combo_id",
+      "off": 408,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_13_character_combo_id_2",
+      "off": 416,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_13_require_gender",
+      "off": 424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_13_equip_prod_id",
+      "off": 428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_14_equipment_id",
+      "off": 432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_14_character_combo_id",
+      "off": 436,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_14_character_combo_id_2",
+      "off": 444,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_14_require_gender",
+      "off": 452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_14_equip_prod_id",
+      "off": 456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_15_equipment_id",
+      "off": 460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_15_character_combo_id",
+      "off": 464,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_15_character_combo_id_2",
+      "off": 472,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_15_require_gender",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_15_equip_prod_id",
+      "off": 484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_16_equipment_id",
+      "off": 488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_16_character_combo_id",
+      "off": 492,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_16_character_combo_id_2",
+      "off": 500,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_16_require_gender",
+      "off": 508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_16_equip_prod_id",
+      "off": 512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_17_equipment_id",
+      "off": 516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_17_character_combo_id",
+      "off": 520,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_17_character_combo_id_2",
+      "off": 528,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_17_require_gender",
+      "off": 536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_17_equip_prod_id",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_18_equipment_id",
+      "off": 544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_18_character_combo_id",
+      "off": 548,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_18_character_combo_id_2",
+      "off": 556,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_18_require_gender",
+      "off": 564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_18_equip_prod_id",
+      "off": 568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_19_equipment_id",
+      "off": 572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_19_character_combo_id",
+      "off": 576,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_19_character_combo_id_2",
+      "off": 584,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_19_require_gender",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_19_equip_prod_id",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_20_equipment_id",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_20_character_combo_id",
+      "off": 604,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_20_character_combo_id_2",
+      "off": 612,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_20_require_gender",
+      "off": 620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_20_equip_prod_id",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_21_equipment_id",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_21_character_combo_id",
+      "off": 632,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_21_character_combo_id_2",
+      "off": 640,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_21_require_gender",
+      "off": 648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_21_equip_prod_id",
+      "off": 652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_22_equipment_id",
+      "off": 656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_22_character_combo_id",
+      "off": 660,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_22_character_combo_id_2",
+      "off": 668,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_22_require_gender",
+      "off": 676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_22_equip_prod_id",
+      "off": 680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_23_equipment_id",
+      "off": 684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_23_character_combo_id",
+      "off": 688,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_23_character_combo_id_2",
+      "off": 696,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_23_require_gender",
+      "off": 704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_23_equip_prod_id",
+      "off": 708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_24_equipment_id",
+      "off": 712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_24_character_combo_id",
+      "off": 716,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_24_character_combo_id_2",
+      "off": 724,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_24_require_gender",
+      "off": 732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_24_equip_prod_id",
+      "off": 736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_25_equipment_id",
+      "off": 740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_25_character_combo_id",
+      "off": 744,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_25_character_combo_id_2",
+      "off": 752,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_25_require_gender",
+      "off": 760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_25_equip_prod_id",
+      "off": 764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_26_equipment_id",
+      "off": 768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_26_character_combo_id",
+      "off": 772,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_26_character_combo_id_2",
+      "off": 780,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_26_require_gender",
+      "off": 788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_26_equip_prod_id",
+      "off": 792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_27_equipment_id",
+      "off": 796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_27_character_combo_id",
+      "off": 800,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_27_character_combo_id_2",
+      "off": 808,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_27_require_gender",
+      "off": 816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_27_equip_prod_id",
+      "off": 820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_28_equipment_id",
+      "off": 824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_28_character_combo_id",
+      "off": 828,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_28_character_combo_id_2",
+      "off": 836,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_28_require_gender",
+      "off": 844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_28_equip_prod_id",
+      "off": 848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_29_equipment_id",
+      "off": 852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_29_character_combo_id",
+      "off": 856,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_29_character_combo_id_2",
+      "off": 864,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_29_require_gender",
+      "off": 872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_29_equip_prod_id",
+      "off": 876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_30_equipment_id",
+      "off": 880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_30_character_combo_id",
+      "off": 884,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_30_character_combo_id_2",
+      "off": 892,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_30_require_gender",
+      "off": 900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_30_equip_prod_id",
+      "off": 904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_31_equipment_id",
+      "off": 908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_31_character_combo_id",
+      "off": 912,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_31_character_combo_id_2",
+      "off": 920,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_31_require_gender",
+      "off": 928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_31_equip_prod_id",
+      "off": 932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_32_equipment_id",
+      "off": 936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_32_character_combo_id",
+      "off": 940,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_32_character_combo_id_2",
+      "off": 948,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_32_require_gender",
+      "off": 956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_32_equip_prod_id",
+      "off": 960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_33_equipment_id",
+      "off": 964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_33_character_combo_id",
+      "off": 968,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_33_character_combo_id_2",
+      "off": 976,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_33_require_gender",
+      "off": 984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_33_equip_prod_id",
+      "off": 988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_34_equipment_id",
+      "off": 992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_34_character_combo_id",
+      "off": 996,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_34_character_combo_id_2",
+      "off": 1004,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_34_require_gender",
+      "off": 1012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_34_equip_prod_id",
+      "off": 1016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_35_equipment_id",
+      "off": 1020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_35_character_combo_id",
+      "off": 1024,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_35_character_combo_id_2",
+      "off": 1032,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_35_require_gender",
+      "off": 1040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_35_equip_prod_id",
+      "off": 1044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_36_equipment_id",
+      "off": 1048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_36_character_combo_id",
+      "off": 1052,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_36_character_combo_id_2",
+      "off": 1060,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_36_require_gender",
+      "off": 1068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_36_equip_prod_id",
+      "off": 1072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_37_equipment_id",
+      "off": 1076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_37_character_combo_id",
+      "off": 1080,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_37_character_combo_id_2",
+      "off": 1088,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_37_require_gender",
+      "off": 1096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_37_equip_prod_id",
+      "off": 1100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_38_equipment_id",
+      "off": 1104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_38_character_combo_id",
+      "off": 1108,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_38_character_combo_id_2",
+      "off": 1116,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_38_require_gender",
+      "off": 1124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_38_equip_prod_id",
+      "off": 1128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_39_equipment_id",
+      "off": 1132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_39_character_combo_id",
+      "off": 1136,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_39_character_combo_id_2",
+      "off": 1144,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_39_require_gender",
+      "off": 1152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_39_equip_prod_id",
+      "off": 1156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_40_equipment_id",
+      "off": 1160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_40_character_combo_id",
+      "off": 1164,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_40_character_combo_id_2",
+      "off": 1172,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_40_require_gender",
+      "off": 1180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_40_equip_prod_id",
+      "off": 1184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_41_equipment_id",
+      "off": 1188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_41_character_combo_id",
+      "off": 1192,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_41_character_combo_id_2",
+      "off": 1200,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_41_require_gender",
+      "off": 1208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_41_equip_prod_id",
+      "off": 1212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_42_equipment_id",
+      "off": 1216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_42_character_combo_id",
+      "off": 1220,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_42_character_combo_id_2",
+      "off": 1228,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_42_require_gender",
+      "off": 1236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_42_equip_prod_id",
+      "off": 1240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_43_equipment_id",
+      "off": 1244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_43_character_combo_id",
+      "off": 1248,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_43_character_combo_id_2",
+      "off": 1256,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_43_require_gender",
+      "off": 1264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_43_equip_prod_id",
+      "off": 1268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_44_equipment_id",
+      "off": 1272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_44_character_combo_id",
+      "off": 1276,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_44_character_combo_id_2",
+      "off": 1284,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_44_require_gender",
+      "off": 1292,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_44_equip_prod_id",
+      "off": 1296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_45_equipment_id",
+      "off": 1300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_45_character_combo_id",
+      "off": 1304,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_45_character_combo_id_2",
+      "off": 1312,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_45_require_gender",
+      "off": 1320,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_45_equip_prod_id",
+      "off": 1324,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_46_equipment_id",
+      "off": 1328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_46_character_combo_id",
+      "off": 1332,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_46_character_combo_id_2",
+      "off": 1340,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_46_require_gender",
+      "off": 1348,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_46_equip_prod_id",
+      "off": 1352,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_47_equipment_id",
+      "off": 1356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_47_character_combo_id",
+      "off": 1360,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_47_character_combo_id_2",
+      "off": 1368,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_47_require_gender",
+      "off": 1376,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_47_equip_prod_id",
+      "off": 1380,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_48_equipment_id",
+      "off": 1384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_48_character_combo_id",
+      "off": 1388,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_48_character_combo_id_2",
+      "off": 1396,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_48_require_gender",
+      "off": 1404,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_48_equip_prod_id",
+      "off": 1408,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_49_equipment_id",
+      "off": 1412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_49_character_combo_id",
+      "off": 1416,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_49_character_combo_id_2",
+      "off": 1424,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_49_require_gender",
+      "off": 1432,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_49_equip_prod_id",
+      "off": 1436,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_50_equipment_id",
+      "off": 1440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_50_character_combo_id",
+      "off": 1444,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_50_character_combo_id_2",
+      "off": 1452,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_50_require_gender",
+      "off": 1460,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_50_equip_prod_id",
+      "off": 1464,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_51_equipment_id",
+      "off": 1468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_51_character_combo_id",
+      "off": 1472,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_51_character_combo_id_2",
+      "off": 1480,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_51_require_gender",
+      "off": 1488,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_51_equip_prod_id",
+      "off": 1492,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_52_equipment_id",
+      "off": 1496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_52_character_combo_id",
+      "off": 1500,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_52_character_combo_id_2",
+      "off": 1508,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_52_require_gender",
+      "off": 1516,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_52_equip_prod_id",
+      "off": 1520,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_53_equipment_id",
+      "off": 1524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_53_character_combo_id",
+      "off": 1528,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_53_character_combo_id_2",
+      "off": 1536,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_53_require_gender",
+      "off": 1544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_53_equip_prod_id",
+      "off": 1548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_54_equipment_id",
+      "off": 1552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_54_character_combo_id",
+      "off": 1556,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_54_character_combo_id_2",
+      "off": 1564,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_54_require_gender",
+      "off": 1572,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_54_equip_prod_id",
+      "off": 1576,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_55_equipment_id",
+      "off": 1580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_55_character_combo_id",
+      "off": 1584,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_55_character_combo_id_2",
+      "off": 1592,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_55_require_gender",
+      "off": 1600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_55_equip_prod_id",
+      "off": 1604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_56_equipment_id",
+      "off": 1608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_56_character_combo_id",
+      "off": 1612,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_56_character_combo_id_2",
+      "off": 1620,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_56_require_gender",
+      "off": 1628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_56_equip_prod_id",
+      "off": 1632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_57_equipment_id",
+      "off": 1636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_57_character_combo_id",
+      "off": 1640,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_57_character_combo_id_2",
+      "off": 1648,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_57_require_gender",
+      "off": 1656,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_57_equip_prod_id",
+      "off": 1660,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_58_equipment_id",
+      "off": 1664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_58_character_combo_id",
+      "off": 1668,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_58_character_combo_id_2",
+      "off": 1676,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_58_require_gender",
+      "off": 1684,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_58_equip_prod_id",
+      "off": 1688,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_59_equipment_id",
+      "off": 1692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_59_character_combo_id",
+      "off": 1696,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_59_character_combo_id_2",
+      "off": 1704,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_59_require_gender",
+      "off": 1712,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_59_equip_prod_id",
+      "off": 1716,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_60_equipment_id",
+      "off": 1720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_60_character_combo_id",
+      "off": 1724,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_60_character_combo_id_2",
+      "off": 1732,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_60_require_gender",
+      "off": 1740,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_60_equip_prod_id",
+      "off": 1744,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_61_equipment_id",
+      "off": 1748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_61_character_combo_id",
+      "off": 1752,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_61_character_combo_id_2",
+      "off": 1760,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_61_require_gender",
+      "off": 1768,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_61_equip_prod_id",
+      "off": 1772,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_62_equipment_id",
+      "off": 1776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_62_character_combo_id",
+      "off": 1780,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_62_character_combo_id_2",
+      "off": 1788,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_62_require_gender",
+      "off": 1796,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_62_equip_prod_id",
+      "off": 1800,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_63_equipment_id",
+      "off": 1804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_63_character_combo_id",
+      "off": 1808,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_63_character_combo_id_2",
+      "off": 1816,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_63_require_gender",
+      "off": 1824,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_63_equip_prod_id",
+      "off": 1828,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_64_equipment_id",
+      "off": 1832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_64_character_combo_id",
+      "off": 1836,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_64_character_combo_id_2",
+      "off": 1844,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_64_require_gender",
+      "off": 1852,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_64_equip_prod_id",
+      "off": 1856,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_65_equipment_id",
+      "off": 1860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_65_character_combo_id",
+      "off": 1864,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_65_character_combo_id_2",
+      "off": 1872,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_65_require_gender",
+      "off": 1880,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_65_equip_prod_id",
+      "off": 1884,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_66_equipment_id",
+      "off": 1888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_66_character_combo_id",
+      "off": 1892,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_66_character_combo_id_2",
+      "off": 1900,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_66_require_gender",
+      "off": 1908,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_66_equip_prod_id",
+      "off": 1912,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_67_equipment_id",
+      "off": 1916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_67_character_combo_id",
+      "off": 1920,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_67_character_combo_id_2",
+      "off": 1928,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_67_require_gender",
+      "off": 1936,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_67_equip_prod_id",
+      "off": 1940,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_68_equipment_id",
+      "off": 1944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_68_character_combo_id",
+      "off": 1948,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_68_character_combo_id_2",
+      "off": 1956,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_68_require_gender",
+      "off": 1964,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_68_equip_prod_id",
+      "off": 1968,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_69_equipment_id",
+      "off": 1972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_69_character_combo_id",
+      "off": 1976,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_69_character_combo_id_2",
+      "off": 1984,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_69_require_gender",
+      "off": 1992,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_69_equip_prod_id",
+      "off": 1996,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_70_equipment_id",
+      "off": 2000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_70_character_combo_id",
+      "off": 2004,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_70_character_combo_id_2",
+      "off": 2012,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_70_require_gender",
+      "off": 2020,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_70_equip_prod_id",
+      "off": 2024,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_71_equipment_id",
+      "off": 2028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_71_character_combo_id",
+      "off": 2032,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_71_character_combo_id_2",
+      "off": 2040,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_71_require_gender",
+      "off": 2048,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_71_equip_prod_id",
+      "off": 2052,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_72_equipment_id",
+      "off": 2056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_72_character_combo_id",
+      "off": 2060,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_72_character_combo_id_2",
+      "off": 2068,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_72_require_gender",
+      "off": 2076,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_72_equip_prod_id",
+      "off": 2080,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_73_equipment_id",
+      "off": 2084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_73_character_combo_id",
+      "off": 2088,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_73_character_combo_id_2",
+      "off": 2096,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_73_require_gender",
+      "off": 2104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_73_equip_prod_id",
+      "off": 2108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_74_equipment_id",
+      "off": 2112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_74_character_combo_id",
+      "off": 2116,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_74_character_combo_id_2",
+      "off": 2124,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_74_require_gender",
+      "off": 2132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_74_equip_prod_id",
+      "off": 2136,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_75_equipment_id",
+      "off": 2140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_75_character_combo_id",
+      "off": 2144,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_75_character_combo_id_2",
+      "off": 2152,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_75_require_gender",
+      "off": 2160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_75_equip_prod_id",
+      "off": 2164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_76_equipment_id",
+      "off": 2168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_76_character_combo_id",
+      "off": 2172,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_76_character_combo_id_2",
+      "off": 2180,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_76_require_gender",
+      "off": 2188,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_76_equip_prod_id",
+      "off": 2192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_77_equipment_id",
+      "off": 2196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_77_character_combo_id",
+      "off": 2200,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_77_character_combo_id_2",
+      "off": 2208,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_77_require_gender",
+      "off": 2216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_77_equip_prod_id",
+      "off": 2220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_78_equipment_id",
+      "off": 2224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_78_character_combo_id",
+      "off": 2228,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_78_character_combo_id_2",
+      "off": 2236,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_78_require_gender",
+      "off": 2244,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_78_equip_prod_id",
+      "off": 2248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_79_equipment_id",
+      "off": 2252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_79_character_combo_id",
+      "off": 2256,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_79_character_combo_id_2",
+      "off": 2264,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_79_require_gender",
+      "off": 2272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_79_equip_prod_id",
+      "off": 2276,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_80_equipment_id",
+      "off": 2280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_80_character_combo_id",
+      "off": 2284,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_80_character_combo_id_2",
+      "off": 2292,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_80_require_gender",
+      "off": 2300,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_80_equip_prod_id",
+      "off": 2304,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_81_equipment_id",
+      "off": 2308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_81_character_combo_id",
+      "off": 2312,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_81_character_combo_id_2",
+      "off": 2320,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_81_require_gender",
+      "off": 2328,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_81_equip_prod_id",
+      "off": 2332,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_82_equipment_id",
+      "off": 2336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_82_character_combo_id",
+      "off": 2340,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_82_character_combo_id_2",
+      "off": 2348,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_82_require_gender",
+      "off": 2356,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_82_equip_prod_id",
+      "off": 2360,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_83_equipment_id",
+      "off": 2364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_83_character_combo_id",
+      "off": 2368,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_83_character_combo_id_2",
+      "off": 2376,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_83_require_gender",
+      "off": 2384,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_83_equip_prod_id",
+      "off": 2388,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_84_equipment_id",
+      "off": 2392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_84_character_combo_id",
+      "off": 2396,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_84_character_combo_id_2",
+      "off": 2404,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_84_require_gender",
+      "off": 2412,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_84_equip_prod_id",
+      "off": 2416,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_85_equipment_id",
+      "off": 2420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_85_character_combo_id",
+      "off": 2424,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_85_character_combo_id_2",
+      "off": 2432,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_85_require_gender",
+      "off": 2440,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_85_equip_prod_id",
+      "off": 2444,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_86_equipment_id",
+      "off": 2448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_86_character_combo_id",
+      "off": 2452,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_86_character_combo_id_2",
+      "off": 2460,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_86_require_gender",
+      "off": 2468,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_86_equip_prod_id",
+      "off": 2472,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_87_equipment_id",
+      "off": 2476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_87_character_combo_id",
+      "off": 2480,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_87_character_combo_id_2",
+      "off": 2488,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_87_require_gender",
+      "off": 2496,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_87_equip_prod_id",
+      "off": 2500,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_88_equipment_id",
+      "off": 2504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_88_character_combo_id",
+      "off": 2508,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_88_character_combo_id_2",
+      "off": 2516,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_88_require_gender",
+      "off": 2524,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_88_equip_prod_id",
+      "off": 2528,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_89_equipment_id",
+      "off": 2532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_89_character_combo_id",
+      "off": 2536,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_89_character_combo_id_2",
+      "off": 2544,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_89_require_gender",
+      "off": 2552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_89_equip_prod_id",
+      "off": 2556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_90_equipment_id",
+      "off": 2560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_90_character_combo_id",
+      "off": 2564,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_90_character_combo_id_2",
+      "off": 2572,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_90_require_gender",
+      "off": 2580,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_90_equip_prod_id",
+      "off": 2584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_91_equipment_id",
+      "off": 2588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_91_character_combo_id",
+      "off": 2592,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_91_character_combo_id_2",
+      "off": 2600,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_91_require_gender",
+      "off": 2608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_91_equip_prod_id",
+      "off": 2612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_92_equipment_id",
+      "off": 2616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_92_character_combo_id",
+      "off": 2620,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_92_character_combo_id_2",
+      "off": 2628,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_92_require_gender",
+      "off": 2636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_92_equip_prod_id",
+      "off": 2640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_93_equipment_id",
+      "off": 2644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_93_character_combo_id",
+      "off": 2648,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_93_character_combo_id_2",
+      "off": 2656,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_93_require_gender",
+      "off": 2664,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_93_equip_prod_id",
+      "off": 2668,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_94_equipment_id",
+      "off": 2672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_94_character_combo_id",
+      "off": 2676,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_94_character_combo_id_2",
+      "off": 2684,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_94_require_gender",
+      "off": 2692,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_94_equip_prod_id",
+      "off": 2696,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_95_equipment_id",
+      "off": 2700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_95_character_combo_id",
+      "off": 2704,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_95_character_combo_id_2",
+      "off": 2712,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_95_require_gender",
+      "off": 2720,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_95_equip_prod_id",
+      "off": 2724,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_96_equipment_id",
+      "off": 2728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_96_character_combo_id",
+      "off": 2732,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_96_character_combo_id_2",
+      "off": 2740,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_96_require_gender",
+      "off": 2748,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_96_equip_prod_id",
+      "off": 2752,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_97_equipment_id",
+      "off": 2756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_97_character_combo_id",
+      "off": 2760,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_97_character_combo_id_2",
+      "off": 2768,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_97_require_gender",
+      "off": 2776,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_97_equip_prod_id",
+      "off": 2780,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_98_equipment_id",
+      "off": 2784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_98_character_combo_id",
+      "off": 2788,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_98_character_combo_id_2",
+      "off": 2796,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_98_require_gender",
+      "off": 2804,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_98_equip_prod_id",
+      "off": 2808,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_99_equipment_id",
+      "off": 2812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_99_character_combo_id",
+      "off": 2816,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_99_character_combo_id_2",
+      "off": 2824,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_99_require_gender",
+      "off": 2832,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_99_equip_prod_id",
+      "off": 2836,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_100_equipment_id",
+      "off": 2840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_100_character_combo_id",
+      "off": 2844,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_100_character_combo_id_2",
+      "off": 2852,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_100_require_gender",
+      "off": 2860,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_100_equip_prod_id",
+      "off": 2864,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_101_equipment_id",
+      "off": 2868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_101_character_combo_id",
+      "off": 2872,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_101_character_combo_id_2",
+      "off": 2880,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_101_require_gender",
+      "off": 2888,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_101_equip_prod_id",
+      "off": 2892,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_102_equipment_id",
+      "off": 2896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_102_character_combo_id",
+      "off": 2900,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_102_character_combo_id_2",
+      "off": 2908,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_102_require_gender",
+      "off": 2916,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_102_equip_prod_id",
+      "off": 2920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_103_equipment_id",
+      "off": 2924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_103_character_combo_id",
+      "off": 2928,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_103_character_combo_id_2",
+      "off": 2936,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_103_require_gender",
+      "off": 2944,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_103_equip_prod_id",
+      "off": 2948,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_104_equipment_id",
+      "off": 2952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_104_character_combo_id",
+      "off": 2956,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_104_character_combo_id_2",
+      "off": 2964,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_104_require_gender",
+      "off": 2972,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_104_equip_prod_id",
+      "off": 2976,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_105_equipment_id",
+      "off": 2980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_105_character_combo_id",
+      "off": 2984,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_105_character_combo_id_2",
+      "off": 2992,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_105_require_gender",
+      "off": 3000,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_105_equip_prod_id",
+      "off": 3004,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_106_equipment_id",
+      "off": 3008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_106_character_combo_id",
+      "off": 3012,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_106_character_combo_id_2",
+      "off": 3020,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_106_require_gender",
+      "off": 3028,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_106_equip_prod_id",
+      "off": 3032,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_107_equipment_id",
+      "off": 3036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_107_character_combo_id",
+      "off": 3040,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_107_character_combo_id_2",
+      "off": 3048,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_107_require_gender",
+      "off": 3056,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_107_equip_prod_id",
+      "off": 3060,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_108_equipment_id",
+      "off": 3064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_108_character_combo_id",
+      "off": 3068,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_108_character_combo_id_2",
+      "off": 3076,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_108_require_gender",
+      "off": 3084,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_108_equip_prod_id",
+      "off": 3088,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_109_equipment_id",
+      "off": 3092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_109_character_combo_id",
+      "off": 3096,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_109_character_combo_id_2",
+      "off": 3104,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_109_require_gender",
+      "off": 3112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_109_equip_prod_id",
+      "off": 3116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_110_equipment_id",
+      "off": 3120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_110_character_combo_id",
+      "off": 3124,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_110_character_combo_id_2",
+      "off": 3132,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_110_require_gender",
+      "off": 3140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_110_equip_prod_id",
+      "off": 3144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_111_equipment_id",
+      "off": 3148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_111_character_combo_id",
+      "off": 3152,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_111_character_combo_id_2",
+      "off": 3160,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_111_require_gender",
+      "off": 3168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_111_equip_prod_id",
+      "off": 3172,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_112_equipment_id",
+      "off": 3176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_112_character_combo_id",
+      "off": 3180,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_112_character_combo_id_2",
+      "off": 3188,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_112_require_gender",
+      "off": 3196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_112_equip_prod_id",
+      "off": 3200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_113_equipment_id",
+      "off": 3204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_113_character_combo_id",
+      "off": 3208,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_113_character_combo_id_2",
+      "off": 3216,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_113_require_gender",
+      "off": 3224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_113_equip_prod_id",
+      "off": 3228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_114_equipment_id",
+      "off": 3232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_114_character_combo_id",
+      "off": 3236,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_114_character_combo_id_2",
+      "off": 3244,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_114_require_gender",
+      "off": 3252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_114_equip_prod_id",
+      "off": 3256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_115_equipment_id",
+      "off": 3260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_115_character_combo_id",
+      "off": 3264,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_115_character_combo_id_2",
+      "off": 3272,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_115_require_gender",
+      "off": 3280,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_115_equip_prod_id",
+      "off": 3284,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_116_equipment_id",
+      "off": 3288,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_116_character_combo_id",
+      "off": 3292,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_116_character_combo_id_2",
+      "off": 3300,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_116_require_gender",
+      "off": 3308,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_116_equip_prod_id",
+      "off": 3312,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_117_equipment_id",
+      "off": 3316,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_117_character_combo_id",
+      "off": 3320,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_117_character_combo_id_2",
+      "off": 3328,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_117_require_gender",
+      "off": 3336,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_117_equip_prod_id",
+      "off": 3340,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_118_equipment_id",
+      "off": 3344,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_118_character_combo_id",
+      "off": 3348,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_118_character_combo_id_2",
+      "off": 3356,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_118_require_gender",
+      "off": 3364,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_118_equip_prod_id",
+      "off": 3368,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_119_equipment_id",
+      "off": 3372,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_119_character_combo_id",
+      "off": 3376,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_119_character_combo_id_2",
+      "off": 3384,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_119_require_gender",
+      "off": 3392,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_119_equip_prod_id",
+      "off": 3396,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_120_equipment_id",
+      "off": 3400,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_120_character_combo_id",
+      "off": 3404,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_120_character_combo_id_2",
+      "off": 3412,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_120_require_gender",
+      "off": 3420,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_120_equip_prod_id",
+      "off": 3424,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_121_equipment_id",
+      "off": 3428,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_121_character_combo_id",
+      "off": 3432,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_121_character_combo_id_2",
+      "off": 3440,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_121_require_gender",
+      "off": 3448,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_121_equip_prod_id",
+      "off": 3452,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_122_equipment_id",
+      "off": 3456,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_122_character_combo_id",
+      "off": 3460,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_122_character_combo_id_2",
+      "off": 3468,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_122_require_gender",
+      "off": 3476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_122_equip_prod_id",
+      "off": 3480,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_123_equipment_id",
+      "off": 3484,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_123_character_combo_id",
+      "off": 3488,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_123_character_combo_id_2",
+      "off": 3496,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_123_require_gender",
+      "off": 3504,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_123_equip_prod_id",
+      "off": 3508,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_124_equipment_id",
+      "off": 3512,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_124_character_combo_id",
+      "off": 3516,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_124_character_combo_id_2",
+      "off": 3524,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_124_require_gender",
+      "off": 3532,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_124_equip_prod_id",
+      "off": 3536,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_125_equipment_id",
+      "off": 3540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_125_character_combo_id",
+      "off": 3544,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_125_character_combo_id_2",
+      "off": 3552,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_125_require_gender",
+      "off": 3560,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_125_equip_prod_id",
+      "off": 3564,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_126_equipment_id",
+      "off": 3568,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_126_character_combo_id",
+      "off": 3572,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_126_character_combo_id_2",
+      "off": 3580,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_126_require_gender",
+      "off": 3588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_126_equip_prod_id",
+      "off": 3592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_127_equipment_id",
+      "off": 3596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_127_character_combo_id",
+      "off": 3600,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_127_character_combo_id_2",
+      "off": 3608,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_127_require_gender",
+      "off": 3616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_127_equip_prod_id",
+      "off": 3620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_128_equipment_id",
+      "off": 3624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_128_character_combo_id",
+      "off": 3628,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_128_character_combo_id_2",
+      "off": 3636,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_128_require_gender",
+      "off": 3644,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_128_equip_prod_id",
+      "off": 3648,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_129_equipment_id",
+      "off": 3652,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_129_character_combo_id",
+      "off": 3656,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_129_character_combo_id_2",
+      "off": 3664,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_129_require_gender",
+      "off": 3672,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_129_equip_prod_id",
+      "off": 3676,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_130_equipment_id",
+      "off": 3680,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_130_character_combo_id",
+      "off": 3684,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_130_character_combo_id_2",
+      "off": 3692,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_130_require_gender",
+      "off": 3700,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_130_equip_prod_id",
+      "off": 3704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_131_equipment_id",
+      "off": 3708,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_131_character_combo_id",
+      "off": 3712,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_131_character_combo_id_2",
+      "off": 3720,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_131_require_gender",
+      "off": 3728,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_131_equip_prod_id",
+      "off": 3732,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_132_equipment_id",
+      "off": 3736,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_132_character_combo_id",
+      "off": 3740,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_132_character_combo_id_2",
+      "off": 3748,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_132_require_gender",
+      "off": 3756,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_132_equip_prod_id",
+      "off": 3760,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_133_equipment_id",
+      "off": 3764,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_133_character_combo_id",
+      "off": 3768,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_133_character_combo_id_2",
+      "off": 3776,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_133_require_gender",
+      "off": 3784,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_133_equip_prod_id",
+      "off": 3788,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_134_equipment_id",
+      "off": 3792,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_134_character_combo_id",
+      "off": 3796,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_134_character_combo_id_2",
+      "off": 3804,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_134_require_gender",
+      "off": 3812,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_134_equip_prod_id",
+      "off": 3816,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_135_equipment_id",
+      "off": 3820,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_135_character_combo_id",
+      "off": 3824,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_135_character_combo_id_2",
+      "off": 3832,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_135_require_gender",
+      "off": 3840,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_135_equip_prod_id",
+      "off": 3844,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_136_equipment_id",
+      "off": 3848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_136_character_combo_id",
+      "off": 3852,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_136_character_combo_id_2",
+      "off": 3860,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_136_require_gender",
+      "off": 3868,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_136_equip_prod_id",
+      "off": 3872,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_137_equipment_id",
+      "off": 3876,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_137_character_combo_id",
+      "off": 3880,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_137_character_combo_id_2",
+      "off": 3888,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_137_require_gender",
+      "off": 3896,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_137_equip_prod_id",
+      "off": 3900,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_138_equipment_id",
+      "off": 3904,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_138_character_combo_id",
+      "off": 3908,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_138_character_combo_id_2",
+      "off": 3916,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_138_require_gender",
+      "off": 3924,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_138_equip_prod_id",
+      "off": 3928,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_139_equipment_id",
+      "off": 3932,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_139_character_combo_id",
+      "off": 3936,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_139_character_combo_id_2",
+      "off": 3944,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_139_require_gender",
+      "off": 3952,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_139_equip_prod_id",
+      "off": 3956,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_140_equipment_id",
+      "off": 3960,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_140_character_combo_id",
+      "off": 3964,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_140_character_combo_id_2",
+      "off": 3972,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_140_require_gender",
+      "off": 3980,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_140_equip_prod_id",
+      "off": 3984,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_141_equipment_id",
+      "off": 3988,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_141_character_combo_id",
+      "off": 3992,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_141_character_combo_id_2",
+      "off": 4000,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_141_require_gender",
+      "off": 4008,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_141_equip_prod_id",
+      "off": 4012,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_142_equipment_id",
+      "off": 4016,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_142_character_combo_id",
+      "off": 4020,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_142_character_combo_id_2",
+      "off": 4028,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_142_require_gender",
+      "off": 4036,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_142_equip_prod_id",
+      "off": 4040,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_143_equipment_id",
+      "off": 4044,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_143_character_combo_id",
+      "off": 4048,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_143_character_combo_id_2",
+      "off": 4056,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_143_require_gender",
+      "off": 4064,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_143_equip_prod_id",
+      "off": 4068,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_144_equipment_id",
+      "off": 4072,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_144_character_combo_id",
+      "off": 4076,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_144_character_combo_id_2",
+      "off": 4084,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_144_require_gender",
+      "off": 4092,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_144_equip_prod_id",
+      "off": 4096,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_145_equipment_id",
+      "off": 4100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_145_character_combo_id",
+      "off": 4104,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_145_character_combo_id_2",
+      "off": 4112,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_145_require_gender",
+      "off": 4120,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_145_equip_prod_id",
+      "off": 4124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_146_equipment_id",
+      "off": 4128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_146_character_combo_id",
+      "off": 4132,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_146_character_combo_id_2",
+      "off": 4140,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_146_require_gender",
+      "off": 4148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_146_equip_prod_id",
+      "off": 4152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_147_equipment_id",
+      "off": 4156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_147_character_combo_id",
+      "off": 4160,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_147_character_combo_id_2",
+      "off": 4168,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_147_require_gender",
+      "off": 4176,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_147_equip_prod_id",
+      "off": 4180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_148_equipment_id",
+      "off": 4184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_148_character_combo_id",
+      "off": 4188,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_148_character_combo_id_2",
+      "off": 4196,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_148_require_gender",
+      "off": 4204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_148_equip_prod_id",
+      "off": 4208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_149_equipment_id",
+      "off": 4212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_149_character_combo_id",
+      "off": 4216,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_149_character_combo_id_2",
+      "off": 4224,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_149_require_gender",
+      "off": 4232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_149_equip_prod_id",
+      "off": 4236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_150_equipment_id",
+      "off": 4240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_150_character_combo_id",
+      "off": 4244,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_150_character_combo_id_2",
+      "off": 4252,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "identify_config_150_require_gender",
+      "off": 4260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "identify_config_150_equip_prod_id",
+      "off": 4264,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

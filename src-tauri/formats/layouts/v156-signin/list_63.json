@@ -1,0 +1,41 @@
+{
+  "key": "npc_equipdestroy_service",
+  "name": "Npc Equipdestroy Service",
+  "struct": "NPC_EQUIPDESTROY_SERVICE",
+  "size": 76,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "服务(类型)ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "id_object_need",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "c": "所需要的物品"
+    },
+    {
+      "name": "price",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "c": "所需要的钱"
+    }
+  ]
+}

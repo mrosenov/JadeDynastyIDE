@@ -1,0 +1,109 @@
+{
+  "key": "personal_level_award_config",
+  "name": "Personal Level Award Config",
+  "struct": "PERSONAL_LEVEL_AWARD_CONFIG",
+  "size": 1208,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "personal_level_award_info",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 15,
+        "stride": 76,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "level",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "档位"
+            },
+            {
+              "name": "inception_points",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "初始分"
+            },
+            {
+              "name": "cutoff_points",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "截止分"
+            },
+            {
+              "name": "week_receive_num",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "c": "每周领取次数"
+            },
+            {
+              "name": "item_info",
+              "off": 16,
+              "t": {
+                "k": "array",
+                "n": 5,
+                "stride": 12,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "item_id",
+                      "off": 0,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "c": "奖励物品ID"
+                    },
+                    {
+                      "name": "item_num",
+                      "off": 4,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "c": "奖励物品数量"
+                    },
+                    {
+                      "name": "time_limit",
+                      "off": 8,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "c": "时间限制"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,268 @@
+{
+  "name": "Equipment",
+  "size": 484,
+  "fields": [
+    {
+      "name": "ID",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Type",
+      "off": 4,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "SubType",
+      "off": 8,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Name",
+      "off": 12,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "GearSlot",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "e": "GearSlotType"
+    },
+    {
+      "name": "PathID1",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "PathID2",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "DropPathID",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "IconPathID",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Title",
+      "off": 108,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "RequiredGender",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      },
+      "e": "Gender"
+    },
+    {
+      "name": "RequiredLevel",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "RequiredFaction",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      },
+      "e": "Factions"
+    },
+    {
+      "name": "RequiredLastFaction",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      },
+      "e": "Factions"
+    },
+    {
+      "name": "RequiredLastLastFaction",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      },
+      "e": "Factions"
+    },
+    {
+      "name": "RequiredLastLastLastFaction",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      },
+      "e": "Factions"
+    },
+    {
+      "name": "RequiredTier",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "RequiredAscended",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      },
+      "e": "YesNo"
+    },
+    {
+      "name": "Health",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Spirit",
+      "off": 220,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "MinAttack",
+      "off": 224,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "MaxAttack",
+      "off": 228,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Defense",
+      "off": 232,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Accuracy",
+      "off": 236,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Evasion",
+      "off": 240,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Range",
+      "off": 244,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "SellPrice",
+      "off": 248,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "BuyPrice",
+      "off": 252,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "BonusAttrib1",
+      "off": 256,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "BonusAttrib2",
+      "off": 260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "BonusAttrib3",
+      "off": 264,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "BonusAttrib4",
+      "off": 268,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "BonusAttrib5",
+      "off": 272,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "RefineTalismanID",
+      "off": 296,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "StackAmount",
+      "off": 476,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "TradeBehavior",
+      "off": 480,
+      "t": {
+        "k": "i32"
+      },
+      "e": "TradeBehavior"
+    }
+  ]
+}
