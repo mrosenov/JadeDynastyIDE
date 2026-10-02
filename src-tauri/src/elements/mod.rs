@@ -131,6 +131,15 @@ pub struct RecordDetail {
     pub icon: Option<u32>,
 }
 
+/// A list that fields can refer to by its struct.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RefTarget {
+    pub list: usize,
+    pub name: String,
+    pub struct_name: String,
+}
+
 /// What the schema editor needs to edit one list.
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -585,11 +594,18 @@ impl Document {
         self.detail(list, index, Some((target, def)), fit)
     }
 
-    /// Struct names of this file's lists, for ref targets.
-    pub fn struct_names(&self) -> Vec<String> {
-        let mut names: Vec<String> = self.by_struct.keys().cloned().collect();
-        names.sort();
-        names
+    /// This file's lists that have a struct name: possible ref targets.
+    pub fn ref_targets(&self) -> Vec<RefTarget> {
+        let mut out: Vec<RefTarget> = self
+            .lists
+            .iter()
+            .enumerate()
+            .filter_map(|(list, r)| {
+                Some(RefTarget { list, name: self.list_name(list), struct_name: r.struct_name.clone()? })
+            })
+            .collect();
+        out.sort_by(|a, b| a.struct_name.cmp(&b.struct_name).then(a.list.cmp(&b.list)));
+        out
     }
 
     pub fn catalog(&self) -> &Catalog {

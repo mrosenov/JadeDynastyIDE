@@ -41,6 +41,7 @@ import {
 import { FieldTree } from "./FieldTree";
 import { ReadingsCard } from "./ReadingsCard";
 import { ImportMenu } from "./ImportMenu";
+import { RefsPicker } from "./RefsPicker";
 import { isUndefinedNode, undefinedSpan } from "../elements/readings";
 import { HexView } from "./HexView";
 import { ArrowDown, ArrowDownToLine, ArrowUp, BetweenHorizontalEnd, Check, ChevronLeft, ChevronRight, ChevronsDownUp, ChevronsUpDown, Copy, Eraser, FolderOpen, GitBranch, Group, ListOrdered, ListPlus, Plus, Redo2, RotateCcw, Save, Trash2, Undo2, Ungroup, WandSparkles, X } from "lucide-react";
@@ -810,10 +811,12 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                         <span className="muted cell-static">—</span>
                       )}
                       <DimsInput value={f.dims} onChange={(dims) => patch(f.uid, { dims }, "dims")} />
+                      {!integer ? (
+                        <span className="muted cell-static">—</span>
+                      ) : (
                       <select
-                        className="cell"
+                        className={"cell" + (f.e ? " has-value" : "")}
                         value={f.e}
-                        disabled={!integer}
                         onChange={(e) => {
                           if (e.target.value === "__edit__") onEditSets?.(f.e || null);
                           else patch(f.uid, { e: e.target.value }, "e");
@@ -829,20 +832,25 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                         ))}
                         {onEditSets && <option value="__edit__">Edit enums &amp; masks…</option>}
                       </select>
-                      <select
-                        className="cell"
-                        value={f.display}
-                        disabled={!integer}
-                        onChange={(e) => patch(f.uid, { display: e.target.value }, "display")}
-                      >
-                        {ROLES.map((r) => (
-                          <option key={r} value={r}>
-                            {r || "—"}
-                          </option>
-                        ))}
-                      </select>
-                      <RefsInput
+                      )}
+                      {!integer ? (
+                        <span className="muted cell-static">—</span>
+                      ) : (
+                        <select
+                          className={"cell" + (f.display ? " has-value" : "")}
+                          value={f.display}
+                          onChange={(e) => patch(f.uid, { display: e.target.value }, "display")}
+                        >
+                          {ROLES.map((r) => (
+                            <option key={r} value={r}>
+                              {r || "—"}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                      <RefsPicker
                         value={f.refs}
+                        targets={context?.targets ?? []}
                         disabled={!integer}
                         onChange={(refs) => patch(f.uid, { refs }, "refs")}
                       />
@@ -1037,11 +1045,6 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
         </section>
       </div>
 
-      <datalist id="se-structs">
-        {context?.structs.map((s) => (
-          <option key={s} value={s} />
-        ))}
-      </datalist>
 
       <footer className="se-foot">
         <span className="muted truncate" title={context?.userDir}>
@@ -1189,39 +1192,3 @@ function DimsInput({ value, onChange }: { value: number[]; onChange: (dims: numb
   );
 }
 
-const parseRefs = (text: string) =>
-  text
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-
-function RefsInput({
-  value,
-  disabled,
-  onChange,
-}: {
-  value: string[];
-  disabled: boolean;
-  onChange: (refs: string[]) => void;
-}) {
-  const [text, setText] = useState(value.join(", "));
-  // Follow outside changes (undo, JSON) without rewriting what is being typed.
-  useEffect(() => setText((t) => (parseRefs(t).join(",") === value.join(",") ? t : value.join(", "))), [value]);
-  return (
-    <>
-      <input
-        className="cell mono"
-        value={text}
-        disabled={disabled}
-        list="se-structs"
-        placeholder={disabled ? "" : "STRUCT"}
-        title="Struct names of the lists whose IDs this field holds (comma separated)"
-        onChange={(e) => {
-          setText(e.target.value);
-          onChange(parseRefs(e.target.value));
-        }}
-        spellCheck={false}
-      />
-    </>
-  );
-}

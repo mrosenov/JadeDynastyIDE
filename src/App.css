@@ -2074,3 +2074,238 @@ svg.lucide {
   align-items: center;
   gap: 10px;
 }
+
+/* ---------- schema editor: readable controls ---------- */
+
+.se-grid {
+  gap: 8px;
+}
+.se-row {
+  height: 38px;
+}
+.se-grid-head {
+  height: 32px;
+}
+/* Column dividers in the header show where each column starts. */
+.se-grid-head > span + span {
+  padding-left: 8px;
+  border-left: 1px solid var(--border);
+}
+
+.se-row:nth-of-type(even):not(.active):not(.picked):not(.se-group-row) {
+  background: color-mix(in srgb, var(--bg-pane) 55%, transparent);
+}
+
+/* Every editable cell looks like a control: a box with a border. */
+.se-row .cell,
+.se-rule .cell,
+.sets-row .cell {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg-elev);
+  color: var(--text);
+}
+.se-row .cell:hover,
+.se-rule .cell:hover,
+.sets-row .cell:hover {
+  border-color: var(--text-faint);
+}
+.se-row .cell:focus,
+.se-rule .cell:focus,
+.sets-row .cell:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  background: var(--bg);
+}
+.se-row .cell.invalid,
+.sets-row .cell.invalid {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+.se-row.pad .cell {
+  border-style: dashed;
+  background: transparent;
+}
+
+/* Dropdowns get a visible arrow. */
+.se-row select.cell,
+.se-rule select.cell,
+.se-list-select {
+  appearance: none;
+  padding-right: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a979e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+  cursor: pointer;
+}
+.se-row select.cell:not(.has-value) {
+  color: var(--text-faint);
+}
+.se-row select.cell.has-value {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+.se-row select.cell option {
+  color: var(--text);
+  background: var(--bg-elev);
+}
+
+.se-row .cell-static {
+  padding: 0 8px;
+}
+.se-row .cell.num {
+  padding-right: 4px;
+}
+
+/* ---------- refs picker ---------- */
+
+.refs-cell {
+  min-width: 0;
+}
+.refs-chips {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg-elev);
+  overflow: hidden;
+  cursor: pointer;
+}
+.refs-chips:hover {
+  border-color: var(--text-faint);
+}
+.ref-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  max-width: 120px;
+  height: 20px;
+  padding: 0 2px 0 6px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.ref-chip.missing {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.ref-chip button {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.ref-chip button:hover {
+  opacity: 1;
+  background: var(--bg-hover);
+}
+.ref-more {
+  flex: none;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.ref-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: none;
+  margin-left: auto;
+  height: 20px;
+  padding: 0 5px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  font-size: 11px;
+  color: var(--text-faint);
+  cursor: pointer;
+}
+.refs-chips:hover .ref-add {
+  color: var(--accent);
+}
+
+.refs-popover {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  width: 420px;
+  max-height: min(420px, 70vh);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-elev);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+.refs-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.refs-list {
+  padding: 4px;
+}
+.refs-option {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 30px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.refs-option.active {
+  background: var(--bg-hover);
+}
+.refs-option.on .mono {
+  color: var(--accent);
+  font-weight: 600;
+}
+.refs-check {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--accent);
+}
+.refs-option.on .refs-check {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.refs-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--border);
+}
+
+/* Wider refs (chips) and role (arrow) columns. */
+.se-grid {
+  grid-template-columns:
+    minmax(170px, 2fr) 112px 70px 70px minmax(110px, 1.1fr) 86px minmax(150px, 1.4fr)
+    minmax(100px, 1.2fr) 52px 44px 146px;
+}

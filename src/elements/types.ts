@@ -149,9 +149,16 @@ export interface EnumInfo {
   count: number;
 }
 
+export interface RefTarget {
+  list: number;
+  name: string;
+  structName: string;
+}
+
 export interface SchemaContext {
   enums: EnumInfo[];
-  structs: string[];
+  /** Lists of the open file that refs can point at. */
+  targets: RefTarget[];
   userDir: string;
   errors: string[];
 }

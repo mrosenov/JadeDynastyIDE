@@ -141,7 +141,8 @@ struct EnumInfo {
 #[serde(rename_all = "camelCase")]
 struct SchemaContext {
     enums: Vec<EnumInfo>,
-    structs: Vec<String>,
+    /// Lists of the open file that refs can point at.
+    targets: Vec<elements::RefTarget>,
     user_dir: String,
     errors: Vec<String>,
 }
@@ -162,7 +163,7 @@ async fn schema_context(state: State<'_, AppState>) -> Result<SchemaContext, Str
             })
             .collect();
         enums.sort_by(|a, b| a.label.cmp(&b.label));
-        Ok(SchemaContext { enums, structs: doc.struct_names(), user_dir, errors: catalog.errors.clone() })
+        Ok(SchemaContext { enums, targets: doc.ref_targets(), user_dir, errors: catalog.errors.clone() })
     })
 }
 
