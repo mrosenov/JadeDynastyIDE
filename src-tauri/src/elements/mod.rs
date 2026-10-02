@@ -832,7 +832,8 @@ mod tests {
         assert_eq!(row.name, "法宝技能_真山河扇");
         let detail = doc.record(0, row.index).unwrap();
         let ty = detail.nodes.iter().find(|n| n.name == "Type").unwrap();
-        assert_eq!(ty.hint.as_deref(), Some("Bonus Skill"));
+        // The Jade Editor's attribute types are the shared addon types.
+        assert!(ty.hint.as_deref().is_some_and(|h| h.starts_with("Bonus Skill")), "{:?}", ty.hint);
     }
 
     #[test]

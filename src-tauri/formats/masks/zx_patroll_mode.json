@@ -1,0 +1,10 @@
+{
+  "key": "zx_patroll_mode",
+  "label": "Patroll Mode (official)",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "随机走动"
+    }
+  ]
+}

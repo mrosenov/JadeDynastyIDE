@@ -5,137 +5,137 @@
     {
       "bit": 0,
       "label": "Weapon",
-      "description": "EQUIP_MASK_WEAPON"
+      "description": "EQUIP_MASK_WEAPON (official: 武器)"
     },
     {
       "bit": 1,
       "label": "Head",
-      "description": "EQUIP_MASK_HEAD"
+      "description": "EQUIP_MASK_HEAD (official: 头盔)"
     },
     {
       "bit": 2,
       "label": "Body",
-      "description": "EQUIP_MASK_BODY"
+      "description": "EQUIP_MASK_BODY (official: 衣服)"
     },
     {
       "bit": 3,
       "label": "Foot",
-      "description": "EQUIP_MASK_FOOT"
+      "description": "EQUIP_MASK_FOOT (official: 鞋子)"
     },
     {
       "bit": 4,
       "label": "Neck",
-      "description": "EQUIP_MASK_NECK"
+      "description": "EQUIP_MASK_NECK (official: 项链)"
     },
     {
       "bit": 5,
       "label": "Finger 1",
-      "description": "EQUIP_MASK_FINGER1"
+      "description": "EQUIP_MASK_FINGER1 (official: 戒指1)"
     },
     {
       "bit": 6,
       "label": "Finger 2",
-      "description": "EQUIP_MASK_FINGER2"
+      "description": "EQUIP_MASK_FINGER2 (official: 戒指2)"
     },
     {
       "bit": 7,
       "label": "Fashion eye",
-      "description": "EQUIP_MASK_FASHION_EYE"
+      "description": "EQUIP_MASK_FASHION_EYE (official: 时装眼镜)"
     },
     {
       "bit": 8,
       "label": "Fashion nose",
-      "description": "EQUIP_MASK_FASHION_NOSE"
+      "description": "EQUIP_MASK_FASHION_NOSE (official: 时装鼻子)"
     },
     {
       "bit": 9,
       "label": "Fashion lip",
-      "description": "EQUIP_MASK_FASHION_LIP"
+      "description": "EQUIP_MASK_FASHION_LIP (official: 时装胡子)"
     },
     {
       "bit": 10,
       "label": "Fashion head",
-      "description": "EQUIP_MASK_FASHION_HEAD"
+      "description": "EQUIP_MASK_FASHION_HEAD (official: 时装头饰)"
     },
     {
       "bit": 11,
       "label": "Fashion body",
-      "description": "EQUIP_MASK_FASHION_BODY"
+      "description": "EQUIP_MASK_FASHION_BODY (official: 时装上衣)"
     },
     {
       "bit": 12,
       "label": "Fashion leg",
-      "description": "EQUIP_MASK_FASHION_LEG"
+      "description": "EQUIP_MASK_FASHION_LEG (official: 时装下衣)"
     },
     {
       "bit": 13,
       "label": "Fashion foot",
-      "description": "EQUIP_MASK_FASHION_FOOT"
+      "description": "EQUIP_MASK_FASHION_FOOT (official: 时装鞋子)"
     },
     {
       "bit": 14,
       "label": "Fashion back",
-      "description": "EQUIP_MASK_FASHION_BACK"
+      "description": "EQUIP_MASK_FASHION_BACK (official: 时装背饰)"
     },
     {
       "bit": 15,
       "label": "Wing",
-      "description": "EQUIP_MASK_WING"
+      "description": "EQUIP_MASK_WING (official: 翅膀)"
     },
     {
       "bit": 16,
       "label": "Main talisman",
-      "description": "EQUIP_MASK_MAIN_TALISMAN"
+      "description": "EQUIP_MASK_MAIN_TALISMAN (official: 法宝主件)"
     },
     {
       "bit": 17,
       "label": "Sub talisman 1",
-      "description": "EQUIP_MASK_SUB_TALISMAN1"
+      "description": "EQUIP_MASK_SUB_TALISMAN1 (official: 法宝附加1)"
     },
     {
       "bit": 18,
       "label": "Sub talisman 2",
-      "description": "EQUIP_MASK_SUB_TALISMAN2"
+      "description": "EQUIP_MASK_SUB_TALISMAN2 (official: 法宝附加2)"
     },
     {
       "bit": 19,
       "label": "Speaker",
-      "description": "EQUIP_MASK_SPEAKER"
+      "description": "EQUIP_MASK_SPEAKER (official: 喇叭)"
     },
     {
       "bit": 20,
       "label": "Pouch (aux 1)",
-      "description": "EQUIP_MASK_AUX1 — 锦囊"
+      "description": "EQUIP_MASK_AUX1 — 锦囊 (official: 饰品1)"
     },
     {
       "bit": 21,
       "label": "Seal ribbon (aux 2)",
-      "description": "EQUIP_MASK_AUX2 — 玺绶"
+      "description": "EQUIP_MASK_AUX2 — 玺绶 (official: 饰品2)"
     },
     {
       "bit": 22,
       "label": "Aura (aux 3)",
-      "description": "EQUIP_MASK_AUX3 — 罡气"
+      "description": "EQUIP_MASK_AUX3 — 罡气 (official: 饰品3)"
     },
     {
       "bit": 23,
       "label": "Soul (aux 4)",
-      "description": "EQUIP_MASK_AUX4 — 元魂"
+      "description": "EQUIP_MASK_AUX4 — 元魂 (official: 饰品4)"
     },
     {
       "bit": 24,
       "label": "Aux 5",
-      "description": "EQUIP_MASK_AUX5"
+      "description": "EQUIP_MASK_AUX5 (official: 饰品5)"
     },
     {
       "bit": 25,
       "label": "Aux 6",
-      "description": "EQUIP_MASK_AUX6"
+      "description": "EQUIP_MASK_AUX6 (official: 饰品6)"
     },
     {
       "bit": 26,
       "label": "Fashion weapon",
-      "description": "EQUIP_MASK_FASHION_WEAPON"
+      "description": "EQUIP_MASK_FASHION_WEAPON (official: 时装武器)"
     }
   ]
 }

@@ -221,7 +221,8 @@ export interface SettingsView {
 export type SetKind = "enum" | "mask";
 
 /** builtin: shipped with the app; override: a built-in set you changed; user: created by you. */
-export type SetOrigin = "builtin" | "override" | "user";
+/** "deleted": a built-in set the user deleted (listed so it can be restored). */
+export type SetOrigin = "builtin" | "override" | "user" | "deleted";
 
 export interface EnumValue {
   value: number;

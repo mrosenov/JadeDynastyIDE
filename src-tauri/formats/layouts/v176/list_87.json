@@ -54,7 +54,8 @@
       "t": {
         "k": "u32"
       },
-      "c": "宠物类别限制"
+      "c": "宠物类别限制",
+      "e": "zx_pet_type_mask"
     },
     {
       "name": "lev_required",
@@ -69,7 +70,8 @@
       "t": {
         "k": "u32"
       },
-      "c": "主星相限定"
+      "c": "主星相限定",
+      "e": "zx_astro_type"
     },
     {
       "name": "astro_level",

@@ -187,7 +187,8 @@
       "off": 244,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "immune_type"
     },
     {
       "name": "unknown_1",
@@ -257,7 +258,8 @@
       "off": 284,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "zx_patroll_mode"
     },
     {
       "name": "stand_mode",

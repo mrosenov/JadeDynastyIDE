@@ -93,7 +93,8 @@
       "off": 108,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "god_devil_mask"
     },
     {
       "name": "unknown_1",
@@ -135,7 +136,8 @@
       "off": 132,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "trade_behavior"
     }
   ]
 }

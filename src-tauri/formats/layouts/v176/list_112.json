@@ -37,7 +37,8 @@
               "t": {
                 "k": "u64"
               },
-              "c": "职业限制"
+              "c": "职业限制",
+              "e": "character_combo_id"
             },
             {
               "name": "character_combo_id2",
@@ -45,7 +46,8 @@
               "t": {
                 "k": "u64"
               },
-              "c": "职业限制, 扩展职业ID后的新职业掩码，Added 2011-07-14."
+              "c": "职业限制, 扩展职业ID后的新职业掩码，Added 2011-07-14.",
+              "e": "character_combo_id2"
             },
             {
               "name": "require_gender",

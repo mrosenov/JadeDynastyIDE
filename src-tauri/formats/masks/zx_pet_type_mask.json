@@ -1,0 +1,70 @@
+{
+  "key": "zx_pet_type_mask",
+  "label": "Pet Type Mask (official)",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "pet_1"
+    },
+    {
+      "bit": 1,
+      "label": "pet_2"
+    },
+    {
+      "bit": 2,
+      "label": "pet_3"
+    },
+    {
+      "bit": 3,
+      "label": "pet_4"
+    },
+    {
+      "bit": 4,
+      "label": "pet_5"
+    },
+    {
+      "bit": 5,
+      "label": "pet_6"
+    },
+    {
+      "bit": 6,
+      "label": "pet_7"
+    },
+    {
+      "bit": 7,
+      "label": "pet_8"
+    },
+    {
+      "bit": 8,
+      "label": "pet_9"
+    },
+    {
+      "bit": 9,
+      "label": "pet_10"
+    },
+    {
+      "bit": 10,
+      "label": "pet_11"
+    },
+    {
+      "bit": 11,
+      "label": "pet_12"
+    },
+    {
+      "bit": 12,
+      "label": "pet_13"
+    },
+    {
+      "bit": 13,
+      "label": "pet_14"
+    },
+    {
+      "bit": 14,
+      "label": "pet_15"
+    },
+    {
+      "bit": 15,
+      "label": "pet_16"
+    }
+  ]
+}

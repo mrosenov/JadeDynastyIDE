@@ -86,7 +86,8 @@
       "off": 104,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "trade_behavior"
     },
     {
       "name": "constellation_skill_config_1",

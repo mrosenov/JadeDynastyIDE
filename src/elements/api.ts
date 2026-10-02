@@ -52,6 +52,9 @@ export const namedSet = (key: string) => invoke<SetDetail>("named_set", { key })
 
 export const saveNamedSet = (kind: SetKind, set: NamedSet) => invoke<SetsChanged>("save_named_set", { kind, set });
 
+/** Deletes a set (a built-in one is hidden until restored). */
 export const deleteNamedSet = (key: string) => invoke<SetsChanged>("delete_named_set", { key });
+/** Drops the user's version of a set: reverts an edited built-in, restores a deleted one. */
+export const revertNamedSet = (key: string) => invoke<SetsChanged>("revert_named_set", { key });
 
 export const referencedBy = (list: number, row: number) => invoke<ReferencedBy>("referenced_by", { list, row });

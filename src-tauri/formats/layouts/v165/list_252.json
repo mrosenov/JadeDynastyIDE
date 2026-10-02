@@ -72,21 +72,24 @@
       "off": 96,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id"
     },
     {
       "name": "character_combo_id_2",
       "off": 104,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id2"
     },
     {
       "name": "god_devil_mask",
       "off": 112,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "god_devil_mask"
     },
     {
       "name": "unknown_9",
@@ -2515,7 +2518,8 @@
       "off": 1500,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "trade_behavior"
     }
   ]
 }

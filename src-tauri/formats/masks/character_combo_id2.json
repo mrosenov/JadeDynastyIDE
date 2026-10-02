@@ -5,27 +5,27 @@
     {
       "bit": 0,
       "label": "Inc. Mage Tier 1",
-      "description": "c64: 焚香1"
+      "description": "c64: 焚香1 (official: c64:焚香1)"
     },
     {
       "bit": 1,
       "label": "Inc. Mage Tier 2",
-      "description": "c65: 焚香2"
+      "description": "c65: 焚香2 (official: c65:焚香2)"
     },
     {
       "bit": 2,
       "label": "Inc. Mage Tier 3",
-      "description": "c66: 焚香3"
+      "description": "c66: 焚香3 (official: c66:焚香3)"
     },
     {
       "bit": 3,
       "label": "Inc. Mage Tier 4",
-      "description": "c67: 焚香4"
+      "description": "c67: 焚香4 (official: c67:焚香4)"
     },
     {
       "bit": 4,
       "label": "Inc. Mage Tier 5",
-      "description": "c68: 焚香5"
+      "description": "c68: 焚香5 (official: c68:焚香5)"
     },
     {
       "bit": 7,
@@ -55,27 +55,27 @@
     {
       "bit": 32,
       "label": "Forta Tier 1",
-      "description": "c96: 太昊1"
+      "description": "c96: 太昊1 (official: c96:太昊1)"
     },
     {
       "bit": 33,
       "label": "Forta Tier 2",
-      "description": "c97: 太昊2"
+      "description": "c97: 太昊2 (official: c97:太昊2)"
     },
     {
       "bit": 34,
       "label": "Forta Tier 3",
-      "description": "c98: 太昊3"
+      "description": "c98: 太昊3 (official: c98:太昊3)"
     },
     {
       "bit": 35,
       "label": "Forta Tier 4",
-      "description": "c99: 太昊4"
+      "description": "c99: 太昊4 (official: c99:太昊4)"
     },
     {
       "bit": 36,
       "label": "Forta Tier 5",
-      "description": "c100: 太昊5"
+      "description": "c100: 太昊5 (official: c100:太昊5)"
     },
     {
       "bit": 38,

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Applies the conditional field types in tools/type-rules.json to every
-// layout in src-tauri/formats/layouts. Run it after regenerating layouts.
+// Applies tools/type-rules.json to every layout in src-tauri/formats/layouts:
+// the conditional field types (`rules`) and the name-based enum/mask
+// assignments (`sets`). Run it after regenerating layouts.
 //
 //   node tools/apply-type-rules.mjs
 
@@ -10,10 +11,51 @@ import { fileURLToPath } from "node:url";
 import { readLayouts, writeLayout } from "./lib/layouts.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const { rules } = JSON.parse(fs.readFileSync(path.join(here, "type-rules.json"), "utf8"));
+const { rules, sets = [] } = JSON.parse(fs.readFileSync(path.join(here, "type-rules.json"), "utf8"));
 
-for (const layout of readLayouts()) {
+const INTEGER = new Set(["i8", "u8", "i16", "u16", "i32", "u32", "i64", "u64"]);
+const setRules = sets.map((r) => ({ ...r, re: new RegExp(r.name, "i") }));
+
+/** Every field of a list, members of structs and struct arrays included. */
+function* allFields(fields) {
+  for (const f of fields ?? []) {
+    yield f;
+    yield* allFields(f.t.fields);
+    yield* allFields(f.t.t?.fields);
+  }
+}
+
+const layouts = readLayouts();
+
+// Set use per rule: counts of `e` among the fields it matches, overall and per layout.
+const usage = new Map(setRules.map((r) => [r, { all: new Map(), byLayout: new Map() }]));
+for (const layout of layouts) {
+  for (const def of layout.lists) {
+    for (const f of allFields(def?.fields)) {
+      const rule = f.e && setRules.find((r) => r.re.test(f.name));
+      if (!rule) continue;
+      const u = usage.get(rule);
+      const here = u.byLayout.get(layout.id) ?? new Map();
+      u.byLayout.set(layout.id, here);
+      for (const m of [u.all, here]) m.set(f.e, (m.get(f.e) ?? 0) + 1);
+    }
+  }
+}
+const mostUsed = (counts) => counts && [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0];
+
+for (const layout of layouts) {
   let applied = 0;
+  let named = 0;
+  for (const def of layout.lists) {
+    for (const f of allFields(def?.fields)) {
+      if (f.e || !INTEGER.has(f.t.k)) continue;
+      const rule = setRules.find((r) => r.re.test(f.name));
+      if (!rule) continue;
+      const u = usage.get(rule);
+      f.e = mostUsed(u.byLayout.get(layout.id)) ?? mostUsed(u.all) ?? rule.set;
+      named++;
+    }
+  }
   for (const def of layout.lists) {
     if (!def?.fields) continue;
     for (const rule of rules) {
@@ -30,8 +72,8 @@ for (const layout of readLayouts()) {
       applied++;
     }
   }
-  if (applied) {
+  if (applied || named) {
     writeLayout(layout);
-    console.log(`${layout.id}: ${applied} rule(s) applied`);
+    console.log(`${layout.id}: ${applied} type rule(s), ${named} enum/mask assignment(s)`);
   }
 }

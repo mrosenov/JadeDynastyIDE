@@ -1856,8 +1856,23 @@ svg.lucide {
   border-right: 1px solid var(--border);
   background: var(--bg-pane);
 }
-.sets-list .import-search {
-  padding: 10px 12px 6px;
+/* A filter input with its icon inside, on the left. */
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-box > svg {
+  position: absolute;
+  left: 10px;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+.search-box > .search {
+  padding-left: 30px;
+}
+.sets-list .search-box {
+  margin: 10px 12px 8px;
 }
 .sets-new {
   display: flex;
@@ -1896,6 +1911,16 @@ svg.lucide {
 }
 .set-item .truncate {
   flex: 1;
+}
+.set-item.deleted {
+  cursor: default;
+  color: var(--text-dim);
+}
+.set-item.deleted .truncate {
+  text-decoration: line-through;
+}
+.set-item.deleted:hover {
+  background: none;
 }
 .set-origin {
   flex: none;
@@ -2538,4 +2563,39 @@ svg.lucide {
 .time-chip.unset {
   background: var(--bg-hover);
   color: var(--text-faint);
+}
+
+/* ------------------------------------------------------------ texts */
+
+.text-value {
+  min-width: 0;
+}
+.nl-mark {
+  margin: 0 3px;
+  vertical-align: -1px;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+.text-card-icon {
+  color: var(--accent) !important;
+}
+.text-card .readings-head {
+  align-items: center;
+}
+/* Game texts are made for a dark tooltip, whatever the theme. */
+.text-preview {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #15171d;
+  color: #e9e6dc;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.text-line.mono {
+  font-size: 12px;
 }

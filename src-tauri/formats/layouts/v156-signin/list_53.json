@@ -55,7 +55,8 @@
               "t": {
                 "k": "u32"
               },
-              "c": "可镶嵌的装备类别"
+              "c": "可镶嵌的装备类别",
+              "e": "equip_mask"
             },
             {
               "name": "effect_addon_type",

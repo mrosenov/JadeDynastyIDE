@@ -292,6 +292,9 @@ pub struct NamedSet {
     pub values: Vec<EnumValue>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub flags: Vec<MaskFlag>,
+    /// In the user folder: hides the built-in set with this key.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub deleted: bool,
 }
 
 /// Keys name files and are referenced from fields: lowercase letters,
@@ -304,6 +307,9 @@ impl NamedSet {
     pub fn check(&self, kind: SetKind) -> Result<(), String> {
         if !valid_set_key(&self.key) {
             return Err(format!("The key {:?} may only use lowercase letters, digits and _", self.key));
+        }
+        if self.deleted {
+            return Ok(());
         }
         let mut seen = HashSet::new();
         match kind {
@@ -371,6 +377,8 @@ pub enum SetOrigin {
     Override,
     /// Created by the user.
     User,
+    /// A built-in set the user deleted (hidden until restored).
+    Deleted,
 }
 
 #[derive(Debug, Clone)]
@@ -537,6 +545,8 @@ pub struct Catalog {
     pub enums: HashMap<String, EnumSet>,
     /// The enums and masks themselves, by key, for the editor.
     pub sets: BTreeMap<String, SetEntry>,
+    /// Built-in sets the user deleted, by key (for restoring them).
+    pub deleted: BTreeMap<String, SetEntry>,
     /// (layout id, list slot) pairs defined by the user's schema files.
     pub user: HashSet<(String, usize)>,
     /// Layouts that exist only in the user folder.
@@ -669,6 +679,7 @@ impl Catalog {
 
         // Enums and masks: built-in, then the user's files by key.
         let mut sets = builtin_sets().clone();
+        let mut deleted = BTreeMap::new();
         for kind in [SetKind::Enum, SetKind::Mask] {
             let Some(dir) = user_root.map(|r| r.join(kind.folder())) else { continue };
             for file in std::fs::read_dir(&dir).into_iter().flatten().flatten() {
@@ -692,6 +703,13 @@ impl Catalog {
                         errors.push(format!("{}: {:?} is a built-in {}", path.display(), set.key, b.kind.folder().trim_end_matches('s')));
                         continue;
                     }
+                    Some(b) if set.deleted => {
+                        sets.remove(&set.key);
+                        deleted.insert(set.key.clone(), SetEntry { origin: SetOrigin::Deleted, ..b.clone() });
+                        continue;
+                    }
+                    // Nothing left to hide.
+                    None if set.deleted => continue,
                     Some(_) => SetOrigin::Override,
                     None => SetOrigin::User,
                 };
@@ -700,7 +718,7 @@ impl Catalog {
         }
         let enums = sets.iter().map(|(k, e)| (k.clone(), e.set.to_enum_set(e.kind))).collect();
 
-        Self { layouts, enums, sets, user, user_layouts, errors }
+        Self { layouts, enums, sets, deleted, user, user_layouts, errors }
     }
 
     /// Fields in all layouts that use a set, as "v160 · #3 Equipment Essence · proc_type".
@@ -792,8 +810,21 @@ pub fn save_user_set(root: &Path, kind: SetKind, set: &NamedSet) -> Result<(), S
     write_atomic(&user_set_path(root, kind, &set.key), &json)
 }
 
+/// Deletes a set: a user set's file is removed, a built-in set is hidden by
+/// a `{ key, deleted: true }` file (removing that file restores it).
+pub fn delete_set(root: &Path, key: &str) -> Result<(), String> {
+    let Some(b) = builtin_set(key) else { return delete_user_set(root, key) };
+    delete_user_set(root, key)?;
+    let tombstone = NamedSet { key: key.into(), label: String::new(), values: vec![], flags: vec![], deleted: true };
+    let dir = root.join(b.kind.folder());
+    std::fs::create_dir_all(&dir).map_err(|e| format!("Could not create {}: {e}", dir.display()))?;
+    let json = serde_json::to_string_pretty(&tombstone).map_err(|e| e.to_string())? + "
+";
+    write_atomic(&user_set_path(root, b.kind, key), &json)
+}
+
 /// Removes the user's file for a set: a built-in set returns to its built-in
-/// definition, a user set is deleted.
+/// definition (also when it was deleted), a user set is deleted.
 pub fn delete_user_set(root: &Path, key: &str) -> Result<(), String> {
     if !valid_set_key(key) {
         return Err(format!("Invalid key {key:?}"));
@@ -868,13 +899,21 @@ mod tests {
         let slot = v156.lists[3].as_ref().unwrap();
         assert_eq!(slot.head.struct_name.as_deref(), Some("EQUIPMENT_ESSENCE"));
         assert!(slot.head.has_fields());
-        assert!(slot.def.get().is_none(), "fields are not parsed until used");
+        // The built-ins are shared with tests running alongside, so check
+        // laziness on a fresh slot of the same file.
+        let json = FORMATS.get_file("layouts/v156/list_3.json").and_then(|f| f.contents_utf8()).unwrap();
+        let fresh = ListSlot::lazy(json).unwrap();
+        assert!(fresh.head.has_fields());
+        assert!(fresh.def.get().is_none(), "fields are not parsed until used");
+        assert_eq!(fresh.def().unwrap().size, Some(644));
         assert_eq!(v156.list(3).unwrap().size, Some(644));
         assert!(catalog.find("v66").unwrap().lists.iter().all(Option::is_none));
         // Enums and masks come from their folders.
         assert_eq!(catalog.sets["trade_behavior"].kind, SetKind::Mask);
         assert_eq!(catalog.sets["gender"].kind, SetKind::Enum);
-        assert!(catalog.enums["v112_trade_behavior"].flags);
+        assert!(catalog.enums["trade_behavior"].flags);
+        assert_eq!(catalog.sets["bool"].kind, SetKind::Enum);
+        assert!(!catalog.sets.keys().any(|k| k.starts_with("v112_")));
     }
 
     #[test]
@@ -884,7 +923,7 @@ mod tests {
         let mut gender = builtin_set("gender").unwrap().set.clone();
         gender.values.push(EnumValue { value: 9, label: "Test".into(), description: String::new() });
         save_user_set(&root, SetKind::Enum, &gender).unwrap();
-        let mine = NamedSet { key: "my_flags".into(), label: "Mine".into(), values: vec![], flags: vec![MaskFlag { bit: 3, label: "Eight".into(), description: String::new() }] };
+        let mine = NamedSet { key: "my_flags".into(), label: "Mine".into(), values: vec![], flags: vec![MaskFlag { bit: 3, label: "Eight".into(), description: String::new() }], deleted: false };
         save_user_set(&root, SetKind::Mask, &mine).unwrap();
         // A key cannot change kind, and duplicates are rejected.
         assert!(save_user_set(&root, SetKind::Mask, &gender).is_err());
@@ -905,6 +944,15 @@ mod tests {
         let catalog = Catalog::load(Some(&root));
         assert_eq!(catalog.sets["gender"].origin, SetOrigin::Builtin);
         assert!(!catalog.sets.contains_key("my_flags"));
+
+        // Deleting a built-in hides it until reverted.
+        delete_set(&root, "gender").unwrap();
+        let catalog = Catalog::load(Some(&root));
+        assert!(catalog.errors.is_empty(), "{:?}", catalog.errors);
+        assert!(!catalog.sets.contains_key("gender") && !catalog.enums.contains_key("gender"));
+        assert_eq!(catalog.deleted["gender"].origin, SetOrigin::Deleted);
+        delete_user_set(&root, "gender").unwrap();
+        assert_eq!(Catalog::load(Some(&root)).sets["gender"].origin, SetOrigin::Builtin);
         let _ = std::fs::remove_dir_all(&root);
     }
 }

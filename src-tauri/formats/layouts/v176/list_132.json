@@ -107,14 +107,16 @@
       "off": 116,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id"
     },
     {
       "name": "Character_Combo_ID_2",
       "off": 124,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id2"
     },
     {
       "name": "Character_Combo_ID_3",

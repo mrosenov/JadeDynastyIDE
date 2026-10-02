@@ -1,66 +1,70 @@
 {
-  "key": "v112_factions",
-  "label": "Factions (v112)",
+  "key": "zx_gift_bag_mask",
+  "label": "Gift Bag Mask (official)",
   "flags": [
     {
       "bit": 0,
-      "label": "Initiate"
+      "label": "1"
     },
     {
       "bit": 1,
-      "label": "Vim"
+      "label": "2"
     },
     {
       "bit": 2,
-      "label": "Lupin"
+      "label": "3"
     },
     {
       "bit": 3,
-      "label": "Jadeon"
+      "label": "4"
     },
     {
       "bit": 4,
-      "label": "Skysong"
+      "label": "5"
     },
     {
       "bit": 5,
-      "label": "Modo"
+      "label": "6"
     },
     {
       "bit": 6,
-      "label": "Unknown64"
+      "label": "7"
     },
     {
       "bit": 7,
-      "label": "Unknown128"
+      "label": "8"
     },
     {
       "bit": 8,
-      "label": "Unknown256"
+      "label": "9"
     },
     {
       "bit": 9,
-      "label": "Balo"
+      "label": "10"
     },
     {
       "bit": 10,
-      "label": "Arden"
+      "label": "11"
     },
     {
       "bit": 11,
-      "label": "Unknown2048"
+      "label": "12"
     },
     {
       "bit": 12,
-      "label": "Rayan"
+      "label": "13"
     },
     {
       "bit": 13,
-      "label": "Unknown8196"
+      "label": "14"
     },
     {
       "bit": 14,
-      "label": "Celan"
+      "label": "15"
+    },
+    {
+      "bit": 15,
+      "label": "16"
     }
   ]
 }

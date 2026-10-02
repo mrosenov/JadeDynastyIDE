@@ -1,7 +1,23 @@
 import type { FieldNode } from "../elements/types";
 import { formatUnix, formatUnixUtc } from "../elements/time";
 import { type Path, flatten } from "../elements/fieldPaths";
-import { CalendarClock, ChevronRight, GitBranch } from "lucide-react";
+import { isTextNode, textLines } from "../elements/text";
+import { CalendarClock, ChevronRight, CornerDownLeft, GitBranch } from "lucide-react";
+
+/** A text on one line, its line breaks shown as ↵ marks. */
+function OneLine({ text }: { text: string }) {
+  const lines = textLines(text);
+  return (
+    <span className="text-value truncate">
+      {lines.map((line, i) => (
+        <span key={i}>
+          {i > 0 && <CornerDownLeft size={11} className="nl-mark" aria-label="line break" />}
+          {line}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 interface Props {
   nodes: FieldNode[];
@@ -61,7 +77,11 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
             </span>
             <span className="field-value truncate mono">
               {node.icon && icon?.(node.icon) && <img className="field-icon" src={icon(node.icon)} alt="" draggable={false} />}
-              {node.value ?? (node.children ? <span className="muted">{node.children.length} items</span> : null)}
+              {isTextNode(node) ? (
+                <OneLine text={node.value!} />
+              ) : (
+                (node.value ?? (node.children ? <span className="muted">{node.children.length} items</span> : null))
+              )}
               {node.hint &&
                 (node.link ? (
                   <button

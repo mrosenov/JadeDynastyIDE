@@ -61,7 +61,8 @@
       "t": {
         "k": "u32"
       },
-      "c": "宠物种族限制"
+      "c": "宠物种族限制",
+      "e": "zx_pet_type_mask"
     },
     {
       "name": "food_usage",

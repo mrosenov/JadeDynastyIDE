@@ -115,14 +115,16 @@
       "off": 148,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id"
     },
     {
       "name": "Character_Combo_ID_2",
       "off": 156,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id2"
     },
     {
       "name": "Char_Level_1",
@@ -248,7 +250,8 @@
       "off": 256,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "god_devil_mask"
     },
     {
       "name": "Required_Title",

@@ -10,7 +10,7 @@ use client::{ClientInfo, Resources};
 use settings::Settings;
 
 use elements::format::{
-    builtin_set, delete_user_list, delete_user_set, save_user_list, save_user_set, Catalog, ListDef, NamedSet, SetKind,
+    builtin_set, delete_set, delete_user_list, delete_user_set, save_user_list, save_user_set, Catalog, ListDef, NamedSet, SetKind,
     SetOrigin,
 };
 use elements::{Document, FileSummary, ImportCandidate, ListSchema, RecordDetail, RecordRow};
@@ -304,6 +304,7 @@ fn set_summaries(catalog: &Catalog) -> Vec<SetSummary> {
     let mut out: Vec<SetSummary> = catalog
         .sets
         .values()
+        .chain(catalog.deleted.values())
         .map(|e| SetSummary {
             key: e.set.key.clone(),
             label: if e.set.label.is_empty() { e.set.key.clone() } else { e.set.label.clone() },
@@ -348,6 +349,14 @@ async fn save_named_set(kind: SetKind, set: NamedSet, state: State<'_, AppState>
 
 #[tauri::command]
 async fn delete_named_set(key: String, state: State<'_, AppState>) -> Result<SetsChanged, String> {
+    delete_set(&state.user_dir, &key)?;
+    let summary = state.reload_catalog()?;
+    Ok(SetsChanged { sets: set_summaries(&state.catalog()), summary })
+}
+
+/// Drops the user's version of a built-in set: reverts an edit, restores a deleted one.
+#[tauri::command]
+async fn revert_named_set(key: String, state: State<'_, AppState>) -> Result<SetsChanged, String> {
     delete_user_set(&state.user_dir, &key)?;
     let summary = state.reload_catalog()?;
     Ok(SetsChanged { sets: set_summaries(&state.catalog()), summary })
@@ -415,7 +424,8 @@ pub fn run() {
             named_sets,
             named_set,
             save_named_set,
-            delete_named_set
+            delete_named_set,
+            revert_named_set
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

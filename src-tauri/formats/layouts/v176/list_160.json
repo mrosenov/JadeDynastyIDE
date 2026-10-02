@@ -72,14 +72,16 @@
       "off": 96,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id"
     },
     {
       "name": "Character_Combo_ID_2",
       "off": 104,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id2"
     },
     {
       "name": "Character_Combo_ID_3",
@@ -93,7 +95,8 @@
       "off": 120,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "god_devil_mask"
     },
     {
       "name": "Open_Time",

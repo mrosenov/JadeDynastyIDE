@@ -72,21 +72,24 @@
       "off": 96,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id"
     },
     {
       "name": "Character_Combo_ID_2",
       "off": 104,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id2"
     },
     {
       "name": "God_Devil_Mask",
       "off": 112,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "god_devil_mask"
     },
     {
       "name": "Renascence_Count",

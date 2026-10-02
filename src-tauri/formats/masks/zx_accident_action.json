@@ -1,0 +1,14 @@
+{
+  "key": "zx_accident_action",
+  "label": "Accident Action (official)",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "受攻击结束"
+    },
+    {
+      "bit": 1,
+      "label": "主动移动结束"
+    }
+  ]
+}

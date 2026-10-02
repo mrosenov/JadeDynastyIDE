@@ -9,7 +9,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { writeLayout } from "./lib/layouts.mjs";
-import { clearSets, snake, writeSet } from "./lib/sets.mjs";
+import { clearSets } from "./lib/sets.mjs";
 
 const [formatsDir, layoutId = "v112"] = process.argv.slice(2);
 if (!formatsDir) {
@@ -31,8 +31,17 @@ const TYPES = {
   utf16le_fixed: (f) => ({ k: "wstr", n: f.chars }),
 };
 
-const enumSets = {};
-const flagEnums = new Set();
+// The Jade Editor's own sets are older, partly "Unknown…" copies of shared
+// ones; its fields use the shared sets instead.
+const SHARED_SET = {
+  TradeBehavior: "trade_behavior",
+  GearSlotType: "equip_mask",
+  Factions: "sect_mask",
+  Gender: "gender",
+  AttribType: "addon_type",
+  YesNo: "bool",
+};
+
 const schemas = new Map();
 for (const file of fs.readdirSync(path.join(formatsDir, "schemas"))) {
   const schema = readJson("schemas", file);
@@ -41,27 +50,17 @@ for (const file of fs.readdirSync(path.join(formatsDir, "schemas"))) {
     const toType = TYPES[f.type];
     if (!toType) throw new Error(`${file}: unsupported field type ${f.type}`);
     const field = { name: f.name, off: f.offset, t: toType(f) };
-    // Sets are shared by all layouts: prefix them, e.g. TradeBehavior → v112_trade_behavior.
-    if (f.enum) field.e = `v${VERSION}_${snake(f.enum)}`;
-    if (f.flags) flagEnums.add(f.enum);
+    if (f.enum) {
+      if (SHARED_SET[f.enum]) field.e = SHARED_SET[f.enum];
+      else console.warn(`  ${file}: ${f.name} uses ${f.enum}, which has no shared set; left without one`);
+    }
     return field;
   });
-  Object.assign(enumSets, schema.enums ?? {});
   schemas.set(schema.list_type, { size: schema.item_size, fields });
 }
 
-// The Jade Editor's sets become shared enum and mask files.
+// Earlier imports wrote v112_* sets.
 clearSets(`v${VERSION}_`);
-for (const [name, items] of Object.entries(enumSets)) {
-  const key = `v${VERSION}_${snake(name)}`;
-  const label = `${name.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ")} (v${VERSION})`;
-  const entries = Object.entries(items).map(([value, text]) => [Number(value), text.replace(/_/g, " ")]);
-  if (flagEnums.has(name)) {
-    writeSet({ key, label, flags: entries.map(([v, l]) => ({ bit: Math.log2(v), label: l })) });
-  } else {
-    writeSet({ key, label, values: entries.map(([v, l]) => ({ value: v, label: l })) });
-  }
-}
 
 const layout = {
   id: layoutId,

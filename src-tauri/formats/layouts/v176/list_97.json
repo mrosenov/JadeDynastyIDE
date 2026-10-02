@@ -37,7 +37,8 @@
       "off": 76,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "equip_mask"
     },
     {
       "name": "Level_Required",
@@ -65,14 +66,16 @@
       "off": 92,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id"
     },
     {
       "name": "Character_Combo_ID_2",
       "off": 100,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id2"
     },
     {
       "name": "Character_Combo_ID_3",
@@ -86,7 +89,8 @@
       "off": 116,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "sect_mask"
     },
     {
       "name": "Required_Race",

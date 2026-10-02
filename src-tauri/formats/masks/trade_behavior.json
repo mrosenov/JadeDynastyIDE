@@ -5,27 +5,27 @@
     {
       "bit": 0,
       "label": "Cannot be dropped",
-      "description": "The item cannot be dropped on the ground."
+      "description": "The item cannot be dropped on the ground. (official: 死亡时不能掉落)"
     },
     {
       "bit": 1,
       "label": "Cannot be discarded",
-      "description": "The item cannot be destroyed or thrown away."
+      "description": "The item cannot be destroyed or thrown away. (official: 不可以扔在地上)"
     },
     {
       "bit": 2,
       "label": "Cannot be sold to NPC",
-      "description": "The item cannot be sold to NPC vendors for gold."
+      "description": "The item cannot be sold to NPC vendors for gold. (official: 不可以卖给NPC)"
     },
     {
       "bit": 3,
       "label": "ITEM_PROC_TYPE_CASHITEM",
-      "description": "The item is from marketplace"
+      "description": "The item is from marketplace (official: 是人民币物品)"
     },
     {
       "bit": 4,
       "label": "Cannot be traded",
-      "description": "The item cannot be traded with other players."
+      "description": "The item cannot be traded with other players. (official: 不可以玩家间交易)"
     },
     {
       "bit": 5,
@@ -35,16 +35,17 @@
     {
       "bit": 6,
       "label": "Bind on Equip",
-      "description": "The item will become Bound to the character once equipped."
+      "description": "The item will become Bound to the character once equipped. (official: 装备后绑定)"
     },
     {
       "bit": 7,
       "label": "Bound",
-      "description": "The item is bound to the character and cannot be traded, stashed in the account vault, or sold."
+      "description": "The item is bound to the character and cannot be traded, stashed in the account vault, or sold. (official: 保留，切勿选择)"
     },
     {
       "bit": 8,
-      "label": "GUID Item"
+      "label": "GUID Item",
+      "description": "Official: 产生GUID"
     },
     {
       "bit": 9,
@@ -69,7 +70,7 @@
     {
       "bit": 13,
       "label": "Bank Protected",
-      "description": "The item is protected by the player's bank password."
+      "description": "The item is protected by the player's bank password. (official: 不可放入仓库)"
     }
   ]
 }

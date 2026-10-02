@@ -44,7 +44,8 @@
       "off": 80,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "equip_mask"
     },
     {
       "name": "file_model_male",
@@ -472,14 +473,16 @@
       "off": 352,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id"
     },
     {
       "name": "character_combo_id2",
       "off": 360,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id2"
     },
     {
       "name": "character_combo_id3",
@@ -549,28 +552,32 @@
       "off": 432,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "sect_mask"
     },
     {
       "name": "sect_mask_1",
       "off": 436,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "sect_mask"
     },
     {
       "name": "sect_mask_2",
       "off": 440,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "sect_mask"
     },
     {
       "name": "sect_mask_3",
       "off": 444,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "sect_mask"
     },
     {
       "name": "require_race",
@@ -598,14 +605,16 @@
       "off": 460,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "god_devil_mask"
     },
     {
       "name": "nation_position_mask",
       "off": 464,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "nation_position_mask"
     },
     {
       "name": "title_require",
@@ -1284,7 +1293,8 @@
       "off": 852,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "trade_behavior"
     },
     {
       "name": "unknown_9",

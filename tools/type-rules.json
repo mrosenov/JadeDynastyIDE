@@ -3,7 +3,9 @@
     "Conditional field types applied to every layout by tools/apply-type-rules.mjs.",
     "Each entry targets a top-level field of the lists matching `struct` (or `list` name).",
     "Addon param1 float types: the Jade Editor's value1_float_type_ids, plus 55-60 and 64",
-    "which hold floats in every record of the v156, v160 and v165 files checked."
+    "which hold floats in every record of the v156, v160 and v165 files checked.",
+    "`sets` give integer fields that have no enum/mask one by name (case-insensitive, whole name).",
+    "A field takes the set most other fields of that name already use; else `set`."
   ],
   "rules": [
     {
@@ -92,6 +94,84 @@
           }
         }
       ]
+    }
+  ],
+  "sets": [
+    {
+      "name": "^proc_type(_?\\d)?$",
+      "set": "trade_behavior"
+    },
+    {
+      "name": "^equip_mask(_?\\d)?$",
+      "set": "equip_mask"
+    },
+    {
+      "name": "^sect_mask(_?\\d)?$",
+      "set": "sect_mask"
+    },
+    {
+      "name": "^character_combo_id(_1)?$",
+      "set": "character_combo_id"
+    },
+    {
+      "name": "^character_combo_id_?2$",
+      "set": "character_combo_id2"
+    },
+    {
+      "name": "^combined_services$",
+      "set": "combined_services"
+    },
+    {
+      "name": "^combined_services_?2$",
+      "set": "combined_services2"
+    },
+    {
+      "name": "^combined_services_?3$",
+      "set": "combined_services3"
+    },
+    {
+      "name": "^immune_type$",
+      "set": "immune_type"
+    },
+    {
+      "name": "^forbid_food$",
+      "set": "forbid_food"
+    },
+    {
+      "name": "^food_type$",
+      "set": "zx_food_type"
+    },
+    {
+      "name": "^patroll_mode$",
+      "set": "zx_patroll_mode"
+    },
+    {
+      "name": "^pet_type_mask$",
+      "set": "zx_pet_type_mask"
+    },
+    {
+      "name": "^astro_type$",
+      "set": "zx_astro_type"
+    },
+    {
+      "name": "^god_devil_mask$",
+      "set": "god_devil_mask"
+    },
+    {
+      "name": "^nation_position_mask$",
+      "set": "nation_position_mask"
+    },
+    {
+      "name": "^gift_bag_mask$",
+      "set": "zx_gift_bag_mask"
+    },
+    {
+      "name": "^accident_action$",
+      "set": "zx_accident_action"
+    },
+    {
+      "name": "^visualize_id$",
+      "set": "zx_visualize_id"
     }
   ]
 }

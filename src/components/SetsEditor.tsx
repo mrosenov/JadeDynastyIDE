@@ -11,7 +11,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { deleteNamedSet, namedSet, namedSets, saveNamedSet } from "../elements/api";
+import { deleteNamedSet, namedSet, namedSets, revertNamedSet, saveNamedSet } from "../elements/api";
 import type { FileSummary, NamedSet, SetDetail, SetKind, SetOrigin, SetSummary } from "../elements/types";
 import { bitHex, slug } from "../elements/bits";
 
@@ -39,7 +39,7 @@ interface Draft {
   isNew: boolean;
 }
 
-const ORIGIN_LABEL: Record<SetOrigin, string> = { builtin: "", override: "edited", user: "yours" };
+const ORIGIN_LABEL: Record<SetOrigin, string> = { builtin: "", override: "edited", user: "yours", deleted: "" };
 
 function toDraft(detail: SetDetail): Draft {
   const rows =
@@ -88,7 +88,7 @@ export function SetsEditor({ initialKey, onChanged, onClose }: Props) {
     namedSets()
       .then((list) => {
         setSets(list);
-        setSelected((s) => s ?? list[0]?.key ?? null);
+        setSelected((s) => s ?? list.find((x) => x.origin !== "deleted")?.key ?? null);
       })
       .catch((e) => setError(String(e)));
   }, []);
@@ -166,7 +166,8 @@ export function SetsEditor({ initialKey, onChanged, onClose }: Props) {
       onChanged(changed.summary);
       setDraft(null);
       const stillThere = nextKey && changed.sets.some((s) => s.key === nextKey);
-      setSelected(stillThere ? nextKey : (changed.sets[0]?.key ?? null));
+      const live = changed.sets.filter((s) => s.origin !== "deleted");
+      setSelected(stillThere ? nextKey : (live[0]?.key ?? null));
       // Re-select even if the key did not change, to reload the saved set.
       if (stillThere && nextKey === selected) {
         const d = await namedSet(nextKey);
@@ -190,12 +191,18 @@ export function SetsEditor({ initialKey, onChanged, onClose }: Props) {
 
   const remove = () => {
     if (!draft || !detail) return;
-    const used = detail.usage.length ? ` ${detail.usage.length} field(s) use it and will show raw values.` : "";
-    const msg =
-      detail.origin === "override"
-        ? `Revert "${draft.label}" to its built-in definition?`
-        : `Delete "${draft.label}"?${used}`;
-    if (window.confirm(msg)) applyChange(() => deleteNamedSet(draft.key), detail.origin === "override" ? draft.key : null);
+    const used = detail.usage.length ? `\n\n${detail.usage.length} field(s) use it; they will show raw values.` : "";
+    const builtin = detail.origin !== "user" ? "\n\nIt is built in: you can restore it from Deleted at the bottom of the list." : "";
+    if (window.confirm(`Delete "${draft.label}"?${used}${builtin}`)) applyChange(() => deleteNamedSet(draft.key), null);
+  };
+
+  const revert = () => {
+    if (draft && window.confirm(`Revert "${draft.label}" to its built-in definition?`)) applyChange(() => revertNamedSet(draft.key), draft.key);
+  };
+
+  const restore = (key: string) => {
+    if (!confirmDiscard()) return;
+    applyChange(() => revertNamedSet(key), key);
   };
 
   const update = (patch: Partial<Draft>) => setDraft((d) => (d ? { ...d, ...patch } : d));
@@ -212,7 +219,9 @@ export function SetsEditor({ initialKey, onChanged, onClose }: Props) {
   const sortRows = () => setDraft((d) => (d ? { ...d, rows: [...d.rows].sort((a, b) => a.n - b.n) } : d));
 
   const q = query.trim().toLowerCase();
-  const visible = (sets ?? []).filter((s) => !q || s.label.toLowerCase().includes(q) || s.key.includes(q));
+  const matching = (sets ?? []).filter((s) => !q || s.label.toLowerCase().includes(q) || s.key.includes(q));
+  const visible = matching.filter((s) => s.origin !== "deleted");
+  const deleted = matching.filter((s) => s.origin === "deleted");
   const groups: [SetKind, string][] = [
     ["mask", "Masks"],
     ["enum", "Enums"],
@@ -233,7 +242,7 @@ export function SetsEditor({ initialKey, onChanged, onClose }: Props) {
 
         <div className="sets-body">
           <aside className="sets-list">
-            <div className="import-search">
+            <div className="search-box">
               <Search size={14} />
               <input
                 className="search"
@@ -284,6 +293,21 @@ export function SetsEditor({ initialKey, onChanged, onClose }: Props) {
                   </div>
                 );
               })}
+              {deleted.length > 0 && (
+                <div className="sets-group">
+                  <div className="sets-group-title">
+                    Deleted <span className="muted">{deleted.length}</span>
+                  </div>
+                  {deleted.map((s) => (
+                    <div key={s.key} className="set-item deleted" title={`${s.key} · built-in ${s.kind}, deleted`}>
+                      <span className="truncate">{s.label}</span>
+                      <button className="icon-btn small" onClick={() => restore(s.key)} disabled={busy} title="Restore this built-in set">
+                        <RotateCcw size={13} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </aside>
 
@@ -398,17 +422,14 @@ export function SetsEditor({ initialKey, onChanged, onClose }: Props) {
                 )}
 
                 <footer className="modal-foot">
-                  {detail && detail.origin !== "builtin" && (
-                    <button className="btn" onClick={remove} disabled={busy}>
-                      {detail.origin === "override" ? (
-                        <>
-                          <RotateCcw size={14} /> Revert to built-in
-                        </>
-                      ) : (
-                        <>
-                          <Trash2 size={14} /> Delete
-                        </>
-                      )}
+                  {detail && !draft.isNew && (
+                    <button className="btn danger-btn" onClick={remove} disabled={busy} title={`Delete this ${draft.kind}`}>
+                      <Trash2 size={14} /> Delete
+                    </button>
+                  )}
+                  {detail?.origin === "override" && (
+                    <button className="btn" onClick={revert} disabled={busy}>
+                      <RotateCcw size={14} /> Revert to built-in
                     </button>
                   )}
                   <span className="muted small">

@@ -6,6 +6,8 @@ import { type Path, allPaths, nodeAt, pathAt } from "../elements/fieldPaths";
 import { HexView } from "./HexView";
 import { ArrowLeft, ChevronsDownUp, ChevronsUpDown } from "lucide-react";
 import { ReadingsCard } from "./ReadingsCard";
+import { TextCard } from "./TextCard";
+import { hasBreaks, hasColours, isTextNode } from "../elements/text";
 import { SetPopover } from "./SetPopover";
 import { ReferencedByTable } from "./ReferencedByTable";
 import { referencedBy } from "../elements/api";
@@ -37,6 +39,8 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
   // Offset whose possible readings are shown (undefined bytes only). It stays
   // while browsing records of the list, to compare readings between records.
   const [readOffset, setReadOffset] = useState<number | null>(null);
+  // The selected text's preview was closed (until another field is selected).
+  const [textClosed, setTextClosed] = useState(false);
   const [setPopover, setSetPopover] = useState<{ node: FieldNode; anchor: DOMRect } | null>(null);
   useEffect(() => setSetPopover(null), [detail]);
   // Fields, or the records that refer to this one. The choice stays while browsing.
@@ -82,11 +86,13 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
     if (!chain.length) return;
     setExpanded((prev) => new Set([...prev, ...chain.slice(0, -1)]));
     setSelected(chain[chain.length - 1]);
+    setTextClosed(false);
     setReadOffset(undefinedSpan(detail.nodes, offset) ? offset : null);
   };
 
   const selectNode = (path: Path) => {
     setSelected(path);
+    setTextClosed(false);
     const node = nodeAt(detail.nodes, path);
     setReadOffset(node && isUndefinedNode(node) ? node.off : null);
   };
@@ -95,6 +101,11 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
 
   const active = nodeAt(detail.nodes, hovered ?? selected ?? "") ?? null;
   const focused = selected ? nodeAt(detail.nodes, selected) : null;
+  // Texts with line breaks, colours or more than a row shows get a preview.
+  const textNode =
+    focused && !textClosed && isTextNode(focused) && (hasBreaks(focused.value!) || hasColours(focused.value!) || focused.value!.length > 48)
+      ? focused
+      : null;
   const unknownBytes = detail.nodes.filter((n) => n.unknown).reduce((sum, n) => sum + n.size, 0);
 
   return (
@@ -205,7 +216,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           />
         )}
         <div className="readings-slot">
-          {span && readOffset !== null && (
+          {span && readOffset !== null ? (
             <ReadingsCard
               bytes={detail.bytes}
               offset={readOffset}
@@ -214,6 +225,8 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
               onOffset={setReadOffset}
               onDefine={(offset, spec) => onDefine(list.index, offset, spec)}
             />
+          ) : (
+            textNode && <TextCard node={textNode} onClose={() => setTextClosed(true)} />
           )}
         </div>
         <div className="subhead">

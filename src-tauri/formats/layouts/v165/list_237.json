@@ -45,14 +45,16 @@
       "off": 108,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id"
     },
     {
       "name": "character_combo_id_2",
       "off": 116,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id2"
     },
     {
       "name": "require_gender",

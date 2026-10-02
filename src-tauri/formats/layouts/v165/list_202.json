@@ -37,7 +37,8 @@
       "off": 76,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "equip_mask"
     },
     {
       "name": "init_time_points",

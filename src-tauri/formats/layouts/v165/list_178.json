@@ -58,7 +58,8 @@
       "off": 88,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "trade_behavior"
     },
     {
       "name": "unlock_color_index",

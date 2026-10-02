@@ -1,0 +1,16 @@
+{
+  "key": "bool",
+  "label": "Bool (yes / no)",
+  "values": [
+    {
+      "value": 0,
+      "label": "No",
+      "description": "否"
+    },
+    {
+      "value": 1,
+      "label": "Yes",
+      "description": "是"
+    }
+  ]
+}

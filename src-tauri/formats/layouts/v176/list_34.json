@@ -312,21 +312,24 @@
       "off": 768,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "combined_services"
     },
     {
       "name": "combined_services2",
       "off": 772,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "combined_services2"
     },
     {
       "name": "combined_services3",
       "off": 776,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "combined_services3"
     },
     {
       "name": "combined_services4",

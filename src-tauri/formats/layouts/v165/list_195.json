@@ -170,7 +170,8 @@
       "off": 152,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "sect_mask"
     },
     {
       "name": "attack_range",

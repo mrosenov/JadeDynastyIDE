@@ -61,7 +61,8 @@
       "off": 88,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "nation_position_mask"
     },
     {
       "name": "only_qianji",

@@ -114,14 +114,16 @@
       "off": 120,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id"
     },
     {
       "name": "character_combo_id_2",
       "off": 128,
       "t": {
         "k": "i64"
-      }
+      },
+      "e": "character_combo_id2"
     },
     {
       "name": "unknown_4",
@@ -473,7 +475,8 @@
       "off": 2524,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "trade_behavior"
     }
   ]
 }

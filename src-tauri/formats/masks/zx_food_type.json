@@ -1,0 +1,26 @@
+{
+  "key": "zx_food_type",
+  "label": "Food Type (official)",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "草料"
+    },
+    {
+      "bit": 1,
+      "label": "肉类"
+    },
+    {
+      "bit": 2,
+      "label": "野菜"
+    },
+    {
+      "bit": 3,
+      "label": "水果"
+    },
+    {
+      "bit": 4,
+      "label": "清水"
+    }
+  ]
+}

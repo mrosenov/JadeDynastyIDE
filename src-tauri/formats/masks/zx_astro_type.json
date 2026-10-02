@@ -1,0 +1,42 @@
+{
+  "key": "zx_astro_type",
+  "label": "Astro Type (official)",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "horoscope_1"
+    },
+    {
+      "bit": 1,
+      "label": "horoscope_2"
+    },
+    {
+      "bit": 2,
+      "label": "horoscope_3"
+    },
+    {
+      "bit": 3,
+      "label": "horoscope_4"
+    },
+    {
+      "bit": 4,
+      "label": "horoscope_5"
+    },
+    {
+      "bit": 5,
+      "label": "horoscope_6"
+    },
+    {
+      "bit": 6,
+      "label": "horoscope_7"
+    },
+    {
+      "bit": 7,
+      "label": "horoscope_8"
+    },
+    {
+      "bit": 8,
+      "label": "horoscope_9"
+    }
+  ]
+}

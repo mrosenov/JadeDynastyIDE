@@ -31,7 +31,41 @@ Each list then gets a definition:
 Borrowing aligns record sizes (a longest common subsequence within each
 marker group), so lists inserted mid-way do not shift every later name.
 Fields with enums/masks show their labels; fields that hold another list's IDs
-link to that record.
+link to that record. Texts show their line breaks (CR LF, or `!# JD IDE
+
+Desktop editor for Jade Dynasty (Zhu Xian) data files, built with Tauri 2
+(Rust backend, React + TypeScript UI).
+
+Milestone 1: read-only browsing of `elements.data`.
+
+## How a file is read
+
+1. **Layout.** Every built-in layout for the file's version is tried. A
+   layout's marker table says where the checksum, exporter and tag blocks sit
+   between lists. The file must fit it exactly, ending in the NPC dialog block
+   at EOF. If several fit (server builds that diverged under one version
+   number), the one whose record sizes match best wins.
+2. **Other marker tables.** For unknown versions, the marker tables of other
+   versions are tried, nearest first.
+3. **Detection.** As a last resort, segments are recognised by content.
+   This cannot tell a raw checksum slot from an empty list (v165 has one before
+   list 296), which is why marker tables come first.
+
+Each list then gets a definition:
+
+| Fit | Meaning |
+|---|---|
+| Exact | the file's own layout, same record size |
+| Partial | the file's own layout, records are larger (tail shown as unknown) |
+| Borrowed | another version's definition, same record size |
+| Grown | another version's smaller struct, paired by position between matches |
+| Name only / Unknown | raw int32 view |
+
+Borrowing aligns record sizes (a longest common subsequence within each
+marker group), so lists inserted mid-way do not shift every later name.
+ from the official
+editor's exports) as ↵. Selecting a text with breaks or `^RRGGBB` colour codes opens a
+preview that renders it as the game would, with the raw codes one click away.
 
 ## Settings and the game client
 
@@ -108,11 +142,15 @@ formats/enums/gender.json          { key, label, values: [{ value, label, descri
 formats/masks/trade_behavior.json  { key, label, flags:  [{ bit, label, description? }] }   bit = 0…63
 ```
 
-A field refers to a set by key (`"e": "trade_behavior"`). The v112 Jade Editor sets are
-`v112_*`. Edit them with **Enums & masks** in the schema editor, or with the pencil in a
+A field refers to a set by key (`"e": "trade_behavior"`). The v112 layout (from the Jade
+Editor) uses the shared sets too. Yes/no fields use the `bool` enum: the source declares them
+`int`/`unsigned int`, so they stay 4-byte integers. The official element editor's (ZElementData) mask tables are merged in: where an
+existing mask covers the same bits, its flag descriptions gain the official Chinese label;
+the tables with no counterpart are the `zx_*` masks. Edit them with **Enums & masks** in the schema editor, or with the pencil in a
 field's value popover. Your changes go to `%APPDATA%\com.jdide.app\enums\` and `masks\`.
 There, a file overrides the built-in set with the same key or adds a new one. Deleting
-the file reverts the set. In the inspector, clicking a mask field's labels opens a
+a built-in set writes `{ "key": …, "deleted": true }` there, which hides it; it is listed under
+**Deleted** to restore. Removing a user file reverts the set. In the inspector, clicking a mask field's labels opens a
 calculator: tick bits to get the resulting value in decimal and hex.
 Each list definition is `{ name, struct, size, fields }`, and fields are `{ name, off, t, c?, e?, display?, refs?, g?, when? }`.
 Here `t` is a type tree (scalars, `wstr`/`str`/`bytes`, nested `array` and `struct`), and
@@ -163,10 +201,13 @@ node tools/gen-elements-schema.mjs "E:/Game Dev/JD/zx_source/zgame/gs/template" 
 node tools/gen-elements-schema.mjs "<extracted JD1447>/zgame/gs/template" v156-signin
 node tools/import-jade-editor-profile.mjs "E:/Game Dev/JD/Tools/JadeEditorFOX/JadeEditorPython/formats/elements"
 node tools/import-laravel-structures.mjs "C:/Users/mitko/Herd/jdide/resources/structures/elements" src-tauri/formats "E:/Game Dev/JD/1559/gamed/config/elements.data" "E:/Games/ForsakenJD/element/data/elements.data" "E:/Game Dev/JD/1792/gamed/config/elements.data"
+node tools/import-official-sets.mjs "E:/Game Dev/ZX-Client-Src/ZElement/ZElementData"
 ```
 
-Then apply the conditional types from `tools/type-rules.json` (e.g. addon `param1` is a float for
-rate-like addon types):
+Then apply `tools/type-rules.json`: its conditional types (e.g. addon `param1` is a float for
+rate-like addon types), and its `sets`, which give integer fields without an enum/mask one
+by name (`proc_type`, `equip_mask`, `sect_mask_1`…). A field takes the set its namesakes
+in the same layout use, else the one most used across layouts, else the rule's own:
 
 ```powershell
 node tools/apply-type-rules.mjs

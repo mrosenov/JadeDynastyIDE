@@ -58,7 +58,7 @@
       "t": {
         "k": "i32"
       },
-      "e": "v112_trade_behavior"
+      "e": "trade_behavior"
     }
   ]
 }

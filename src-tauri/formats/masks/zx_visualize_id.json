@@ -1,0 +1,50 @@
+{
+  "key": "zx_visualize_id",
+  "label": "Visualize Id (official)",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "性感"
+    },
+    {
+      "bit": 1,
+      "label": "骨感"
+    },
+    {
+      "bit": 2,
+      "label": "可爱"
+    },
+    {
+      "bit": 3,
+      "label": "冷艳"
+    },
+    {
+      "bit": 4,
+      "label": "清秀"
+    },
+    {
+      "bit": 5,
+      "label": "俊朗"
+    },
+    {
+      "bit": 6,
+      "label": "妖媚"
+    },
+    {
+      "bit": 7,
+      "label": "野性"
+    },
+    {
+      "bit": 8,
+      "label": "硬朗"
+    },
+    {
+      "bit": 9,
+      "label": "阴险"
+    },
+    {
+      "bit": 10,
+      "label": "猥琐"
+    }
+  ]
+}
