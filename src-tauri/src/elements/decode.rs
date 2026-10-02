@@ -48,6 +48,9 @@ pub struct Node {
     /// Key of the enum or mask naming this value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub set: Option<String>,
+    /// The NPC dialog this value refers to (index into the dialogs).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub talk: Option<usize>,
 }
 
 fn group_node(name: String, members: Vec<Node>) -> Node {
@@ -70,6 +73,7 @@ fn group_node(name: String, members: Vec<Node>) -> Node {
         cond: None,
         icon: None,
         set: None,
+        talk: None,
     }
 }
 
@@ -176,6 +180,7 @@ pub struct Annotation {
     pub link: Option<(usize, usize)>,
     pub icon: Option<u32>,
     pub set: Option<String>,
+    pub talk: Option<usize>,
 }
 
 pub type Annotator<'a> = dyn Fn(&Field, i64) -> Annotation + 'a;
@@ -204,6 +209,7 @@ impl Ctx<'_> {
             cond: None,
             icon: None,
             set: None,
+            talk: None,
         };
         if off + size > self.bytes.len() {
             node.value = Some("(past end of record)".into());
@@ -235,6 +241,7 @@ impl Ctx<'_> {
                     node.link = a.link;
                     node.icon = a.icon;
                     node.set = a.set;
+                    node.talk = a.talk;
                 }
                 // Timestamps are shown as dates by the UI, not as floats.
                 if node.hint.is_none() && matches!(ty, Ty::I32 | Ty::U32) && node.display.as_deref() != Some("time") {
@@ -306,6 +313,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
                     cond: None,
                     icon: None,
                     set: None,
+                    talk: None,
                 }
             })
             .collect()
@@ -327,6 +335,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
         cond: None,
         icon: None,
         set: None,
+        talk: None,
     }
 }
 

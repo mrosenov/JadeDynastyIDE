@@ -1,8 +1,13 @@
 import type { FieldNode } from "../elements/types";
 import { formatUnix, formatUnixUtc } from "../elements/time";
 import { type Path, flatten } from "../elements/fieldPaths";
+import { DIALOGS } from "../tabs";
 import { isTextNode, textLines } from "../elements/text";
 import { CalendarClock, ChevronRight, CornerDownLeft, GitBranch } from "lucide-react";
+
+/** Where a value leads: a record, or an NPC dialog. */
+const link = (node: FieldNode): [number, number] | undefined =>
+  node.link ?? (node.talk !== undefined ? [DIALOGS, node.talk] : undefined);
 
 /** A text on one line, its line breaks shown as ↵ marks. */
 function OneLine({ text }: { text: string }) {
@@ -83,19 +88,19 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
                 (node.value ?? (node.children ? <span className="muted">{node.children.length} items</span> : null))
               )}
               {node.hint &&
-                (node.link ? (
+                (link(node) ? (
                   <button
                     className="hint link-hint"
                     title="Open the referenced record (Ctrl+click or middle-click: in a new tab)"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onFollow(node.link![0], node.link![1], e.ctrlKey || e.metaKey);
+                      onFollow(link(node)![0], link(node)![1], e.ctrlKey || e.metaKey);
                     }}
                     onAuxClick={(e) => {
                       if (e.button !== 1) return;
                       e.preventDefault();
                       e.stopPropagation();
-                      onFollow(node.link![0], node.link![1], true);
+                      onFollow(link(node)![0], link(node)![1], true);
                     }}
                     onMouseDown={(e) => e.button === 1 && e.preventDefault()}
                   >

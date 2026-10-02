@@ -1,6 +1,8 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
   FindResult,
+  TalkDetail,
+  TalkSummary,
   FileSummary,
   ImportCandidate,
   ListDef,
@@ -25,6 +27,9 @@ export const listRecords = (list: number) => invoke<RecordRow[]>("list_records",
 
 /** Records of every list by ID or name. */
 export const findRecords = (query: string) => invoke<FindResult>("find_records", { query });
+
+export const listTalks = () => invoke<TalkSummary[]>("list_talks");
+export const getTalk = (index: number) => invoke<TalkDetail>("get_talk", { index });
 
 export const getRecord = (list: number, index: number) => invoke<RecordDetail>("get_record", { list, index });
 

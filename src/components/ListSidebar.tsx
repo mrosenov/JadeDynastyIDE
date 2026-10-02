@@ -1,15 +1,18 @@
 import { useMemo, useState } from "react";
 import type { ListSummary } from "../elements/types";
 import { LAYOUT_LABEL, count } from "../elements/format";
-import { Pencil } from "lucide-react";
+import { MessagesSquare, Pencil } from "lucide-react";
+import { DIALOGS } from "../tabs";
 
 interface Props {
   lists: ListSummary[];
   selected: number | null;
   onSelect: (index: number) => void;
+  /** NPC dialogs in the file (listed first, selected as DIALOGS). */
+  talkCount: number;
 }
 
-export function ListSidebar({ lists, selected, onSelect }: Props) {
+export function ListSidebar({ lists, selected, onSelect, talkCount }: Props) {
   const [filter, setFilter] = useState("");
   const [hideEmpty, setHideEmpty] = useState(false);
 
@@ -25,6 +28,8 @@ export function ListSidebar({ lists, selected, onSelect }: Props) {
           String(l.index) === q),
     );
   }, [lists, filter, hideEmpty]);
+  const q = filter.trim().toLowerCase();
+  const showDialogs = (!hideEmpty || talkCount > 0) && (!q || ["npc dialogs", "talk_proc", "dialogs"].some((n) => n.includes(q)));
 
   return (
     <aside className="pane sidebar">
@@ -46,6 +51,20 @@ export function ListSidebar({ lists, selected, onSelect }: Props) {
         </label>
       </div>
       <div className="scroll">
+        {showDialogs && (
+          <button
+            className={"list-item dialogs-item" + (selected === DIALOGS ? " active" : "") + (talkCount === 0 ? " empty" : "")}
+            onClick={() => onSelect(DIALOGS)}
+            title={"TALK_PROC\nThe NPC dialog block at the end of the file"}
+          >
+            <span />
+            <span className="dialogs-icon">
+              <MessagesSquare size={13} />
+            </span>
+            <span className="list-name">NPC Dialogs</span>
+            <span className="list-count">{count(talkCount)}</span>
+          </button>
+        )}
         {visible.map((l) => (
           <button
             key={l.index}
@@ -75,7 +94,7 @@ export function ListSidebar({ lists, selected, onSelect }: Props) {
             </span>
           </button>
         ))}
-        {visible.length === 0 && <div className="empty-note">No lists match.</div>}
+        {visible.length === 0 && !showDialogs && <div className="empty-note">No lists match.</div>}
       </div>
     </aside>
   );

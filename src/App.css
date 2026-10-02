@@ -2735,3 +2735,228 @@ kbd {
   width: 64px;
   height: 64px;
 }
+
+/* ------------------------------------------------------------ NPC dialogs */
+
+.dialogs-item {
+  border-bottom: 1px solid var(--border);
+}
+.dialogs-icon {
+  display: flex;
+  justify-content: flex-end;
+  color: var(--accent);
+}
+
+.dialog-mark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  flex: none;
+}
+.dialog-users {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+.chip-link {
+  max-width: 280px;
+  padding: 2px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.chip-link:hover {
+  border-color: var(--accent);
+}
+
+.dialog-body {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.dialog-scroll {
+  padding: 14px 16px 24px;
+}
+.dialog-trail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 4px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.dialog-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 260px;
+}
+.dialog-step .link {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dialog-step .link:disabled {
+  color: var(--text);
+  cursor: default;
+  text-decoration: none;
+}
+
+/* Game texts are made for a dark window, whatever the theme. */
+.npc-bubble {
+  position: relative;
+  max-width: 720px;
+  padding: 14px 16px 16px;
+  border: 1px solid #2c313c;
+  border-radius: 12px;
+  background: #15171d;
+  color: #e9e6dc;
+  font-size: 13.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+.window-id {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  font-size: 10.5px;
+  color: #8b8f99;
+}
+.dialog-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 720px;
+  margin-top: 12px;
+}
+.dialog-option {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-elev);
+  text-align: left;
+  color: var(--accent);
+  cursor: pointer;
+}
+.dialog-option > .truncate {
+  color: var(--text);
+}
+.dialog-option:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.dialog-option:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.dialog-option.function {
+  color: var(--text-dim);
+}
+.dialog-option.static {
+  cursor: default;
+  border-style: dashed;
+}
+.dialog-option.missing {
+  color: var(--danger);
+}
+.option-target {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.dialog-ended {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+
+.outline {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.outline-node {
+  display: block;
+  max-width: 760px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  background: var(--bg-elev);
+  text-align: left;
+  cursor: pointer;
+}
+button.outline-node:hover {
+  border-color: var(--accent);
+}
+.outline-node.again,
+.outline-node.missing {
+  border-left-color: var(--border);
+  cursor: default;
+  font-size: 12px;
+}
+.outline-node.missing {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--danger);
+}
+.outline-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.outline-via {
+  font-weight: 600;
+  font-size: 12.5px;
+}
+.outline-via::before {
+  content: "› ";
+  color: var(--accent);
+}
+.outline-fn {
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--bg-hover);
+  font-size: 10.5px;
+  color: var(--text-dim);
+}
+/* Outline texts: the first lines, in the game's colours on a dark strip. */
+.outline-text {
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #15171d;
+  color: #e9e6dc;
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: calc(3 * 1.5em + 12px);
+  overflow: hidden;
+}
+.outline-section {
+  margin: 14px 0 4px;
+}

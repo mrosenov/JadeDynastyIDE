@@ -2,7 +2,11 @@
 // tab is kept (double-click, or following a link); links navigate inside a
 // tab with its own back history.
 
+/** The "list" index of the NPC dialogs (rows are dialog indexes). */
+export const DIALOGS = -1;
+
 export interface Location {
+  /** A list index, or DIALOGS. */
   list: number;
   /** Null until the list's records are loaded (then its first record). */
   row: number | null;
@@ -132,14 +136,17 @@ interface Saved {
   active: number;
 }
 
-/** Tabs remembered for a file, checked against its lists (null if none fit). */
-export function loadTabs(path: string, counts: number[]): TabsState | null {
+/** Tabs remembered for a file, checked against its lists and dialogs (null if none fit). */
+export function loadTabs(path: string, counts: number[], dialogs: number): TabsState | null {
   try {
     const raw = localStorage.getItem(storageKey(path));
     if (!raw) return null;
     const saved = JSON.parse(raw) as Saved;
     const tabs = saved.tabs
-      .filter((t) => t.list >= 0 && t.list < counts.length && (t.row === null || t.row < counts[t.list]))
+      .filter((t) => {
+        const n = t.list === DIALOGS ? dialogs : t.list >= 0 && t.list < counts.length ? counts[t.list] : -1;
+        return n >= 0 && (t.row === null || t.row < n);
+      })
       .map((t) => makeTab({ list: t.list, row: t.row }, t.pinned));
     if (!tabs.length) return null;
     return { tabs, active: (tabs[saved.active] ?? tabs[0]).id };

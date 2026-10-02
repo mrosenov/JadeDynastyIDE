@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Check, Copy, Type, X } from "lucide-react";
 import type { FieldNode } from "../elements/types";
-import { hasColours, styledLines, textLines } from "../elements/text";
+import { hasColours, textLines } from "../elements/text";
+import { GameText } from "./GameText";
 
 interface Props {
   node: FieldNode;
@@ -16,7 +17,6 @@ export function TextCard({ node, onClose }: Props) {
   const [raw, setRaw] = useState(false);
   const [copied, setCopied] = useState(false);
   const text = node.value ?? "";
-  const lines = styledLines(text);
   const coloured = hasColours(text);
 
   const copy = () => {
@@ -49,25 +49,7 @@ export function TextCard({ node, onClose }: Props) {
           <X size={15} />
         </button>
       </div>
-      <div className="text-preview">
-        {raw
-          ? textLines(text).map((line, i) => (
-              <div key={i} className="text-line mono">
-                {line || " "}
-              </div>
-            ))
-          : lines.map((runs, i) => (
-              <div key={i} className="text-line">
-                {runs.length
-                  ? runs.map((r, j) => (
-                      <span key={j} style={r.colour ? { color: r.colour } : undefined}>
-                        {r.text}
-                      </span>
-                    ))
-                  : " "}
-              </div>
-            ))}
-      </div>
+      <GameText text={text} raw={raw} className="text-preview" />
     </div>
   );
 }

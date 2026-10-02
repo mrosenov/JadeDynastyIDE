@@ -129,6 +129,16 @@ async fn find_records(query: String, state: State<'_, AppState>) -> Result<eleme
 }
 
 #[tauri::command]
+async fn list_talks(state: State<'_, AppState>) -> Result<Vec<elements::TalkSummary>, String> {
+    state.with_document(|doc| doc.talks())
+}
+
+#[tauri::command]
+async fn get_talk(index: usize, state: State<'_, AppState>) -> Result<elements::TalkDetail, String> {
+    state.with_document(|doc| doc.talk(index))
+}
+
+#[tauri::command]
 async fn referenced_by(list: usize, row: usize, state: State<'_, AppState>) -> Result<elements::refs::ReferencedBy, String> {
     state.with_document(|doc| doc.referenced_by(list, row))
 }
@@ -427,6 +437,8 @@ pub fn run() {
             inspect_client,
             save_settings,
             find_records,
+            list_talks,
+            get_talk,
             named_sets,
             named_set,
             save_named_set,

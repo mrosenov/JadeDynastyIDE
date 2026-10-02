@@ -12,11 +12,13 @@ interface Props {
   onOpen?: (index: number) => void;
   /** Item icon URL for a path ID (when the client's icons are available). */
   icon?: (pathId?: number | null) => string | undefined;
+  /** Replaces "count × size" in the header (e.g. for NPC dialogs). */
+  meta?: string;
 }
 
 const ROW_HEIGHT = 28;
 
-export function RecordTable({ list, rows, selected, onSelect, onOpen, icon }: Props) {
+export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta }: Props) {
   const [filter, setFilter] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -68,7 +70,7 @@ export function RecordTable({ list, rows, selected, onSelect, onOpen, icon }: Pr
         </span>
         <span className="muted">
           {rows && filter ? `${count(visible.length)} / ` : ""}
-          {count(list.count)} × {list.itemSize} B
+          {meta ?? `${count(list.count)} × ${list.itemSize} B`}
         </span>
       </div>
       <div className="pane-tools">

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
-import { getRecord, getSettings, iconUrl, listRecords, openElements } from "./elements/api";
-import type { FileSummary, FindHit, RecordDetail, RecordRow, SettingsView } from "./elements/types";
+import { getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements } from "./elements/api";
+import type { FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail } from "./elements/types";
 import { bytes, count } from "./elements/format";
 import { ListSidebar } from "./components/ListSidebar";
 import { RecordTable } from "./components/RecordTable";
@@ -12,8 +12,9 @@ import { TabBar, type TabLabel } from "./components/TabBar";
 import { SettingsDialog } from "./components/SettingsDialog";
 import { SetsEditor } from "./components/SetsEditor";
 import { FindPalette } from "./components/FindPalette";
+import { DialogViewer } from "./components/DialogViewer";
 import type { FieldSpec } from "./schema/model";
-import { EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
+import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import "./App.css";
 import logo from "./assets/logo.png";
 import { Braces, ChevronLeft, ChevronRight, FolderOpen, Gem, Search, Settings } from "lucide-react";
@@ -44,6 +45,30 @@ function writeLastPath(path: string) {
 }
 
 const fileName = (path: string) => path.split(/[\\/]/).pop() ?? path;
+
+/** Rows of a list, or of the NPC dialogs (named by their first words). */
+async function loadRows(list: number): Promise<RecordRow[]> {
+  if (list !== DIALOGS) return listRecords(list);
+  const talks = await listTalks();
+  return talks.map((t) => ({ index: t.index, id: t.id, name: t.title }));
+}
+
+/** The NPC dialogs, shown in the record table like a list. */
+function dialogsList(summary: FileSummary): ListSummary {
+  return {
+    index: DIALOGS,
+    name: "NPC Dialogs",
+    key: null,
+    structName: "TALK_PROC",
+    itemSize: 0,
+    count: summary.talkCount,
+    offset: 0,
+    layout: "exact",
+    layoutId: null,
+    layoutSize: null,
+    custom: false,
+  };
+}
 
 function parseLabel(summary: FileSummary): { text: string; tone: "ok" | "warn" | "muted"; title: string } {
   switch (summary.parseMode) {
@@ -76,6 +101,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [rows, setRows] = useState<RecordRow[] | null>(null);
   const [detail, setDetail] = useState<RecordDetail | null>(null);
+  const [talk, setTalk] = useState<TalkDetail | null>(null);
   const [lastPath, setLastPath] = useState<string | null>(readLastPath);
   const rowsCache = useRef(new Map<number, RecordRow[]>());
   // Bumped when rows load in the background, so tab titles can use names.
@@ -111,7 +137,7 @@ export default function App() {
       setRows(null);
       setDetail(null);
       const first = result.lists.findIndex((l) => l.count > 0);
-      const restored = loadTabs(path, result.lists.map((l) => l.count));
+      const restored = loadTabs(path, result.lists.map((l) => l.count), result.talkCount);
       dispatch({
         type: "reset",
         state:
@@ -187,7 +213,7 @@ export default function App() {
 
   // Load the records of the active tab's list.
   useEffect(() => {
-    if (listIndex === null || listIndex < 0) {
+    if (listIndex === null || (listIndex < 0 && listIndex !== DIALOGS)) {
       setRows(null);
       return;
     }
@@ -202,7 +228,7 @@ export default function App() {
     }
     setRows(null);
     let cancelled = false;
-    listRecords(listIndex)
+    loadRows(listIndex)
       .then((result) => {
         rowsCache.current.set(listIndex, result);
         if (!cancelled) show(result);
@@ -217,12 +243,21 @@ export default function App() {
   useEffect(() => {
     if (listIndex === null || recordIndex === null) {
       setDetail(null);
+      setTalk(null);
       return;
     }
     let cancelled = false;
-    getRecord(listIndex, recordIndex)
-      .then((result) => !cancelled && setDetail(result))
-      .catch((e) => !cancelled && setError(String(e)));
+    if (listIndex === DIALOGS) {
+      setDetail(null);
+      getTalk(recordIndex)
+        .then((result) => !cancelled && setTalk(result))
+        .catch((e) => !cancelled && setError(String(e)));
+    } else {
+      setTalk(null);
+      getRecord(listIndex, recordIndex)
+        .then((result) => !cancelled && setDetail(result))
+        .catch((e) => !cancelled && setError(String(e)));
+    }
     return () => {
       cancelled = true;
     };
@@ -235,7 +270,7 @@ export default function App() {
     let cancelled = false;
     (async () => {
       for (const list of missing) {
-        const result = await listRecords(list).catch(() => null);
+        const result = await loadRows(list).catch(() => null);
         if (cancelled || !result) return;
         rowsCache.current.set(list, result);
         setRowsLoaded((n) => n + 1);
@@ -309,6 +344,11 @@ export default function App() {
   }, [summary, editorOpen, tabs.active]);
 
   const tabLabel = (tab: Tab): TabLabel => {
+    if (tab.list === DIALOGS) {
+      if (tab.row === null) return { title: "NPC Dialogs", subtitle: "dialogs" };
+      const row = rowsCache.current.get(DIALOGS)?.[tab.row];
+      return { title: row?.name || `Dialog #${tab.row}`, subtitle: `NPC dialog · ID ${row?.id ?? "?"}` };
+    }
     const l = summary?.lists[tab.list];
     const listName = l?.name ?? `List ${tab.list}`;
     if (tab.row === null) return { title: listName, subtitle: `list ${tab.list}` };
@@ -316,7 +356,8 @@ export default function App() {
     return { title: row?.name || `${listName} #${tab.row}`, subtitle: `${listName} · #${tab.row}`, icon: icon(row?.icon) };
   };
 
-  const list = summary && listIndex !== null && listIndex >= 0 ? summary.lists[listIndex] : null;
+  const showingDialogs = listIndex === DIALOGS;
+  const list = summary && listIndex !== null && listIndex >= 0 ? summary.lists[listIndex] : summary && showingDialogs ? dialogsList(summary) : null;
   const row = rows && recordIndex !== null ? (rows[recordIndex] ?? null) : null;
 
   return (
@@ -430,9 +471,9 @@ export default function App() {
         <main className="editor-main">
           <SchemaEditor
             summary={summary}
-            initialList={editorIntent?.list ?? list?.index ?? 0}
+            initialList={editorIntent?.list ?? (list && list.index >= 0 ? list.index : 0)}
             intent={editorIntent}
-            initialRow={recordIndex ?? 0}
+            initialRow={showingDialogs ? 0 : (recordIndex ?? 0)}
             onEditSets={(key) => setSetsEditor({ key })}
             onSaved={onSchemaSaved}
             onClose={closeEditor}
@@ -440,7 +481,7 @@ export default function App() {
         </main>
       ) : summary ? (
         <main className="workspace">
-          <ListSidebar lists={summary.lists} selected={listIndex} onSelect={selectList} />
+          <ListSidebar lists={summary.lists} selected={listIndex} onSelect={selectList} talkCount={summary.talkCount} />
           {list ? (
             <RecordTable
               list={list}
@@ -449,6 +490,7 @@ export default function App() {
               onSelect={(index) => openLocation({ list: list.index, row: index })}
               onOpen={(index) => openLocation({ list: list.index, row: index }, { pin: true })}
               icon={icon}
+              meta={showingDialogs ? `${count(summary.talkCount)} dialogs` : undefined}
             />
           ) : (
             <section className="pane records">
@@ -464,7 +506,15 @@ export default function App() {
               onPin={(id) => dispatch({ type: "pin", id })}
               onClose={(id) => dispatch({ type: "close", id })}
             />
-            {list ? (
+            {showingDialogs ? (
+              <DialogViewer
+                detail={talk}
+                lists={summary.lists}
+                canGoBack={(activeTab?.history.length ?? 0) > 0}
+                onBack={() => dispatch({ type: "back" })}
+                onFollow={follow}
+              />
+            ) : list ? (
               <RecordInspector
                 list={list}
                 row={row}

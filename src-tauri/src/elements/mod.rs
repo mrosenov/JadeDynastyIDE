@@ -3,6 +3,7 @@ pub mod decode;
 pub mod format;
 pub mod reader;
 pub mod refs;
+pub mod talk;
 
 use std::collections::HashMap;
 use std::sync::{Arc, OnceLock};
@@ -68,6 +69,8 @@ pub struct Document {
     sites: OnceLock<Vec<refs::Site>>,
     /// Every record's ID and lowercased name, for Find.
     find_index: OnceLock<Vec<FindEntry>>,
+    /// The NPC dialogs, parsed on first use.
+    talks: OnceLock<Result<TalkData, String>>,
     /// The game client's paths and icons, when a client folder is set.
     pub resources: Option<Arc<Resources>>,
 }
@@ -133,6 +136,47 @@ pub struct FindHit {
     pub icon: Option<u32>,
     /// "id" (the record's ID is the query) or "name" (its name contains it).
     pub how: &'static str,
+}
+
+struct TalkData {
+    talks: Vec<talk::Talk>,
+    by_id: HashMap<u32, usize>,
+    /// Records whose `id_dialog` opens each dialog, by dialog ID.
+    users: HashMap<u32, Vec<TalkUser>>,
+}
+
+/// A record that opens a dialog (through its `id_dialog` field).
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TalkUser {
+    pub list: usize,
+    pub row: usize,
+    pub id: u32,
+    pub name: String,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TalkSummary {
+    pub index: usize,
+    pub id: u32,
+    pub title: String,
+    pub windows: usize,
+    pub options: usize,
+    /// Records that open the dialog.
+    pub users: usize,
+    /// Name of the first record that opens it, e.g. the service's name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub used_by: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TalkDetail {
+    pub index: usize,
+    #[serde(flatten)]
+    pub talk: talk::Talk,
+    pub users: Vec<TalkUser>,
 }
 
 struct FindEntry {
@@ -280,7 +324,7 @@ impl Document {
             }
         }
         let ids = (0..file.lists.len()).map(|_| OnceLock::new()).collect();
-        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, sites: OnceLock::new(), find_index: OnceLock::new(), resources: None })
+        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, sites: OnceLock::new(), find_index: OnceLock::new(), talks: OnceLock::new(), resources: None })
     }
 
     /// Re-reads the same bytes with a new catalog (after a schema edit).
@@ -509,6 +553,20 @@ impl Document {
                 return a;
             }
         }
+        // Services' `id_dialog` opens an NPC dialog.
+        if field.name.eq_ignore_ascii_case("id_dialog") && value > 0 && value <= u32::MAX as i64 {
+            if let Ok(data) = self.talk_data() {
+                match data.by_id.get(&(value as u32)) {
+                    Some(&index) => {
+                        let title = data.talks[index].title();
+                        a.hint = Some(format!("Dialog › {}", if title.is_empty() { "untitled" } else { &title }));
+                        a.talk = Some(index);
+                    }
+                    None => a.hint = Some("no such dialog".into()),
+                }
+                return a;
+            }
+        }
         if field.refs.is_empty() || value <= 0 || value > u32::MAX as i64 {
             return a;
         }
@@ -663,6 +721,62 @@ impl Document {
 
     /// Records whose fields point at this record's ID: fields whose refs name
     /// its struct, and ID-named fields of the same ID space.
+    fn talk_data(&self) -> Result<&TalkData, String> {
+        self.talks
+            .get_or_init(|| {
+                let segment = self.file.segments.iter().find(|s| s.kind == SegmentKind::Talk).ok_or("This file has no NPC dialog block")?;
+                let talks = talk::parse(&self.file.data, segment.offset)?;
+                let by_id = talks.iter().enumerate().map(|(i, t)| (t.id, i)).collect();
+                // Lists with an `id_dialog` field open dialogs.
+                let mut users: HashMap<u32, Vec<TalkUser>> = HashMap::new();
+                for list in 0..self.file.lists.len() {
+                    let Some((_, def)) = self.def(list) else { continue };
+                    let Some(field) = def.fields.iter().find(|f| f.name.eq_ignore_ascii_case("id_dialog") && f.t.size() == 4) else { continue };
+                    let name_at = Self::name_field(Some(def));
+                    for row in 0..self.file.lists[list].count {
+                        let bytes = self.file.record(list, row).unwrap();
+                        let Some(v) = bytes.get(field.off..field.off + 4) else { continue };
+                        let talk_id = u32::from_le_bytes(v.try_into().unwrap());
+                        if talk_id != 0 {
+                            users.entry(talk_id).or_default().push(TalkUser { list, row, id: Self::record_id(bytes), name: Self::record_name(bytes, name_at) });
+                        }
+                    }
+                }
+                Ok(TalkData { talks, by_id, users })
+            })
+            .as_ref()
+            .map_err(Clone::clone)
+    }
+
+    /// Every NPC dialog, in file order.
+    pub fn talks(&self) -> Result<Vec<TalkSummary>, String> {
+        let data = self.talk_data()?;
+        Ok(data
+            .talks
+            .iter()
+            .enumerate()
+            .map(|(index, t)| {
+                let users = data.users.get(&t.id);
+                TalkSummary {
+                    index,
+                    id: t.id,
+                    title: t.title(),
+                    windows: t.windows.len(),
+                    options: t.windows.iter().map(|w| w.options.len()).sum(),
+                    users: users.map_or(0, Vec::len),
+                    used_by: users.and_then(|u| u.first()).map(|u| u.name.clone()),
+                }
+            })
+            .collect())
+    }
+
+    pub fn talk(&self, index: usize) -> Result<TalkDetail, String> {
+        let data = self.talk_data()?;
+        let talk = data.talks.get(index).ok_or("No such dialog")?.clone();
+        let users = data.users.get(&talk.id).cloned().unwrap_or_default();
+        Ok(TalkDetail { index, talk, users })
+    }
+
     /// Records of every list whose ID is the query (when it is a number) or
     /// whose name contains it, case-insensitively. ID matches come first,
     /// then exact names, names starting with the query, and the rest, each
@@ -915,6 +1029,28 @@ mod tests {
         let ty = detail.nodes.iter().find(|n| n.name == "Type").unwrap();
         // The Jade Editor's attribute types are the shared addon types.
         assert!(ty.hint.as_deref().is_some_and(|h| h.starts_with("Bonus Skill")), "{:?}", ty.hint);
+    }
+
+    #[test]
+    fn dialogs_parse_and_link_to_services() {
+        for rel in ["Game Dev/JD/zxserver/zgame/gs/config/elements.data", "Game Dev/JD/1792/gamed/config/elements.data", "Games/ForsakenJD/element/data/elements.data"] {
+            let Some(doc) = open(rel) else { continue };
+            let talks = doc.talks().unwrap();
+            assert_eq!(talks.len(), doc.file.talk_count as usize, "{rel}");
+            let seg = doc.file.segments.iter().find(|s| s.kind == SegmentKind::Talk).unwrap();
+            let last = doc.talk(talks.len() - 1).unwrap();
+            assert_eq!(last.talk.offset + last.talk.size, seg.offset + seg.size, "{rel}: dialogs end at EOF");
+            assert!(doc.talk(0).unwrap().talk.windows.iter().any(|w| w.parent == talk::NO_PARENT), "{rel}: a root window");
+            let used = talks.iter().filter(|t| t.users > 0).count();
+            eprintln!("{rel}: {} dialogs, {used} opened by records", talks.len());
+            assert!(used > talks.len() / 4, "{rel}: services open dialogs");
+            // A service's id_dialog links to its dialog.
+            let service = doc.by_struct["NPC_TALK_SERVICE"][0];
+            let row = doc.records(service).unwrap().into_iter().position(|r| r.id != 0).unwrap();
+            let node = doc.record(service, row).unwrap().nodes.into_iter().find(|n| n.name == "id_dialog").unwrap();
+            let index = node.talk.expect("id_dialog links to a dialog");
+            assert_eq!(doc.talk(index).unwrap().talk.id.to_string(), node.value.unwrap());
+        }
     }
 
     #[test]

@@ -63,6 +63,8 @@ export interface FieldNode {
   hint?: string;
   /** Referenced record as [list, row]. */
   link?: [number, number];
+  /** The NPC dialog this value opens (index into the dialogs). */
+  talk?: number;
   display?: string;
   comment?: string;
   children?: FieldNode[];
@@ -300,4 +302,49 @@ export interface FindResult {
   hits: FindHit[];
   /** Matches in all, including those past the limit. */
   total: number;
+}
+
+/** An NPC dialog in the list of dialogs. */
+export interface TalkSummary {
+  index: number;
+  id: number;
+  title: string;
+  windows: number;
+  options: number;
+  /** Records that open the dialog (through `id_dialog`). */
+  users: number;
+  usedBy?: string;
+}
+
+export interface TalkOption {
+  /** A child window, or a function when the top bit is set. */
+  id: number;
+  text: string;
+  param: number;
+}
+
+export interface TalkWindow {
+  id: number;
+  /** 0xFFFFFFFF for the root window. */
+  parent: number;
+  text: string;
+  options: TalkOption[];
+}
+
+export interface TalkUser {
+  list: number;
+  row: number;
+  id: number;
+  name: string;
+}
+
+export interface TalkDetail {
+  index: number;
+  id: number;
+  /** The dialog's prompt ("RootNode" in most). */
+  text: string;
+  windows: TalkWindow[];
+  offset: number;
+  size: number;
+  users: TalkUser[];
 }

@@ -110,6 +110,21 @@ Records open in tabs above the inspector:
   middle-click closes one.
 - Open tabs are remembered per file.
 
+## NPC dialogs
+
+**NPC Dialogs**, at the top of the list sidebar, holds the `talk_proc` block at the end of the
+file. A dialog is a tree of windows: each has the NPC's text and options that open a child
+window or run a function (Back, Exit, and the NPC services of `SERVICE_TYPE` in ExpTypes.h).
+
+- **Conversation** plays it like the game: pick options, go back along the trail, start over.
+  Texts show their line breaks and `^RRGGBB` colours.
+- **Outline** lays out every window as a tree, with windows no option reaches listed apart.
+  Click one to continue the conversation from there.
+- **Opened by** lists the records whose `id_dialog` points at the dialog (talk, shop, heal,
+  teleport services…). In those records, `id_dialog` links to the dialog.
+
+Dialog tabs work like record tabs (Alt+← goes back to the service you came from).
+
 ## Find
 
 Ctrl+G (or Ctrl+Shift+F, or the box in the top bar) finds records in every list: by ID
