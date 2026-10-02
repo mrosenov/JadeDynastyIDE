@@ -348,3 +348,74 @@ export interface TalkDetail {
   size: number;
   users: TalkUser[];
 }
+
+// ---------------------------------------------------------------- advanced search
+
+export type SearchOp =
+  | "eq"
+  | "ne"
+  | "lt"
+  | "le"
+  | "gt"
+  | "ge"
+  | "in"
+  | "not_in"
+  | "contains"
+  | "starts"
+  | "ends"
+  | "has_flags"
+  | "lacks_flags"
+  | "empty"
+  | "not_empty";
+
+export interface SearchCondition {
+  /** A field name ("proc_type"), or a dotted path ("addons.id"). */
+  field: string;
+  op: SearchOp;
+  value: string;
+}
+
+export type SearchQuery =
+  | {
+      mode: "value";
+      value: string;
+      kind: "int" | "float" | "text" | "hex";
+      list: number | null;
+      includeUnknown: boolean;
+      caseSensitive: boolean;
+    }
+  | { mode: "conditions"; conditions: SearchCondition[]; matchAll: boolean; list: number | null };
+
+export interface SearchMatch {
+  /** "addons[2].id", or "+0x01F4" for bytes no layout describes. */
+  field: string;
+  off: number;
+  value: string;
+  label?: string;
+}
+
+export interface SearchHit {
+  list: number;
+  row: number;
+  id: number;
+  name: string;
+  icon?: number;
+  matches: SearchMatch[];
+}
+
+export interface SearchReport {
+  hits: SearchHit[];
+  matchedRecords: number;
+  matchedLists: number;
+  scannedLists: number;
+  scannedRecords: number;
+  truncated: boolean;
+  elapsedMs: number;
+}
+
+export interface SearchFieldName {
+  name: string;
+  lists: number;
+  kind: "int" | "float" | "text" | "bytes";
+  set?: string;
+}

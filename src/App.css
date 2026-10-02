@@ -5,6 +5,8 @@
   --bg-hover: #1b2226;
   --bg-active: #173a31;
   --border: #232b30;
+  /* Borders of form controls, which must stand out. */
+  --border-strong: #3a4750;
   --text: #dce4e8;
   --text-dim: #8a979e;
   --text-faint: #5d686e;
@@ -32,6 +34,7 @@
     --bg-hover: #eef2f3;
     --bg-active: #d9f3e8;
     --border: #dde3e6;
+    --border-strong: #b9c4ca;
     --text: #1b2327;
     --text-dim: #5b6a71;
     --text-faint: #98a4aa;
@@ -2959,4 +2962,409 @@ button.outline-node:hover {
 }
 .outline-section {
   margin: 14px 0 4px;
+}
+
+/* ------------------------------------------------------------ advanced search */
+
+/* The search takes the place of the list sidebar and the record table. */
+.workspace.searching {
+  grid-template-columns: minmax(460px, 620px) minmax(0, 1fr);
+}
+.search-slot {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+}
+.search-slot[hidden] {
+  display: none;
+}
+.search-panel {
+  flex: 1;
+  min-width: 0;
+  border-right: 1px solid var(--border);
+}
+.search-panel .pane-head {
+  gap: 10px;
+}
+.search-panel .pane-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.segmented button {
+  height: 26px;
+  padding: 0 12px;
+  border: 0;
+  background: none;
+  font-size: 12px;
+  cursor: pointer;
+}
+.segmented button + button {
+  border-left: 1px solid var(--border);
+}
+.segmented button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.search-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  border-bottom: 1px solid var(--border);
+}
+.search-note {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.search-results {
+  flex: 1;
+  min-height: 0;
+  padding-bottom: 12px;
+}
+.search-group-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elev);
+  font-weight: 600;
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.caret-icon {
+  flex: none;
+  color: var(--text-dim);
+  transition: transform 0.12s;
+}
+.caret-icon.open {
+  transform: rotate(90deg);
+}
+.search-hit {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 3px 12px 3px 30px;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.search-hit:hover {
+  background: var(--bg-hover);
+}
+.search-hit.active {
+  background: var(--bg-active);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+.search-hit-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.search-hit-match {
+  font-size: 11.5px;
+  color: var(--accent);
+}
+.icon-btn.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* Search form: controls that read as controls, labelled columns, a card per condition. */
+.search-form {
+  gap: 12px;
+  padding: 12px 14px 14px;
+  background: var(--bg-pane);
+}
+.sf-modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  background: var(--bg);
+}
+.sf-modes button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.sf-modes button:hover:not(.active) {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+.sf-modes button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.sf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.sf-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.sf-control {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+.sf-control.mono {
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+select.sf-control {
+  padding: 0 6px;
+  cursor: pointer;
+}
+.sf-control:hover {
+  border-color: var(--text-faint);
+}
+.sf-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.sf-control::placeholder {
+  color: var(--text-faint);
+}
+.sf-control.invalid {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.sf-conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sf-cond-head,
+.sf-cond {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1.25fr) 124px minmax(0, 1fr) 30px;
+  gap: 8px;
+}
+.sf-cond-head {
+  padding: 0 10px;
+  margin-bottom: -4px;
+}
+.sf-cond {
+  align-items: start;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-elev);
+}
+.sf-cond:focus-within {
+  border-color: var(--border-strong);
+}
+.sf-join {
+  display: grid;
+  place-items: center;
+  height: 34px;
+  border-radius: 7px;
+  background: var(--bg-hover);
+  color: var(--text-dim);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.sf-join.first {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.sf-field-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.sf-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+.sf-hint.danger {
+  color: var(--danger);
+}
+.sf-kind,
+.sf-set {
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 17px;
+}
+.sf-kind {
+  background: var(--bg-hover);
+  color: var(--text-dim);
+}
+.sf-kind.int {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.sf-kind.float {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+.sf-kind.text {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.sf-set {
+  border: 1px solid var(--border-strong);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.sf-novalue {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px dashed var(--border);
+  border-radius: 7px;
+}
+.sf-remove {
+  width: 30px;
+  height: 34px;
+  color: var(--text-dim);
+}
+.sf-remove:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+.sf-cond-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sf-add {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 8px;
+  background: none;
+  color: var(--text-dim);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.sf-add:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.sf-add:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.sf-match {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sf-match .segmented button {
+  height: 32px;
+  padding: 0 16px;
+}
+.segmented {
+  border-color: var(--border-strong);
+}
+.sf-value {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 8px;
+}
+.sf-submit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 2px;
+}
+.sf-submit .btn.primary {
+  height: 36px;
+  padding: 0 22px;
+  font-size: 13.5px;
+}
+.search-form .check {
+  font-size: 12.5px;
+  color: var(--text);
+}
+.sf-hint {
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+.sf-set {
+  min-width: 0;
 }

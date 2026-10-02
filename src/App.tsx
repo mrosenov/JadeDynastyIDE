@@ -6,7 +6,8 @@ import type { FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, Settin
 import { bytes, count } from "./elements/format";
 import { ListSidebar } from "./components/ListSidebar";
 import { RecordTable } from "./components/RecordTable";
-import { RecordInspector } from "./components/RecordInspector";
+import { type FieldFocus, RecordInspector } from "./components/RecordInspector";
+import { AdvancedSearch } from "./components/AdvancedSearch";
 import { SchemaEditor } from "./components/SchemaEditor";
 import { TabBar, type TabLabel } from "./components/TabBar";
 import { SettingsDialog } from "./components/SettingsDialog";
@@ -17,7 +18,7 @@ import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import "./App.css";
 import logo from "./assets/logo.png";
-import { Braces, ChevronLeft, ChevronRight, FolderOpen, Gem, Search, Settings } from "lucide-react";
+import { Braces, ChevronLeft, ChevronRight, FolderOpen, Gem, ListFilter, Search, Settings } from "lucide-react";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -116,6 +117,8 @@ export default function App() {
   const started = useRef(false);
   const iconGen = settingsView?.client?.hasItemIcons ? settingsView.iconGeneration : null;
   const [findOpen, setFindOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [focus, setFocus] = useState<FieldFocus | null>(null);
   const [lastFind, setLastFind] = useState<LastFind | null>(null);
   // Hits belong to one file.
   useEffect(() => setLastFind(null), [summary?.path]);
@@ -319,7 +322,10 @@ export default function App() {
     if (!summary || editorOpen) return;
     const onKey = (e: KeyboardEvent) => {
       const mod = e.ctrlKey || e.metaKey;
-      if ((mod && e.key.toLowerCase() === "g") || (mod && e.shiftKey && e.key.toLowerCase() === "f")) {
+      if (mod && e.shiftKey && e.key.toLowerCase() === "f") {
+        e.preventDefault();
+        setSearchOpen((o) => !o);
+      } else if (mod && e.key.toLowerCase() === "g") {
         e.preventDefault();
         setFindOpen(true);
       } else if (e.key === "F3") {
@@ -390,6 +396,14 @@ export default function App() {
               <Search size={14} />
               <span className="truncate">{lastFind ? lastFind.query : "Find by ID or name…"}</span>
               <kbd>Ctrl G</kbd>
+            </button>
+            <button
+              className={"icon-btn small" + (searchOpen ? " active" : "")}
+              onClick={() => setSearchOpen((o) => !o)}
+              title="Advanced search: conditions on fields, or a value in any field (Ctrl+Shift+F)"
+              aria-label="Advanced search"
+            >
+              <ListFilter size={15} />
             </button>
             {lastFind && lastFind.hits.length > 1 && (
               <>
@@ -480,9 +494,25 @@ export default function App() {
           />
         </main>
       ) : summary ? (
-        <main className="workspace">
-          <ListSidebar lists={summary.lists} selected={listIndex} onSelect={selectList} talkCount={summary.talkCount} />
-          {list ? (
+        <main className={"workspace" + (searchOpen ? " searching" : "")}>
+          {/* Kept mounted while closed, so the search and its results stay. */}
+          <div className="search-slot" hidden={!searchOpen}>
+            <AdvancedSearch
+              key={summary.path}
+              lists={summary.lists}
+              currentList={listIndex}
+              icon={icon}
+              onOpen={(hit, off, newTab) => {
+                openLocation({ list: hit.list, row: hit.row }, newTab ? { newTab: true } : {});
+                if (off !== null) setFocus({ list: hit.list, row: hit.row, off, nonce: Date.now() });
+              }}
+              onClose={() => setSearchOpen(false)}
+            />
+          </div>
+          {!searchOpen && (
+            <ListSidebar lists={summary.lists} selected={listIndex} onSelect={selectList} talkCount={summary.talkCount} />
+          )}
+          {searchOpen ? null : list ? (
             <RecordTable
               list={list}
               rows={rows}
@@ -529,6 +559,7 @@ export default function App() {
                 icon={icon}
                 onEditSet={(key) => setSetsEditor({ key })}
                 lists={summary.lists}
+                focus={focus}
               />
             ) : (
               <section className="pane inspector">

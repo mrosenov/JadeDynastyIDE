@@ -3,6 +3,7 @@ pub mod decode;
 pub mod format;
 pub mod reader;
 pub mod refs;
+pub mod search;
 pub mod talk;
 
 use std::collections::HashMap;
@@ -748,6 +749,35 @@ impl Document {
             .map_err(Clone::clone)
     }
 
+    /// The advanced search (see [`search`]).
+    pub fn search(&self, query: &search::Query) -> Result<search::Report, String> {
+        let views: Vec<search::ListView> = self
+            .file
+            .lists
+            .iter()
+            .enumerate()
+            .map(|(index, block)| search::ListView {
+                index,
+                item_size: block.item_size,
+                count: block.count,
+                data: &self.file.data,
+                data_offset: block.data_offset,
+                slots: self.def(index).map(|(_, d)| search::slots(d, block.item_size)).unwrap_or_default(),
+            })
+            .collect();
+        let set_of = |key: &str| self.catalog.enum_set(None, key);
+        let describe = |list: usize, bytes: &[u8]| {
+            let def = self.def(list).map(|(_, d)| d);
+            (Self::record_id(bytes), Self::record_name(bytes, Self::name_field(def)), self.record_icon(bytes, Self::icon_field(def)))
+        };
+        search::Searcher { set_of: &set_of, describe: &describe }.run(query, &views)
+    }
+
+    /// Field names of the file's lists, for search suggestions.
+    pub fn field_names(&self) -> Vec<search::FieldName> {
+        search::field_names((0..self.file.lists.len()).filter_map(|i| Some((self.def(i)?.1, self.file.lists[i].item_size))))
+    }
+
     /// Every NPC dialog, in file order.
     pub fn talks(&self) -> Result<Vec<TalkSummary>, String> {
         let data = self.talk_data()?;
@@ -1051,6 +1081,40 @@ mod tests {
             let index = node.talk.expect("id_dialog links to a dialog");
             assert_eq!(doc.talk(index).unwrap().talk.id.to_string(), node.value.unwrap());
         }
+    }
+
+    #[test]
+    fn search_by_conditions_and_values() {
+        use search::{Condition, Op, Query, ValueKind};
+        let Some(doc) = open("Game Dev/JD/zxserver/zgame/gs/config/elements.data") else { return };
+        let cond = |field: &str, op: Op, value: &str| Condition { field: field.into(), op, value: value.into() };
+        // Equipment with a level requirement above 100 that cannot be traded.
+        let q = Query::Conditions {
+            conditions: vec![cond("require_level", Op::Gt, "100"), cond("proc_type", Op::HasFlags, "16")],
+            match_all: true,
+            list: None,
+        };
+        let r = doc.search(&q).unwrap();
+        eprintln!("conditions: {} records in {} lists ({} ms)", r.matched_records, r.matched_lists, r.elapsed_ms);
+        assert!(r.matched_records > 0);
+        for hit in &r.hits {
+            let detail = doc.record(hit.list, hit.row).unwrap();
+            let level = detail.nodes.iter().find(|n| n.name.eq_ignore_ascii_case("require_level")).unwrap();
+            assert!(level.value.as_ref().unwrap().parse::<i64>().unwrap() > 100);
+        }
+        // A record's ID found by value lands on its id field.
+        let row = doc.records(3).unwrap().into_iter().find(|r| r.id > 1000).unwrap();
+        let q = Query::Value { value: row.id.to_string(), kind: ValueKind::Int, list: Some(3), include_unknown: false, case_sensitive: false };
+        let r = doc.search(&q).unwrap();
+        assert!(r.hits.iter().any(|h| h.row == row.index && h.matches.iter().any(|m| m.field == "id")));
+        // Text in names, case-insensitive.
+        let name: String = row.name.chars().take(3).collect();
+        let q = Query::Value { value: name.to_uppercase(), kind: ValueKind::Text, list: Some(3), include_unknown: false, case_sensitive: false };
+        assert!(doc.search(&q).unwrap().hits.iter().any(|h| h.row == row.index));
+        // Bad values are reported.
+        let q = Query::Conditions { conditions: vec![cond("require_level", Op::Lt, "abc")], match_all: true, list: None };
+        assert!(doc.search(&q).is_err());
+        assert!(doc.field_names().iter().any(|f| f.name == "proc_type" && f.lists > 50));
     }
 
     #[test]

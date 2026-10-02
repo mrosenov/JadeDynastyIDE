@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ListSummary, RecordDetail, RecordRow } from "../elements/types";
 import { LAYOUT_LABEL, hex, layoutHelp } from "../elements/format";
 import { FieldTree } from "./FieldTree";
@@ -30,9 +30,19 @@ interface Props {
   onEditSet?: (key: string) => void;
   /** All lists of the file (for naming referring lists). */
   lists: ListSummary[];
+  /** Select the field at this offset once the record shows (e.g. a search result). */
+  focus?: FieldFocus | null;
 }
 
-export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, onEditSet, lists }: Props) {
+export interface FieldFocus {
+  list: number;
+  row: number;
+  off: number;
+  /** Changes with every request, so the same field can be focused again. */
+  nonce: number;
+}
+
+export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, onEditSet, lists, focus }: Props) {
   const [expanded, setExpanded] = useState<Set<Path>>(new Set());
   const [selected, setSelected] = useState<Path | null>(null);
   const [hovered, setHovered] = useState<Path | null>(null);
@@ -64,6 +74,20 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
     setReadOffset(null);
   }, [list.index]);
   useEffect(() => setHovered(null), [detail]);
+
+  // Open at a field: expand down to it and select it.
+  const focused_ = useRef<number | null>(null);
+  useEffect(() => {
+    if (!focus || !detail || focused_.current === focus.nonce) return;
+    if (detail.list !== focus.list || detail.index !== focus.row) return;
+    focused_.current = focus.nonce;
+    const chain = pathAt(detail.nodes, focus.off);
+    if (!chain.length) return;
+    setView("fields");
+    setExpanded((prev) => new Set([...prev, ...chain.slice(0, -1)]));
+    setSelected(chain[chain.length - 1]);
+    setReadOffset(undefinedSpan(detail.nodes, focus.off) ? focus.off : null);
+  }, [detail, focus]);
 
   if (!row || !detail) {
     return (

@@ -129,6 +129,16 @@ async fn find_records(query: String, state: State<'_, AppState>) -> Result<eleme
 }
 
 #[tauri::command]
+async fn search_records(query: elements::search::Query, state: State<'_, AppState>) -> Result<elements::search::Report, String> {
+    state.with_document(|doc| doc.search(&query))
+}
+
+#[tauri::command]
+async fn search_field_names(state: State<'_, AppState>) -> Result<Vec<elements::search::FieldName>, String> {
+    state.with_document(|doc| Ok(doc.field_names()))
+}
+
+#[tauri::command]
 async fn list_talks(state: State<'_, AppState>) -> Result<Vec<elements::TalkSummary>, String> {
     state.with_document(|doc| doc.talks())
 }
@@ -437,6 +447,8 @@ pub fn run() {
             inspect_client,
             save_settings,
             find_records,
+            search_records,
+            search_field_names,
             list_talks,
             get_talk,
             named_sets,

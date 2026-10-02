@@ -125,9 +125,27 @@ window or run a function (Back, Exit, and the NPC services of `SERVICE_TYPE` in 
 
 Dialog tabs work like record tabs (Alt+← goes back to the service you came from).
 
+## Advanced search
+
+Ctrl+Shift+F (or the filter button next to the find box) opens the search in place of the list
+and record panes; it keeps its results while closed.
+
+- **Conditions** on named fields: `= ≠ < ≤ > ≥`, *is one of* / *is none of* (`7, 8, 15`),
+  *has flags* / *lacks flags*, *contains*, *starts with*, *ends with*, *is empty*. Match all
+  conditions (lists without one of the fields are skipped) or any. Field names are suggested
+  from the open file; a dotted path (`addons.id`) picks a struct member. Fields inside arrays
+  match when any element does (for ≠, *is none of* and *lacks flags*: when every element does).
+  Values can be numbers, `0x` hex, or the labels of the field's enum or mask
+  (`Cannot be traded | Quest item`).
+- **Value** in any field: an integer, float, text (case-insensitive unless asked) or hex bytes,
+  optionally in bytes no layout describes.
+
+Results are grouped by list and show the matching field. Clicking one opens the record with
+that field selected (Ctrl+click: new tab). *Copy IDs* copies the results' IDs, one per line.
+
 ## Find
 
-Ctrl+G (or Ctrl+Shift+F, or the box in the top bar) finds records in every list: by ID
+Ctrl+G (or the box in the top bar) finds records in every list: by ID
 when the query is a number, and by name (case-insensitive) always. ID matches come first,
 then exact names, names starting with the query, and the rest. Enter opens a result in the
 current tab, Ctrl+Enter in a new one. Afterwards F3 / Shift+F3 step through the same results.
