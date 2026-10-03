@@ -25,7 +25,7 @@ a reference for ideas only; JD IDE replaces it.
 - They like discussing larger design choices first. Some were **rejected** — don't
   reintroduce them:
   - free-form reorganising of fields in the schema editor (too confusing for new users);
-  - an "add blank record" operation (clone is the only way to create records).
+  - an "add blank record" operation (create records by cloning or importing existing records).
 - Plain, readable UI; small polish requests are common (alignment, visibility, wording).
 
 ## Commands
@@ -34,7 +34,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (57 at last run), ~6 s
+cd src-tauri && cargo test --lib   # Rust tests (67 at last run), ~6 s
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -64,7 +64,8 @@ Environment quirks (Windows 11, Git Bash):
 | `elements/refs.rs` | References between lists, ID spaces (`registry_space`), "referenced by". |
 | `elements/problems.rs` | Problems scan (duplicate IDs, broken refs, missing paths, …). |
 | `elements/compare.rs` | Compare two files (summary, per-list diff, Markdown report). |
-| `elements/export.rs` | CSV (with BOM) / JSON export of an item, a list, or search results. |
+| `elements/export.rs` | Versioned JSON export of an item, a list, or search results. |
+| `elements/import.rs` | JSON preview, list/ID matching, version/layout checks, row validation and stale-preview guard. Versioned JSON adds missing records from complete source bytes; additions and updates are one undo step. |
 | `elements/coverage.rs` | Layout coverage report. |
 | `elements/talk.rs` | NPC dialog (TALK_PROC) parsing. |
 | `elements/edit.rs` | In-memory editing: journal, undo/redo, history, revert, clone, delete, bulk edit, value encoding. |
@@ -75,7 +76,7 @@ Environment quirks (Windows 11, Git Bash):
 
 ### UI (`src/`)
 
-- `App.tsx` — app shell: menus (File/Edit), panels, tabs, shortcuts, edit/save flow.
+- `App.tsx` — app shell: menus (File/Edit/Tools), panels, tabs, shortcuts, edit/save flow.
 - `elements/api.ts` — one function per Tauri command. `elements/types.ts` mirrors the Rust
   structs (serde `camelCase`). **When you add a Rust command, add it to
   `generate_handler!` in `lib.rs`, to `api.ts`, and its types to `types.ts`.**
@@ -257,8 +258,11 @@ Never write into these folders from tests. Tests save into `std::env::temp_dir()
 
 ## Open ideas / next steps
 
-- **Import CSV/JSON back into a file.** It waited for saving, which now exists. Export
-  formats are in `export.rs`.
+- JSON import (Tools › Import JSON) updates existing records. New JSON exports wrap
+  `records` with `elementsVersion`, `formatVersion`, and list metadata; `_raw` preserves complete
+  record bytes. These exports can add missing IDs in bulk only when versions and list layouts
+  match. Legacy arrays remain update-only. IDs are preserved, additions check ID-space
+  conflicts, invalid rows are skipped entirely, and preview tokens cover input, data and schemas.
 - Pick-aware export (export only the picked search results).
 - More data files in the activity bar (tasks.data, gshop.data, …).
 - v165: the 8 bytes before list 296 that layouts mark as a checksum slot look like an empty

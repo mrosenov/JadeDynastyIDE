@@ -5,6 +5,7 @@ pub mod decode;
 pub mod edit;
 pub mod export;
 pub mod format;
+pub mod import;
 pub mod problems;
 pub mod reader;
 pub mod refs;
@@ -1242,26 +1243,26 @@ mod tests {
 
     #[test]
     fn exports_lists_and_search_results() {
-        use export::{Format, Source};
+        use export::Source;
         let Some(doc) = open("Game Dev/JD/zxserver/zgame/gs/config/elements.data") else { return };
         let dir = std::env::temp_dir().join(format!("jdide-export-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
-        let csv = dir.join("list3.csv");
-        let r = doc.export(&Source::List { list: 3 }, Format::Csv, true, csv.to_str().unwrap()).unwrap();
+        let list = dir.join("list3.json");
+        let r = doc.export(&Source::List { list: 3 }, true, list.to_str().unwrap()).unwrap();
         assert_eq!(r.records, doc.file.lists[3].count);
-        let text = std::fs::read_to_string(&csv).unwrap();
-        let header = text.lines().next().unwrap();
-        assert!(header.starts_with("﻿_list,_listName,_row,id,"), "{}", &header[..60]);
-        assert!(header.contains("proc_type#label"));
-        assert_eq!(text.lines().count(), r.records + 1);
+        let parsed: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(&list).unwrap()).unwrap();
+        assert_eq!(parsed["records"].as_array().unwrap().len(), r.records);
+        assert!(parsed["records"][0].get("proc_type#label").is_some());
         // Every match of a search, not just the first 500.
         let query = search::Query::Conditions { conditions: vec![search::Condition { field: "proc_type".into(), op: search::Op::HasFlags, value: "16".into() }], match_all: true, list: None };
         let json = dir.join("all.json");
-        let r = doc.export(&Source::Search { query }, Format::Json, false, json.to_str().unwrap()).unwrap();
+        let r = doc.export(&Source::Search { query }, false, json.to_str().unwrap()).unwrap();
         assert!(r.records > search::LIMIT);
-        let parsed: Vec<serde_json::Value> = serde_json::from_str(&std::fs::read_to_string(&json).unwrap()).unwrap();
-        assert_eq!(parsed.len(), r.records);
-        assert!(parsed[0]["id"].is_number());
+        let parsed: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(&json).unwrap()).unwrap();
+        assert_eq!(parsed["elementsVersion"], 156);
+        assert_eq!(parsed["records"].as_array().unwrap().len(), r.records);
+        assert!(parsed["records"][0]["id"].is_number());
+        assert!(parsed["records"][0]["_raw"].is_string());
         let _ = std::fs::remove_dir_all(&dir);
     }
 

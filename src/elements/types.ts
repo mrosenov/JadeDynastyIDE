@@ -508,6 +508,22 @@ export interface Exported {
   columns: number;
 }
 
+export interface ImportReport {
+  token: string;
+  total: number;
+  matched: number;
+  changing: number;
+  adding: number;
+  sourceVersion: number | null;
+  unchanged: number;
+  rejected: number;
+  fields: number;
+  changes: { sourceRow: number; list: number; id: number; field: string; old: string; new: string }[];
+  additions: { sourceRow: number; list: number; id: number; name: string }[];
+  issues: { sourceRow: number; message: string }[];
+  state: EditState | null;
+}
+
 export interface CompareFile {
   path: string;
   version: number;
@@ -662,7 +678,7 @@ export interface HistoryRecord {
   list: number;
   /** The row now (absent: the record is deleted). */
   row?: number;
-  action: "edit" | "clone" | "delete";
+  action: "edit" | "clone" | "import" | "delete";
   id: number;
   name: string;
   icon?: number;

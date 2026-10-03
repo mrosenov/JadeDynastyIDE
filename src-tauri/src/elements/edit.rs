@@ -139,7 +139,7 @@ pub struct HistoryRecord {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub icon: Option<u32>,
-    /// "edit", "clone" or "delete".
+    /// "edit", "clone", "import" or "delete".
     pub action: &'static str,
     pub fields: Vec<FieldDiff>,
 }
@@ -301,6 +301,39 @@ pub fn encode(ty: &Ty, value: &str) -> Result<Vec<u8>, String> {
 }
 
 impl Document {
+    /// Applies a validated import as one journal entry, keeping exact bytes for undo.
+    pub(super) fn apply_import(&mut self, records: Vec<(usize, usize, Vec<u8>)>, additions: Vec<(usize, Vec<u8>)>) -> Result<EditState, String> {
+        // Validate every insertion before allocating identities or changing the journal.
+        for (list, bytes) in &additions {
+            if self.file.lists.get(*list).is_none_or(|block| block.item_size != bytes.len()) { return Err("Import record size changed".into()); }
+        }
+        let mut ops = Vec::new();
+        for (list, row, new) in records {
+            let uid = self.uid_at(list, row)?;
+            let old = self.file.record(list, row).ok_or("No such record")?.to_vec();
+            if old.len() != new.len() { return Err("Import record size changed".into()); }
+            let slots = self.def(list).map(|(_, d)| search::slots(d, old.len())).unwrap_or_default();
+            for slot in slots {
+                let range = slot.off..slot.off + slot.size();
+                if old[range.clone()] != new[range.clone()] {
+                    ops.push(Op::Set { list, uid, off: slot.off, old: old[range.clone()].to_vec(), new: new[range].to_vec() });
+                }
+            }
+        }
+        let mut counts: Vec<_> = self.file.lists.iter().map(|b| b.count).collect();
+        for (list, bytes) in additions {
+            let uid = self.edits.next_uid;
+            self.edits.next_uid += 1;
+            self.edits.born.insert(uid);
+            ops.push(Op::Insert { list, uid, row: counts[list], bytes });
+            counts[list] += 1;
+        }
+        if ops.is_empty() { return Ok(self.edit_state()); }
+        let count = ops.iter().map(|op| (op.list(), op.uid())).collect::<HashSet<_>>().len();
+        let entry = self.entry(&format!("Import ({count} records)"), ops, None);
+        Ok(self.apply(entry))
+    }
+
     /// The type of the field at `off` in this record: a layout field (its
     /// conditional type applied) or, for bytes no field describes, an int32.
     fn field_type(&self, list: usize, row: usize, off: usize) -> Result<Ty, String> {
@@ -645,7 +678,7 @@ impl Document {
                 };
                 let (action, fields) = match op {
                     Op::Set { off, old, new, .. } => ("edit", self.diff_fields(list, &bytes, *off, old, new)),
-                    Op::Insert { .. } => ("clone", vec![]),
+                    Op::Insert { .. } => (if e.label.starts_with("Import (") { "import" } else { "clone" }, vec![]),
                     Op::Remove { .. } => ("delete", vec![]),
                 };
                 let def = self.def(list).map(|(_, d)| d);

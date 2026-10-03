@@ -15,6 +15,7 @@ import { ComparePanel } from "./components/ComparePanel";
 import { HistoryPanel } from "./components/HistoryPanel";
 import { DeleteDialog } from "./components/DeleteDialog";
 import { ExportDialog } from "./components/ExportMenu";
+import { ImportRecordsDialog } from "./components/ImportRecordsDialog";
 import { type Menu, MenuBar } from "./components/MenuBar";
 import { SchemaEditor } from "./components/SchemaEditor";
 import { TabBar, type TabLabel } from "./components/TabBar";
@@ -35,6 +36,7 @@ import {
   CircleAlert,
   Database,
   Download,
+  FileUp,
   FileStack,
   FolderOpen,
   Gauge,
@@ -183,8 +185,9 @@ export default function App() {
     setMounted((m) => (m.has(p) ? m : new Set([...m, p])));
     setPanel(p);
   };
-  // File › Export: what to export, in a dialog.
+  // Tools › Export: what to export, in a dialog.
   const [exporting, setExporting] = useState<{ source: ExportSource; name: string; title: string } | null>(null);
+  const [importing, setImporting] = useState(false);
   const [focus, setFocus] = useState<FieldFocus | null>(null);
   const [lastFind, setLastFind] = useState<LastFind | null>(null);
   // Hits belong to one file.
@@ -299,6 +302,7 @@ export default function App() {
   // Ctrl+O and drag-and-drop open a file.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (document.querySelector('.import-records-dialog')) return;
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "o") {
         e.preventDefault();
         chooseFile();
@@ -310,6 +314,7 @@ export default function App() {
     };
     window.addEventListener("keydown", onKey);
     const unlisten = getCurrentWebview().onDragDropEvent((event) => {
+      if (document.querySelector('.import-records-dialog')) return;
       if (event.payload.type === "drop" && event.payload.paths.length) loadFile(event.payload.paths[0]);
     });
     return () => {
@@ -546,6 +551,7 @@ export default function App() {
   useEffect(() => {
     if (!summary || editorOpen) return;
     const onKey = (e: KeyboardEvent) => {
+      if (document.querySelector('.import-records-dialog')) return;
       const mod = e.ctrlKey || e.metaKey;
       const typing = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement;
       if (mod && !typing && e.key.toLowerCase() === "d") {
@@ -657,6 +663,42 @@ export default function App() {
         { label: "Compare with another file…", icon: GitCompareArrows, onSelect: () => showPanel("compare"), disabled: !summary, checked: panel === "compare", title: noFile },
         { label: "Layout coverage", icon: Gauge, onSelect: () => showPanel("coverage"), disabled: !summary, checked: panel === "coverage", title: noFile },
         "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: edits.undo ? `Undo ${edits.undo}` : "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: undo, disabled: !edits.undo },
+        { label: edits.redo ? `Redo ${edits.redo}` : "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: redo, disabled: !edits.redo },
+        "separator",
+        { label: "Clone record", icon: Copy, shortcut: "Ctrl+D", onSelect: cloneOpen, disabled: !canRecordOp, title: canRecordOp ? "Copy the open record to the end of its list with a new ID" : "Open a record first" },
+        {
+          label: "Delete record…",
+          icon: Trash2,
+          shortcut: "Del",
+          onSelect: () => canRecordOp && setDeleting({ list: listIndex!, row: recordIndex! }),
+          disabled: !canRecordOp,
+          title: canRecordOp ? "Delete the open record (asks first, showing what points at it)" : "Open a record first",
+        },
+        "separator",
+        { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => showPanel("history"), disabled: !summary, checked: panel === "history", title: noFile },
+        "separator",
+        { label: "Revert record", icon: RotateCcw, onSelect: revertRecord, disabled: !recordChanged, title: recordChanged ? `Put the open record back as the file was ${edits.lastSaved ? "last saved" : "opened"}` : "The open record has no edits" },
+        {
+          label: "Revert all changes…",
+          onSelect: revertAll,
+          disabled: editCount === 0,
+          badges: editCount ? [{ text: String(editCount), tone: "warning" as const }] : [],
+          title: `Put every changed record back as the file was ${edits.lastSaved ? "last saved" : "opened"} (undoable)`,
+        },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
         {
           label: "Export",
           icon: Download,
@@ -688,37 +730,7 @@ export default function App() {
             },
           ],
         },
-        "separator",
-        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
-      ],
-    },
-    {
-      label: "Edit",
-      accessKey: "e",
-      items: [
-        { label: edits.undo ? `Undo ${edits.undo}` : "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: undo, disabled: !edits.undo },
-        { label: edits.redo ? `Redo ${edits.redo}` : "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: redo, disabled: !edits.redo },
-        "separator",
-        { label: "Clone record", icon: Copy, shortcut: "Ctrl+D", onSelect: cloneOpen, disabled: !canRecordOp, title: canRecordOp ? "Copy the open record to the end of its list with a new ID" : "Open a record first" },
-        {
-          label: "Delete record…",
-          icon: Trash2,
-          shortcut: "Del",
-          onSelect: () => canRecordOp && setDeleting({ list: listIndex!, row: recordIndex! }),
-          disabled: !canRecordOp,
-          title: canRecordOp ? "Delete the open record (asks first, showing what points at it)" : "Open a record first",
-        },
-        "separator",
-        { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => showPanel("history"), disabled: !summary, checked: panel === "history", title: noFile },
-        "separator",
-        { label: "Revert record", icon: RotateCcw, onSelect: revertRecord, disabled: !recordChanged, title: recordChanged ? `Put the open record back as the file was ${edits.lastSaved ? "last saved" : "opened"}` : "The open record has no edits" },
-        {
-          label: "Revert all changes…",
-          onSelect: revertAll,
-          disabled: editCount === 0,
-          badges: editCount ? [{ text: String(editCount), tone: "warning" as const }] : [],
-          title: `Put every changed record back as the file was ${edits.lastSaved ? "last saved" : "opened"} (undoable)`,
-        },
+        { label: "Import JSON…", icon: FileUp, onSelect: () => setImporting(true), disabled: !summary, title: noFile },
       ],
     },
   ];
@@ -839,6 +851,7 @@ export default function App() {
       )}
 
       {exporting && <ExportDialog source={exporting.source} name={exporting.name} title={exporting.title} onClose={() => setExporting(null)} />}
+      {importing && summary && <ImportRecordsDialog onApplied={afterEdits} onClose={() => setImporting(false)} />}
 
       {findOpen && summary && (
         <FindPalette

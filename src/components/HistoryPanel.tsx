@@ -86,6 +86,7 @@ export function HistoryPanel({ lists, edits, icon, onUndo, onRedo, onChanged, on
           {r.name || <span className="muted">#{r.row}</span>}
           <span className="muted small"> · {lists[r.list]?.name ?? `List ${r.list}`}</span>
           {r.action === "clone" && <span className="tag ok"> cloned</span>}
+          {r.action === "import" && <span className="tag ok"> imported</span>}
           {r.action === "delete" && <span className="tag danger"> deleted</span>}
         </span>
         <span className="mono muted small">{r.id}</span>

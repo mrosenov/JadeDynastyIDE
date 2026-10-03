@@ -1,22 +1,16 @@
-//! Export records as CSV or JSON: one record, one list, or every match of a search.
+//! Export records as versioned JSON: one record, one list, or every match of a search.
 //!
-//! Each record becomes a row of its scalar fields, flattened by path
+//! Each record becomes an object of its scalar fields, flattened by path
 //! (`addons[2].id`), after `_list`, `_listName` and `_row` (so rows can be
-//! matched back on import). With labels, enum and mask fields get a
-//! `field#label` column too.
+//! located in the original export; import matches by list and ID). With labels, enum and mask fields get a
+//! `field#label` property too.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
+use md5::{Digest, Md5};
 use serde::{Deserialize, Serialize};
 
 use super::{search, Document};
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum Format {
-    Csv,
-    Json,
-}
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase", tag = "from")]
@@ -36,8 +30,38 @@ pub struct Exported {
 
 const FIXED: [&str; 3] = ["_list", "_listName", "_row"];
 
+pub const JSON_FORMAT: &str = "jdide-elements";
+pub const JSON_FORMAT_VERSION: u32 = 1;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct JsonList {
+    pub list: usize,
+    pub struct_name: Option<String>,
+    pub record_size: usize,
+    pub schema: String,
+}
+
 impl Document {
-    pub fn export(&self, source: &Source, format: Format, labels: bool, path: &str) -> Result<Exported, String> {
+    /// Byte interpretation, excluding comments, labels and other display-only metadata.
+    pub(super) fn export_list_metadata(&self, list: usize) -> JsonList {
+        fn shape(value: &mut serde_json::Value) {
+            match value {
+                serde_json::Value::Object(map) => {
+                    for key in ["c", "e", "display", "refs", "g"] { map.remove(key); }
+                    for value in map.values_mut() { shape(value); }
+                }
+                serde_json::Value::Array(values) => { for value in values { shape(value); } }
+                _ => {}
+            }
+        }
+        let mut fields = serde_json::to_value(self.def(list).map(|(_, d)| &d.fields)).expect("schema fields serialize");
+        shape(&mut fields);
+        JsonList { list, struct_name: self.lists[list].struct_name.clone(), record_size: self.file.lists[list].item_size,
+            schema: format!("{:x}", Md5::digest(fields.to_string().as_bytes())) }
+    }
+
+    pub fn export(&self, source: &Source, labels: bool, path: &str) -> Result<Exported, String> {
         let rows: Vec<(usize, usize)> = match source {
             Source::Item { list, row } => {
                 self.file.record(*list, *row).ok_or("No such record")?;
@@ -53,10 +77,9 @@ impl Document {
             return Err("Nothing to export.".into());
         }
 
-        // Columns: the fixed ones, then each list's fields in order of first use.
+        // Count distinct field paths across all exported lists.
         let mut slots: HashMap<usize, Vec<search::Slot>> = HashMap::new();
-        let mut columns: Vec<String> = FIXED.iter().map(|s| s.to_string()).collect();
-        let mut column_at: HashMap<String, usize> = HashMap::new();
+        let mut columns: HashSet<String> = FIXED.iter().map(|s| s.to_string()).collect();
         for &(list, _) in &rows {
             if slots.contains_key(&list) {
                 continue;
@@ -68,10 +91,7 @@ impl Document {
                     names.push(format!("{}#label", s.path));
                 }
                 for name in names {
-                    if !column_at.contains_key(&name) {
-                        column_at.insert(name.clone(), columns.len());
-                        columns.push(name);
-                    }
+                    columns.insert(name);
                 }
             }
             slots.insert(list, list_slots);
@@ -82,73 +102,32 @@ impl Document {
             self.catalog.enum_set(None, s.set.as_deref()?)?.label_for(v)
         };
 
-        let out = match format {
-            Format::Json => {
-                let records: Vec<serde_json::Value> = rows
-                    .iter()
-                    .map(|&(list, row)| {
-                        let bytes = self.file.record(list, row).unwrap();
-                        let mut o = serde_json::Map::new();
-                        o.insert("_list".into(), list.into());
-                        o.insert("_listName".into(), self.list_name(list).into());
-                        o.insert("_row".into(), row.into());
-                        for s in &slots[&list] {
-                            o.insert(s.path.clone(), s.json(bytes));
-                            if labels && s.set.is_some() {
-                                o.insert(format!("{}#label", s.path), label_of(s, bytes).map_or(serde_json::Value::Null, Into::into));
-                            }
-                        }
-                        serde_json::Value::Object(o)
-                    })
-                    .collect();
-                serde_json::to_string_pretty(&records).map_err(|e| e.to_string())? + "\n"
-            }
-            Format::Csv => {
-                // A BOM, so spreadsheet apps read the UTF-8 (Chinese names) right.
-                let mut out = String::from("\u{feff}");
-                out += &columns.iter().map(|c| csv_cell(c)).collect::<Vec<_>>().join(",");
-                out += "\r\n";
-                for &(list, row) in &rows {
-                    let bytes = self.file.record(list, row).unwrap();
-                    let mut cells = vec![String::new(); columns.len()];
-                    cells[0] = list.to_string();
-                    cells[1] = self.list_name(list);
-                    cells[2] = row.to_string();
-                    for s in &slots[&list] {
-                        cells[column_at[&s.path]] = s.text(bytes);
-                        if labels && s.set.is_some() {
-                            cells[column_at[&format!("{}#label", s.path)]] = label_of(s, bytes).unwrap_or_default();
-                        }
+        let records: Vec<serde_json::Value> = rows
+            .iter()
+            .map(|&(list, row)| {
+                let bytes = self.file.record(list, row).unwrap();
+                let mut o = serde_json::Map::new();
+                o.insert("_list".into(), list.into());
+                o.insert("_listName".into(), self.list_name(list).into());
+                o.insert("_row".into(), row.into());
+                // A complete source record lets imports add missing IDs without a template.
+                o.insert("_raw".into(), bytes.iter().map(|b| format!("{b:02x}")).collect::<String>().into());
+                for s in &slots[&list] {
+                    o.insert(s.path.clone(), s.json(bytes));
+                    if labels && s.set.is_some() {
+                        o.insert(format!("{}#label", s.path), label_of(s, bytes).map_or(serde_json::Value::Null, Into::into));
                     }
-                    out += &cells.iter().map(|c| csv_cell(c)).collect::<Vec<_>>().join(",");
-                    out += "\r\n";
                 }
-                out
-            }
-        };
+                serde_json::Value::Object(o)
+            })
+            .collect();
+        let mut list_numbers: Vec<_> = slots.keys().copied().collect();
+        list_numbers.sort_unstable();
+        let lists: Vec<_> = list_numbers.into_iter().map(|list| self.export_list_metadata(list)).collect();
+        let export = serde_json::json!({ "format": JSON_FORMAT, "formatVersion": JSON_FORMAT_VERSION,
+            "elementsVersion": self.file.raw_version & 0xffff, "lists": lists, "records": records });
+        let out = serde_json::to_string_pretty(&export).map_err(|e| e.to_string())? + "\n";
         std::fs::write(path, out).map_err(|e| format!("Could not write {path}: {e}"))?;
         Ok(Exported { path: path.into(), records: rows.len(), columns: columns.len() })
-    }
-}
-
-/// A CSV cell, quoted when it holds a separator, quote or line break.
-fn csv_cell(s: &str) -> String {
-    if s.contains([',', '"', '\n', '\r']) {
-        format!("\"{}\"", s.replace('"', "\"\""))
-    } else {
-        s.to_string()
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::csv_cell;
-
-    #[test]
-    fn csv_cells_are_quoted_when_needed() {
-        assert_eq!(csv_cell("Sword"), "Sword");
-        assert_eq!(csv_cell("a,b"), "\"a,b\"");
-        assert_eq!(csv_cell("say \"hi\""), "\"say \"\"hi\"\"\"");
-        assert_eq!(csv_cell("line\r\nbreak"), "\"line\r\nbreak\"");
     }
 }

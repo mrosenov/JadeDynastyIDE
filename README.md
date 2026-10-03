@@ -193,13 +193,15 @@ file then differs from the saved one again). A dot next to the file name in the 
 unsaved edits; clicking it saves.
 
 
-## File menu and tools
+## Menus and tools
 
 **File** (Alt+F) in the top bar holds: *Open elements.data…* (Ctrl+O), *Save* (Ctrl+S) and *Save
 as…* (Ctrl+Shift+S), the tools *Advanced
 search* (Ctrl+Shift+F), *Problems* (Ctrl+Shift+M, with error and warning counts), *Compare with
-another file…* and *Layout coverage*, then *Export › Selected item… / Selected list…* and
-*Settings…*. A tool takes the place of the list and record panes; the shortcuts toggle it, and
+another file…*, *Layout coverage* and *Settings…*.
+**Tools** (Alt+T), beside File and Edit, holds *Export › Selected item… / Selected list…* and
+*Import JSON…*. Import and export use JSON only.
+A tool panel takes the place of the list and record panes; the shortcuts toggle it, and
 the elements.data entry of the bar on the far left goes back to the lists. Tools keep their state
 (results, scans) while hidden. After a scan, the status bar shows the problem counts.
 
@@ -221,11 +223,65 @@ their list numbers differ), else by name; records pair by ID; fields pair by pat
 
 ## Export
 
-**File › Export** saves the selected record or the selected list, and **Export** in the search
-results saves every match (not only the 500 shown), as CSV or JSON. Each record is a row of its scalar fields by path
+**Tools › Export** saves the selected record or the selected list, and **Export** in the search
+results saves every match (not only the 500 shown), as JSON. Each record is an object of its scalar fields by path
 (`addons[2].id`), after `_list`, `_listName` and `_row`. *Add enum and mask labels* adds a
-`field#label` column. CSV is UTF-8 with a BOM, so spreadsheet apps show Chinese names right.
-Importing the files back comes with editing and saving.
+`field#label` property.
+JSON wraps the records in an object with the elements version, compatible list layouts, and
+complete source bytes (`_raw`) for each record, including unknown fields. Use JSON to transfer
+records between elements files.
+
+## Import JSON
+
+**Tools › Import JSON…** imports records from a JD IDE export. Choose a file to preview
+**Added / Updated / Skipped** records and field changes (current → imported). **Apply** makes
+all valid additions and updates as one undo step and one history entry. Edits stay in memory
+until you save elements.data.
+
+New JSON exports can transfer any number of missing records in one import, without choosing
+templates. A missing ID is added at the end of its list using the complete source bytes, then
+any edited field values are applied. Existing IDs receive updates to the included field values;
+their unknown bytes stay unchanged. The imported IDs are preserved. Additions that collide with
+another list in the same ID space, or with each other across such lists, are skipped.
+
+The JSON includes version metadata around the records array:
+
+```json
+{
+  "format": "jdide-elements",
+  "formatVersion": 1,
+  "elementsVersion": 165,
+  "lists": [],
+  "records": []
+}
+```
+
+The exporter fills `lists` with layout metadata and `records` with the selected records. The
+**elements version must match**: importing v165 JSON into an open v160 file stops with an error
+before any changes. The record sizes, structures and field schemas must also match, since
+server variants can share a version number. JD IDE does not convert between versions; use
+compatible converted data and export again. Changing the JSON version number does not convert
+the records. Keep the layout metadata and `_raw` values unchanged.
+
+Older JSON exports (a bare array without version metadata) remain **update only**.
+Export again as JSON to add missing records.
+
+- Records match by **`_list` and the record's ID field** (`id` or `ID` as exported), never by
+  `_row`. Keep IDs, `_list` and `_listName` unchanged, and import into the same layout used for
+  export. `_listName` must match the target list. Ambiguous matches are skipped. Missing IDs
+  are added only from new versioned JSON exports.
+- Keep only the fields you want to update, using their exact exported paths such as
+  `addons[2].id`. Omitted fields stay unchanged. `_row` and `#label` properties are ignored.
+  Use the exported numeric values for enums and masks; editing their label properties has no effect.
+- Empty text clears the text field; empty numeric values and JSON `null` are errors.
+- Values must fit the field's type, including text length and encoding. Conditional fields use
+  the imported value of their controlling field. Any error skips the **whole input row**;
+  other valid rows can still be applied. Duplicate list/ID pairs in the import are all skipped.
+- JSON uses the versioned object produced by Export (older record arrays are also accepted).
+  Preserve large integers exactly when editing; numeric values can also be written as strings.
+- The preview shows the first 200 additions, 200 field changes and 100 skipped rows, with full
+  totals. Input row numbers start at 1 in the records array. If the import file, open data
+  or schema changes after preview, **Refresh preview** is required before applying.
 
 ## Layout coverage
 

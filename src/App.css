@@ -1653,6 +1653,26 @@ svg.lucide {
   color: var(--text);
 }
 
+/* ---------- record import ---------- */
+.modal.import-records-dialog { width: min(1000px, 94vw); max-height: 88vh; display: flex; flex-direction: column; }
+.import-records-intro { padding: 12px 18px; border-bottom: 1px solid var(--border); }
+.import-records-intro p { margin: 0 0 8px; }
+.import-records-file { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+.import-records-file > span { flex: 1; min-width: 0; }
+.import-records-file > button { flex-shrink: 0; }
+.import-records-preview { padding: 14px 18px; min-width: 0; min-height: 0; overflow: auto; }
+.import-records-tabs { margin: 14px 0 10px; width: fit-content; }
+.import-records-details { max-height: 42vh; overflow: auto; }
+.import-records-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 12px; }
+.import-records-table th { text-align: left; color: var(--text-dim); }
+.import-records-table th, .import-records-table td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: top; overflow-wrap: anywhere; white-space: pre-wrap; }
+.import-records-table th:first-child { width: 19%; }
+.import-records-table th:nth-child(2) { width: 25%; }
+.import-records-issue { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; gap: 14px; font-size: 12px; }
+.import-records-issue b { flex-shrink: 0; }
+.import-records-error { margin: 12px 18px 0; }
+.import-records-dialog > .modal-head, .import-records-dialog > .modal-foot { flex-shrink: 0; }
+
 /* ---------- modal ---------- */
 
 .modal-backdrop {
@@ -3560,9 +3580,6 @@ select.sf-control {
   font-size: 12.5px;
   font-weight: normal;
   text-align: left;
-}
-.export-format {
-  align-self: flex-start;
 }
 .export-note {
   margin: 0;

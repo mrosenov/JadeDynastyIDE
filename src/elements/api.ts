@@ -10,6 +10,7 @@ import type {
   CoverageRow,
   ExportSource,
   Exported,
+  ImportReport,
   ListDiff,
   ProblemReport,
   SearchFieldName,
@@ -53,8 +54,11 @@ export const listProblems = () => invoke<ProblemReport>("list_problems");
 
 export const layoutCoverage = () => invoke<CoverageRow[]>("layout_coverage");
 
-export const exportRecords = (source: ExportSource, format: "csv" | "json", labels: boolean, path: string) =>
-  invoke<Exported>("export_records", { source, format, labels, path });
+export const exportRecords = (source: ExportSource, labels: boolean, path: string) =>
+  invoke<Exported>("export_records", { source, labels, path });
+
+/** Without a token, previews; with the preview token, applies that exact import. */
+export const importRecords = (path: string, token?: string) => invoke<ImportReport>("import_records", { path, token });
 
 /** Opens a second file to compare the open one with ("this" vs "other"). */
 export const openCompare = (path: string) => invoke<CompareSummary>("open_compare", { path });

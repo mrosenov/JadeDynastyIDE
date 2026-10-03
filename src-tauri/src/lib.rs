@@ -148,12 +148,19 @@ async fn search_field_names(state: State<'_, AppState>) -> Result<Vec<elements::
 #[tauri::command]
 async fn export_records(
     source: elements::export::Source,
-    format: elements::export::Format,
     labels: bool,
     path: String,
     state: State<'_, AppState>,
 ) -> Result<elements::export::Exported, String> {
-    state.with_document(|doc| doc.export(&source, format, labels, &path))
+    state.with_document(|doc| doc.export(&source, labels, &path))
+}
+
+/// Previews an import, or applies the preview identified by its token.
+#[tauri::command]
+async fn import_records(path: String, token: Option<String>, state: State<'_, AppState>) -> Result<elements::import::Report, String> {
+    // Read and parse outside the document lock.
+    let input = tauri::async_runtime::spawn_blocking(move || elements::import::Input::read(&path)).await.map_err(|e| e.to_string())??;
+    state.with_document_mut(|doc| doc.import_records(&input, token.as_deref()))
 }
 
 /// Opens a second file to compare the open one with.
@@ -618,6 +625,7 @@ pub fn run() {
             revert_history_entry,
             layout_coverage,
             export_records,
+            import_records,
             open_compare,
             compare_summary,
             compare_list,

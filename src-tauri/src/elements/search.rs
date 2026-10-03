@@ -167,6 +167,10 @@ pub struct Slot {
 }
 
 impl Slot {
+    pub(crate) fn control_offsets(&self) -> impl Iterator<Item = usize> + '_ {
+        self.rules.iter().map(|r| r.off)
+    }
+
     /// The slot's type in this record (conditional types applied).
     pub(crate) fn ty(&self, bytes: &[u8]) -> &Ty {
         for r in &self.rules {
