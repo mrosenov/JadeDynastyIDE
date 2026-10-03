@@ -4386,3 +4386,79 @@ select.ie-control {
 .status-edits:hover {
   background: var(--bg-hover);
 }
+
+/* ------------------------------------------------------------ clone and delete */
+
+.changed-dot.added {
+  background: var(--accent);
+}
+.badge.added {
+  background: var(--accent-soft);
+  color: var(--accent);
+  cursor: default;
+}
+.inspector-title .btn.small {
+  flex: none;
+}
+.delete-dialog {
+  width: min(520px, 100%);
+}
+.danger-icon {
+  color: var(--danger);
+}
+.delete-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 18px 4px;
+  font-size: 13px;
+}
+.delete-body p {
+  margin: 0;
+  line-height: 1.5;
+}
+.delete-ok {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+}
+.delete-warning {
+  padding: 10px 12px;
+  border: 1px solid var(--warn);
+  border-radius: 8px;
+  background: var(--warn-soft);
+}
+.delete-warning-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--warn);
+}
+.delete-warning ul {
+  margin: 8px 0 4px;
+  padding-left: 20px;
+  font-size: 12.5px;
+}
+.delete-warning li {
+  margin: 2px 0;
+}
+.btn.danger-solid {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #fff;
+}
+.btn.danger-solid:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+.tag.danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.history-record-head:disabled {
+  cursor: default;
+}
+.history-record-head:disabled:hover {
+  background: none;
+}

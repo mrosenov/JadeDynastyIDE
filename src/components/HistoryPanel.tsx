@@ -75,16 +75,19 @@ export function HistoryPanel({ lists, edits, icon, onUndo, onRedo, onChanged, on
   );
 
   const record = (e: HistoryEntry, r: HistoryRecord) => (
-    <div key={`${r.list}:${r.row}`} className="history-record">
+    <div key={`${r.list}:${r.id}:${r.action}`} className="history-record">
       <button
         className="history-record-head"
-        onClick={(ev) => onOpen(r.list, r.row, r.fields[0]?.off ?? null, ev.ctrlKey || ev.metaKey)}
-        title="Open the record (Ctrl+click: new tab)"
+        onClick={(ev) => r.row !== undefined && onOpen(r.list, r.row, r.fields[0]?.off ?? null, ev.ctrlKey || ev.metaKey)}
+        disabled={r.row === undefined}
+        title={r.row === undefined ? "The record is deleted" : "Open the record (Ctrl+click: new tab)"}
       >
         <span className="find-icon">{icon?.(r.icon) ? <img src={icon(r.icon)} alt="" draggable={false} /> : null}</span>
         <span className="truncate">
           {r.name || <span className="muted">#{r.row}</span>}
           <span className="muted small"> · {lists[r.list]?.name ?? `List ${r.list}`}</span>
+          {r.action === "clone" && <span className="tag ok"> cloned</span>}
+          {r.action === "delete" && <span className="tag danger"> deleted</span>}
         </span>
         <span className="mono muted small">{r.id}</span>
       </button>
@@ -94,7 +97,7 @@ export function HistoryPanel({ lists, edits, icon, onUndo, onRedo, onChanged, on
             <button
               key={`${f.off}:${f.field}`}
               className="hf-row"
-              onClick={(ev) => onOpen(r.list, r.row, f.off, ev.ctrlKey || ev.metaKey)}
+              onClick={(ev) => r.row !== undefined && onOpen(r.list, r.row, f.off, ev.ctrlKey || ev.metaKey)}
               title={`${f.field}: ${show(f.old)} → ${show(f.new)}\nOpen the record at this field`}
             >
               <span className="hf-field mono">{f.field}</span>

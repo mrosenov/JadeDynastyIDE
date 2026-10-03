@@ -209,6 +209,23 @@ async fn edit_record(list: usize, row: usize, edits: Vec<elements::edit::FieldEd
     state.with_document_mut(|doc| doc.edit(list, row, &edits, &label))
 }
 
+/// Copies a record to the end of its list with a new ID.
+#[tauri::command]
+async fn clone_record(list: usize, row: usize, state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    state.with_document_mut(|doc| doc.clone_record(list, row))
+}
+
+#[tauri::command]
+async fn delete_record(list: usize, row: usize, state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    state.with_document_mut(|doc| doc.delete_record(list, row))
+}
+
+/// The open file's summary (list sizes change with clones and deletes).
+#[tauri::command]
+async fn file_summary(state: State<'_, AppState>) -> Result<FileSummary, String> {
+    state.with_document(|doc| Ok(doc.summary()))
+}
+
 #[tauri::command]
 async fn undo_edit(state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
     state.with_document_mut(|doc| Ok(doc.undo()))
@@ -558,6 +575,9 @@ pub fn run() {
             find_records,
             list_problems,
             edit_record,
+            clone_record,
+            delete_record,
+            file_summary,
             undo_edit,
             redo_edit,
             revert_edits,

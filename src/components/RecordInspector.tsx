@@ -4,7 +4,7 @@ import { LAYOUT_LABEL, hex, layoutHelp } from "../elements/format";
 import { FieldTree } from "./FieldTree";
 import { type Path, allPaths, nodeAt, pathAt } from "../elements/fieldPaths";
 import { HexView } from "./HexView";
-import { ArrowLeft, ChevronsDownUp, ChevronsUpDown } from "lucide-react";
+import { ArrowLeft, ChevronsDownUp, ChevronsUpDown, Copy, Trash2 } from "lucide-react";
 import { ReadingsCard } from "./ReadingsCard";
 import { TextCard } from "./TextCard";
 import { hasBreaks, hasColours, isTextNode } from "../elements/text";
@@ -35,6 +35,10 @@ interface Props {
   focus?: FieldFocus | null;
   /** Sets fields of the record (one undo step); resolves to an error, or null. */
   onEdit?: (list: number, row: number, edits: FieldEdit[], label: string) => Promise<string | null>;
+  /** Copies the record to the end of its list with a new ID. */
+  onClone?: () => void;
+  /** Asks, then deletes the record. */
+  onDelete?: () => void;
 }
 
 export interface FieldFocus {
@@ -45,7 +49,7 @@ export interface FieldFocus {
   nonce: number;
 }
 
-export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, onEditSet, lists, focus, onEdit }: Props) {
+export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, onEditSet, lists, focus, onEdit, onClone, onDelete }: Props) {
   const [expanded, setExpanded] = useState<Set<Path>>(new Set());
   const [selected, setSelected] = useState<Path | null>(null);
   const [hovered, setHovered] = useState<Path | null>(null);
@@ -180,6 +184,22 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
             {LAYOUT_LABEL[detail.layout]}
             {detail.layoutId && <span className="badge-sub"> · {detail.layoutId}</span>}
           </span>
+          {detail.added && (
+            <span className="badge added" title="Created by a clone (not saved yet)">
+              new
+            </span>
+          )}
+          <span className="spacer" />
+          {onClone && (
+            <button className="btn small" onClick={onClone} title="Copy this record to the end of the list with a new ID (Ctrl+D)">
+              <Copy size={13} /> Clone
+            </button>
+          )}
+          {onDelete && (
+            <button className="btn small danger-btn" onClick={onDelete} title="Delete this record (Delete in the record list)">
+              <Trash2 size={13} /> Delete
+            </button>
+          )}
         </div>
         <dl className="facts">
           <div>

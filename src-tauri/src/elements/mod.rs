@@ -219,6 +219,9 @@ pub struct RecordDetail {
     /// The record as the file was opened, when edits changed it.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub original: Option<Vec<u8>>,
+    /// Created by an edit (a clone).
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub added: bool,
 }
 
 /// A list that fields can refer to by its struct.
@@ -335,7 +338,8 @@ impl Document {
             }
         }
         let ids = (0..file.lists.len()).map(|_| OnceLock::new()).collect();
-        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, sites: OnceLock::new(), find_index: OnceLock::new(), talks: OnceLock::new(), edits: Default::default(), resources: None })
+        let file_counts: Vec<usize> = file.lists.iter().map(|l| l.count).collect();
+        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, sites: OnceLock::new(), find_index: OnceLock::new(), talks: OnceLock::new(), edits: edit::Journal::new(file_counts), resources: None })
     }
 
     /// Re-reads the same bytes with a new catalog (after a schema edit).
@@ -619,6 +623,7 @@ impl Document {
             bytes: bytes.to_vec(),
             nodes,
             original: self.original(list, index).map(<[u8]>::to_vec),
+            added: self.is_added(list, index),
         })
     }
 
@@ -1282,6 +1287,62 @@ mod tests {
         // Edits survive a schema reload.
         let reloaded = doc.reload(doc.catalog.clone()).unwrap();
         assert_eq!(reloaded.edit_state().changed, vec![(3, row.index)]);
+    }
+
+    #[test]
+    fn clone_and_delete_records() {
+        let Some(mut doc) = open("Game Dev/JD/zxserver/zgame/gs/config/elements.data") else { return };
+        let before = doc.file.data.clone();
+        let count = doc.file.lists[3].count;
+        let source = doc.records(3).unwrap().into_iter().find(|r| r.id > 1000 && !r.name.is_empty()).unwrap();
+        // The new ID is the list's highest plus one, past IDs other lists of
+        // the item space (materials, types, services…) already use.
+        let next = doc.next_free_id(3).unwrap();
+        let max = doc.records(3).unwrap().iter().map(|r| r.id).max().unwrap();
+        assert!(next > max);
+        let essence: Vec<usize> = (0..doc.file.lists.len()).filter(|&l| doc.lists[l].struct_name.as_deref().is_some_and(|s| refs::registry_space(s) == refs::IdSpace::Essence)).collect();
+        let taken: std::collections::HashSet<u32> = essence.iter().flat_map(|&l| doc.records(l).unwrap().into_iter().map(|r| r.id)).collect();
+        assert!(!taken.contains(&next));
+        assert!((max + 1..next).all(|id| taken.contains(&id)), "only taken IDs are skipped");
+        eprintln!("equipment: highest ID {max}, clone gets {next}");
+        let s = doc.clone_record(3, source.index).unwrap();
+        assert_eq!(s.created, Some((3, count)));
+        assert_eq!(s.added, vec![(3, count)]);
+        assert_eq!(s.shifts.len(), 1);
+        let clone = &doc.records(3).unwrap()[count];
+        assert_eq!((clone.id, clone.name.as_str()), (next, source.name.as_str()));
+        assert!(doc.record(3, count).unwrap().added);
+        // The file is still well-formed: it parses to the same lists, one record more.
+        let reparsed = Document::from_bytes("x".into(), doc.file.data.clone(), doc.catalog.clone()).unwrap();
+        assert_eq!(reparsed.file.lists[3].count, count + 1);
+        assert_eq!(reparsed.file.talk_count, doc.file.talk_count);
+        assert_eq!(reparsed.talks().unwrap().len(), doc.talks().unwrap().len());
+        // Edit the clone, then delete a record before it: the clone moves up a row.
+        let price = doc.record(3, count).unwrap().nodes.into_iter().find(|n| n.name == "price").unwrap();
+        doc.edit(3, count, &[edit::FieldEdit { off: price.off, value: "4242".into() }], "Set price").unwrap();
+        let s = doc.delete_record(3, 0).unwrap();
+        assert_eq!(s.deleted, vec![(3, 1)]);
+        assert_eq!(s.added, vec![(3, count - 1)]);
+        assert_eq!(doc.records(3).unwrap()[count - 1].id, next);
+        assert_eq!(doc.record(3, count - 1).unwrap().nodes.iter().find(|n| n.name == "price").unwrap().value.as_deref(), Some("4242"));
+        // Undo brings the deleted record back in place; redo removes it again.
+        let s = doc.undo();
+        assert!(s.deleted.is_empty());
+        assert_eq!(doc.file.lists[3].count, count + 1);
+        doc.redo();
+        // The history knows the actions.
+        let h = doc.history();
+        assert_eq!(h[0].records[0].action, "delete");
+        assert!(h.iter().any(|e| e.records.iter().any(|r| r.action == "clone" && r.id == next)));
+        // Reverting the delete from the history restores the record.
+        let delete_id = h[0].id;
+        doc.revert_entry(delete_id, false).unwrap();
+        assert_eq!(doc.file.lists[3].count, count + 1);
+        // Revert all: clones gone, deleted back, changes undone: the file as opened.
+        doc.delete_record(3, 5).unwrap();
+        let s = doc.revert(None, "Revert all");
+        assert!(s.changed.is_empty() && s.added.is_empty() && s.deleted.is_empty());
+        assert_eq!(doc.file.data, before);
     }
 
     #[test]

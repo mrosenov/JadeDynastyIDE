@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
-import { editRecord, getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, undoEdit } from "./elements/api";
+import { cloneRecord, deleteRecord, editRecord, fileSummary, getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, undoEdit } from "./elements/api";
 import type { EditState, ExportSource, FieldEdit, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail } from "./elements/types";
 import { bytes, count } from "./elements/format";
 import { ListPicker, type ListPickerHandle } from "./components/ListPicker";
@@ -12,6 +12,7 @@ import { ProblemsPanel } from "./components/ProblemsPanel";
 import { CoveragePanel } from "./components/CoveragePanel";
 import { ComparePanel } from "./components/ComparePanel";
 import { HistoryPanel } from "./components/HistoryPanel";
+import { DeleteDialog } from "./components/DeleteDialog";
 import { ExportDialog } from "./components/ExportMenu";
 import { type Menu, MenuBar } from "./components/MenuBar";
 import { SchemaEditor } from "./components/SchemaEditor";
@@ -34,8 +35,10 @@ import {
   FileStack,
   FolderOpen,
   Gauge,
+  Copy,
   Gem,
   GitCompareArrows,
+  Trash2,
   History,
   ListFilter,
   Redo2,
@@ -72,6 +75,8 @@ function writeLastPath(path: string) {
     // Remembering the last file is a convenience only.
   }
 }
+
+const NO_EDITS: EditState = { changed: [], added: [], deleted: [], shifts: [] };
 
 const fileName = (path: string) => path.split(/[\\/]/).pop() ?? path;
 
@@ -132,7 +137,7 @@ export default function App() {
   const [detail, setDetail] = useState<RecordDetail | null>(null);
   const [talk, setTalk] = useState<TalkDetail | null>(null);
   // Edits in memory (until saving): undo/redo labels and the changed records.
-  const [edits, setEdits] = useState<EditState>({ changed: [] });
+  const [edits, setEdits] = useState<EditState>(NO_EDITS);
   // Bumped after edits, so rows and the open record are read again.
   const [dataVersion, setDataVersion] = useState(0);
   const [lastPath, setLastPath] = useState<string | null>(readLastPath);
@@ -184,13 +189,14 @@ export default function App() {
   const editsRef = useRef(edits);
   editsRef.current = edits;
   const loadFile = useCallback(async (path: string) => {
-    const changed = editsRef.current.changed.length;
+    const e = editsRef.current;
+    const changed = e.changed.length + e.added.length + e.deleted.reduce((n, [, c]) => n + c, 0);
     if (changed && !window.confirm(`${changed} record(s) have edits that are not saved. Open another file and drop them?`)) return;
     setLoading(path);
     setError(null);
     try {
       const result = await openElements(path);
-      setEdits({ changed: [] });
+      setEdits(NO_EDITS);
       rowsCache.current.clear();
       setSummary(result);
       setRows(null);
@@ -399,9 +405,19 @@ export default function App() {
       return String(e);
     }
   };
+  /**
+   * Rows moved (a clone or a delete, or their undo): tabs follow their
+   * records and the list sizes are read again.
+   */
+  const applyShifts = async (next: EditState) => {
+    if (!next.shifts.length) return;
+    for (const sh of next.shifts) dispatch({ type: "shiftRows", ...sh });
+    setSummary(await fileSummary());
+  };
   /** Undo, redo or revert: any record may change, so the lists in view are read again. */
   const afterEdits = (next: EditState) => {
     setEdits(next);
+    applyShifts(next);
     const cached = [...rowsCache.current.keys()];
     rowsCache.current.clear();
     for (const list of cached) refreshRows(list);
@@ -412,9 +428,33 @@ export default function App() {
   const revertRecord = () =>
     listIndex !== null && recordIndex !== null && revertEdits([[listIndex, recordIndex]], "Revert record").then(afterEdits).catch((e) => setError(String(e)));
   const revertAll = () => {
-    if (!window.confirm(`Put all ${edits.changed.length} changed record(s) back as the file was opened? (Undo brings the edits back.)`)) return;
+    if (!window.confirm(`Put the file back as it was opened (${editCount} record(s) changed, added or deleted)? Undo brings the edits back.`)) return;
     revertEdits(null, "Revert all changes").then(afterEdits).catch((e) => setError(String(e)));
   };
+  // Clone and delete the open record.
+  const [deleting, setDeleting] = useState<{ list: number; row: number } | null>(null);
+  const cloneOpen = async () => {
+    if (listIndex === null || listIndex < 0 || recordIndex === null) return;
+    try {
+      const next = await cloneRecord(listIndex, recordIndex);
+      afterEdits(next);
+      if (next.created) openLocation({ list: next.created[0], row: next.created[1] }, { pin: true });
+    } catch (e) {
+      setError(String(e));
+    }
+  };
+  const confirmDelete = async () => {
+    if (!deleting) return;
+    const target = deleting;
+    setDeleting(null);
+    try {
+      afterEdits(await deleteRecord(target.list, target.row));
+    } catch (e) {
+      setError(String(e));
+    }
+  };
+  const cloneRef = useRef(cloneOpen);
+  cloneRef.current = cloneOpen;
   const undoRef = useRef(undo);
   undoRef.current = undo;
   const redoRef = useRef(redo);
@@ -428,7 +468,10 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => {
       const mod = e.ctrlKey || e.metaKey;
       const typing = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement;
-      if (mod && !typing && e.key.toLowerCase() === "z") {
+      if (mod && !typing && e.key.toLowerCase() === "d") {
+        e.preventDefault();
+        cloneRef.current();
+      } else if (mod && !typing && e.key.toLowerCase() === "z") {
         e.preventDefault();
         (e.shiftKey ? redoRef : undoRef).current();
       } else if (mod && !typing && e.key.toLowerCase() === "y") {
@@ -486,14 +529,21 @@ export default function App() {
       title: row?.name || `${listName} #${tab.row}`,
       subtitle: `${listName} · #${tab.row}`,
       icon: icon(row?.icon),
-      changed: !!changedRows.get(tab.list)?.has(tab.row!),
+      changed: !!changedRows.get(tab.list)?.has(tab.row!) || !!addedRows.get(tab.list)?.has(tab.row!),
     };
   };
 
   const showingDialogs = listIndex === DIALOGS;
   const changedRows = new Map<number, Set<number>>();
   for (const [l, r] of edits.changed) changedRows.set(l, (changedRows.get(l) ?? new Set()).add(r));
-  const changedCounts = new Map([...changedRows].map(([l, rows]) => [l, rows.size]));
+  const addedRows = new Map<number, Set<number>>();
+  for (const [l, r] of edits.added) addedRows.set(l, (addedRows.get(l) ?? new Set()).add(r));
+  const changedCounts = new Map<number, number>();
+  for (const [l, rows] of changedRows) changedCounts.set(l, rows.size);
+  for (const [l, rows] of addedRows) changedCounts.set(l, (changedCounts.get(l) ?? 0) + rows.size);
+  for (const [l, n] of edits.deleted) changedCounts.set(l, (changedCounts.get(l) ?? 0) + n);
+  const editCount = edits.changed.length + edits.added.length + edits.deleted.reduce((n, [, c]) => n + c, 0);
+  const canRecordOp = listIndex !== null && listIndex >= 0 && recordIndex !== null;
   const recordChanged = listIndex !== null && recordIndex !== null && !!changedRows.get(listIndex)?.has(recordIndex);
   const picker = summary && (
     <ListPicker ref={pickerRef} lists={summary.lists} selected={listIndex} onSelect={selectList} talkCount={summary.talkCount} changedCounts={changedCounts} />
@@ -559,14 +609,24 @@ export default function App() {
         { label: edits.undo ? `Undo ${edits.undo}` : "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: undo, disabled: !edits.undo },
         { label: edits.redo ? `Redo ${edits.redo}` : "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: redo, disabled: !edits.redo },
         "separator",
+        { label: "Clone record", icon: Copy, shortcut: "Ctrl+D", onSelect: cloneOpen, disabled: !canRecordOp, title: canRecordOp ? "Copy the open record to the end of its list with a new ID" : "Open a record first" },
+        {
+          label: "Delete record…",
+          icon: Trash2,
+          shortcut: "Del",
+          onSelect: () => canRecordOp && setDeleting({ list: listIndex!, row: recordIndex! }),
+          disabled: !canRecordOp,
+          title: canRecordOp ? "Delete the open record (asks first, showing what points at it)" : "Open a record first",
+        },
+        "separator",
         { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => showPanel("history"), disabled: !summary, checked: panel === "history", title: noFile },
         "separator",
         { label: "Revert record", icon: RotateCcw, onSelect: revertRecord, disabled: !recordChanged, title: recordChanged ? "Put the open record back as the file was opened" : "The open record has no edits" },
         {
           label: "Revert all changes…",
           onSelect: revertAll,
-          disabled: edits.changed.length === 0,
-          badges: edits.changed.length ? [{ text: String(edits.changed.length), tone: "warning" as const }] : [],
+          disabled: editCount === 0,
+          badges: editCount ? [{ text: String(editCount), tone: "warning" as const }] : [],
           title: "Put every changed record back as the file was opened (undoable)",
         },
       ],
@@ -642,6 +702,18 @@ export default function App() {
           <Settings size={18} />
         </button>
       </header>
+
+      {deleting && summary && summary.lists[deleting.list] && (
+        <DeleteDialog
+          list={summary.lists[deleting.list]}
+          row={deleting.row}
+          name={rowsCache.current.get(deleting.list)?.[deleting.row]?.name ?? ""}
+          id={rowsCache.current.get(deleting.list)?.[deleting.row]?.id ?? 0}
+          lists={summary.lists}
+          onConfirm={confirmDelete}
+          onCancel={() => setDeleting(null)}
+        />
+      )}
 
       {exporting && <ExportDialog source={exporting.source} name={exporting.name} title={exporting.title} onClose={() => setExporting(null)} />}
 
@@ -799,6 +871,8 @@ export default function App() {
               meta={showingDialogs ? `${count(summary.talkCount)} dialogs` : undefined}
               picker={picker}
               changed={listIndex !== null ? changedRows.get(listIndex) : undefined}
+              added={listIndex !== null ? addedRows.get(listIndex) : undefined}
+              onDelete={showingDialogs ? undefined : (index) => setDeleting({ list: list.index, row: index })}
             />
           ) : (
             <section className="pane records">
@@ -840,6 +914,8 @@ export default function App() {
                 lists={summary.lists}
                 focus={focus}
                 onEdit={commitEdit}
+                onClone={cloneOpen}
+                onDelete={() => recordIndex !== null && setDeleting({ list: list.index, row: recordIndex })}
               />
             ) : (
               <section className="pane inspector">
@@ -897,9 +973,17 @@ export default function App() {
               Exported {new Date(summary.timestamp * 1000).toLocaleString()}
             </span>
             {summary.exporter && <span title="Exporter machine name stored in the file">by {summary.exporter}</span>}
-            {edits.changed.length > 0 && (
+            {editCount > 0 && (
               <button className="status-edits" onClick={() => showPanel("history")} title="Show the edit history (Ctrl+H). Edits are kept in memory until saved.">
-                <span className="changed-dot" /> {edits.changed.length} changed record{edits.changed.length === 1 ? "" : "s"} · not saved
+                <span className="changed-dot" />
+                {[
+                  edits.changed.length && `${edits.changed.length} changed`,
+                  edits.added.length && `${edits.added.length} added`,
+                  edits.deleted.length && `${edits.deleted.reduce((n, [, c]) => n + c, 0)} deleted`,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}{" "}
+                · not saved
               </button>
             )}
             <span className="spacer" />

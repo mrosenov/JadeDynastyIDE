@@ -62,6 +62,10 @@ export const closeCompare = () => invoke<void>("close_compare");
 /** Sets fields of a record (one undo step). */
 export const editRecord = (list: number, row: number, edits: FieldEdit[], label: string) =>
   invoke<EditState>("edit_record", { list, row, edits, label });
+/** Copies a record to the end of its list with a new ID from its ID space. */
+export const cloneRecord = (list: number, row: number) => invoke<EditState>("clone_record", { list, row });
+export const deleteRecord = (list: number, row: number) => invoke<EditState>("delete_record", { list, row });
+export const fileSummary = () => invoke<FileSummary>("file_summary");
 export const undoEdit = () => invoke<EditState>("undo_edit");
 export const redoEdit = () => invoke<EditState>("redo_edit");
 /** Puts records (all changed ones without any) back as the file was opened. */

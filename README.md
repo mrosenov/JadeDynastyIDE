@@ -160,6 +160,17 @@ Values are edited in the inspector. Edits stay in memory until saving to the fil
   or field opens it there; undone edits stay listed (dimmed) until a new edit replaces them, and
   reverted ones are struck through. The "N changed records · not saved" count in the status bar
   opens the history too.
+- **Clone** (inspector button, Edit › Clone record or Ctrl+D) copies the open record to the end
+  of its list with a new ID: the list's highest ID plus one, moved up past any ID another list of
+  the same ID space already uses (items, types and services share one; addons, recipes and configs
+  have their own), since a shared ID would hide one record from the game. The clone opens in a tab and is marked *new* (a green dot).
+- **Delete** (inspector button, Edit › Delete record… or the Delete key in the record list) asks
+  first and lists the records whose fields point at the record's ID (from *Referenced by*), since
+  they would point at nothing afterwards.
+- Clones and deletes are edits like the rest: undo, redo, the history (where reverting a delete
+  brings the record back) and *Revert all changes*, which restores the file exactly as opened.
+  Records are tracked by identity, not row, so edits, markers and tabs follow records when rows
+  move.
 - Schema edits keep the record edits; opening another file asks before dropping them.
 
 ## File menu and tools

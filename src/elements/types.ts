@@ -92,6 +92,8 @@ export interface RecordDetail {
   icon: number | null;
   /** The record as the file was opened, when edits changed it. */
   original?: number[];
+  /** Created by an edit (a clone). */
+  added?: boolean;
 }
 
 // ---------------------------------------------------------------- schemas
@@ -571,8 +573,16 @@ export interface EditState {
   /** Label of the edit Undo would take back. */
   undo?: string;
   redo?: string;
-  /** Records that differ from the file as opened: [list, row]. */
+  /** Records of the opened file that differ from it: [list, row]. */
   changed: [number, number][];
+  /** Records created by edits (clones): [list, row]. */
+  added: [number, number][];
+  /** Records of the opened file deleted: [list, count]. */
+  deleted: [number, number][];
+  /** How the last action moved rows, in order. */
+  shifts: { list: number; at: number; delta: number; count: number }[];
+  /** For a clone: where the new record is. */
+  created?: [number, number];
 }
 
 export interface FieldDiff {
@@ -584,7 +594,9 @@ export interface FieldDiff {
 
 export interface HistoryRecord {
   list: number;
-  row: number;
+  /** The row now (absent: the record is deleted). */
+  row?: number;
+  action: "edit" | "clone" | "delete";
   id: number;
   name: string;
   icon?: number;

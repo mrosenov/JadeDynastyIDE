@@ -19,11 +19,15 @@ interface Props {
   picker: ReactNode;
   /** Rows with unsaved edits. */
   changed?: Set<number>;
+  /** Rows created by clones. */
+  added?: Set<number>;
+  /** Delete key on the selected row. */
+  onDelete?: (index: number) => void;
 }
 
 const ROW_HEIGHT = 28;
 
-export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta, picker, changed }: Props) {
+export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta, picker, changed, added, onDelete }: Props) {
   const [filter, setFilter] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -61,6 +65,9 @@ export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta
     } else if (e.key === "Enter" && position >= 0) {
       e.preventDefault();
       onOpen?.(visible[position].index);
+    } else if (e.key === "Delete" && position >= 0 && onDelete) {
+      e.preventDefault();
+      onDelete(visible[position].index);
     } else if (e.key === "Home" || e.key === "End") {
       e.preventDefault();
       onSelect(visible[e.key === "Home" ? 0 : visible.length - 1].index);
@@ -117,7 +124,11 @@ export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta
                 <span className="muted mono">{row.index}</span>
                 <span className="mono">{row.id}</span>
                 <span className={"truncate" + (row.name ? "" : " muted")}>
-                  {changed?.has(row.index) && <span className="changed-dot" title="Changed (not saved yet)" />}
+                  {added?.has(row.index) ? (
+                    <span className="changed-dot added" title="New: created by a clone (not saved yet)" />
+                  ) : (
+                    changed?.has(row.index) && <span className="changed-dot" title="Changed (not saved yet)" />
+                  )}
                   {row.name || "—"}
                 </span>
               </div>

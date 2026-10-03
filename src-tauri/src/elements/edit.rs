@@ -1,34 +1,62 @@
 //! Editing records in memory, with undo and redo.
 //!
-//! Every edit writes the new bytes into the open file's data and records the
-//! bytes it replaced, so undo and redo replay exact bytes. The first time a
-//! record is touched its original bytes are kept: a record counts as changed
-//! while it differs from them (editing a value back clears the mark).
+//! Every edit is a list of operations on the open file's data: setting bytes
+//! of a record, inserting a record (a clone) or removing one. Each keeps what
+//! it replaced, so undo and redo replay exact bytes.
+//!
+//! Records are tracked by a stable uid rather than their row, since inserting
+//! and removing records moves the rows after them. The first time a record of
+//! the opened file is touched its original bytes are kept: it counts as
+//! changed while it differs from them, as deleted while it is gone, and a
+//! clone counts as added.
 //!
 //! Values come in as text and are checked against the field's type in that
 //! record (conditional types applied): integer ranges, floats, texts that fit
 //! their field with room for the terminator.
 //!
-//! The history lists every edit with its time and the fields it changed; one
-//! edit can be reverted on its own (as a new edit), asking first when later
-//! edits changed the same bytes.
+//! The history lists every edit with its time and what it changed; one edit
+//! can be reverted on its own, asking first when later edits changed the same
+//! bytes.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use encoding_rs::GBK;
 use serde::{Deserialize, Serialize};
 
 use super::format::Ty;
+use super::refs::registry_space;
 use super::{search, Document};
 
 #[derive(Debug, Clone)]
-struct Change {
-    list: usize,
-    row: usize,
-    /// Offset within the record.
-    off: usize,
-    old: Vec<u8>,
-    new: Vec<u8>,
+enum Op {
+    /// Bytes of a record set, at `off` within it.
+    Set { list: usize, uid: u64, off: usize, old: Vec<u8>, new: Vec<u8> },
+    /// A record inserted at `row`.
+    Insert { list: usize, uid: u64, row: usize, bytes: Vec<u8> },
+    /// The record at `row` removed.
+    Remove { list: usize, uid: u64, row: usize, bytes: Vec<u8> },
+}
+
+impl Op {
+    fn inverse(&self) -> Op {
+        match self.clone() {
+            Op::Set { list, uid, off, old, new } => Op::Set { list, uid, off, old: new, new: old },
+            Op::Insert { list, uid, row, bytes } => Op::Remove { list, uid, row, bytes },
+            Op::Remove { list, uid, row, bytes } => Op::Insert { list, uid, row, bytes },
+        }
+    }
+
+    fn list(&self) -> usize {
+        match self {
+            Op::Set { list, .. } | Op::Insert { list, .. } | Op::Remove { list, .. } => *list,
+        }
+    }
+
+    fn uid(&self) -> u64 {
+        match self {
+            Op::Set { uid, .. } | Op::Insert { uid, .. } | Op::Remove { uid, .. } => *uid,
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -37,7 +65,7 @@ struct Entry {
     label: String,
     /// Unix time in milliseconds.
     time: u64,
-    changes: Vec<Change>,
+    ops: Vec<Op>,
     /// The edit this one reverts (from the history).
     reverts: Option<u64>,
 }
@@ -47,9 +75,36 @@ struct Entry {
 pub struct Journal {
     done: Vec<Entry>,
     undone: Vec<Entry>,
-    /// Original bytes of every record ever touched.
-    originals: HashMap<(usize, usize), Vec<u8>>,
+    /// Uid of each record, per list and row.
+    rows: Vec<Vec<u64>>,
+    /// Uids of each list's records as the file was opened.
+    initial: Vec<Vec<u64>>,
+    /// Original bytes (and list) of every record of the opened file ever touched.
+    originals: HashMap<u64, (usize, Vec<u8>)>,
+    /// Records created by edits (clones).
+    born: HashSet<u64>,
+    next_uid: u64,
     next_id: u64,
+}
+
+impl Journal {
+    /// A journal for a file with these list sizes, records numbered in order.
+    pub fn new(counts: impl IntoIterator<Item = usize>) -> Self {
+        let mut next_uid = 0;
+        let rows: Vec<Vec<u64>> = counts
+            .into_iter()
+            .map(|n| {
+                let start = next_uid;
+                next_uid += n as u64;
+                (start..next_uid).collect()
+            })
+            .collect();
+        Journal { initial: rows.clone(), rows, next_uid, ..Default::default() }
+    }
+
+    fn row_of(&self, list: usize, uid: u64) -> Option<usize> {
+        self.rows.get(list)?.iter().position(|&u| u == uid)
+    }
 }
 
 /// A field one history entry changed.
@@ -66,11 +121,14 @@ pub struct FieldDiff {
 #[serde(rename_all = "camelCase")]
 pub struct HistoryRecord {
     pub list: usize,
-    pub row: usize,
+    /// The record's row now (None: it is deleted).
+    pub row: Option<usize>,
     pub id: u32,
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub icon: Option<u32>,
+    /// "edit", "clone" or "delete".
+    pub action: &'static str,
     pub fields: Vec<FieldDiff>,
 }
 
@@ -105,6 +163,17 @@ pub struct FieldEdit {
     pub value: String,
 }
 
+/// Rows of a list moved: from `at` on, by `delta` (+1 inserted, -1 removed).
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Shift {
+    pub list: usize,
+    pub at: usize,
+    pub delta: i32,
+    /// The list's record count afterwards.
+    pub count: usize,
+}
+
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EditState {
@@ -112,8 +181,17 @@ pub struct EditState {
     pub undo: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redo: Option<String>,
-    /// Records that differ from the file as opened, as (list, row).
+    /// Records of the opened file that differ from it, as (list, row).
     pub changed: Vec<(usize, usize)>,
+    /// Records created by edits (clones), as (list, row).
+    pub added: Vec<(usize, usize)>,
+    /// Records of the opened file deleted, per list.
+    pub deleted: Vec<(usize, usize)>,
+    /// How the last action moved rows (insertions and removals), in order.
+    pub shifts: Vec<Shift>,
+    /// For a clone: where the new record is.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<(usize, usize)>,
 }
 
 /// Parses an integer in range for its type: decimal, negative or 0x hex.
@@ -238,122 +316,265 @@ impl Document {
         self.talks.take();
     }
 
-    fn entry(&mut self, label: &str, changes: Vec<Change>, reverts: Option<u64>) -> Entry {
+    fn uid_at(&self, list: usize, row: usize) -> Result<u64, String> {
+        self.edits.rows.get(list).and_then(|r| r.get(row)).copied().ok_or_else(|| "No such record".into())
+    }
+
+    /// Keeps the bytes of a record of the opened file before its first change.
+    fn keep_original(&mut self, list: usize, uid: u64, bytes: &[u8]) {
+        if !self.edits.born.contains(&uid) {
+            self.edits.originals.entry(uid).or_insert_with(|| (list, bytes.to_vec()));
+        }
+    }
+
+    /// Applies one operation; returns how it moved rows.
+    fn run(&mut self, op: &Op) -> Option<Shift> {
+        match op {
+            Op::Set { list, uid, off, new, .. } => {
+                let row = self.edits.row_of(*list, *uid).expect("edited record exists");
+                let bytes = self.file.record(*list, row).unwrap().to_vec();
+                self.keep_original(*list, *uid, &bytes);
+                self.write(*list, row, *off, new);
+                None
+            }
+            Op::Insert { list, uid, row, bytes } => {
+                self.file.insert_record(*list, *row, bytes);
+                self.edits.rows[*list].insert(*row, *uid);
+                Some(Shift { list: *list, at: *row, delta: 1, count: self.file.lists[*list].count })
+            }
+            Op::Remove { list, uid, row, .. } => {
+                let bytes = self.file.record(*list, *row).unwrap().to_vec();
+                self.keep_original(*list, *uid, &bytes);
+                self.file.remove_record(*list, *row);
+                self.edits.rows[*list].remove(*row);
+                Some(Shift { list: *list, at: *row, delta: -1, count: self.file.lists[*list].count })
+            }
+        }
+    }
+
+    fn run_all<'a>(&mut self, ops: impl IntoIterator<Item = &'a Op>) -> Vec<Shift> {
+        let mut shifts = Vec::new();
+        let mut lists = Vec::new();
+        for op in ops {
+            lists.push(op.list());
+            shifts.extend(self.run(op));
+        }
+        self.forget_caches(lists);
+        shifts
+    }
+
+    fn entry(&mut self, label: &str, ops: Vec<Op>, reverts: Option<u64>) -> Entry {
         self.edits.next_id += 1;
-        Entry { id: self.edits.next_id, label: label.into(), time: now_ms(), changes, reverts }
+        Entry { id: self.edits.next_id, label: label.into(), time: now_ms(), ops, reverts }
     }
 
     fn apply(&mut self, entry: Entry) -> EditState {
-        for c in &entry.changes {
-            let bytes = self.file.record(c.list, c.row).unwrap().to_vec();
-            self.edits.originals.entry((c.list, c.row)).or_insert(bytes);
-            self.write(c.list, c.row, c.off, &c.new);
-        }
-        self.forget_caches(entry.changes.iter().map(|c| c.list).collect::<Vec<_>>());
+        let shifts = self.run_all(&entry.ops);
         self.edits.done.push(entry);
         self.edits.undone.clear();
-        self.edit_state()
+        EditState { shifts, ..self.edit_state() }
     }
 
     /// Sets fields of one record (one undo step). Fields already holding the
     /// value are left out; nothing changes if none differs.
     pub fn edit(&mut self, list: usize, row: usize, edits: &[FieldEdit], label: &str) -> Result<EditState, String> {
-        let mut changes = Vec::new();
+        let uid = self.uid_at(list, row)?;
+        let mut ops = Vec::new();
         for e in edits {
             let ty = self.field_type(list, row, e.off)?;
             let new = encode(&ty, &e.value)?;
             let record = self.file.record(list, row).ok_or("No such record")?;
             let old = record.get(e.off..e.off + new.len()).ok_or("The field runs past the record")?.to_vec();
             if old != new {
-                changes.push(Change { list, row, off: e.off, old, new });
+                ops.push(Op::Set { list, uid, off: e.off, old, new });
             }
         }
-        if changes.is_empty() {
+        if ops.is_empty() {
             return Ok(self.edit_state());
         }
-        let entry = self.entry(label, changes, None);
+        let entry = self.entry(label, ops, None);
+        Ok(self.apply(entry))
+    }
+
+    /// The ID a new record of a list gets: one more than the highest ID in
+    /// the list, moved past any ID already taken in the space the client
+    /// registers the list's records in (a shared ID would hide one of them).
+    pub fn next_free_id(&self, list: usize) -> Result<u32, String> {
+        let ids_of = |l: usize| (0..self.file.lists[l].count).map(move |r| Self::record_id(self.file.record(l, r).unwrap()));
+        let max = ids_of(list).max().unwrap_or(0);
+        let known = |l: usize| self.lists[l].struct_name.as_deref().filter(|s| !s.to_ascii_uppercase().starts_with("UNKNOWN")).map(registry_space);
+        let taken: HashSet<u32> = match known(list) {
+            Some(space) => (0..self.file.lists.len()).filter(|&l| known(l) == Some(space)).flat_map(ids_of).collect(),
+            None => ids_of(list).collect(),
+        };
+        let mut id = max.checked_add(1).ok_or("No free ID left in this list")?;
+        while taken.contains(&id) {
+            id = id.checked_add(1).ok_or("No free ID left in this ID space")?;
+        }
+        Ok(id)
+    }
+
+    /// Copies a record to the end of its list with a new ID (one undo step).
+    pub fn clone_record(&mut self, list: usize, row: usize) -> Result<EditState, String> {
+        let mut bytes = self.file.record(list, row).ok_or("No such record")?.to_vec();
+        if bytes.len() < 4 {
+            return Err("Records of this list are too small to hold an ID".into());
+        }
+        let id = self.next_free_id(list)?;
+        let source_id = Self::record_id(&bytes);
+        bytes[..4].copy_from_slice(&id.to_le_bytes());
+        let name = Self::record_name(&bytes, Self::name_field(self.def(list).map(|(_, d)| d)));
+        let uid = self.edits.next_uid;
+        self.edits.next_uid += 1;
+        self.edits.born.insert(uid);
+        let new_row = self.file.lists[list].count;
+        let label = format!("Clone {} ({source_id} → {id})", if name.is_empty() { format!("#{row}") } else { name });
+        let entry = self.entry(&label, vec![Op::Insert { list, uid, row: new_row, bytes }], None);
+        Ok(EditState { created: Some((list, new_row)), ..self.apply(entry) })
+    }
+
+    /// Removes a record (one undo step).
+    pub fn delete_record(&mut self, list: usize, row: usize) -> Result<EditState, String> {
+        let uid = self.uid_at(list, row)?;
+        let bytes = self.file.record(list, row).ok_or("No such record")?.to_vec();
+        let name = Self::record_name(&bytes, Self::name_field(self.def(list).map(|(_, d)| d)));
+        let label = format!("Delete {} ({})", if name.is_empty() { format!("#{row}") } else { name }, Self::record_id(&bytes));
+        let entry = self.entry(&label, vec![Op::Remove { list, uid, row, bytes }], None);
         Ok(self.apply(entry))
     }
 
     pub fn undo(&mut self) -> EditState {
+        let mut shifts = Vec::new();
         if let Some(entry) = self.edits.done.pop() {
-            for c in entry.changes.iter().rev() {
-                self.write(c.list, c.row, c.off, &c.old);
-            }
-            self.forget_caches(entry.changes.iter().map(|c| c.list).collect::<Vec<_>>());
+            let inverse: Vec<Op> = entry.ops.iter().rev().map(Op::inverse).collect();
+            shifts = self.run_all(&inverse);
             self.edits.undone.push(entry);
         }
-        self.edit_state()
+        EditState { shifts, ..self.edit_state() }
     }
 
     pub fn redo(&mut self) -> EditState {
+        let mut shifts = Vec::new();
         if let Some(entry) = self.edits.undone.pop() {
-            for c in &entry.changes {
-                self.write(c.list, c.row, c.off, &c.new);
-            }
-            self.forget_caches(entry.changes.iter().map(|c| c.list).collect::<Vec<_>>());
+            shifts = self.run_all(&entry.ops);
             self.edits.done.push(entry);
         }
-        self.edit_state()
+        EditState { shifts, ..self.edit_state() }
     }
 
-    /// Puts records back as they were when the file was opened (one undo step).
+    /// Puts records back as the file was opened (one undo step): the given
+    /// ones (a clone among them is removed), or with none, the whole file —
+    /// clones removed, deleted records back in place, changes undone.
     pub fn revert(&mut self, records: Option<&[(usize, usize)]>, label: &str) -> EditState {
-        let targets: Vec<(usize, usize)> = match records {
-            Some(r) => r.to_vec(),
-            None => self.edits.originals.keys().copied().collect(),
+        let mut ops = Vec::new();
+        // Rows as the operations will find them, while they are planned.
+        let mut rows = self.edits.rows.clone();
+        let present_set = |uid: u64, list: usize, rows: &Vec<Vec<u64>>| rows[list].iter().position(|&u| u == uid);
+        let targets: Vec<u64> = match records {
+            Some(r) => r.iter().filter_map(|&(l, row)| self.edits.rows.get(l)?.get(row).copied()).collect(),
+            None => self.edits.rows.iter().flatten().copied().filter(|u| self.edits.born.contains(u) || self.edits.originals.contains_key(u)).collect(),
         };
-        let mut changes = Vec::new();
-        for (list, row) in targets {
-            let Some(original) = self.edits.originals.get(&(list, row)) else { continue };
-            let current = self.file.record(list, row).unwrap();
-            if current != original.as_slice() {
-                changes.push(Change { list, row, off: 0, old: current.to_vec(), new: original.clone() });
+        // Clones go.
+        for &uid in targets.iter().filter(|u| self.edits.born.contains(u)) {
+            let list = (0..rows.len()).find(|&l| rows[l].contains(&uid)).unwrap();
+            let row = present_set(uid, list, &rows).unwrap();
+            let bytes = self.file.record(list, self.edits.row_of(list, uid).unwrap()).unwrap().to_vec();
+            ops.push(Op::Remove { list, uid, row, bytes });
+            rows[list].remove(row);
+        }
+        // Deleted records come back where they were (the whole file only).
+        if records.is_none() {
+            for (list, initial) in self.edits.initial.iter().enumerate() {
+                for (i, &uid) in initial.iter().enumerate() {
+                    if rows[list].contains(&uid) {
+                        continue;
+                    }
+                    let row = initial[..i].iter().filter(|u| rows[list].contains(u)).count();
+                    let bytes = self.edits.originals[&uid].1.clone();
+                    ops.push(Op::Insert { list, uid, row, bytes });
+                    rows[list].insert(row, uid);
+                }
             }
         }
-        if changes.is_empty() {
+        // Changed records get their bytes back.
+        for &uid in targets.iter().filter(|u| !self.edits.born.contains(u)) {
+            let Some((list, original)) = self.edits.originals.get(&uid).cloned() else { continue };
+            let Some(row) = self.edits.row_of(list, uid) else { continue };
+            let current = self.file.record(list, row).unwrap();
+            if current != original.as_slice() {
+                ops.push(Op::Set { list, uid, off: 0, old: current.to_vec(), new: original });
+            }
+        }
+        if ops.is_empty() {
             return self.edit_state();
         }
-        let entry = self.entry(label, changes, None);
+        let entry = self.entry(label, ops, None);
         self.apply(entry)
     }
 
-    /// Takes back one edit of the history (as a new edit). Unless `force`,
-    /// fails when later edits changed the same bytes, naming the fields.
+    /// Takes back one edit of the history (its record changes, clone or
+    /// delete). Unless `force`, fails when later edits changed the same
+    /// bytes, naming the fields.
     pub fn revert_entry(&mut self, id: u64, force: bool) -> Result<EditState, String> {
         let entry = self.edits.done.iter().find(|e| e.id == id).ok_or("That edit is not applied (undone, or no longer in the history)")?.clone();
         // Already taken back: nothing to do (reverting never goes back and forth).
         if self.edits.done.iter().any(|e| e.reverts == Some(id)) {
             return Ok(self.edit_state());
         }
-        let mut changes = Vec::new();
-        let mut overwritten = Vec::new();
-        for c in &entry.changes {
-            let current = self.file.record(c.list, c.row).ok_or("No such record")?[c.off..c.off + c.new.len()].to_vec();
-            if current != c.new {
-                overwritten.extend(self.diff_fields(c.list, c.row, c.off, &c.new, &current).into_iter().map(|f| f.field));
-            }
-            if current != c.old {
-                changes.push(Change { list: c.list, row: c.row, off: c.off, old: current, new: c.old.clone() });
+        let mut ops = Vec::new();
+        let mut overwritten: Vec<String> = Vec::new();
+        let mut rows = self.edits.rows.clone();
+        for op in entry.ops.iter().rev() {
+            match op {
+                Op::Set { list, uid, off, old, new } => {
+                    let Some(row) = self.edits.row_of(*list, *uid) else {
+                        overwritten.push("a record deleted since".into());
+                        continue;
+                    };
+                    let current = self.file.record(*list, row).unwrap()[*off..*off + new.len()].to_vec();
+                    if &current != new {
+                        let base = self.file.record(*list, row).unwrap().to_vec();
+                        overwritten.extend(self.diff_fields(*list, &base, *off, new, &current).into_iter().map(|f| f.field));
+                    }
+                    if &current != old {
+                        ops.push(Op::Set { list: *list, uid: *uid, off: *off, old: current, new: old.clone() });
+                    }
+                }
+                Op::Insert { list, uid, bytes, .. } => {
+                    let Some(row) = rows[*list].iter().position(|u| u == uid) else { continue };
+                    let current = self.file.record(*list, self.edits.row_of(*list, *uid).unwrap()).unwrap().to_vec();
+                    if &current != bytes {
+                        overwritten.push("the clone, edited since".into());
+                    }
+                    ops.push(Op::Remove { list: *list, uid: *uid, row, bytes: current });
+                    rows[*list].remove(row);
+                }
+                Op::Remove { list, uid, row, bytes } => {
+                    if rows[*list].contains(uid) {
+                        continue;
+                    }
+                    let at = (*row).min(rows[*list].len());
+                    ops.push(Op::Insert { list: *list, uid: *uid, row: at, bytes: bytes.clone() });
+                    rows[*list].insert(at, *uid);
+                }
             }
         }
         if !overwritten.is_empty() && !force {
             overwritten.dedup();
             return Err(format!("CONFLICT: later edits changed {} too", overwritten.join(", ")));
         }
-        if changes.is_empty() {
+        if ops.is_empty() {
             return Ok(self.edit_state());
         }
-        let entry = self.entry(&format!("Revert “{}”", entry.label), changes, Some(id));
+        let entry = self.entry(&format!("Revert “{}”", entry.label), ops, Some(id));
         Ok(self.apply(entry))
     }
 
     /// The fields whose values differ between two versions of the bytes at
-    /// `off` in a record (the rest of the record as it is now).
-    fn diff_fields(&self, list: usize, row: usize, off: usize, old: &[u8], new: &[u8]) -> Vec<FieldDiff> {
-        let Some(record) = self.file.record(list, row) else { return vec![] };
+    /// `off` in a record (`base` holds the rest of the record).
+    fn diff_fields(&self, list: usize, base: &[u8], off: usize, old: &[u8], new: &[u8]) -> Vec<FieldDiff> {
         let with = |bytes: &[u8]| {
-            let mut r = record.to_vec();
+            let mut r = base.to_vec();
             r[off..off + bytes.len()].copy_from_slice(bytes);
             r
         };
@@ -394,19 +615,31 @@ impl Document {
         let reverted_by: HashMap<u64, (u64, u64)> = self.edits.done.iter().filter_map(|e| Some((e.reverts?, (e.id, e.time)))).collect();
         let describe = |e: &Entry, undone: bool| {
             let mut records: Vec<HistoryRecord> = Vec::new();
-            for c in &e.changes {
-                // The fields the change set (its old bytes against its new ones).
-                let fields = self.diff_fields(c.list, c.row, c.off, &c.old, &c.new);
-                let bytes = self.file.record(c.list, c.row).unwrap_or_default();
-                let def = self.def(c.list).map(|(_, d)| d);
-                match records.iter_mut().find(|r| r.list == c.list && r.row == c.row) {
+            for op in &e.ops {
+                let (list, uid) = (op.list(), op.uid());
+                let row = self.edits.row_of(list, uid);
+                let size = self.file.lists[list].item_size;
+                // The record as it is now (or, when gone, as the edit knew it).
+                let bytes: Vec<u8> = match (row, op) {
+                    (Some(r), _) => self.file.record(list, r).unwrap().to_vec(),
+                    (None, Op::Insert { bytes, .. } | Op::Remove { bytes, .. }) => bytes.clone(),
+                    (None, Op::Set { .. }) => self.edits.originals.get(&uid).map(|o| o.1.clone()).unwrap_or_else(|| vec![0; size]),
+                };
+                let (action, fields) = match op {
+                    Op::Set { off, old, new, .. } => ("edit", self.diff_fields(list, &bytes, *off, old, new)),
+                    Op::Insert { .. } => ("clone", vec![]),
+                    Op::Remove { .. } => ("delete", vec![]),
+                };
+                let def = self.def(list).map(|(_, d)| d);
+                match records.iter_mut().find(|r| r.list == list && r.id == Self::record_id(&bytes) && r.action == action) {
                     Some(r) => r.fields.extend(fields),
                     None => records.push(HistoryRecord {
-                        list: c.list,
-                        row: c.row,
-                        id: Self::record_id(bytes),
-                        name: Self::record_name(bytes, Self::name_field(def)),
-                        icon: self.record_icon(bytes, Self::icon_field(def)),
+                        list,
+                        row,
+                        id: Self::record_id(&bytes),
+                        name: Self::record_name(&bytes, Self::name_field(def)),
+                        icon: self.record_icon(&bytes, Self::icon_field(def)),
+                        action,
                         fields,
                     }),
                 }
@@ -428,19 +661,46 @@ impl Document {
         out
     }
 
-    /// The original bytes of a record that differs from the file as opened.
+    /// The original bytes of a record of the opened file that differs from it.
     pub fn original(&self, list: usize, row: usize) -> Option<&[u8]> {
-        let original = self.edits.originals.get(&(list, row))?;
+        let uid = *self.edits.rows.get(list)?.get(row)?;
+        let (_, original) = self.edits.originals.get(&uid)?;
         (self.file.record(list, row)? != original.as_slice()).then_some(original.as_slice())
     }
 
+    /// Whether a record was created by an edit (a clone).
+    pub fn is_added(&self, list: usize, row: usize) -> bool {
+        self.edits.rows.get(list).and_then(|r| r.get(row)).is_some_and(|u| self.edits.born.contains(u))
+    }
+
     pub fn edit_state(&self) -> EditState {
-        let mut changed: Vec<(usize, usize)> = self.edits.originals.keys().copied().filter(|&(l, r)| self.original(l, r).is_some()).collect();
-        changed.sort();
+        let mut changed = Vec::new();
+        let mut added = Vec::new();
+        for (list, uids) in self.edits.rows.iter().enumerate() {
+            for (row, uid) in uids.iter().enumerate() {
+                if self.edits.born.contains(uid) {
+                    added.push((list, row));
+                } else if self.edits.originals.contains_key(uid) && self.original(list, row).is_some() {
+                    changed.push((list, row));
+                }
+            }
+        }
+        let mut deleted: HashMap<usize, usize> = HashMap::new();
+        for (&uid, &(list, _)) in &self.edits.originals {
+            if self.edits.row_of(list, uid).is_none() {
+                *deleted.entry(list).or_default() += 1;
+            }
+        }
+        let mut deleted: Vec<(usize, usize)> = deleted.into_iter().collect();
+        deleted.sort();
         EditState {
             undo: self.edits.done.last().map(|e| e.label.clone()),
             redo: self.edits.undone.last().map(|e| e.label.clone()),
             changed,
+            added,
+            deleted,
+            shifts: vec![],
+            created: None,
         }
     }
 }

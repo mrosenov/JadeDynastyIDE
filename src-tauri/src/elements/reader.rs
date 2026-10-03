@@ -301,6 +301,46 @@ impl ElementsFile {
         self.raw_version & 0xffff
     }
 
+    /// Moves everything after list `list` by `delta` bytes and sets its count
+    /// (in the struct and in the list header).
+    fn resize_list(&mut self, list: usize, count: usize, delta: isize) {
+        let start = self.lists[list].header_offset;
+        let shift = |o: &mut usize| *o = o.checked_add_signed(delta).expect("offsets stay in the file");
+        for block in self.lists.iter_mut().filter(|b| b.header_offset > start) {
+            shift(&mut block.header_offset);
+            shift(&mut block.data_offset);
+        }
+        for seg in &mut self.segments {
+            if seg.offset > start {
+                shift(&mut seg.offset);
+            } else if seg.offset == start && seg.kind == SegmentKind::List {
+                seg.size = seg.size.checked_add_signed(delta).expect("list size stays positive");
+            }
+        }
+        self.lists[list].count = count;
+        self.data[start + 4..start + 8].copy_from_slice(&(count as u32).to_le_bytes());
+    }
+
+    /// Inserts a record (of the list's record size) at `row`.
+    pub fn insert_record(&mut self, list: usize, row: usize, bytes: &[u8]) {
+        let block = &self.lists[list];
+        assert!(row <= block.count && bytes.len() == block.item_size, "insert within the list, a whole record");
+        let at = block.data_offset + row * block.item_size;
+        let count = block.count + 1;
+        self.data.splice(at..at, bytes.iter().copied());
+        self.resize_list(list, count, bytes.len() as isize);
+    }
+
+    /// Removes the record at `row`, returning its bytes.
+    pub fn remove_record(&mut self, list: usize, row: usize) -> Vec<u8> {
+        let block = &self.lists[list];
+        assert!(row < block.count, "remove an existing record");
+        let (at, size, count) = (block.data_offset + row * block.item_size, block.item_size, block.count - 1);
+        let bytes: Vec<u8> = self.data.drain(at..at + size).collect();
+        self.resize_list(list, count, -(size as isize));
+        bytes
+    }
+
     pub fn record_offset(&self, list: usize, index: usize) -> Option<usize> {
         let block = self.lists.get(list)?;
         (index < block.count).then(|| block.data_offset + index * block.item_size)

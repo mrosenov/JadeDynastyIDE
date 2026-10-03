@@ -39,7 +39,9 @@ export type TabAction =
   | { type: "closeOthers"; id: number }
   | { type: "cycle"; delta: number }
   | { type: "activateIndex"; index: number }
-  | { type: "reset"; state: TabsState };
+  | { type: "reset"; state: TabsState }
+  /** Rows of a list moved (a record inserted or removed at `at`). */
+  | { type: "shiftRows"; list: number; at: number; delta: number; count: number };
 
 export const EMPTY_TABS: TabsState = { tabs: [], active: null };
 
@@ -124,6 +126,26 @@ export function tabsReducer(state: TabsState, action: TabAction): TabsState {
     }
     case "reset":
       return action.state;
+    case "shiftRows": {
+      const { list, at, delta, count } = action;
+      // A removed record's tab shows the record that took its place.
+      const move = (row: number | null, removedGoes: boolean): number | null | undefined => {
+        if (row === null || row < at) return row;
+        if (delta > 0) return row + delta;
+        if (row > at) return row + delta;
+        return removedGoes ? undefined : count === 0 ? null : Math.min(at, count - 1);
+      };
+      return {
+        ...state,
+        tabs: state.tabs.map((t) => {
+          if (t.list !== list) return t;
+          const history = t.history
+            .map((h) => (h.list === list ? { ...h, row: move(h.row, true) } : h))
+            .filter((h): h is Location => h.row !== undefined);
+          return { ...t, row: move(t.row, false) as number | null, history };
+        }),
+      };
+    }
   }
 }
 
