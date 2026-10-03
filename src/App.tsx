@@ -793,6 +793,7 @@ export default function App() {
                 if (off !== null) setFocus({ list: hit.list, row: hit.row, off, nonce: Date.now() });
               }}
               onClose={() => setPanel("lists")}
+              onEdited={afterEdits}
             />
           </div>
           )}

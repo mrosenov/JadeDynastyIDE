@@ -1,6 +1,8 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
   FindResult,
+  BulkEdit,
+  BulkReport,
   HistoryEntry,
   EditState,
   FieldEdit,
@@ -66,6 +68,8 @@ export const editRecord = (list: number, row: number, edits: FieldEdit[], label:
 export const cloneRecord = (list: number, row: number) => invoke<EditState>("clone_record", { list, row });
 export const deleteRecord = (list: number, row: number) => invoke<EditState>("delete_record", { list, row });
 export const fileSummary = () => invoke<FileSummary>("file_summary");
+/** Plans a bulk edit over search results, or with `apply` makes it (one undo step). */
+export const bulkEdit = (edit: BulkEdit, apply: boolean) => invoke<BulkReport>("bulk_edit", { edit, apply });
 export const undoEdit = () => invoke<EditState>("undo_edit");
 export const redoEdit = () => invoke<EditState>("redo_edit");
 /** Puts records (all changed ones without any) back as the file was opened. */

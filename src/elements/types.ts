@@ -618,3 +618,41 @@ export interface HistoryEntry {
   revertedAt?: number;
   records: HistoryRecord[];
 }
+
+// ---------------------------------------------------------------- bulk edit
+
+export type BulkOp = "set" | "add" | "subtract" | "multiply" | "set_flags" | "clear_flags";
+
+export interface BulkEdit {
+  query: SearchQuery;
+  /** Only these records ([list, row]) instead of every match. */
+  records?: [number, number][];
+  /** A field name ("proc_type") or an exact path ("addons[2].id"). */
+  field: string;
+  op: BulkOp;
+  value: string;
+}
+
+export interface BulkSample {
+  list: number;
+  row: number;
+  id: number;
+  name: string;
+  field: string;
+  old: string;
+  new: string;
+  oldLabel?: string;
+  newLabel?: string;
+  error?: string;
+}
+
+export interface BulkReport {
+  matched: number;
+  changing: number;
+  unchanged: number;
+  skipped: number;
+  skippedLists: string[];
+  failed: number;
+  samples: BulkSample[];
+  state?: EditState;
+}

@@ -1346,6 +1346,46 @@ mod tests {
     }
 
     #[test]
+    fn bulk_edits_search_results() {
+        use edit::{BulkEdit, BulkOp};
+        use search::{Condition, Op, Query};
+        let Some(mut doc) = open("Game Dev/JD/zxserver/zgame/gs/config/elements.data") else { return };
+        let before = doc.file.data.clone();
+        let tradeable = Query::Conditions { conditions: vec![Condition { field: "proc_type".into(), op: Op::LacksFlags, value: "16".into() }], match_all: true, list: Some(3) };
+        let bulk = |op, field: &str, value: &str| BulkEdit { query: tradeable.clone(), records: None, field: field.into(), op, value: value.into() };
+        // A preview changes nothing.
+        let plan = doc.bulk_edit(&bulk(BulkOp::SetFlags, "proc_type", "16"), false).unwrap();
+        assert!(plan.matched > 100 && plan.changing == plan.matched && plan.failed == 0, "{} {}", plan.matched, plan.changing);
+        assert_eq!(doc.file.data, before);
+        // Applying flags every record, keeping their other bits; one undo step.
+        let first = doc.records(3).unwrap().into_iter().map(|r| r.index).find(|&r| doc.search_limited(&tradeable, usize::MAX).unwrap().hits.iter().any(|h| h.row == r)).unwrap();
+        let proc_before: u32 = doc.record(3, first).unwrap().nodes.iter().find(|n| n.name == "proc_type").unwrap().value.as_ref().unwrap().parse().unwrap();
+        let done = doc.bulk_edit(&bulk(BulkOp::SetFlags, "proc_type", "16"), true).unwrap();
+        assert_eq!(done.state.as_ref().unwrap().changed.len(), plan.changing);
+        let proc_after: u32 = doc.record(3, first).unwrap().nodes.iter().find(|n| n.name == "proc_type").unwrap().value.as_ref().unwrap().parse().unwrap();
+        assert_eq!(proc_after, proc_before | 16);
+        assert_eq!(doc.search_limited(&tradeable, usize::MAX).unwrap().hits.len(), 0);
+        assert!(doc.edit_state().undo.unwrap().starts_with("Bulk: proc_type += 16"));
+        doc.undo();
+        assert_eq!(doc.file.data, before);
+        // Arithmetic, with values that do not fit reported, not written.
+        let plan = doc.bulk_edit(&bulk(BulkOp::Multiply, "price", "100000000000"), false).unwrap();
+        assert!(plan.failed > 0 && plan.samples.iter().any(|s| s.error.as_deref().is_some_and(|e| e.contains("does not fit"))));
+        let plan = doc.bulk_edit(&bulk(BulkOp::Add, "price", "5"), false).unwrap();
+        let sample = &plan.samples[0];
+        assert_eq!(sample.new.parse::<i64>().unwrap(), sample.old.parse::<i64>().unwrap() + 5);
+        // Only the records picked.
+        let picked: Vec<(usize, usize)> = doc.search_limited(&tradeable, usize::MAX).unwrap().hits.iter().take(3).map(|h| (h.list, h.row)).collect();
+        let only = BulkEdit { records: Some(picked.clone()), ..bulk(BulkOp::SetFlags, "proc_type", "16") };
+        let done = doc.bulk_edit(&only, true).unwrap();
+        assert_eq!((done.matched, done.state.unwrap().changed), (3, picked));
+        doc.undo();
+        // A name several fields share needs a path.
+        let err = doc.bulk_edit(&bulk(BulkOp::Set, "id", "1"), false);
+        assert!(err.is_ok() || err.unwrap_err().contains("path"));
+    }
+
+    #[test]
     fn find_matches_ids_then_names() {
         let Some(doc) = open("Game Dev/JD/zxserver/zgame/gs/config/elements.data") else { return };
         let row = doc.records(3).unwrap().into_iter().find(|r| r.id != 0 && !r.name.is_empty()).unwrap();

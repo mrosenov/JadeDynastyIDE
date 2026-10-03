@@ -226,6 +226,12 @@ async fn file_summary(state: State<'_, AppState>) -> Result<FileSummary, String>
     state.with_document(|doc| Ok(doc.summary()))
 }
 
+/// Plans a bulk edit over search results, or with `apply` makes it (one undo step).
+#[tauri::command]
+async fn bulk_edit(edit: elements::edit::BulkEdit, apply: bool, state: State<'_, AppState>) -> Result<elements::edit::BulkReport, String> {
+    state.with_document_mut(|doc| doc.bulk_edit(&edit, apply))
+}
+
 #[tauri::command]
 async fn undo_edit(state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
     state.with_document_mut(|doc| Ok(doc.undo()))
@@ -575,6 +581,7 @@ pub fn run() {
             find_records,
             list_problems,
             edit_record,
+            bulk_edit,
             clone_record,
             delete_record,
             file_summary,

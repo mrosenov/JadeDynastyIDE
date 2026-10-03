@@ -216,7 +216,7 @@ impl Slot {
         }
     }
 
-    fn names(&self, query: &str) -> bool {
+    pub(crate) fn names(&self, query: &str) -> bool {
         if query.contains('.') {
             self.plain == query
         } else {
@@ -353,7 +353,7 @@ pub fn parse_int(s: &str) -> Option<i64> {
 }
 
 /// A number, or a label of the field's enum (or one bit of its mask).
-fn parse_value(s: &str, set: Option<&EnumSet>) -> Option<f64> {
+pub(crate) fn parse_value(s: &str, set: Option<&EnumSet>) -> Option<f64> {
     let s = s.trim();
     if let Some(v) = parse_int(s) {
         return Some(v as f64);
@@ -366,7 +366,7 @@ fn parse_value(s: &str, set: Option<&EnumSet>) -> Option<f64> {
 }
 
 /// Bits: a number, or mask labels joined by "," or "|".
-fn parse_bits(s: &str, set: Option<&EnumSet>) -> Option<u64> {
+pub(crate) fn parse_bits(s: &str, set: Option<&EnumSet>) -> Option<u64> {
     if let Some(v) = parse_int(s) {
         return Some(v as u64);
     }

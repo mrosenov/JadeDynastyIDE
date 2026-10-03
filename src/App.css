@@ -4467,3 +4467,115 @@ select.ie-control {
 .se-group-row .se-actions {
   opacity: 1;
 }
+
+/* ------------------------------------------------------------ bulk edit */
+
+.bulk-dialog {
+  width: min(680px, 100%);
+}
+.bulk-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) 170px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-pane);
+}
+.bulk-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 120px;
+  padding: 12px 18px;
+}
+.bulk-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 12.5px;
+}
+.bulk-samples {
+  max-height: 300px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.bulk-sample {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 14px auto;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+}
+.bulk-sample.failed {
+  grid-template-columns: minmax(0, 1fr) auto;
+  background: var(--danger-soft);
+}
+.bulk-more {
+  padding: 6px 10px;
+}
+.bulk-dialog .modal-foot {
+  gap: 10px;
+}
+.bulk-label {
+  font-weight: 400;
+  opacity: 0.85;
+}
+.bulk-sample .hf-old,
+.bulk-sample .hf-new {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------ picking search results */
+
+.search-pickbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+}
+.search-pickbar .check {
+  font-size: 12.5px;
+}
+.pick-check {
+  flex: none;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.search-hit.pickable {
+  grid-template-columns: 16px 24px minmax(0, 1fr) auto;
+  padding-left: 12px;
+}
+.search-hit.picked {
+  background: var(--accent-soft);
+}
+.search-group-head .pick-check {
+  margin-right: 2px;
+}
+.bulk-scope {
+  margin: 12px 18px 0;
+  align-self: flex-start;
+}
+.bulk-dialog {
+  display: flex;
+  flex-direction: column;
+}
+.bulk-scope button {
+  height: 30px;
+  padding: 0 14px;
+}
+.bulk-scope button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.search-pickbar .link {
+  white-space: nowrap;
+}

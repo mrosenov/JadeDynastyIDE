@@ -230,7 +230,7 @@ and record panes; it keeps its results while closed.
   optionally in bytes no layout describes.
 
 Results are grouped by list and show the matching field. Clicking one opens the record with
-that field selected (Ctrl+click: new tab). *Copy IDs* copies the results' IDs, one per line.
+that field selected (Ctrl+click: new tab). *Copy IDs* copies the IDs of the picked results (or all shown), one per line.
 
 ## Problems
 
@@ -254,6 +254,18 @@ Enum and mask findings are reported once per field and value, with how many reco
 Problems are grouped by kind; the severity buttons and the filter narrow them down. Clicking one
 opens the record with the field selected (dialogs open in the dialog viewer, list problems open
 the list). Each kind keeps its first 1000 problems.
+
+### Bulk edit
+
+Results have checkboxes (each list's header picks its results, the bar above them picks all shown).
+**Bulk edit** changes one field of the **picked** results, or of **all** results (every match, not
+only the 500 shown); the dialog switches between the two:
+*set to* a number, label or text; *add*, *subtract*, *multiply by*; or for masks *add flags* /
+*remove flags*, which only touch the given bits (`proc_type += Cannot be traded`). The field is a
+name (`proc_type`) or, when a record has it more than once, a path (`addons[2].id`). A live
+preview shows how many records change, already hold the value, can't take it (it does not fit
+the field; they are left as they are) or are skipped (their list has no such field), with old →
+new samples and their labels. Applying is one undo step and one history entry.
 
 ## Find
 

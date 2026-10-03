@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, ChevronRight, CircleAlert, Copy, Hash, ListFilter, Loader2, Plus, Search, Trash2, X } from "lucide-react";
+import { Check, ChevronRight, CircleAlert, Copy, Hash, Layers, ListFilter, Loader2, Plus, Search, Trash2, X } from "lucide-react";
 import { namedSet, searchFieldNames, searchRecords } from "../elements/api";
 import type { ListSummary, SearchCondition, SearchFieldName, SearchHit, SearchOp, SearchQuery, SearchReport } from "../elements/types";
 import { count } from "../elements/format";
 import { ExportMenu } from "./ExportMenu";
+import { BulkEditDialog } from "./BulkEditDialog";
+import type { EditState } from "../elements/types";
 
 interface Props {
   lists: ListSummary[];
@@ -13,6 +15,8 @@ interface Props {
   /** Open a hit, at the matched field's offset. */
   onOpen: (hit: SearchHit, offset: number | null, newTab: boolean) => void;
   onClose: () => void;
+  /** A bulk edit of the results was applied. */
+  onEdited?: (state: EditState) => void;
 }
 
 type Mode = "conditions" | "value";
@@ -46,7 +50,7 @@ const PLACEHOLDER: Record<ValueKind, string> = {
 const newCondition = (): SearchCondition => ({ field: "", op: "eq", value: "" });
 
 /** Searches the whole file by conditions on fields, or by a value in any field. */
-export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose }: Props) {
+export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose, onEdited }: Props) {
   const [mode, setMode] = useState<Mode>("conditions");
   const [scope, setScope] = useState<number | null>(null);
   const [conditions, setConditions] = useState<SearchCondition[]>([newCondition()]);
@@ -58,6 +62,19 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose }: Pr
   const [report, setReport] = useState<SearchReport | null>(null);
   // The query the results come from (for exporting all of them).
   const [ran, setRan] = useState<SearchQuery | null>(null);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  // Results picked (e.g. for a bulk edit), as "list:row".
+  const [picked, setPicked] = useState<Set<string>>(new Set());
+  const key = (h: { list: number; row: number }) => `${h.list}:${h.row}`;
+  const togglePicked = (keys: string[], on: boolean) =>
+    setPicked((p) => {
+      const next = new Set(p);
+      for (const k of keys) {
+        if (on) next.add(k);
+        else next.delete(k);
+      }
+      return next;
+    });
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [names, setNames] = useState<SearchFieldName[]>([]);
@@ -98,7 +115,10 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose }: Pr
     setBusy(true);
     setError(null);
     try {
-      setReport(await searchRecords(query));
+      const next = await searchRecords(query);
+      setReport(next);
+      const still = new Set(next.hits.map(key));
+      setPicked((p) => new Set([...p].filter((k) => still.has(k))));
       setRan(query);
       setCollapsed(new Set());
     } catch (e) {
@@ -125,7 +145,9 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose }: Pr
   }, [report]);
 
   const copyIds = () => {
-    const ids = [...new Set((report?.hits ?? []).map((h) => h.id))];
+    // The picked results, else all shown.
+    const hits = (report?.hits ?? []).filter((h) => !picked.size || picked.has(key(h)));
+    const ids = [...new Set(hits.map((h) => h.id))];
     navigator.clipboard.writeText(ids.join("\n"));
     setCopied(true);
     setTimeout(() => setCopied(false), 1200);
@@ -353,10 +375,41 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose }: Pr
               · scanned {count(report.scannedRecords)} in {report.scannedLists} · {report.elapsedMs} ms
             </span>
           </span>
+        </div>
+      )}
+      {report && report.hits.length > 0 && (
+        <div className="search-pickbar">
+          <label className="check" title="Pick every result shown">
+            <input
+              type="checkbox"
+              checked={picked.size > 0 && picked.size === report.hits.length}
+              ref={(el) => {
+                if (el) el.indeterminate = picked.size > 0 && picked.size < report.hits.length;
+              }}
+              onChange={(e) => togglePicked(report.hits.map(key), e.target.checked)}
+            />
+            {picked.size ? (
+              <span>
+                <b>{count(picked.size)}</b> picked
+              </span>
+            ) : (
+              <span className="muted">Pick results for a bulk edit, or edit them all</span>
+            )}
+          </label>
+          {picked.size > 0 && (
+            <button className="link" onClick={() => setPicked(new Set())}>
+              Clear
+            </button>
+          )}
           <span className="spacer" />
+          {report.hits.length > 0 && ran && onEdited && (
+            <button className="link" onClick={() => setBulkOpen(true)} title="Change one field of the picked results, or of every result (with a preview first)">
+              <Layers size={12} /> Bulk edit{picked.size ? ` (${picked.size})` : ""}
+            </button>
+          )}
           {report.hits.length > 0 && ran && <ExportMenu source={{ from: "search", query: ran }} name="search results" label={report.truncated ? `Export all ${count(report.matchedRecords)}` : "Export"} />}
           {report.hits.length > 0 && (
-            <button className="link" onClick={copyIds} title="Copy the IDs of the results, one per line">
+            <button className="link" onClick={copyIds} title={picked.size ? "Copy the IDs of the picked results, one per line" : "Copy the IDs of the results, one per line"}>
               {copied ? <Check size={12} /> : <Copy size={12} />} Copy IDs
             </button>
           )}
@@ -374,8 +427,10 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose }: Pr
           const closed = collapsed.has(list);
           return (
             <div key={list} className="search-group">
-              <button
+              <div
                 className="search-group-head"
+                role="button"
+                tabIndex={0}
                 onClick={() =>
                   setCollapsed((c) => {
                     const next = new Set(c);
@@ -385,42 +440,79 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose }: Pr
                   })
                 }
               >
+                <input
+                  type="checkbox"
+                  className="pick-check"
+                  checked={hits.every((h) => picked.has(key(h)))}
+                  ref={(el) => {
+                    if (el) el.indeterminate = hits.some((h) => picked.has(key(h))) && !hits.every((h) => picked.has(key(h)));
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => togglePicked(hits.map(key), e.target.checked)}
+                  title={`Pick the ${hits.length} result(s) of this list`}
+                />
                 <ChevronRight size={14} className={"caret-icon" + (closed ? "" : " open")} />
                 <span className="truncate">{lists[list]?.name ?? `List ${list}`}</span>
                 <span className="muted mono small">#{list}</span>
                 <span className="spacer" />
                 <span className="muted small">{hits.length}</span>
-              </button>
+              </div>
               {!closed &&
                 hits.map((h) => {
                   const [m, ...more] = h.matches;
                   return (
-                    <button
+                    <div
                       key={h.row}
-                      className={"search-hit" + (active === `${h.list}:${h.row}` ? " active" : "")}
+                      role="button"
+                      tabIndex={0}
+                      className={"search-hit pickable" + (active === `${h.list}:${h.row}` ? " active" : "") + (picked.has(key(h)) ? " picked" : "")}
                       onClick={(e) => open(h, e)}
                       onAuxClick={(e) => e.button === 1 && open(h, e)}
                       title="Open (Ctrl+click: new tab)"
                     >
+                      <input
+                        type="checkbox"
+                        className="pick-check"
+                        checked={picked.has(key(h))}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => togglePicked([key(h)], e.target.checked)}
+                        aria-label={`Pick ${h.name}`}
+                      />
                       <span className="find-icon">{icon?.(h.icon) ? <img src={icon(h.icon)} alt="" draggable={false} /> : null}</span>
                       <span className="search-hit-main">
                         <span className="truncate">{h.name || <span className="muted">Unnamed</span>}</span>
                         {m && (
                           <span className="search-hit-match truncate mono">
                             {m.field} = {m.value === "" ? '""' : m.value}
-                            {m.label && <span className="muted"> ({m.label})</span>}
+                            {m.label && <span className="muted"> {m.label.startsWith("(") ? m.label : `(${m.label})`}</span>}
                             {more.length > 0 && <span className="muted"> +{more.length}</span>}
                           </span>
                         )}
                       </span>
                       <span className="mono muted small">{h.id}</span>
-                    </button>
+                    </div>
                   );
                 })}
             </div>
           );
         })}
       </div>
+      {bulkOpen && ran && report && (
+        <BulkEditDialog
+          query={ran}
+          matched={report.matchedRecords}
+          picked={report.hits.filter((h) => picked.has(key(h))).map((h) => [h.list, h.row] as [number, number])}
+          names={names}
+          lists={lists}
+          initialField={ran.mode === "conditions" ? (ran.conditions[0]?.field ?? "") : ""}
+          onApplied={(state) => {
+            onEdited?.(state);
+            // The results reflect the new values.
+            run();
+          }}
+          onClose={() => setBulkOpen(false)}
+        />
+      )}
     </section>
   );
 }

@@ -705,6 +705,252 @@ impl Document {
     }
 }
 
+// ---------------------------------------------------------------- bulk edits
+
+/// What a bulk edit does to each record's field.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum BulkOp {
+    /// Set to the value (a number, an enum label, or text).
+    Set,
+    Add,
+    Subtract,
+    Multiply,
+    /// Turn on bits (a number or mask labels joined by "|" or ",").
+    SetFlags,
+    /// Turn off bits.
+    ClearFlags,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BulkEdit {
+    /// The records: every match of this search…
+    pub query: search::Query,
+    /// …or only these (list, row) pairs, e.g. the results picked.
+    #[serde(default)]
+    pub records: Option<Vec<(usize, usize)>>,
+    /// A field name ("proc_type") or an exact path ("addons[2].id").
+    pub field: String,
+    pub op: BulkOp,
+    pub value: String,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BulkSample {
+    pub list: usize,
+    pub row: usize,
+    pub id: u32,
+    pub name: String,
+    pub field: String,
+    pub old: String,
+    pub new: String,
+    /// Enum or mask labels of the old and new values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub old_label: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub new_label: Option<String>,
+    /// Why the record cannot take the new value.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BulkReport {
+    /// Records the search matched.
+    pub matched: usize,
+    /// Records whose field gets a new value.
+    pub changing: usize,
+    /// Records whose field already holds it.
+    pub unchanged: usize,
+    /// Records of lists without the field.
+    pub skipped: usize,
+    /// Lists skipped, by name.
+    pub skipped_lists: Vec<String>,
+    /// Records the new value does not fit (left as they are).
+    pub failed: usize,
+    /// A few changes, then the failures (up to 50 each).
+    pub samples: Vec<BulkSample>,
+    /// After applying: the edit state.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<EditState>,
+}
+
+const BULK_SAMPLES: usize = 50;
+
+/// An integer of a field's width as the text `encode` reads for its type.
+fn typed_bits(ty: &Ty, bits: u64) -> String {
+    let width = ty.size() * 8;
+    let mask = if width >= 64 { u64::MAX } else { (1u64 << width) - 1 };
+    let v = bits & mask;
+    let signed = matches!(ty, Ty::I8 | Ty::I16 | Ty::I32 | Ty::I64);
+    if signed && width < 64 && v >> (width - 1) & 1 == 1 {
+        (v as i64 - (1i64 << width)).to_string()
+    } else if signed && width == 64 {
+        (v as i64).to_string()
+    } else {
+        v.to_string()
+    }
+}
+
+/// A float written without needless digits ("1.5", "2").
+fn number(v: f64) -> String {
+    if v.fract() == 0.0 && v.abs() < 1e15 {
+        format!("{}", v as i64)
+    } else {
+        format!("{v}")
+    }
+}
+
+impl Document {
+    /// Plans (and with `apply`, makes, as one undo step) a bulk edit.
+    pub fn bulk_edit(&mut self, edit: &BulkEdit, apply: bool) -> Result<BulkReport, String> {
+        let targets: Vec<(usize, usize)> = match &edit.records {
+            Some(records) => records.iter().copied().filter(|&(l, r)| self.file.record(l, r).is_some()).collect(),
+            None => self.search_limited(&edit.query, usize::MAX)?.hits.iter().map(|h| (h.list, h.row)).collect(),
+        };
+        let field = edit.field.trim().to_lowercase();
+        if field.is_empty() {
+            return Err("Name the field to change.".into());
+        }
+        let value = edit.value.trim();
+        let mut report = BulkReport { matched: targets.len(), changing: 0, unchanged: 0, skipped: 0, skipped_lists: vec![], failed: 0, samples: vec![], state: None };
+        let mut failures = Vec::new();
+        let mut ops = Vec::new();
+        let mut slots_of: HashMap<usize, Result<Option<search::Slot>, String>> = HashMap::new();
+
+        for &(list, row) in &targets {
+            let slot = slots_of
+                .entry(list)
+                .or_insert_with(|| {
+                    let size = self.file.lists[list].item_size;
+                    let slots = self.def(list).map(|(_, d)| search::slots(d, size)).unwrap_or_default();
+                    // An exact path first, else a name that only one field has.
+                    if let Some(s) = slots.iter().find(|s| s.path.eq_ignore_ascii_case(&field)) {
+                        return Ok(Some(s.clone()));
+                    }
+                    let named: Vec<&search::Slot> = slots.iter().filter(|s| s.names(&field)).collect();
+                    match named.len() {
+                        0 => Ok(None),
+                        1 => Ok(Some(named[0].clone())),
+                        n => Err(format!("“{}” is {n} fields in {} (e.g. {}); name one by its path", edit.field.trim(), self.list_name(list), named[0].path)),
+                    }
+                })
+                .clone()?;
+            let Some(slot) = slot else {
+                report.skipped += 1;
+                let name = self.list_name(list);
+                if !report.skipped_lists.contains(&name) {
+                    report.skipped_lists.push(name);
+                }
+                continue;
+            };
+            let bytes = self.file.record(list, row).unwrap().to_vec();
+            let ty = slot.ty(&bytes).clone();
+            let set = slot.set.as_deref().and_then(|k| self.catalog.enum_set(None, k));
+            let old_text = slot.text(&bytes);
+            let new_text: Result<String, String> = (|| {
+                let is_int = matches!(ty, Ty::I8 | Ty::U8 | Ty::Bool | Ty::I16 | Ty::U16 | Ty::I32 | Ty::U32 | Ty::I64 | Ty::U64);
+                let is_float = matches!(ty, Ty::F32 | Ty::F64);
+                Ok(match edit.op {
+                    BulkOp::Set => {
+                        if is_int && search::parse_int(value).is_none() {
+                            // An enum or mask label.
+                            let v = search::parse_value(value, set).ok_or_else(|| format!("“{value}” is not a number or a label of this field"))?;
+                            typed_bits(&ty, v as i64 as u64)
+                        } else {
+                            value.to_string()
+                        }
+                    }
+                    BulkOp::Add | BulkOp::Subtract | BulkOp::Multiply => {
+                        if !is_int && !is_float {
+                            return Err("Arithmetic needs a number field".into());
+                        }
+                        let by: f64 = value.parse().map_err(|_| format!("“{value}” is not a number"))?;
+                        let old: f64 = old_text.parse().map_err(|_| "The field holds no number".to_string())?;
+                        let new = match edit.op {
+                            BulkOp::Add => old + by,
+                            BulkOp::Subtract => old - by,
+                            _ => old * by,
+                        };
+                        if is_int {
+                            if new.fract() != 0.0 && edit.op != BulkOp::Multiply {
+                                return Err(format!("{value} is not a whole number"));
+                            }
+                            number(new.round())
+                        } else {
+                            number(new)
+                        }
+                    }
+                    BulkOp::SetFlags | BulkOp::ClearFlags => {
+                        if !is_int {
+                            return Err("Flags need an integer field".into());
+                        }
+                        let bits = search::parse_bits(value, set).ok_or_else(|| format!("“{value}” is not a number or labels of this mask"))?;
+                        let old = slot.int(&bytes).unwrap_or(0) as u64;
+                        typed_bits(&ty, if edit.op == BulkOp::SetFlags { old | bits } else { old & !bits })
+                    }
+                })
+            })();
+            let id = Self::record_id(&bytes);
+            let name = Self::record_name(&bytes, Self::name_field(self.def(list).map(|(_, d)| d)));
+            let label = |text: &str| text.parse::<i64>().ok().and_then(|v| set?.label_for(v));
+            let sample = |new: String, error: Option<String>| BulkSample {
+                list,
+                row,
+                id,
+                name: name.clone(),
+                field: slot.path.clone(),
+                old_label: label(&old_text),
+                new_label: label(&new),
+                old: old_text.clone(),
+                new,
+                error,
+            };
+            match new_text.and_then(|t| encode(&ty, &t).map(|b| (t, b))) {
+                Err(e) => {
+                    report.failed += 1;
+                    if failures.len() < BULK_SAMPLES {
+                        failures.push(sample(String::new(), Some(e)));
+                    }
+                }
+                Ok((_, new)) => {
+                    let old = bytes[slot.off..slot.off + new.len()].to_vec();
+                    if old == new {
+                        report.unchanged += 1;
+                        continue;
+                    }
+                    report.changing += 1;
+                    if report.samples.len() < BULK_SAMPLES {
+                        let mut after = bytes.clone();
+                        after[slot.off..slot.off + new.len()].copy_from_slice(&new);
+                        report.samples.push(sample(slot.text(&after), None));
+                    }
+                    ops.push(Op::Set { list, uid: self.uid_at(list, row)?, off: slot.off, old, new });
+                }
+            }
+        }
+        report.samples.extend(failures);
+
+        if apply && !ops.is_empty() {
+            let verb = match edit.op {
+                BulkOp::Set => "=",
+                BulkOp::Add => "+",
+                BulkOp::Subtract => "−",
+                BulkOp::Multiply => "×",
+                BulkOp::SetFlags => "+=",
+                BulkOp::ClearFlags => "−=",
+            };
+            let label = format!("Bulk: {} {verb} {} ({} records)", edit.field.trim(), value, ops.len());
+            let entry = self.entry(&label, ops, None);
+            report.state = Some(self.apply(entry));
+        }
+        Ok(report)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
