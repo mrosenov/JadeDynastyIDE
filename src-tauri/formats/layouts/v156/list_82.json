@@ -27,7 +27,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "消耗金钱"
+      "c": "消耗金钱",
+      "display": "money"
     },
     {
       "name": "war_material_id",

@@ -384,14 +384,16 @@
       "off": 332,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Buy_Price",
       "off": 336,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Stack_Amt",

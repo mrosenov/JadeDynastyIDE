@@ -605,14 +605,16 @@
       "off": 432,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Buy_Price",
       "off": 436,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Bonus_Attribute_1",

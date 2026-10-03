@@ -134,7 +134,8 @@
       "off": 128,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Unk1",

@@ -244,7 +244,7 @@ impl Ctx<'_> {
                     node.talk = a.talk;
                 }
                 // Dates, durations and times of day are shown by the UI, not as floats.
-                let timed = matches!(node.display.as_deref(), Some("time" | "duration" | "duration_ms" | "daytime"));
+                let timed = matches!(node.display.as_deref(), Some("time" | "duration" | "duration_ms" | "daytime" | "money"));
                 if node.hint.is_none() && matches!(ty, Ty::I32 | Ty::U32) && !timed {
                     node.hint = float_hint(u32::from_le_bytes(fixed(self.bytes, off)));
                 }

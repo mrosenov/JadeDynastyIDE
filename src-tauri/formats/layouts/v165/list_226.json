@@ -59,14 +59,16 @@
       "off": 284,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "buy_price",
       "off": 288,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "pile_num_max",

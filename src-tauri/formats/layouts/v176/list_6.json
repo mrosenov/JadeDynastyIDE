@@ -218,14 +218,16 @@
       "off": 176,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Buy_Price",
       "off": 180,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Stack",

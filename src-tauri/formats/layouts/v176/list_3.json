@@ -733,14 +733,16 @@
       "off": 532,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "shop_price",
       "off": 536,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "id_addon1",

@@ -4630,3 +4630,32 @@ select.ie-control {
   overflow-wrap: anywhere;
   user-select: text;
 }
+
+/* ------------------------------------------------------------ money */
+
+.money-chip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 600;
+}
+.coin i {
+  margin-left: 1px;
+  font-style: normal;
+  font-weight: 700;
+}
+.coin.gold {
+  color: color-mix(in srgb, #e8b923 80%, var(--text));
+}
+.coin.silver {
+  color: color-mix(in srgb, #a9b4bd 70%, var(--text));
+}
+.coin.copper {
+  color: color-mix(in srgb, #c87533 80%, var(--text));
+}

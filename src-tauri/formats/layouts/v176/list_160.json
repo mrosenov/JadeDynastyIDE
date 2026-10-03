@@ -874,14 +874,16 @@
       "off": 564,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Buy_Price",
       "off": 568,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Stack_Amt",

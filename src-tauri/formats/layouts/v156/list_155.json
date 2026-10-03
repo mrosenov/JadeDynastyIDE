@@ -91,7 +91,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "卖店价"
+      "c": "卖店价",
+      "display": "money"
     },
     {
       "name": "shop_price",
@@ -99,7 +100,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "店卖价"
+      "c": "店卖价",
+      "display": "money"
     },
     {
       "name": "pile_num_max",

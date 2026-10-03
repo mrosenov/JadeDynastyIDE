@@ -342,6 +342,7 @@ schema editor):
 | `duration` | seconds | `1h 30m`, `7d`, `45s` |
 | `duration_ms` | milliseconds | `1m`, `5s`, `250 ms` |
 | `daytime` | seconds after midnight | `14:30`, `23:59:59` |
+| `money` | Copper (100 Copper = 1 Silver, 100 Silver = 1 Gold) | `12G 34S 56C` (full words on hover); editing also takes `1G 50S` or `1 Gold 50 Silver` |
 
 `tools/type-rules.json` assigns roles by field name (`roles`), with units checked against
 real values: medicine and revive scroll `cool_time` are milliseconds, recipe `cool_time` is

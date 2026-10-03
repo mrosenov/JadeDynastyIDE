@@ -184,14 +184,16 @@
       "off": 160,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "buy_price",
       "off": 164,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "pile_num_max",

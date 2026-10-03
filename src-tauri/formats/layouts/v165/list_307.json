@@ -72,14 +72,16 @@
       "off": 96,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "shop_price",
       "off": 100,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "unknown_3",

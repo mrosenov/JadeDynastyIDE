@@ -272,6 +272,10 @@
     {
       "name": "^buff_id$",
       "display": "buff"
+    },
+    {
+      "name": "^(price|shop_price|buy_price|sell_price|decompose_price)$",
+      "display": "money"
     }
   ],
   "refs": [

@@ -37,14 +37,16 @@
       "off": 76,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "shop_price",
       "off": 80,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "pile_num_max",

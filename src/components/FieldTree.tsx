@@ -6,6 +6,31 @@ import { isTextNode, textLines } from "../elements/text";
 import { CalendarClock, ChevronRight, Clock, CornerDownLeft, GitBranch, Timer } from "lucide-react";
 import { decodeValue, isChanged, isEditable } from "../elements/edit";
 import { InlineEditor } from "./InlineEditor";
+import { coins, formatMoneyWords } from "../elements/money";
+
+/** A copper amount as gold, silver and copper coins. */
+function MoneyChip({ value }: { value: string }) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  const c = coins(n);
+  const parts: [number, string, string][] = [
+    [c.gold, "G", "gold"],
+    [c.silver, "S", "silver"],
+    [c.copper, "C", "copper"],
+  ];
+  const shown = parts.filter(([v]) => v > 0);
+  return (
+    <span className="money-chip" title={`${formatMoneyWords(n)} · ${n.toLocaleString()} Copper\n100 Copper = 1 Silver, 100 Silver = 1 Gold`}>
+      {c.negative && "−"}
+      {(shown.length ? shown : [parts[2]]).map(([v, unit, kind]) => (
+        <span key={kind} className={`coin ${kind}`}>
+          {v.toLocaleString()}
+          <i>{unit}</i>
+        </span>
+      ))}
+    </span>
+  );
+}
 
 /** A time value read for people: a date, a duration or a time of day. */
 function TimeChip({ role, value }: { role: string; value: string }) {
@@ -190,7 +215,8 @@ ${node.comment}` : ""}` : node.comment}
                   <span className="hint">{node.hint}</span>
                 ))}
               {node.display && TIME_ROLES.has(node.display) && node.value !== undefined && <TimeChip role={node.display} value={node.value} />}
-              {node.display && !TIME_ROLES.has(node.display) && <span className="role">{node.display}</span>}
+              {node.display === "money" && node.value !== undefined && <MoneyChip value={node.value} />}
+              {node.display && !TIME_ROLES.has(node.display) && node.display !== "money" && <span className="role">{node.display}</span>}
               {node.cond && (
                 <span className="cond-chip" title={`Conditional type: ${node.cond}`}>
                   <GitBranch size={11} /> {node.cond}

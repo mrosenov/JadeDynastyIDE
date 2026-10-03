@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Check, CircleAlert, Loader2, X } from "lucide-react";
 import { namedSet } from "../elements/api";
 import type { FieldNode, SetDetail } from "../elements/types";
+import { formatMoney, parseMoney } from "../elements/money";
 
 interface Props {
   node: FieldNode;
@@ -39,8 +40,11 @@ export function InlineEditor({ node, onCommit, onCancel }: Props) {
     input.current?.select();
   }, [free, set]);
 
-  const commit = async (v: string) => {
+  const commit = async (raw: string) => {
     if (busy) return;
+    // Money fields also take "12G 34S 56C" or "1 Gold 50 Silver".
+    const money = node.display === "money" ? parseMoney(raw) : null;
+    const v = money !== null ? String(money) : raw;
     if (v === node.value) return onCancel();
     setBusy(true);
     setError(null);
@@ -107,6 +111,8 @@ export function InlineEditor({ node, onCommit, onCancel }: Props) {
             onKeyDown={onKey}
             spellCheck={false}
             aria-label={`New value of ${node.name}`}
+            placeholder={node.display === "money" ? "Copper, or 1G 2S 3C" : undefined}
+            title={node.display === "money" ? `Copper, or Gold / Silver / Copper like 1G 50S${Number.isFinite(Number(value)) ? ` · now ${formatMoney(Number(value))}` : ""}` : undefined}
           />
           <button className="icon-btn small ie-ok" onMouseDown={(e) => e.preventDefault()} onClick={() => commit(value)} title="Save (Enter)" disabled={busy}>
             {busy ? <Loader2 size={13} className="spin" /> : <Check size={14} />}

@@ -70,7 +70,8 @@
               "t": {
                 "k": "i32"
               },
-              "c": "价格"
+              "c": "价格",
+              "display": "money"
             },
             {
               "name": "file_icon",
