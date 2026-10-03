@@ -107,10 +107,21 @@ export function SetPopover({ node, anchor, onEdit, onClose, onApply }: Props) {
     ? Array.from({ length: width }, (_, b) => b).filter((b) => hasBit(original | bits, b) && !flags.some((f) => f.bit === b))
     : [];
   const signedType = !node.ty.startsWith("u");
+  // Characters of the widest hex value shown: "0x" and one digit per 4 bits.
+  const topBit = Math.max(0, ...flags.map((f) => f.bit), ...unnamed);
+  // (plus room for the gap: the column is measured in the label font, not the code font).
+  const hexChars = isMask ? Math.max(8, 4 + Math.ceil((topBit + 1) / 4)) : 8;
   const decimal = (signedType ? toSigned(bits, width) : bits).toString();
 
   return (
-    <div className="set-popover" ref={box} style={pos} role="dialog" aria-label={`${node.name} values`}>
+    <div
+      className="set-popover"
+      ref={box}
+      // The hex column fits the widest bit value (0x8000000000000000 for 64-bit masks).
+      style={{ ...pos, ["--hex-w" as string]: `${hexChars}ch`, width: hexChars > 12 ? 420 : 340 }}
+      role="dialog"
+      aria-label={`${node.name} values`}
+    >
       <div
         className="set-popover-head"
         onPointerDown={startDrag}

@@ -2047,7 +2047,7 @@ svg.lucide {
 .mask-bit,
 .enum-value {
   display: grid;
-  grid-template-columns: 18px 84px minmax(0, 1fr);
+  grid-template-columns: 18px calc(var(--hex-w, 10ch) + 4px) minmax(0, 1fr);
   align-items: center;
   gap: 8px;
   min-height: 26px;
@@ -4461,4 +4461,9 @@ select.ie-control {
 }
 .history-record-head:disabled:hover {
   background: none;
+}
+
+/* Group rows: their actions (ungroup among them) stay visible. */
+.se-group-row .se-actions {
+  opacity: 1;
 }

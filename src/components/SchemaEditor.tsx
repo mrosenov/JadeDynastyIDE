@@ -391,9 +391,39 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
       const next = new Set(p);
       if (next.has(uid)) next.delete(uid);
       else next.add(uid);
+      // A group stays picked only while all its fields are.
+      const walk = (fields: EditField[]) => {
+        for (const g of fields) {
+          if (g.kind === "group" && next.has(g.uid) && !fieldUids(g.children).every((u) => next.has(u))) next.delete(g.uid);
+          walk(g.children);
+        }
+      };
+      walk(draft.fields);
       return next;
     });
     pickAnchor.current = uid;
+  };
+
+  /** Whether a group's fields are picked: all, some or none. */
+  const groupState = (group: EditField): "all" | "some" | "none" => {
+    const members = fieldUids(group.children);
+    const n = members.filter((u) => picked.has(u)).length;
+    return n === 0 ? "none" : n === members.length ? "all" : "some";
+  };
+
+  /** A group's checkbox picks (or unpicks) the group with every field in it. */
+  const toggleGroupPick = (group: EditField) => {
+    const members = fieldUids(group.children);
+    const all = members.length > 0 && members.every((u) => picked.has(u));
+    setPicked((p) => {
+      const next = new Set(p);
+      for (const u of [group.uid, ...members]) {
+        if (all) next.delete(u);
+        else next.add(u);
+      }
+      return next;
+    });
+    pickAnchor.current = group.uid;
   };
 
   const clickRow = (e: React.MouseEvent, row: Row) => {
@@ -442,6 +472,26 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
     setSelected(group.uid);
     setPicked(new Set([group.uid]));
     pickAnchor.current = group.uid;
+  };
+
+  // Groups to ungroup: the picked ones, else the selected row's group.
+  const groupsToUngroup = (() => {
+    const pickedGroups = tableRows.filter((r) => picked.has(r.field.uid) && r.field.kind === "group").map((r) => r.field.uid);
+    if (pickedGroups.length) return pickedGroups;
+    const row = tableRows.find((r) => r.field.uid === selected);
+    if (row?.field.kind === "group") return [row.field.uid];
+    if (row?.owner?.kind === "group") return [row.owner.uid];
+    return [];
+  })();
+
+  /** Puts the fields of the chosen groups back in place (they keep names and offsets). */
+  const ungroupChosen = () => {
+    if (!groupsToUngroup.length) return;
+    const chosen = new Set(groupsToUngroup);
+    const walk = (fields: EditField[]): EditField[] =>
+      fields.flatMap((f) => (chosen.has(f.uid) ? walk(f.children) : [f.children.length ? { ...f, children: walk(f.children) } : f]));
+    commit({ ...draft, fields: walk(draft.fields) }, "ungroup");
+    setPicked(new Set());
   };
 
   // ------------------------------------------------------------ bulk edit
@@ -670,6 +720,14 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                 </button>
                 <button
                   className="btn small"
+                  onClick={ungroupChosen}
+                  disabled={!groupsToUngroup.length}
+                  title={groupsToUngroup.length ? "Put the fields of the selected group(s) back in place; they keep their names and offsets" : "Select a group (or a field in one) to ungroup it"}
+                >
+                  <Ungroup size={14} /> Ungroup{groupsToUngroup.length > 1 ? ` ${groupsToUngroup.length}` : ""}
+                </button>
+                <button
+                  className="btn small"
                   onClick={autoGroupAll}
                   title="Group runs of numbered fields such as id_addon1…id_addon5"
                 >
@@ -764,6 +822,11 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                   <button className="btn small" onClick={groupPicked} disabled={!canGroup} title={canGroup ? "Group the selected rows" : "Only rows of one level can be grouped"}>
                     <Group size={14} /> Group
                   </button>
+                  {groupsToUngroup.length > 0 && (
+                    <button className="btn small" onClick={ungroupChosen} title="Put the fields of the selected groups back in place">
+                      <Ungroup size={14} /> Ungroup {groupsToUngroup.length}
+                    </button>
+                  )}
                   <button className="btn small danger-btn" onClick={deletePicked}>
                     <Trash2 size={14} /> Delete
                   </button>
@@ -833,10 +896,14 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                           <input
                             type="checkbox"
                             className="row-check"
-                            checked={picked.has(f.uid)}
+                            checked={groupState(f) === "all"}
+                            ref={(el) => {
+                              if (el) el.indeterminate = groupState(f) === "some";
+                            }}
                             onClick={(e) => e.stopPropagation()}
-                            onChange={() => togglePick(f.uid)}
-                            aria-label={`Select ${f.name}`}
+                            onChange={() => toggleGroupPick(f)}
+                            aria-label={`Select ${f.name} and its fields`}
+                            title="Select the group and every field in it"
                           />
                           <span className="indent" style={{ width: depth * 16 }} />
                           <button
