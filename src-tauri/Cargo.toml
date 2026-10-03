@@ -27,6 +27,8 @@ tauri-plugin-dialog = "2"
 include_dir = "0.7"
 flate2 = "1"
 png = "0.17"
+md-5 = "0.10"
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
 
 
 # Dependencies (zlib, PNG, JSON) build optimized in dev too; our own code stays

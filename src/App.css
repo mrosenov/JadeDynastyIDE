@@ -4659,3 +4659,206 @@ select.ie-control {
 .coin.copper {
   color: color-mix(in srgb, #c87533 80%, var(--text));
 }
+
+/* ------------------------------------------------------------ saving */
+
+.accent-icon {
+  color: var(--accent);
+}
+.warn-icon {
+  color: var(--warn);
+}
+.btn.danger-outline {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.btn.danger-outline:hover:not(:disabled) {
+  background: var(--danger-soft);
+}
+/* Unsaved edits, next to the file name; a click saves. */
+.dirty-dot {
+  flex: none;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--warn);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+.dirty-dot:hover {
+  color: var(--accent);
+}
+.saved-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 40vw;
+  padding: 3px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.save-dialog {
+  width: min(620px, 100%);
+}
+.unsaved-dialog {
+  width: min(480px, 100%);
+}
+.unsaved-dialog .delete-body {
+  padding-bottom: 16px;
+}
+.save-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 18px 16px;
+  font-size: 13px;
+  overflow-y: auto;
+}
+.save-target {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--bg-pane);
+}
+.save-target-path {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+}
+.save-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.save-changes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chg {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.chg.changed {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.chg.added {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.chg.deleted {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.save-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--bg-elev);
+  line-height: 1.5;
+}
+.save-note > svg {
+  flex: none;
+  margin-top: 2px;
+}
+.save-note.ok {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: var(--accent-soft);
+}
+.save-note.ok > svg {
+  color: var(--accent);
+}
+.save-note.warn {
+  border-color: var(--warn);
+  background: var(--warn-soft);
+}
+.save-note.warn > svg {
+  color: var(--warn);
+}
+.save-note.danger {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+.save-note.danger > svg {
+  color: var(--danger);
+}
+.save-note.muted {
+  color: var(--text-dim);
+}
+.save-note-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+.save-pathdata {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12px;
+}
+.save-pathdata .mono {
+  min-width: 0;
+}
+.save-pathdata .muted {
+  flex: none;
+  white-space: nowrap;
+}
+.save-pathdata > svg {
+  flex: none;
+  color: var(--accent);
+}
+.save-backup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.save-backup.off {
+  opacity: 0.6;
+  cursor: default;
+}
+.save-backup > svg {
+  flex: none;
+  color: var(--text-dim);
+}
+.save-backup-name {
+  overflow-wrap: anywhere;
+}
+/* Where the file was saved in the edit history. */
+.history-saved {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0 10px;
+  color: var(--accent);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.history-saved::before,
+.history-saved::after {
+  content: "";
+  flex: 1;
+  border-top: 1px dashed var(--accent);
+  opacity: 0.6;
+}

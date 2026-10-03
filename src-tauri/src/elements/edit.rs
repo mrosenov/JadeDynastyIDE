@@ -85,6 +85,8 @@ pub struct Journal {
     born: HashSet<u64>,
     next_uid: u64,
     next_id: u64,
+    /// The last save: the edit it was made after (none: before any) and when.
+    saved: Option<(Option<u64>, u32)>,
 }
 
 impl Journal {
@@ -100,6 +102,16 @@ impl Journal {
             })
             .collect();
         Journal { initial: rows.clone(), rows, next_uid, ..Default::default() }
+    }
+
+    /// The file was saved: edits count from it from now on (markers, revert
+    /// all), while undo and the history keep going back past it.
+    pub fn mark_saved(&mut self, time: u32) {
+        self.initial = self.rows.clone();
+        self.originals.clear();
+        self.born.clear();
+        // Reverts are not listed in the history; the save shows after the edit before.
+        self.saved = Some((self.done.iter().rev().find(|e| e.reverts.is_none()).map(|e| e.id), time));
     }
 
     fn row_of(&self, list: usize, uid: u64) -> Option<usize> {
@@ -149,6 +161,9 @@ pub struct HistoryEntry {
     /// When it was reverted (unix ms).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reverted_at: Option<u64>,
+    /// The file was last saved after this edit (unix seconds).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub saved_at: Option<u32>,
     pub records: Vec<HistoryRecord>,
 }
 
@@ -192,6 +207,9 @@ pub struct EditState {
     /// For a clone: where the new record is.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<(usize, usize)>,
+    /// When the file was last saved (unix seconds); edits count from then.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_saved: Option<u32>,
 }
 
 /// Parses an integer in range for its type: decimal, negative or 0x hex.
@@ -651,6 +669,7 @@ impl Document {
                 time: e.time,
                 undone,
                 reverts: e.reverts,
+                saved_at: self.edits.saved.filter(|(after, _)| *after == Some(e.id)).map(|(_, t)| t),
                 reverted_by: by.map(|b| b.0),
                 reverted_at: by.map(|b| b.1),
                 records,
@@ -701,6 +720,7 @@ impl Document {
             deleted,
             shifts: vec![],
             created: None,
+            last_saved: self.edits.saved.map(|(_, t)| t),
         }
     }
 }

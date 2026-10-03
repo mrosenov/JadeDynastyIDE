@@ -280,6 +280,11 @@ impl Resources {
         Ok(pck)
     }
 
+    /// The client's path.data (also part of the elements.data digest).
+    pub fn path_data_file(&self) -> PathBuf {
+        self.element.join("data/path.data")
+    }
+
     pub fn paths(&self) -> Result<&PathTable, String> {
         self.paths
             .get_or_init(|| {

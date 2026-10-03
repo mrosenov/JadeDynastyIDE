@@ -3,7 +3,7 @@
 Desktop editor for Jade Dynasty (Zhu Xian) data files, built with Tauri 2
 (Rust backend, React + TypeScript UI).
 
-Milestone 1: read-only browsing of `elements.data`.
+Reads, edits and saves `elements.data` across versions.
 
 ## How a file is read
 
@@ -31,39 +31,7 @@ Each list then gets a definition:
 Borrowing aligns record sizes (a longest common subsequence within each
 marker group), so lists inserted mid-way do not shift every later name.
 Fields with enums/masks show their labels; fields that hold another list's IDs
-link to that record. Texts show their line breaks (CR LF, or `!# JD IDE
-
-Desktop editor for Jade Dynasty (Zhu Xian) data files, built with Tauri 2
-(Rust backend, React + TypeScript UI).
-
-Milestone 1: read-only browsing of `elements.data`.
-
-## How a file is read
-
-1. **Layout.** Every built-in layout for the file's version is tried. A
-   layout's marker table says where the checksum, exporter and tag blocks sit
-   between lists. The file must fit it exactly, ending in the NPC dialog block
-   at EOF. If several fit (server builds that diverged under one version
-   number), the one whose record sizes match best wins.
-2. **Other marker tables.** For unknown versions, the marker tables of other
-   versions are tried, nearest first.
-3. **Detection.** As a last resort, segments are recognised by content.
-   This cannot tell a raw checksum slot from an empty list (v165 has one before
-   list 296), which is why marker tables come first.
-
-Each list then gets a definition:
-
-| Fit | Meaning |
-|---|---|
-| Exact | the file's own layout, same record size |
-| Partial | the file's own layout, records are larger (tail shown as unknown) |
-| Borrowed | another version's definition, same record size |
-| Grown | another version's smaller struct, paired by position between matches |
-| Name only / Unknown | raw int32 view |
-
-Borrowing aligns record sizes (a longest common subsequence within each
-marker group), so lists inserted mid-way do not shift every later name.
- from the official
+link to that record. Texts show their line breaks (CR LF, or `!$` from the official
 editor's exports) as ↵. Selecting a text with breaks or `^RRGGBB` colour codes opens a
 preview that renders it as the game would, with the raw codes one click away.
 
@@ -147,7 +115,7 @@ search filters the list's records by ID or name.
 
 ## Editing
 
-Values are edited in the inspector. Edits stay in memory until saving to the file exists.
+Values are edited in the inspector. Edits stay in memory until the file is saved (see *Saving*).
 
 - **Double-click** a value (or press **Enter**/**F2** on the selected field) to edit it in place:
   numbers in decimal or `0x` hex, enums from a dropdown of their values (with *Other value…* for
@@ -164,7 +132,8 @@ Values are edited in the inspector. Edits stay in memory until saving to the fil
   dot in the table, their tab and (with a count) the list picker; the status bar counts them.
   A record set back to its original bytes is no longer marked.
 - **Edit** menu: *Undo*/*Redo* (Ctrl+Z, Ctrl+Y or Ctrl+Shift+Z) name the edit they act on;
-  *Revert record* and *Revert all changes…* put records back as opened (undoable too).
+  *Revert record* and *Revert all changes…* put records back as the file was opened or last saved
+  (undoable too).
 - **Edit › History** (Ctrl+H) lists every edit, newest first: when, what (e.g. *Set price*), the
   record and each field's old → new value. **Revert** puts that edit's fields back to the values
   they had before it; the edit then shows as *reverted* (with the time) instead of adding an edit
@@ -181,14 +150,53 @@ Values are edited in the inspector. Edits stay in memory until saving to the fil
   first and lists the records whose fields point at the record's ID (from *Referenced by*), since
   they would point at nothing afterwards.
 - Clones and deletes are edits like the rest: undo, redo, the history (where reverting a delete
-  brings the record back) and *Revert all changes*, which restores the file exactly as opened.
+  brings the record back) and *Revert all changes*, which restores the file exactly as opened (or
+  last saved).
   Records are tracked by identity, not row, so edits, markers and tabs follow records when rows
   move.
-- Schema edits keep the record edits; opening another file asks before dropping them.
+- Schema edits keep the record edits; opening another file or closing the app asks first: save,
+  don't save or cancel.
+
+## Saving
+
+**File › Save** (Ctrl+S) writes the open file, **Save as…** (Ctrl+Shift+S) another one. The file is
+written the way the official tools write it (`elementdataman::save_data`): the data as edited, the
+header's export time set to now, and a new **checksum**. The game client checks it when it loads
+elements.data and refuses to start on a mismatch:
+
+```text
+MD5( "ZPWDATA" + path.data + elements.data without its 8-byte checksum slots )
+```
+
+stored as 32 hex characters, 8 in each of the first four slots (v165 has a fifth slot, skipped
+when hashing). The path.data must be the one the client ships with this elements.data; it is
+taken from next to the file, else from the client folder in Settings, or picked in the dialog.
+
+The first save asks first, showing:
+
+- the target, whether it replaces a file, and the changed / added / deleted records;
+- the checksum: whether the file on disk is valid with that path.data. Files saved by tools that
+  leave the checksum alone show a mismatch (their clients do not check it); the saved file gets
+  the right one either way. Without a path.data the old checksum stays and a client that checks
+  refuses the file;
+- a warning when another program changed the file since it was read;
+- **Keep a backup**: the replaced file is copied to `elements.data.YYYYMMDD-HHMMSS.bak` next to it,
+  once per file and session (remembered).
+
+Later Ctrl+S saves right away with the same choices (the top bar confirms it with the time and
+checksum), unless the file changed on disk, which brings the dialog back. The file is written
+next to the target and then moved over it, so a failed save leaves the old file whole.
+
+After saving, edits count from the saved file: markers clear, *Revert all* goes back to it, and
+the history shows a *Saved* line where the save was made. Undo still goes back past it (the
+file then differs from the saved one again). A dot next to the file name in the top bar shows
+unsaved edits; clicking it saves.
+
 
 ## File menu and tools
 
-**File** (Alt+F) in the top bar holds: *Open elements.data…* (Ctrl+O), the tools *Advanced
+**File** (Alt+F) in the top bar holds: *Open elements.data…* (Ctrl+O), *Save* (Ctrl+S) and *Save
+as…* (Ctrl+Shift+S), the tools *Advanced
 search* (Ctrl+Shift+F), *Problems* (Ctrl+Shift+M, with error and warning counts), *Compare with
 another file…* and *Layout coverage*, then *Export › Selected item… / Selected list…* and
 *Settings…*. A tool takes the place of the list and record panes; the shortcuts toggle it, and

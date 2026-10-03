@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
-import { cloneRecord, deleteRecord, editRecord, fileSummary, getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, undoEdit } from "./elements/api";
-import type { EditState, ExportSource, FieldEdit, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail } from "./elements/types";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { cloneRecord, deleteRecord, editRecord, fileSummary, getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, saveElements, undoEdit } from "./elements/api";
+import type { EditState, Saved, SaveOptions, ExportSource, FieldEdit, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail } from "./elements/types";
 import { bytes, count } from "./elements/format";
 import { ListPicker, type ListPickerHandle } from "./components/ListPicker";
 import { RecordTable } from "./components/RecordTable";
@@ -21,6 +22,8 @@ import { SettingsDialog } from "./components/SettingsDialog";
 import { SetsEditor } from "./components/SetsEditor";
 import { FindPalette } from "./components/FindPalette";
 import { DialogViewer } from "./components/DialogViewer";
+import { SaveDialog } from "./components/SaveDialog";
+import { UnsavedDialog } from "./components/UnsavedDialog";
 import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import "./App.css";
@@ -43,10 +46,17 @@ import {
   ListFilter,
   Redo2,
   RotateCcw,
+  Save,
+  SaveAll,
   Search,
   Settings,
   Undo2,
 } from "lucide-react";
+
+/** Records changed, added or deleted since the file was opened or saved. */
+function editCountOf(e: EditState): number {
+  return e.changed.length + e.added.length + e.deleted.reduce((n, [, c]) => n + c, 0);
+}
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
@@ -131,6 +141,7 @@ function parseLabel(summary: FileSummary): { text: string; tone: "ok" | "warn" |
 
 export default function App() {
   const [summary, setSummary] = useState<FileSummary | null>(null);
+  const [fileKey, setFileKey] = useState(0);
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [rows, setRows] = useState<RecordRow[] | null>(null);
@@ -162,7 +173,7 @@ export default function App() {
     setMounted(new Set(["lists"]));
     setPanel("lists");
     setProblemCounts(null);
-  }, [summary?.path]);
+  }, [fileKey]);
   /** Shows a panel; showing the open one again goes back to the lists. */
   const togglePanel = (p: Panel) => {
     setMounted((m) => (m.has(p) ? m : new Set([...m, p])));
@@ -177,7 +188,7 @@ export default function App() {
   const [focus, setFocus] = useState<FieldFocus | null>(null);
   const [lastFind, setLastFind] = useState<LastFind | null>(null);
   // Hits belong to one file.
-  useEffect(() => setLastFind(null), [summary?.path]);
+  useEffect(() => setLastFind(null), [fileKey]);
 
   const icon = (pathId?: number | null) => (iconGen !== null && pathId ? iconUrl(iconGen, pathId) : undefined);
 
@@ -188,15 +199,21 @@ export default function App() {
 
   const editsRef = useRef(edits);
   editsRef.current = edits;
-  const loadFile = useCallback(async (path: string) => {
-    const e = editsRef.current;
-    const changed = e.changed.length + e.added.length + e.deleted.reduce((n, [, c]) => n + c, 0);
-    if (changed && !window.confirm(`${changed} record(s) have edits that are not saved. Open another file and drop them?`)) return;
+  // Asking what to do with unsaved edits before an action.
+  const [unsaved, setUnsaved] = useState<{ action: string; proceed: () => void } | null>(null);
+  /** Runs `proceed` now, or after asking when there are unsaved edits. */
+  const guardUnsaved = useCallback((action: string, proceed: () => void) => {
+    if (editCountOf(editsRef.current) === 0) proceed();
+    else setUnsaved({ action, proceed });
+  }, []);
+  const readFile = useCallback(async (path: string) => {
     setLoading(path);
     setError(null);
     try {
       const result = await openElements(path);
       setEdits(NO_EDITS);
+      setFileKey((k) => k + 1);
+      lastSave.current = null;
       rowsCache.current.clear();
       setSummary(result);
       setRows(null);
@@ -219,6 +236,27 @@ export default function App() {
     } finally {
       setLoading(null);
     }
+  }, []);
+  const loadFile = useCallback((path: string) => guardUnsaved("open another file", () => readFile(path)), [guardUnsaved, readFile]);
+
+  // Saving: the dialog (to a path, then maybe an action waiting for the
+  // save), and the choices of the last save, so Ctrl+S saves right away.
+  const [saveDialog, setSaveDialog] = useState<{ path: string; then?: () => void } | null>(null);
+  const lastSave = useRef<SaveOptions | null>(null);
+  const [savedNote, setSavedNote] = useState<string | null>(null);
+  const savedNoteTimer = useRef<number | undefined>(undefined);
+
+  // Closing the window asks about unsaved edits.
+  useEffect(() => {
+    const win = getCurrentWindow();
+    const unlisten = win.onCloseRequested((event) => {
+      if (editCountOf(editsRef.current) === 0) return;
+      event.preventDefault();
+      setUnsaved({ action: "close JD IDE", proceed: () => void win.destroy() });
+    });
+    return () => {
+      unlisten.then((f) => f());
+    };
   }, []);
 
   // Settings, and the client's elements.data on start when asked for.
@@ -264,6 +302,10 @@ export default function App() {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "o") {
         e.preventDefault();
         chooseFile();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        if (e.shiftKey) saveAsRef.current();
+        else saveRef.current();
       }
     };
     window.addEventListener("keydown", onKey);
@@ -428,9 +470,47 @@ export default function App() {
   const revertRecord = () =>
     listIndex !== null && recordIndex !== null && revertEdits([[listIndex, recordIndex]], "Revert record").then(afterEdits).catch((e) => setError(String(e)));
   const revertAll = () => {
-    if (!window.confirm(`Put the file back as it was opened (${editCount} record(s) changed, added or deleted)? Undo brings the edits back.`)) return;
+    if (!window.confirm(`Put the file back as it was ${edits.lastSaved ? "last saved" : "opened"} (${editCount} record(s) changed, added or deleted)? Undo brings the edits back.`)) return;
     revertEdits(null, "Revert all changes").then(afterEdits).catch((e) => setError(String(e)));
   };
+  /** A save went through: the open file now is the saved one. */
+  const onSaved = (saved: Saved, options: SaveOptions) => {
+    const then = saveDialog?.then;
+    setSaveDialog(null);
+    lastSave.current = { ...options, replaceChanged: false };
+    setSummary(saved.summary);
+    setEdits(saved.state);
+    setDataVersion((v) => v + 1);
+    writeLastPath(saved.report.path);
+    setLastPath(saved.report.path);
+    window.clearTimeout(savedNoteTimer.current);
+    setSavedNote(
+      saved.report.digest
+        ? `Saved at ${new Date(saved.report.timestamp * 1000).toLocaleTimeString()} · checksum ${saved.report.digest.slice(0, 8)}…`
+        : `Saved at ${new Date(saved.report.timestamp * 1000).toLocaleTimeString()} · checksum not updated (no path.data)`,
+    );
+    savedNoteTimer.current = window.setTimeout(() => setSavedNote(null), 6000);
+    then?.();
+  };
+  /** Ctrl+S: saves right away with the last choices, else asks first. */
+  const saveFile = async () => {
+    if (!summary) return;
+    const last = lastSave.current;
+    if (!last || last.path !== summary.path) return setSaveDialog({ path: summary.path });
+    try {
+      onSaved(await saveElements(last), last);
+    } catch (e) {
+      // Changed on disk, or failed: the dialog shows why.
+      setSaveDialog({ path: summary.path });
+      if (!String(e).includes("CHANGED_ON_DISK")) setError(String(e));
+    }
+  };
+  const saveFileAs = () => summary && setSaveDialog({ path: summary.path });
+  const saveRef = useRef(saveFile);
+  saveRef.current = saveFile;
+  const saveAsRef = useRef(saveFileAs);
+  saveAsRef.current = saveFileAs;
+
   // Clone and delete the open record.
   const [deleting, setDeleting] = useState<{ list: number; row: number } | null>(null);
   const cloneOpen = async () => {
@@ -542,7 +622,7 @@ export default function App() {
   for (const [l, rows] of changedRows) changedCounts.set(l, rows.size);
   for (const [l, rows] of addedRows) changedCounts.set(l, (changedCounts.get(l) ?? 0) + rows.size);
   for (const [l, n] of edits.deleted) changedCounts.set(l, (changedCounts.get(l) ?? 0) + n);
-  const editCount = edits.changed.length + edits.added.length + edits.deleted.reduce((n, [, c]) => n + c, 0);
+  const editCount = editCountOf(edits);
   const canRecordOp = listIndex !== null && listIndex >= 0 && recordIndex !== null;
   const recordChanged = listIndex !== null && recordIndex !== null && !!changedRows.get(listIndex)?.has(recordIndex);
   const picker = summary && (
@@ -561,6 +641,16 @@ export default function App() {
       accessKey: "f",
       items: [
         { label: "Open elements.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: chooseFile },
+        {
+          label: "Save",
+          icon: Save,
+          shortcut: "Ctrl+S",
+          onSelect: saveFile,
+          disabled: !summary,
+          badges: editCount ? [{ text: String(editCount), tone: "warning" as const }] : [],
+          title: summary ? (editCount ? `Write the ${editCount} changed record(s) to ${fileName(summary.path)}` : "Write the file again (no record changes)") : noFile,
+        },
+        { label: "Save as…", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: saveFileAs, disabled: !summary, title: summary ? "Write the file to another place" : noFile },
         "separator",
         { label: "Advanced search", icon: ListFilter, shortcut: "Ctrl+Shift+F", onSelect: () => showPanel("search"), disabled: !summary, checked: panel === "search", title: noFile },
         { label: "Problems", badges: problemBadges, icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => showPanel("problems"), disabled: !summary, checked: panel === "problems", title: noFile },
@@ -621,13 +711,13 @@ export default function App() {
         "separator",
         { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => showPanel("history"), disabled: !summary, checked: panel === "history", title: noFile },
         "separator",
-        { label: "Revert record", icon: RotateCcw, onSelect: revertRecord, disabled: !recordChanged, title: recordChanged ? "Put the open record back as the file was opened" : "The open record has no edits" },
+        { label: "Revert record", icon: RotateCcw, onSelect: revertRecord, disabled: !recordChanged, title: recordChanged ? `Put the open record back as the file was ${edits.lastSaved ? "last saved" : "opened"}` : "The open record has no edits" },
         {
           label: "Revert all changes…",
           onSelect: revertAll,
           disabled: editCount === 0,
           badges: editCount ? [{ text: String(editCount), tone: "warning" as const }] : [],
-          title: "Put every changed record back as the file was opened (undoable)",
+          title: `Put every changed record back as the file was ${edits.lastSaved ? "last saved" : "opened"} (undoable)`,
         },
       ],
     },
@@ -646,6 +736,11 @@ export default function App() {
         {summary && (
           <div className="file-chip" title={summary.path}>
             <span className="truncate">{fileName(summary.path)}</span>
+            {editCount > 0 && (
+              <button className="dirty-dot" onClick={saveFile} title={`${editCount} record(s) changed since the file was ${edits.lastSaved ? "saved" : "opened"} · Ctrl+S saves`} aria-label="Unsaved changes, save">
+                ●
+              </button>
+            )}
             <span className="tag">v{summary.version}</span>
             {(() => {
               const p = parseLabel(summary);
@@ -681,6 +776,11 @@ export default function App() {
         )}
         <span className="spacer" />
         {loading && <span className="muted">Reading {fileName(loading)}…</span>}
+        {savedNote && (
+          <span className="saved-note" role="status">
+            <Save size={13} /> {savedNote}
+          </span>
+        )}
         <button
           className={"btn" + (editorOpen ? " active" : "")}
           onClick={() => (editorOpen ? closeEditor(listIndex ?? 0) : setEditorOpen(true))}
@@ -703,6 +803,29 @@ export default function App() {
         </button>
       </header>
 
+      {saveDialog && summary && (
+        <SaveDialog path={saveDialog.path} pathData={lastSave.current?.pathData} onCancel={() => setSaveDialog(null)} onSaved={onSaved} />
+      )}
+      {unsaved && summary && (
+        <UnsavedDialog
+          action={unsaved.action}
+          fileName={fileName(summary.path)}
+          changed={edits.changed.length}
+          added={edits.added.length}
+          deleted={edits.deleted.reduce((n, [, c]) => n + c, 0)}
+          onCancel={() => setUnsaved(null)}
+          onDiscard={() => {
+            const proceed = unsaved.proceed;
+            setUnsaved(null);
+            proceed();
+          }}
+          onSave={() => {
+            const proceed = unsaved.proceed;
+            setUnsaved(null);
+            setSaveDialog({ path: summary.path, then: proceed });
+          }}
+        />
+      )}
       {deleting && summary && summary.lists[deleting.list] && (
         <DeleteDialog
           list={summary.lists[deleting.list]}
@@ -784,7 +907,7 @@ export default function App() {
           {mounted.has("search") && (
           <div className="search-slot" hidden={panel !== "search"}>
             <AdvancedSearch
-              key={summary.path}
+              key={fileKey}
               lists={summary.lists}
               currentList={listIndex}
               icon={icon}
@@ -800,7 +923,7 @@ export default function App() {
           {mounted.has("problems") && (
             <div className="search-slot" hidden={panel !== "problems"}>
               <ProblemsPanel
-                key={summary.path}
+                key={fileKey}
                 lists={summary.lists}
                 icon={icon}
                 onCounts={(errors, warnings) => setProblemCounts({ errors, warnings })}
@@ -820,7 +943,7 @@ export default function App() {
           {mounted.has("compare") && (
             <div className="search-slot" hidden={panel !== "compare"}>
               <ComparePanel
-                key={summary.path}
+                key={fileKey}
                 currentPath={summary.path}
                 suggestions={[settingsView?.client?.elementsPath ?? "", lastPath ?? ""]}
                 icon={icon}
@@ -832,7 +955,7 @@ export default function App() {
           {mounted.has("history") && (
             <div className="search-slot" hidden={panel !== "history"}>
               <HistoryPanel
-                key={summary.path}
+                key={fileKey}
                 lists={summary.lists}
                 edits={edits}
                 icon={icon}

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { ArrowRight, History, Loader2, Pencil, Redo2, RotateCcw, Undo2, X } from "lucide-react";
+import { Fragment, useEffect, useState } from "react";
+import { ArrowRight, History, Loader2, Pencil, Redo2, RotateCcw, Save, Undo2, X } from "lucide-react";
 import { editHistory, revertHistoryEntry } from "../elements/api";
 import type { EditState, HistoryEntry, HistoryRecord, ListSummary } from "../elements/types";
 
@@ -40,7 +40,6 @@ export function HistoryPanel({ lists, edits, icon, onUndo, onRedo, onChanged, on
       .then(setEntries)
       .catch((e) => setError(String(e)));
   }, [edits]);
-
 
   const revert = async (e: HistoryEntry) => {
     setBusy(e.id);
@@ -133,7 +132,8 @@ export function HistoryPanel({ lists, edits, icon, onUndo, onRedo, onChanged, on
         <input className="sf-control" placeholder="Filter by edit, record, ID or field…" value={query} onChange={(e) => setQuery(e.target.value)} spellCheck={false} />
         <div className="muted small">
           {entries ? `${entries.filter((e) => !e.undone).length} edit(s) applied` : "…"}
-          {edits.changed.length > 0 && ` · ${edits.changed.length} record(s) differ from the file`} · kept in memory until saved
+          {edits.changed.length > 0 && ` · ${edits.changed.length} record(s) differ from the ${edits.lastSaved ? "saved" : "opened"} file`}
+          {edits.lastSaved ? ` · saved at ${new Date(edits.lastSaved * 1000).toLocaleTimeString()}` : " · kept in memory until saved"}
         </div>
         {error && <div className="se-problems">{error}</div>}
       </div>
@@ -141,32 +141,52 @@ export function HistoryPanel({ lists, edits, icon, onUndo, onRedo, onChanged, on
         {entries && entries.length === 0 && <div className="empty-note">No edits yet. Double-click a value in the inspector to edit it.</div>}
         {entries && entries.length > 0 && shown.length === 0 && <div className="empty-note">No edits match.</div>}
         {shown.map((e) => (
-          <div key={e.id} className={"history-entry" + (e.undone ? " undone" : "") + (e.revertedBy ? " reverted" : "")}>
-            <div className="history-head">
-              <span className={"history-icon" + (isRevert(e) ? " revert" : "")}>{isRevert(e) ? <RotateCcw size={13} /> : <Pencil size={13} />}</span>
-              <span className="history-label truncate" title={e.label}>
-                {e.label}
-              </span>
-              {e.undone && <span className="tag">undone</span>}
-              {e.revertedBy && (
-                <span className="tag warn" title="Reverted to the value it had before (Ctrl+Z takes the revert back)">
-                  reverted{e.revertedAt ? ` · ${time(e.revertedAt)}` : ""}
+          <Fragment key={e.id}>
+            {e.savedAt && <SavedMark at={e.savedAt} />}
+            <div className={"history-entry" + (e.undone ? " undone" : "") + (e.revertedBy ? " reverted" : "")}>
+              <div className="history-head">
+                <span className={"history-icon" + (isRevert(e) ? " revert" : "")}>{isRevert(e) ? <RotateCcw size={13} /> : <Pencil size={13} />}</span>
+                <span className="history-label truncate" title={e.label}>
+                  {e.label}
                 </span>
-              )}
-              <span className="spacer" />
-              <span className="muted small" title={new Date(e.time).toLocaleString()}>
-                {time(e.time)} · {ago(e.time)}
-              </span>
-              {!e.undone && !e.revertedBy && (
-                <button className="btn small" onClick={() => revert(e)} disabled={busy !== null} title="Put the fields back to the values they had before this edit (Ctrl+Z takes the revert back)">
-                  {busy === e.id ? <Loader2 size={12} className="spin" /> : <RotateCcw size={12} />} Revert
-                </button>
-              )}
+                {e.undone && <span className="tag">undone</span>}
+                {e.revertedBy && (
+                  <span className="tag warn" title="Reverted to the value it had before (Ctrl+Z takes the revert back)">
+                    reverted{e.revertedAt ? ` · ${time(e.revertedAt)}` : ""}
+                  </span>
+                )}
+                <span className="spacer" />
+                <span className="muted small" title={new Date(e.time).toLocaleString()}>
+                  {time(e.time)} · {ago(e.time)}
+                </span>
+                {!e.undone && !e.revertedBy && (
+                  <button
+                    className="btn small"
+                    onClick={() => revert(e)}
+                    disabled={busy !== null}
+                    title="Put the fields back to the values they had before this edit (Ctrl+Z takes the revert back)"
+                  >
+                    {busy === e.id ? <Loader2 size={12} className="spin" /> : <RotateCcw size={12} />} Revert
+                  </button>
+                )}
+              </div>
+              {e.records.map((r) => record(e, r))}
             </div>
-            {e.records.map((r) => record(e, r))}
-          </div>
+          </Fragment>
         ))}
+        {/* Saved before any listed edit: every edit is after it. */}
+        {edits.lastSaved && entries && entries.length > 0 && !entries.some((e) => e.savedAt) && !query && <SavedMark at={edits.lastSaved} />}
       </div>
     </section>
+  );
+}
+
+/** Where the file was saved: edits above it are not in the saved file. */
+function SavedMark({ at }: { at: number }) {
+  const when = new Date(at * 1000);
+  return (
+    <div className="history-saved" title={`The file was saved at ${when.toLocaleString()}. Edits above this line are not in the saved file.`}>
+      <Save size={12} /> Saved · {when.toLocaleTimeString()}
+    </div>
   );
 }

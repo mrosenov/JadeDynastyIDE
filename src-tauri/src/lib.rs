@@ -259,6 +259,29 @@ async fn revert_history_entry(id: u64, force: bool, state: State<'_, AppState>) 
     state.with_document_mut(|doc| doc.revert_entry(id, force))
 }
 
+/// What saving to a path would do: changes, checksum, backup.
+#[tauri::command]
+async fn save_plan(options: elements::save::SaveOptions, state: State<'_, AppState>) -> Result<elements::save::SavePlan, String> {
+    state.with_document(|doc| doc.save_plan(&options))
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Saved {
+    report: elements::save::SaveReport,
+    summary: FileSummary,
+    state: elements::edit::EditState,
+}
+
+/// Writes the open file (with its edits) to a path; it then is the open file.
+#[tauri::command]
+async fn save_elements(options: elements::save::SaveOptions, state: State<'_, AppState>) -> Result<Saved, String> {
+    state.with_document_mut(|doc| {
+        let report = doc.save(&options)?;
+        Ok(Saved { report, summary: doc.summary(), state: doc.edit_state() })
+    })
+}
+
 #[tauri::command]
 async fn edit_state(state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
     state.with_document(|doc| Ok(doc.edit_state()))
@@ -589,6 +612,8 @@ pub fn run() {
             redo_edit,
             revert_edits,
             edit_state,
+            save_plan,
+            save_elements,
             edit_history,
             revert_history_entry,
             layout_coverage,

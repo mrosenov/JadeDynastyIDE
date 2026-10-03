@@ -8,10 +8,11 @@ pub mod format;
 pub mod problems;
 pub mod reader;
 pub mod refs;
+pub mod save;
 pub mod search;
 pub mod talk;
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, OnceLock};
 
 use serde::Serialize;
@@ -81,6 +82,10 @@ pub struct Document {
     talks: OnceLock<Result<TalkData, String>>,
     /// The game client's paths and icons, when a client folder is set.
     pub resources: Option<Arc<Resources>>,
+    /// Size and time of the file on disk when it was read or saved.
+    disk: Option<save::DiskStamp>,
+    /// Files a backup was made of (or that were new) in this session.
+    backed_up: HashSet<std::path::PathBuf>,
 }
 
 #[derive(Serialize)]
@@ -310,8 +315,11 @@ fn usable(head: &ListHead, size: usize) -> bool {
 
 impl Document {
     pub fn open(path: String, catalog: Arc<Catalog>) -> Result<Self, String> {
+        let disk = save::DiskStamp::of(std::path::Path::new(&path));
         let data = std::fs::read(&path).map_err(|e| format!("Could not read {path}: {e}"))?;
-        Self::from_bytes(path, data, catalog)
+        let mut doc = Self::from_bytes(path, data, catalog)?;
+        doc.disk = disk;
+        Ok(doc)
     }
 
     pub fn from_bytes(path: String, data: Vec<u8>, catalog: Arc<Catalog>) -> Result<Self, String> {
@@ -356,7 +364,7 @@ impl Document {
         }
         let ids = (0..file.lists.len()).map(|_| OnceLock::new()).collect();
         let file_counts: Vec<usize> = file.lists.iter().map(|l| l.count).collect();
-        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, sites: OnceLock::new(), find_index: OnceLock::new(), talks: OnceLock::new(), edits: edit::Journal::new(file_counts), resources: None })
+        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, sites: OnceLock::new(), find_index: OnceLock::new(), talks: OnceLock::new(), edits: edit::Journal::new(file_counts), resources: None, disk: None, backed_up: HashSet::new() })
     }
 
     /// Re-reads the same bytes with a new catalog (after a schema edit).
@@ -365,6 +373,8 @@ impl Document {
         doc.resources = self.resources.clone();
         // The data already holds the edits; keep their history.
         doc.edits = self.edits.clone();
+        doc.disk = self.disk.clone();
+        doc.backed_up = self.backed_up.clone();
         Ok(doc)
     }
 

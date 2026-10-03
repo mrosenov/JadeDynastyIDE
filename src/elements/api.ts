@@ -33,6 +33,9 @@ import type {
   SetSummary,
   SetsChanged,
   ReferencedBy,
+  SaveOptions,
+  SavePlan,
+  Saved,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -70,6 +73,9 @@ export const deleteRecord = (list: number, row: number) => invoke<EditState>("de
 export const fileSummary = () => invoke<FileSummary>("file_summary");
 /** Plans a bulk edit over search results, or with `apply` makes it (one undo step). */
 export const bulkEdit = (edit: BulkEdit, apply: boolean) => invoke<BulkReport>("bulk_edit", { edit, apply });
+export const savePlan = (options: SaveOptions) => invoke<SavePlan>("save_plan", { options });
+export const saveElements = (options: SaveOptions) => invoke<Saved>("save_elements", { options });
+
 export const undoEdit = () => invoke<EditState>("undo_edit");
 export const redoEdit = () => invoke<EditState>("redo_edit");
 /** Puts records (all changed ones without any) back as the file was opened. */

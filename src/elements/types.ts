@@ -589,6 +589,66 @@ export interface EditState {
   shifts: { list: number; at: number; delta: number; count: number }[];
   /** For a clone: where the new record is. */
   created?: [number, number];
+  /** When the file was last saved (unix seconds); the records above count from then. */
+  lastSaved?: number;
+}
+
+export type ChecksumStatus = "valid" | "mismatch" | "not_stored" | "no_path_data" | "no_slots";
+
+/** The digest the client checks, and how the file on disk fares. */
+export interface ChecksumCheck {
+  status: ChecksumStatus;
+  /** Digest slots in the file (the client reads four). */
+  slots: number;
+  pathData?: string;
+  /** "chosen", "next to the file" or "client folder". */
+  pathDataFrom?: string;
+  /** The digest stored in the file on disk. */
+  stored?: string;
+  /** The digest that file should carry with this path.data. */
+  expected?: string;
+  checked?: string;
+}
+
+export interface SaveOptions {
+  path: string;
+  /** path.data for the digest; found by itself when not given. */
+  pathData?: string;
+  /** Keep a copy of the replaced file (once per file and session). */
+  backup: boolean;
+  /** Replace the open file even if another program changed it since it was read. */
+  replaceChanged?: boolean;
+}
+
+/** What a save would do. */
+export interface SavePlan {
+  path: string;
+  replaces: boolean;
+  sameFile: boolean;
+  /** The open file was changed by another program since it was read. */
+  changedOnDisk: boolean;
+  readOnly: boolean;
+  size: number;
+  changed: number;
+  added: number;
+  deleted: number;
+  checksum: ChecksumCheck;
+  backup?: string;
+}
+
+export interface SaveReport {
+  path: string;
+  size: number;
+  digest?: string;
+  pathData?: string;
+  backup?: string;
+  timestamp: number;
+}
+
+export interface Saved {
+  report: SaveReport;
+  summary: FileSummary;
+  state: EditState;
 }
 
 export interface FieldDiff {
@@ -622,6 +682,8 @@ export interface HistoryEntry {
   revertedBy?: number;
   /** When it was reverted (unix ms). */
   revertedAt?: number;
+  /** The file was last saved after this edit (unix seconds). */
+  savedAt?: number;
   records: HistoryRecord[];
 }
 
