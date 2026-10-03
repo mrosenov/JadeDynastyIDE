@@ -1,6 +1,9 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
   FindResult,
+  HistoryEntry,
+  EditState,
+  FieldEdit,
   CompareSummary,
   CoverageRow,
   ExportSource,
@@ -55,6 +58,18 @@ export const compareList = (pair: { this: number | null; other: number | null })
   invoke<ListDiff>("compare_list", { this: pair.this, other: pair.other });
 export const compareMarkdown = (otherIsOlder: boolean) => invoke<string>("compare_markdown", { otherIsOlder });
 export const closeCompare = () => invoke<void>("close_compare");
+
+/** Sets fields of a record (one undo step). */
+export const editRecord = (list: number, row: number, edits: FieldEdit[], label: string) =>
+  invoke<EditState>("edit_record", { list, row, edits, label });
+export const undoEdit = () => invoke<EditState>("undo_edit");
+export const redoEdit = () => invoke<EditState>("redo_edit");
+/** Puts records (all changed ones without any) back as the file was opened. */
+export const revertEdits = (records: [number, number][] | null, label: string) => invoke<EditState>("revert_edits", { records, label });
+export const editHistory = () => invoke<HistoryEntry[]>("edit_history");
+/** Takes back one edit; fails with "CONFLICT: …" when later edits changed the same fields (unless forced). */
+export const revertHistoryEntry = (id: number, force: boolean) => invoke<EditState>("revert_history_entry", { id, force });
+export const getEditState = () => invoke<EditState>("edit_state");
 
 export const listTalks = () => invoke<TalkSummary[]>("list_talks");
 export const getTalk = (index: number) => invoke<TalkDetail>("get_talk", { index });

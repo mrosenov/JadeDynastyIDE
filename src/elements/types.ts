@@ -90,6 +90,8 @@ export interface RecordDetail {
   nodes: FieldNode[];
   /** Path ID of the record's item icon. */
   icon: number | null;
+  /** The record as the file was opened, when edits changed it. */
+  original?: number[];
 }
 
 // ---------------------------------------------------------------- schemas
@@ -554,4 +556,53 @@ export interface ListDiff {
   onlyOther: CompareRecord[];
   changed: ChangedRecord[];
   truncated: boolean;
+}
+
+// ---------------------------------------------------------------- editing
+
+export interface FieldEdit {
+  /** Offset of the field in the record. */
+  off: number;
+  /** The new value as text (numbers in decimal or 0x hex). */
+  value: string;
+}
+
+export interface EditState {
+  /** Label of the edit Undo would take back. */
+  undo?: string;
+  redo?: string;
+  /** Records that differ from the file as opened: [list, row]. */
+  changed: [number, number][];
+}
+
+export interface FieldDiff {
+  field: string;
+  off: number;
+  old: string;
+  new: string;
+}
+
+export interface HistoryRecord {
+  list: number;
+  row: number;
+  id: number;
+  name: string;
+  icon?: number;
+  fields: FieldDiff[];
+}
+
+export interface HistoryEntry {
+  id: number;
+  label: string;
+  /** Unix time in milliseconds. */
+  time: number;
+  /** Undone: Redo would apply it again. */
+  undone: boolean;
+  /** The edit this one reverted. */
+  reverts?: number;
+  /** A later edit that reverted this one. */
+  revertedBy?: number;
+  /** When it was reverted (unix ms). */
+  revertedAt?: number;
+  records: HistoryRecord[];
 }

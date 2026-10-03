@@ -132,6 +132,36 @@ all lists by name, struct or number (↑ ↓ Enter), with **NPC Dialogs** first 
 dot shows how the layout fits, italics a borrowed one, a pencil your own schema. Below it, the
 search filters the list's records by ID or name.
 
+## Editing
+
+Values are edited in the inspector. Edits stay in memory until saving to the file exists.
+
+- **Double-click** a value (or press **Enter**/**F2** on the selected field) to edit it in place:
+  numbers in decimal or `0x` hex, enums from a dropdown of their values (with *Other value…* for
+  ones the enum lacks), bools as true/false. Enter saves, Esc cancels.
+- **Masks**: the calculator (click the labels) has **Apply** for the ticked bits; in an enum's
+  list, clicking a value sets it.
+- **Texts** open an editor with a live preview in the game's colours, a length counter
+  (`wchar[n]` holds n − 1 characters, `char[n]` n − 1 GBK bytes; a line break counts as two, as
+  CR LF), colour swatches and a picker that insert `^RRGGBB`. Ctrl+Enter saves.
+- Values are checked against the field's type in that record (conditional types applied):
+  integer ranges, floats, texts that fit with their terminator. Bytes no layout describes edit
+  as int32.
+- Changed fields get an amber bar and show their original value on hover; changed records get a
+  dot in the table, their tab and (with a count) the list picker; the status bar counts them.
+  A record set back to its original bytes is no longer marked.
+- **Edit** menu: *Undo*/*Redo* (Ctrl+Z, Ctrl+Y or Ctrl+Shift+Z) name the edit they act on;
+  *Revert record* and *Revert all changes…* put records back as opened (undoable too).
+- **Edit › History** (Ctrl+H) lists every edit, newest first: when, what (e.g. *Set price*), the
+  record and each field's old → new value. **Revert** puts that edit's fields back to the values
+  they had before it; the edit then shows as *reverted* (with the time) instead of adding an edit
+  of its own, so there is nothing to revert back and forth. Ctrl+Z takes a revert back. If later
+  edits changed the same fields it asks before overwriting them. Clicking a record
+  or field opens it there; undone edits stay listed (dimmed) until a new edit replaces them, and
+  reverted ones are struck through. The "N changed records · not saved" count in the status bar
+  opens the history too.
+- Schema edits keep the record edits; opening another file asks before dropping them.
+
 ## File menu and tools
 
 **File** (Alt+F) in the top bar holds: *Open elements.data…* (Ctrl+O), the tools *Advanced

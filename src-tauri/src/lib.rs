@@ -80,6 +80,11 @@ impl AppState {
         self.catalog.read().map(|c| c.clone()).unwrap_or_else(|p| p.into_inner().clone())
     }
 
+    fn with_document_mut<T>(&self, f: impl FnOnce(&mut Document) -> Result<T, String>) -> Result<T, String> {
+        let mut guard = self.document.lock().map_err(|_| "State lock poisoned")?;
+        f(guard.as_mut().ok_or("No file is open")?)
+    }
+
     fn with_document<T>(&self, f: impl FnOnce(&Document) -> Result<T, String>) -> Result<T, String> {
         let guard = self.document.lock().map_err(|_| "State lock poisoned")?;
         f(guard.as_ref().ok_or("No file is open")?)
@@ -196,6 +201,44 @@ async fn close_compare(state: State<'_, AppState>) -> Result<(), String> {
 #[tauri::command]
 async fn layout_coverage(state: State<'_, AppState>) -> Result<Vec<elements::coverage::CoverageRow>, String> {
     state.with_document(|doc| Ok(doc.coverage()))
+}
+
+/// Sets fields of a record (one undo step).
+#[tauri::command]
+async fn edit_record(list: usize, row: usize, edits: Vec<elements::edit::FieldEdit>, label: String, state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    state.with_document_mut(|doc| doc.edit(list, row, &edits, &label))
+}
+
+#[tauri::command]
+async fn undo_edit(state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    state.with_document_mut(|doc| Ok(doc.undo()))
+}
+
+#[tauri::command]
+async fn redo_edit(state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    state.with_document_mut(|doc| Ok(doc.redo()))
+}
+
+/// Puts records (or, without any, every changed one) back as opened.
+#[tauri::command]
+async fn revert_edits(records: Option<Vec<(usize, usize)>>, label: String, state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    state.with_document_mut(|doc| Ok(doc.revert(records.as_deref(), &label)))
+}
+
+#[tauri::command]
+async fn edit_history(state: State<'_, AppState>) -> Result<Vec<elements::edit::HistoryEntry>, String> {
+    state.with_document(|doc| Ok(doc.history()))
+}
+
+/// Takes back one edit of the history; `force` overwrites later edits of the same fields.
+#[tauri::command]
+async fn revert_history_entry(id: u64, force: bool, state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    state.with_document_mut(|doc| doc.revert_entry(id, force))
+}
+
+#[tauri::command]
+async fn edit_state(state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    state.with_document(|doc| Ok(doc.edit_state()))
 }
 
 #[tauri::command]
@@ -514,6 +557,13 @@ pub fn run() {
             save_settings,
             find_records,
             list_problems,
+            edit_record,
+            undo_edit,
+            redo_edit,
+            revert_edits,
+            edit_state,
+            edit_history,
+            revert_history_entry,
             layout_coverage,
             export_records,
             open_compare,

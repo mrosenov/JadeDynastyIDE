@@ -14,6 +14,7 @@ import { referencedBy } from "../elements/api";
 import type { FieldNode, ReferencedBy } from "../elements/types";
 import { isUndefinedNode, undefinedSpan } from "../elements/readings";
 import type { FieldSpec } from "../schema/model";
+import type { FieldEdit } from "../elements/types";
 
 interface Props {
   list: ListSummary;
@@ -32,6 +33,8 @@ interface Props {
   lists: ListSummary[];
   /** Select the field at this offset once the record shows (e.g. a search result). */
   focus?: FieldFocus | null;
+  /** Sets fields of the record (one undo step); resolves to an error, or null. */
+  onEdit?: (list: number, row: number, edits: FieldEdit[], label: string) => Promise<string | null>;
 }
 
 export interface FieldFocus {
@@ -42,7 +45,7 @@ export interface FieldFocus {
   nonce: number;
 }
 
-export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, onEditSet, lists, focus }: Props) {
+export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, onEditSet, lists, focus, onEdit }: Props) {
   const [expanded, setExpanded] = useState<Set<Path>>(new Set());
   const [selected, setSelected] = useState<Path | null>(null);
   const [hovered, setHovered] = useState<Path | null>(null);
@@ -51,6 +54,13 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
   const [readOffset, setReadOffset] = useState<number | null>(null);
   // The selected text's preview was closed (until another field is selected).
   const [textClosed, setTextClosed] = useState(false);
+  // The field edited in place, and whether the selected text is being edited.
+  const [editing, setEditing] = useState<Path | null>(null);
+  const [textEditing, setTextEditing] = useState(false);
+  useEffect(() => {
+    setEditing(null);
+    setTextEditing(false);
+  }, [detail?.list, detail?.index]);
   const [setPopover, setSetPopover] = useState<{ node: FieldNode; anchor: DOMRect } | null>(null);
   useEffect(() => setSetPopover(null), [detail]);
   // Fields, or the records that refer to this one. The choice stays while browsing.
@@ -115,6 +125,8 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
   };
 
   const selectNode = (path: Path) => {
+    if (path !== selected) setTextEditing(false);
+    if (path !== editing) setEditing(null);
     setSelected(path);
     setTextClosed(false);
     const node = nodeAt(detail.nodes, path);
@@ -125,11 +137,32 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
 
   const active = nodeAt(detail.nodes, hovered ?? selected ?? "") ?? null;
   const focused = selected ? nodeAt(detail.nodes, selected) : null;
-  // Texts with line breaks, colours or more than a row shows get a preview.
+  // Texts with line breaks, colours or more than a row shows get a preview
+  // (any text being edited gets its editor).
   const textNode =
-    focused && !textClosed && isTextNode(focused) && (hasBreaks(focused.value!) || hasColours(focused.value!) || focused.value!.length > 48)
+    focused &&
+    isTextNode(focused) &&
+    ((textEditing && !!onEdit) || (!textClosed && (hasBreaks(focused.value!) || hasColours(focused.value!) || focused.value!.length > 48)))
       ? focused
       : null;
+
+  /** Sets one field; closes the editor when it worked. */
+  const setField = async (node: FieldNode, value: string) => {
+    if (!onEdit) return "Editing is not available";
+    const problem = await onEdit(detail.list, detail.index, [{ off: node.off, value }], `Set ${node.name}`);
+    if (!problem) setEditing(null);
+    return problem;
+  };
+  const startEdit = (path: Path, node: FieldNode) => {
+    setSelected(path);
+    if (isTextNode(node)) {
+      setEditing(null);
+      setTextClosed(false);
+      setTextEditing(true);
+    } else {
+      setEditing(path);
+    }
+  };
   const unknownBytes = detail.nodes.filter((n) => n.unknown).reduce((sum, n) => sum + n.size, 0);
 
   return (
@@ -226,6 +259,12 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           onFollow={onFollow}
           icon={icon}
           onSet={(node, anchor) => setSetPopover({ node, anchor })}
+          editing={editing}
+          onStartEdit={onEdit ? startEdit : undefined}
+          onCommit={setField}
+          onCancelEdit={() => setEditing(null)}
+          bytes={detail.bytes}
+          original={detail.original}
         />
         )}
         {setPopover && (
@@ -237,6 +276,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
               onEditSet?.(key);
             }}
             onClose={() => setSetPopover(null)}
+            onApply={onEdit ? (value) => setField(setPopover.node, value) : undefined}
           />
         )}
         <div className="readings-slot">
@@ -250,7 +290,18 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
               onDefine={(offset, spec) => onDefine(list.index, offset, spec)}
             />
           ) : (
-            textNode && <TextCard node={textNode} onClose={() => setTextClosed(true)} />
+            textNode && (
+              <TextCard
+                node={textNode}
+                onClose={() => {
+                  setTextClosed(true);
+                  setTextEditing(false);
+                }}
+                onSave={onEdit ? (value) => setField(textNode, value) : undefined}
+                editing={textEditing}
+                onEditingChange={setTextEditing}
+              />
+            )
           )}
         </div>
         <div className="subhead">

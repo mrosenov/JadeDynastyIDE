@@ -7,6 +7,8 @@ export interface TabLabel {
   subtitle: string;
   /** Item icon URL, if any. */
   icon?: string;
+  /** The record has unsaved edits. */
+  changed?: boolean;
 }
 
 interface Props {
@@ -39,7 +41,7 @@ export function TabBar({ tabs, active, label, onActivate, onPin, onClose }: Prop
       }}
     >
       {tabs.map((tab, i) => {
-        const { title, subtitle, icon } = label(tab);
+        const { title, subtitle, icon, changed } = label(tab);
         return (
           <div
             key={tab.id}
@@ -63,7 +65,10 @@ export function TabBar({ tabs, active, label, onActivate, onPin, onClose }: Prop
           >
             {icon && <img className="tab-icon" src={icon} alt="" draggable={false} />}
             <span className="tab-text">
-              <span className="tab-title">{title}</span>
+              <span className="tab-title">
+                {changed && <span className="changed-dot" title="Changed (not saved yet)" />}
+                {title}
+              </span>
               <span className="tab-subtitle">{subtitle}</span>
             </span>
             <button

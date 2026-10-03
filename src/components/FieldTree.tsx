@@ -4,6 +4,8 @@ import { type Path, flatten } from "../elements/fieldPaths";
 import { DIALOGS } from "../tabs";
 import { isTextNode, textLines } from "../elements/text";
 import { CalendarClock, ChevronRight, Clock, CornerDownLeft, GitBranch, Timer } from "lucide-react";
+import { decodeValue, isChanged, isEditable } from "../elements/edit";
+import { InlineEditor } from "./InlineEditor";
 
 /** A time value read for people: a date, a duration or a time of day. */
 function TimeChip({ role, value }: { role: string; value: string }) {
@@ -71,12 +73,31 @@ interface Props {
   icon?: (pathId?: number | null) => string | undefined;
   /** A value named by an enum or mask was clicked (shows all its values). */
   onSet?: (node: FieldNode, anchor: DOMRect) => void;
+  /** The field being edited in place. */
+  editing?: Path | null;
+  /** Double-click, Enter or F2 on an editable field (texts open their editor). */
+  onStartEdit?: (path: Path, node: FieldNode) => void;
+  /** Saves a value; resolves to an error message, or null when applied. */
+  onCommit?: (node: FieldNode, value: string) => Promise<string | null>;
+  onCancelEdit?: () => void;
+  /** The record's bytes now and as the file was opened (marks changed fields). */
+  bytes?: number[];
+  original?: number[];
 }
 
-export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, onSet }: Props) {
+export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, onSet, editing, onStartEdit, onCommit, onCancelEdit, bytes, original }: Props) {
   const rows = flatten(nodes, expanded);
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.key === "Enter" || e.key === "F2") && selected && !editing && onStartEdit) {
+      const row = rows.find((r) => r.path === selected);
+      if (row && isEditable(row.node)) {
+        e.preventDefault();
+        onStartEdit(row.path, row.node);
+      }
+    }
+  };
   return (
-    <div className="fields scroll" onMouseLeave={() => onHover(null)}>
+    <div className="fields scroll" onMouseLeave={() => onHover(null)} tabIndex={0} onKeyDown={onKeyDown}>
       <div className="table-head field-grid">
         <span>Field</span>
         <span>Value</span>
@@ -85,16 +106,25 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
       </div>
       {rows.map(({ node, path, depth }) => {
         const open = expanded.has(path);
+        const editable = !!onStartEdit && isEditable(node);
+        const changed = !!bytes && isChanged(node, bytes, original);
+        const was = changed && !node.children ? decodeValue(node.ty, original!, node.off) : null;
         return (
           <div
             key={path}
             className={
-              "field-row field-grid" + (path === selected ? " active" : "") + (node.unknown ? " unknown" : "") + (node.group ? " group" : "")
+              "field-row field-grid" +
+              (path === selected ? " active" : "") +
+              (node.unknown ? " unknown" : "") +
+              (node.group ? " group" : "") +
+              (changed ? " changed" : "") +
+              (editable ? " editable" : "")
             }
             onClick={() => onSelect(path)}
-            onDoubleClick={() => node.children && onToggle(path)}
+            onDoubleClick={() => (node.children ? onToggle(path) : editable && onStartEdit!(path, node))}
             onMouseEnter={() => onHover(path)}
-            title={node.comment}
+            title={changed ? `Changed${was !== null ? ` · was: ${was === "" ? "(empty)" : was}` : ""}${node.comment ? `
+${node.comment}` : ""}` : node.comment}
           >
             <span className="field-name" style={{ paddingLeft: 8 + depth * 16 }}>
               {node.children ? (
@@ -114,6 +144,11 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
               <span className="field-label truncate">{node.name}</span>
               {node.comment && <span className="field-comment truncate">{node.comment}</span>}
             </span>
+            {editing === path && onCommit && onCancelEdit ? (
+              <span className="field-value editing">
+                <InlineEditor node={node} onCommit={(v) => onCommit(node, v)} onCancel={onCancelEdit} />
+              </span>
+            ) : (
             <span className="field-value truncate mono">
               {node.icon && icon?.(node.icon) && <img className="field-icon" src={icon(node.icon)} alt="" draggable={false} />}
               {isTextNode(node) ? (
@@ -162,6 +197,7 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
                 </span>
               )}
             </span>
+            )}
             <span
               className="muted mono truncate"
               title={

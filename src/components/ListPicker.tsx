@@ -11,6 +11,8 @@ interface Props {
   onSelect: (index: number) => void;
   /** NPC dialogs in the file (offered first). */
   talkCount: number;
+  /** Records with unsaved edits, per list. */
+  changedCounts?: Map<number, number>;
 }
 
 export interface ListPickerHandle {
@@ -25,7 +27,7 @@ interface Entry {
 }
 
 /** The list to browse: a button showing it, a searchable dropdown to pick another. */
-export const ListPicker = forwardRef<ListPickerHandle, Props>(function ListPicker({ lists, selected, onSelect, talkCount }, ref) {
+export const ListPicker = forwardRef<ListPickerHandle, Props>(function ListPicker({ lists, selected, onSelect, talkCount, changedCounts }, ref) {
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
   const [hideEmpty, setHideEmpty] = useState(false);
@@ -108,6 +110,11 @@ export const ListPicker = forwardRef<ListPickerHandle, Props>(function ListPicke
         <span className="list-num">{e.index}</span>
         <span className={"list-name" + (e.list!.layout === "borrowed" || e.list!.layout === "grown" ? " approx" : "")}>{e.name}</span>
         <span className="list-count">
+          {!!changedCounts?.get(e.index) && (
+            <span className="changed-count" title={`${changedCounts.get(e.index)} changed record(s), not saved yet`}>
+              ●{changedCounts.get(e.index)}
+            </span>
+          )}
           {e.list!.custom && (
             <span className="custom-mark" title="Your schema">
               <Pencil size={11} />

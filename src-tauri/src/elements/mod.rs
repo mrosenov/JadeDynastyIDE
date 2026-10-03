@@ -2,6 +2,7 @@ pub mod align;
 pub mod compare;
 pub mod coverage;
 pub mod decode;
+pub mod edit;
 pub mod export;
 pub mod format;
 pub mod problems;
@@ -70,6 +71,8 @@ pub struct Document {
     lists: Vec<Resolved>,
     by_struct: HashMap<String, Vec<usize>>,
     ids: Vec<OnceLock<HashMap<u32, usize>>>,
+    /// Edits made since the file was opened (in memory until saved).
+    pub(crate) edits: edit::Journal,
     /// Integer fields that may hold other records' IDs (for "referenced by").
     sites: OnceLock<Vec<refs::Site>>,
     /// Every record's ID and lowercased name, for Find.
@@ -213,6 +216,9 @@ pub struct RecordDetail {
     pub nodes: Vec<Node>,
     /// Path ID of the record's item icon, if the client has it.
     pub icon: Option<u32>,
+    /// The record as the file was opened, when edits changed it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub original: Option<Vec<u8>>,
 }
 
 /// A list that fields can refer to by its struct.
@@ -329,13 +335,15 @@ impl Document {
             }
         }
         let ids = (0..file.lists.len()).map(|_| OnceLock::new()).collect();
-        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, sites: OnceLock::new(), find_index: OnceLock::new(), talks: OnceLock::new(), resources: None })
+        Ok(Self { path, file, catalog, mode, primary, markers_from, lists, by_struct, ids, sites: OnceLock::new(), find_index: OnceLock::new(), talks: OnceLock::new(), edits: Default::default(), resources: None })
     }
 
     /// Re-reads the same bytes with a new catalog (after a schema edit).
     pub fn reload(&self, catalog: Arc<Catalog>) -> Result<Self, String> {
         let mut doc = Self::from_bytes(self.path.clone(), self.file.data.clone(), catalog)?;
         doc.resources = self.resources.clone();
+        // The data already holds the edits; keep their history.
+        doc.edits = self.edits.clone();
         Ok(doc)
     }
 
@@ -610,6 +618,7 @@ impl Document {
             icon: self.record_icon(bytes, Self::icon_field(def.map(|(_, d)| d))),
             bytes: bytes.to_vec(),
             nodes,
+            original: self.original(list, index).map(<[u8]>::to_vec),
         })
     }
 
@@ -1206,6 +1215,73 @@ mod tests {
         assert!(md.starts_with("# elements.data changes"));
         // A file compared with itself has no differences.
         assert!(compare::summary(&a, &a).lists.iter().all(|l| l.only_this + l.only_other + l.changed == 0));
+    }
+
+    #[test]
+    fn edits_undo_redo_and_revert() {
+        let Some(mut doc) = open("Game Dev/JD/zxserver/zgame/gs/config/elements.data") else { return };
+        let before = doc.file.data.clone();
+        let row = doc.records(3).unwrap().into_iter().find(|r| r.id > 1000).unwrap();
+        let price = doc.record(3, row.index).unwrap().nodes.into_iter().find(|n| n.name == "price").unwrap();
+        let edit = |v: &str| vec![edit::FieldEdit { off: price.off, value: v.into() }];
+        let s = doc.edit(3, row.index, &edit("12345"), "Set price").unwrap();
+        assert_eq!(s.changed, vec![(3, row.index)]);
+        assert_eq!(s.undo.as_deref(), Some("Set price"));
+        let detail = doc.record(3, row.index).unwrap();
+        assert_eq!(detail.nodes.iter().find(|n| n.name == "price").unwrap().value.as_deref(), Some("12345"));
+        assert!(detail.original.is_some());
+        // A bad value changes nothing.
+        assert!(doc.edit(3, row.index, &edit("abc"), "Set price").is_err());
+        // Undo restores the bytes, redo applies them again.
+        let s = doc.undo();
+        assert!(s.changed.is_empty() && s.redo.is_some());
+        assert_eq!(doc.file.data, before);
+        doc.redo();
+        assert_ne!(doc.file.data, before);
+        // Renaming shows in the record list (caches are refreshed).
+        let name = doc.record(3, row.index).unwrap().nodes.into_iter().find(|n| n.name == "name").unwrap();
+        doc.edit(3, row.index, &[edit::FieldEdit { off: name.off, value: "Renamed sword".into() }], "Rename").unwrap();
+        assert_eq!(doc.records(3).unwrap()[row.index].name, "Renamed sword");
+        assert!(doc.find("Renamed sword", 5).total >= 1);
+        // Reverting all is one undoable step back to the opened file.
+        let s = doc.revert(None, "Revert all");
+        assert!(s.changed.is_empty());
+        assert_eq!(doc.file.data, before);
+        doc.undo();
+        assert_ne!(doc.file.data, before);
+        // The history lists edits newest first, with their fields; one edit
+        // reverts on its own, and a later edit of the same field asks first.
+        let price = doc.record(3, row.index).unwrap().nodes.into_iter().find(|n| n.name == "price").unwrap();
+        let first = doc.edit(3, row.index, &[edit::FieldEdit { off: price.off, value: "111".into() }], "Set price").unwrap();
+        assert!(first.undo.is_some());
+        doc.edit(3, row.index, &[edit::FieldEdit { off: name.off, value: "Second name".into() }], "Rename").unwrap();
+        let history = doc.history();
+        assert_eq!(history[0].label, "Rename");
+        let set_price = history.iter().find(|h| h.label == "Set price" && h.records[0].fields.iter().any(|f| f.new == "111")).unwrap();
+        assert_eq!(set_price.records[0].fields[0].field, "price");
+        let price_id = set_price.id;
+        doc.revert_entry(price_id, false).unwrap();
+        assert_eq!(doc.record(3, row.index).unwrap().nodes.iter().find(|n| n.name == "name").unwrap().value.as_deref(), Some("Second name"));
+        assert_ne!(doc.record(3, row.index).unwrap().nodes.iter().find(|n| n.name == "price").unwrap().value.as_deref(), Some("111"));
+        assert_eq!(doc.history().iter().find(|h| h.id == price_id).unwrap().reverted_by.is_some(), true);
+        // The revert is no edit of its own in the history (nothing to revert back and forth).
+        assert!(doc.history().iter().all(|h| h.reverts.is_none() && !h.label.starts_with("Revert “")));
+        // Reverting a reverted edit again does nothing.
+        let before = doc.file.data.clone();
+        doc.revert_entry(price_id, false).unwrap();
+        assert_eq!(doc.file.data, before);
+        // Undo takes the revert back: the edit is no longer marked reverted.
+        doc.undo();
+        assert!(doc.history().iter().find(|h| h.id == price_id).unwrap().reverted_by.is_none());
+        doc.redo();
+        // A field edited again after the edit being reverted: ask first.
+        let renamed = doc.history().iter().find(|h| h.label == "Rename").unwrap().id;
+        doc.edit(3, row.index, &[edit::FieldEdit { off: name.off, value: "Third name".into() }], "Rename again").unwrap();
+        assert!(doc.revert_entry(renamed, false).unwrap_err().starts_with("CONFLICT"));
+        doc.revert_entry(renamed, true).unwrap();
+        // Edits survive a schema reload.
+        let reloaded = doc.reload(doc.catalog.clone()).unwrap();
+        assert_eq!(reloaded.edit_state().changed, vec![(3, row.index)]);
     }
 
     #[test]

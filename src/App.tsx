@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
-import { getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements } from "./elements/api";
-import type { ExportSource, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail } from "./elements/types";
+import { editRecord, getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, undoEdit } from "./elements/api";
+import type { EditState, ExportSource, FieldEdit, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail } from "./elements/types";
 import { bytes, count } from "./elements/format";
 import { ListPicker, type ListPickerHandle } from "./components/ListPicker";
 import { RecordTable } from "./components/RecordTable";
@@ -11,6 +11,7 @@ import { AdvancedSearch } from "./components/AdvancedSearch";
 import { ProblemsPanel } from "./components/ProblemsPanel";
 import { CoveragePanel } from "./components/CoveragePanel";
 import { ComparePanel } from "./components/ComparePanel";
+import { HistoryPanel } from "./components/HistoryPanel";
 import { ExportDialog } from "./components/ExportMenu";
 import { type Menu, MenuBar } from "./components/MenuBar";
 import { SchemaEditor } from "./components/SchemaEditor";
@@ -35,13 +36,17 @@ import {
   Gauge,
   Gem,
   GitCompareArrows,
+  History,
   ListFilter,
+  Redo2,
+  RotateCcw,
   Search,
   Settings,
+  Undo2,
 } from "lucide-react";
 
 /** What the left side of the workspace shows. */
-type Panel = "lists" | "search" | "problems" | "compare" | "coverage";
+type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -126,6 +131,10 @@ export default function App() {
   const [rows, setRows] = useState<RecordRow[] | null>(null);
   const [detail, setDetail] = useState<RecordDetail | null>(null);
   const [talk, setTalk] = useState<TalkDetail | null>(null);
+  // Edits in memory (until saving): undo/redo labels and the changed records.
+  const [edits, setEdits] = useState<EditState>({ changed: [] });
+  // Bumped after edits, so rows and the open record are read again.
+  const [dataVersion, setDataVersion] = useState(0);
   const [lastPath, setLastPath] = useState<string | null>(readLastPath);
   const rowsCache = useRef(new Map<number, RecordRow[]>());
   // Bumped when rows load in the background, so tab titles can use names.
@@ -172,11 +181,16 @@ export default function App() {
   const listIndex = activeTab?.list ?? null;
   const recordIndex = activeTab?.row ?? null;
 
+  const editsRef = useRef(edits);
+  editsRef.current = edits;
   const loadFile = useCallback(async (path: string) => {
+    const changed = editsRef.current.changed.length;
+    if (changed && !window.confirm(`${changed} record(s) have edits that are not saved. Open another file and drop them?`)) return;
     setLoading(path);
     setError(null);
     try {
       const result = await openElements(path);
+      setEdits({ changed: [] });
       rowsCache.current.clear();
       setSummary(result);
       setRows(null);
@@ -306,7 +320,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [listIndex, recordIndex, summary]);
+  }, [listIndex, recordIndex, summary, dataVersion]);
 
   // Load record names for the other tabs' lists, for their titles.
   useEffect(() => {
@@ -324,7 +338,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [tabs.tabs, summary]);
+  }, [tabs.tabs, summary, dataVersion]);
 
   const openLocation = (loc: Location, options: { pin?: boolean; newTab?: boolean } = {}) =>
     dispatch({ type: "open", loc, ...options });
@@ -359,6 +373,52 @@ export default function App() {
   const stepFindRef = useRef(stepFind);
   stepFindRef.current = stepFind;
   const pickerRef = useRef<ListPickerHandle>(null);
+  /**
+   * Reads a list's rows again after an edit (names and IDs may have
+   * changed), replacing the shown ones in place so the table keeps its place.
+   */
+  const refreshRows = (list: number) =>
+    loadRows(list)
+      .then((result) => {
+        rowsCache.current.set(list, result);
+        if (listIndexRef.current === list) setRows(result);
+        setRowsLoaded((n) => n + 1);
+      })
+      .catch(() => rowsCache.current.delete(list));
+  const listIndexRef = useRef(listIndex);
+  listIndexRef.current = listIndex;
+
+  /** Sets fields of a record; resolves to an error message, or null. */
+  const commitEdit = async (list: number, row: number, fields: FieldEdit[], label: string) => {
+    try {
+      setEdits(await editRecord(list, row, fields, label));
+      refreshRows(list);
+      setDataVersion((v) => v + 1);
+      return null;
+    } catch (e) {
+      return String(e);
+    }
+  };
+  /** Undo, redo or revert: any record may change, so the lists in view are read again. */
+  const afterEdits = (next: EditState) => {
+    setEdits(next);
+    const cached = [...rowsCache.current.keys()];
+    rowsCache.current.clear();
+    for (const list of cached) refreshRows(list);
+    setDataVersion((v) => v + 1);
+  };
+  const undo = () => undoEdit().then(afterEdits).catch((e) => setError(String(e)));
+  const redo = () => redoEdit().then(afterEdits).catch((e) => setError(String(e)));
+  const revertRecord = () =>
+    listIndex !== null && recordIndex !== null && revertEdits([[listIndex, recordIndex]], "Revert record").then(afterEdits).catch((e) => setError(String(e)));
+  const revertAll = () => {
+    if (!window.confirm(`Put all ${edits.changed.length} changed record(s) back as the file was opened? (Undo brings the edits back.)`)) return;
+    revertEdits(null, "Revert all changes").then(afterEdits).catch((e) => setError(String(e)));
+  };
+  const undoRef = useRef(undo);
+  undoRef.current = undo;
+  const redoRef = useRef(redo);
+  redoRef.current = redo;
   const togglePanelRef = useRef(togglePanel);
   togglePanelRef.current = togglePanel;
 
@@ -367,12 +427,22 @@ export default function App() {
     if (!summary || editorOpen) return;
     const onKey = (e: KeyboardEvent) => {
       const mod = e.ctrlKey || e.metaKey;
-      if (mod && e.shiftKey && e.key.toLowerCase() === "f") {
+      const typing = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement;
+      if (mod && !typing && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        (e.shiftKey ? redoRef : undoRef).current();
+      } else if (mod && !typing && e.key.toLowerCase() === "y") {
+        e.preventDefault();
+        redoRef.current();
+      } else if (mod && e.shiftKey && e.key.toLowerCase() === "f") {
         e.preventDefault();
         togglePanelRef.current("search");
       } else if (mod && e.shiftKey && e.key.toLowerCase() === "m") {
         e.preventDefault();
         togglePanelRef.current("problems");
+      } else if (mod && !e.shiftKey && e.key.toLowerCase() === "h") {
+        e.preventDefault();
+        togglePanelRef.current("history");
       } else if (mod && !e.shiftKey && e.key.toLowerCase() === "l") {
         e.preventDefault();
         setPanel("lists");
@@ -412,12 +482,21 @@ export default function App() {
     const listName = l?.name ?? `List ${tab.list}`;
     if (tab.row === null) return { title: listName, subtitle: `list ${tab.list}` };
     const row = rowsCache.current.get(tab.list)?.[tab.row];
-    return { title: row?.name || `${listName} #${tab.row}`, subtitle: `${listName} · #${tab.row}`, icon: icon(row?.icon) };
+    return {
+      title: row?.name || `${listName} #${tab.row}`,
+      subtitle: `${listName} · #${tab.row}`,
+      icon: icon(row?.icon),
+      changed: !!changedRows.get(tab.list)?.has(tab.row!),
+    };
   };
 
   const showingDialogs = listIndex === DIALOGS;
+  const changedRows = new Map<number, Set<number>>();
+  for (const [l, r] of edits.changed) changedRows.set(l, (changedRows.get(l) ?? new Set()).add(r));
+  const changedCounts = new Map([...changedRows].map(([l, rows]) => [l, rows.size]));
+  const recordChanged = listIndex !== null && recordIndex !== null && !!changedRows.get(listIndex)?.has(recordIndex);
   const picker = summary && (
-    <ListPicker ref={pickerRef} lists={summary.lists} selected={listIndex} onSelect={selectList} talkCount={summary.talkCount} />
+    <ListPicker ref={pickerRef} lists={summary.lists} selected={listIndex} onSelect={selectList} talkCount={summary.talkCount} changedCounts={changedCounts} />
   );
   const recordOpen = !!summary && listIndex !== null && listIndex >= 0 && recordIndex !== null;
   const listOpen = !!summary && listIndex !== null && listIndex >= 0;
@@ -471,6 +550,25 @@ export default function App() {
         },
         "separator",
         { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: edits.undo ? `Undo ${edits.undo}` : "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: undo, disabled: !edits.undo },
+        { label: edits.redo ? `Redo ${edits.redo}` : "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: redo, disabled: !edits.redo },
+        "separator",
+        { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => showPanel("history"), disabled: !summary, checked: panel === "history", title: noFile },
+        "separator",
+        { label: "Revert record", icon: RotateCcw, onSelect: revertRecord, disabled: !recordChanged, title: recordChanged ? "Put the open record back as the file was opened" : "The open record has no edits" },
+        {
+          label: "Revert all changes…",
+          onSelect: revertAll,
+          disabled: edits.changed.length === 0,
+          badges: edits.changed.length ? [{ text: String(edits.changed.length), tone: "warning" as const }] : [],
+          title: "Put every changed record back as the file was opened (undoable)",
+        },
       ],
     },
   ];
@@ -658,6 +756,24 @@ export default function App() {
               />
             </div>
           )}
+          {mounted.has("history") && (
+            <div className="search-slot" hidden={panel !== "history"}>
+              <HistoryPanel
+                key={summary.path}
+                lists={summary.lists}
+                edits={edits}
+                icon={icon}
+                onUndo={undo}
+                onRedo={redo}
+                onChanged={afterEdits}
+                onOpen={(list, row, off, newTab) => {
+                  openLocation({ list, row }, newTab ? { newTab: true } : {});
+                  if (off !== null) setFocus({ list, row, off, nonce: Date.now() });
+                }}
+                onClose={() => setPanel("lists")}
+              />
+            </div>
+          )}
           {mounted.has("coverage") && (
             <div className="search-slot" hidden={panel !== "coverage"}>
               <CoveragePanel
@@ -682,6 +798,7 @@ export default function App() {
               icon={icon}
               meta={showingDialogs ? `${count(summary.talkCount)} dialogs` : undefined}
               picker={picker}
+              changed={listIndex !== null ? changedRows.get(listIndex) : undefined}
             />
           ) : (
             <section className="pane records">
@@ -722,6 +839,7 @@ export default function App() {
                 onEditSet={(key) => setSetsEditor({ key })}
                 lists={summary.lists}
                 focus={focus}
+                onEdit={commitEdit}
               />
             ) : (
               <section className="pane inspector">
@@ -779,6 +897,11 @@ export default function App() {
               Exported {new Date(summary.timestamp * 1000).toLocaleString()}
             </span>
             {summary.exporter && <span title="Exporter machine name stored in the file">by {summary.exporter}</span>}
+            {edits.changed.length > 0 && (
+              <button className="status-edits" onClick={() => showPanel("history")} title="Show the edit history (Ctrl+H). Edits are kept in memory until saved.">
+                <span className="changed-dot" /> {edits.changed.length} changed record{edits.changed.length === 1 ? "" : "s"} · not saved
+              </button>
+            )}
             <span className="spacer" />
             {problemCounts && (
               <button className={"status-problems" + (problemCounts.errors ? " error" : problemCounts.warnings ? " warning" : "")} onClick={() => showPanel("problems")} title="Show the problems (Ctrl+Shift+M)">

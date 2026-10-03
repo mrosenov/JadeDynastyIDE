@@ -17,11 +17,13 @@ interface Props {
   meta?: string;
   /** The list picker, shown above the search. */
   picker: ReactNode;
+  /** Rows with unsaved edits. */
+  changed?: Set<number>;
 }
 
 const ROW_HEIGHT = 28;
 
-export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta, picker }: Props) {
+export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta, picker, changed }: Props) {
   const [filter, setFilter] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -114,7 +116,10 @@ export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta
                   ))}
                 <span className="muted mono">{row.index}</span>
                 <span className="mono">{row.id}</span>
-                <span className={"truncate" + (row.name ? "" : " muted")}>{row.name || "—"}</span>
+                <span className={"truncate" + (row.name ? "" : " muted")}>
+                  {changed?.has(row.index) && <span className="changed-dot" title="Changed (not saved yet)" />}
+                  {row.name || "—"}
+                </span>
               </div>
             );
           })}

@@ -9,19 +9,32 @@ interface Props {
   anchor: DOMRect;
   onEdit: (key: string) => void;
   onClose: () => void;
+  /** Sets the field to a value (the calculator's, or an enum value clicked). */
+  onApply?: (value: string) => Promise<string | null>;
 }
 
 /**
  * A field's enum or mask at a glance. For masks it is a calculator: tick the
  * bits to see (and copy) the resulting value.
  */
-export function SetPopover({ node, anchor, onEdit, onClose }: Props) {
+export function SetPopover({ node, anchor, onEdit, onClose, onApply }: Props) {
   const [detail, setDetail] = useState<SetDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const width = bitWidth(node.ty);
   const original = toBits(node.value ?? "0", width);
   const [bits, setBits] = useState(original);
   const [copied, setCopied] = useState<string | null>(null);
+  const [applyError, setApplyError] = useState<string | null>(null);
+  const [applying, setApplying] = useState(false);
+  const apply = async (value: string) => {
+    if (!onApply || applying) return;
+    setApplying(true);
+    setApplyError(null);
+    const problem = await onApply(value);
+    setApplying(false);
+    if (problem) setApplyError(problem.replace(/^Error: /, ""));
+    else onClose();
+  };
   const box = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState({ left: anchor.left, top: anchor.bottom + 6 });
   // Once dragged, the popover stays where the user put it.
@@ -150,22 +163,44 @@ export function SetPopover({ node, anchor, onEdit, onClose }: Props) {
               </button>
             </div>
             {bits !== original && (
-              <button className="link" onClick={() => setBits(original)}>
-                Reset to the record's value
-              </button>
+              <div className="mask-actions">
+                <button className="link" onClick={() => setBits(original)}>
+                  Reset to the record's value
+                </button>
+                {onApply && (
+                  <button className="btn primary small" onClick={() => apply(decimal)} disabled={applying} title="Set the field to this value (undo with Ctrl+Z)">
+                    <Check size={13} /> Apply {decimal}
+                  </button>
+                )}
+              </div>
             )}
+            {applyError && <div className="se-problems">{applyError}</div>}
           </div>
         </>
       )}
 
       {detail && !isMask && (
         <div className="set-popover-list scroll">
-          {(detail.set.values ?? []).map((v) => (
-            <div key={v.value} className={"enum-value" + (String(v.value) === node.value ? " on" : "")} title={v.description || undefined}>
-              <span className="mono muted small">{v.value}</span>
-              <span className="truncate">{v.label}</span>
-            </div>
-          ))}
+          {(detail.set.values ?? []).map((v) =>
+            onApply ? (
+              <button
+                key={v.value}
+                className={"enum-value pick" + (String(v.value) === node.value ? " on" : "")}
+                title={(v.description ? `${v.description}\n` : "") + "Click to set the field to this value"}
+                onClick={() => String(v.value) !== node.value && apply(String(v.value))}
+                disabled={applying}
+              >
+                <span className="mono muted small">{v.value}</span>
+                <span className="truncate">{v.label}</span>
+              </button>
+            ) : (
+              <div key={v.value} className={"enum-value" + (String(v.value) === node.value ? " on" : "")} title={v.description || undefined}>
+                <span className="mono muted small">{v.value}</span>
+                <span className="truncate">{v.label}</span>
+              </div>
+            ),
+          )}
+          {applyError && <div className="se-problems">{applyError}</div>}
           {!(detail.set.values ?? []).some((v) => String(v.value) === node.value) && (
             <div className="enum-value on">
               <span className="mono muted small">{node.value}</span>
