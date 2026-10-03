@@ -17,7 +17,7 @@ use serde::{Deserialize, Serialize};
 use super::decode::read_wstr;
 use super::format::{EnumSet, Field, ListDef, Ty, TypeRule};
 
-/// Results kept (matches past it are only counted).
+/// Results kept by default (matches past it are only counted).
 pub const LIMIT: usize = 500;
 const MATCHES_PER_RECORD: usize = 5;
 
@@ -181,6 +181,31 @@ impl Slot {
 
     fn read(&self, bytes: &[u8]) -> Option<Val> {
         read(self.ty(bytes), bytes, self.off)
+    }
+
+    /// The value as JSON: numbers stay numbers.
+    pub(crate) fn json(&self, bytes: &[u8]) -> serde_json::Value {
+        match self.read(bytes) {
+            Some(Val::Int(v)) => v.into(),
+            Some(Val::Float(v)) => serde_json::Number::from_f64(v).map_or_else(|| v.to_string().into(), serde_json::Value::Number),
+            Some(v) => v.show().into(),
+            None => serde_json::Value::Null,
+        }
+    }
+
+    /// The value as text (numbers as written in the file, text as is).
+    pub(crate) fn text(&self, bytes: &[u8]) -> String {
+        self.read(bytes).map(|v| v.show()).unwrap_or_default()
+    }
+
+    /// The field name (lowercase; an array's for its elements).
+    pub(crate) fn name(&self) -> &str {
+        &self.leaf
+    }
+
+    /// Bytes the slot takes (with its base type).
+    pub(crate) fn size(&self) -> usize {
+        self.ty.size()
     }
 
     /// The value, when the slot holds an integer in this record.
@@ -457,6 +482,8 @@ pub struct Searcher<'a> {
     pub set_of: &'a dyn Fn(&str) -> Option<&'a EnumSet>,
     /// (id, name, icon) of a record.
     pub describe: &'a dyn Fn(usize, &[u8]) -> (u32, String, Option<u32>),
+    /// Results kept (usually [`LIMIT`]; exports keep all).
+    pub limit: usize,
 }
 
 impl Searcher<'_> {
@@ -602,7 +629,7 @@ impl Searcher<'_> {
 
     fn add(&self, report: &mut Report, list: usize, row: usize, bytes: &[u8], mut matches: Vec<Match>) {
         report.matched_records += 1;
-        if report.hits.len() >= LIMIT {
+        if report.hits.len() >= self.limit {
             return;
         }
         matches.truncate(MATCHES_PER_RECORD);

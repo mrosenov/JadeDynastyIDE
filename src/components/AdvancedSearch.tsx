@@ -3,6 +3,7 @@ import { Check, ChevronRight, CircleAlert, Copy, Hash, ListFilter, Loader2, Plus
 import { namedSet, searchFieldNames, searchRecords } from "../elements/api";
 import type { ListSummary, SearchCondition, SearchFieldName, SearchHit, SearchOp, SearchQuery, SearchReport } from "../elements/types";
 import { count } from "../elements/format";
+import { ExportMenu } from "./ExportMenu";
 
 interface Props {
   lists: ListSummary[];
@@ -55,6 +56,8 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose }: Pr
   const [includeUnknown, setIncludeUnknown] = useState(false);
   const [caseSensitive, setCaseSensitive] = useState(false);
   const [report, setReport] = useState<SearchReport | null>(null);
+  // The query the results come from (for exporting all of them).
+  const [ran, setRan] = useState<SearchQuery | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [names, setNames] = useState<SearchFieldName[]>([]);
@@ -96,6 +99,7 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose }: Pr
     setError(null);
     try {
       setReport(await searchRecords(query));
+      setRan(query);
       setCollapsed(new Set());
     } catch (e) {
       setError(String(e));
@@ -350,6 +354,7 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose }: Pr
             </span>
           </span>
           <span className="spacer" />
+          {report.hits.length > 0 && ran && <ExportMenu source={{ from: "search", query: ran }} name="search results" label={report.truncated ? `Export all ${count(report.matchedRecords)}` : "Export"} />}
           {report.hits.length > 0 && (
             <button className="link" onClick={copyIds} title="Copy the IDs of the results, one per line">
               {copied ? <Check size={12} /> : <Copy size={12} />} Copy IDs

@@ -2,13 +2,17 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements } from "./elements/api";
-import type { FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail } from "./elements/types";
+import type { ExportSource, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail } from "./elements/types";
 import { bytes, count } from "./elements/format";
 import { ListSidebar } from "./components/ListSidebar";
 import { RecordTable } from "./components/RecordTable";
 import { type FieldFocus, RecordInspector } from "./components/RecordInspector";
 import { AdvancedSearch } from "./components/AdvancedSearch";
 import { ProblemsPanel } from "./components/ProblemsPanel";
+import { CoveragePanel } from "./components/CoveragePanel";
+import { ComparePanel } from "./components/ComparePanel";
+import { ExportDialog } from "./components/ExportMenu";
+import { type Menu, MenuBar } from "./components/MenuBar";
 import { SchemaEditor } from "./components/SchemaEditor";
 import { TabBar, type TabLabel } from "./components/TabBar";
 import { SettingsDialog } from "./components/SettingsDialog";
@@ -19,7 +23,25 @@ import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import "./App.css";
 import logo from "./assets/logo.png";
-import { Braces, ChevronLeft, ChevronRight, CircleAlert, FolderOpen, Gem, ListFilter, Search, Settings } from "lucide-react";
+import {
+  Braces,
+  ChevronLeft,
+  ChevronRight,
+  CircleAlert,
+  Database,
+  Download,
+  FileStack,
+  FolderOpen,
+  Gauge,
+  Gem,
+  GitCompareArrows,
+  ListFilter,
+  Search,
+  Settings,
+} from "lucide-react";
+
+/** What the left side of the workspace shows. */
+type Panel = "lists" | "search" | "problems" | "compare" | "coverage";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -118,26 +140,26 @@ export default function App() {
   const started = useRef(false);
   const iconGen = settingsView?.client?.hasItemIcons ? settingsView.iconGeneration : null;
   const [findOpen, setFindOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  // The left side shows the lists, the search or the problems.
-  const [problemsOpen, setProblemsOpen] = useState(false);
-  // Mounted once opened, so a scan is not repeated on every toggle.
-  const [problemsMounted, setProblemsMounted] = useState(false);
+  const [panel, setPanel] = useState<Panel>("lists");
+  // Panels stay mounted once opened, so their state (results, scans) stays.
+  const [mounted, setMounted] = useState<Set<Panel>>(new Set(["lists"]));
   const [problemCounts, setProblemCounts] = useState<{ errors: number; warnings: number } | null>(null);
   useEffect(() => {
-    setProblemsMounted(false);
-    setProblemsOpen(false);
+    setMounted(new Set(["lists"]));
+    setPanel("lists");
     setProblemCounts(null);
   }, [summary?.path]);
-  const toggleSearch = () => {
-    setProblemsOpen(false);
-    setSearchOpen((o) => !o);
+  /** Shows a panel; showing the open one again goes back to the lists. */
+  const togglePanel = (p: Panel) => {
+    setMounted((m) => (m.has(p) ? m : new Set([...m, p])));
+    setPanel((current) => (current === p && p !== "lists" ? "lists" : p));
   };
-  const toggleProblems = () => {
-    setSearchOpen(false);
-    setProblemsMounted(true);
-    setProblemsOpen((o) => !o);
+  const showPanel = (p: Panel) => {
+    setMounted((m) => (m.has(p) ? m : new Set([...m, p])));
+    setPanel(p);
   };
+  // File › Export: what to export, in a dialog.
+  const [exporting, setExporting] = useState<{ source: ExportSource; name: string; title: string } | null>(null);
   const [focus, setFocus] = useState<FieldFocus | null>(null);
   const [lastFind, setLastFind] = useState<LastFind | null>(null);
   // Hits belong to one file.
@@ -336,10 +358,8 @@ export default function App() {
   };
   const stepFindRef = useRef(stepFind);
   stepFindRef.current = stepFind;
-  const toggleSearchRef = useRef(toggleSearch);
-  toggleSearchRef.current = toggleSearch;
-  const toggleProblemsRef = useRef(toggleProblems);
-  toggleProblemsRef.current = toggleProblems;
+  const togglePanelRef = useRef(togglePanel);
+  togglePanelRef.current = togglePanel;
 
   // Tab, history and find shortcuts (not while the schema editor is open).
   useEffect(() => {
@@ -348,10 +368,10 @@ export default function App() {
       const mod = e.ctrlKey || e.metaKey;
       if (mod && e.shiftKey && e.key.toLowerCase() === "f") {
         e.preventDefault();
-        toggleSearchRef.current();
+        togglePanelRef.current("search");
       } else if (mod && e.shiftKey && e.key.toLowerCase() === "m") {
         e.preventDefault();
-        toggleProblemsRef.current();
+        togglePanelRef.current("problems");
       } else if (mod && e.key.toLowerCase() === "g") {
         e.preventDefault();
         setFindOpen(true);
@@ -390,6 +410,61 @@ export default function App() {
   };
 
   const showingDialogs = listIndex === DIALOGS;
+  const recordOpen = !!summary && listIndex !== null && listIndex >= 0 && recordIndex !== null;
+  const listOpen = !!summary && listIndex !== null && listIndex >= 0;
+  const problemBadges = [
+    ...(problemCounts?.errors ? [{ text: String(problemCounts.errors), tone: "error" as const }] : []),
+    ...(problemCounts?.warnings ? [{ text: String(problemCounts.warnings), tone: "warning" as const }] : []),
+  ];
+  const noFile = summary ? undefined : "Open a file first";
+  const menus: Menu[] = [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open elements.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: chooseFile },
+        "separator",
+        { label: "Advanced search", icon: ListFilter, shortcut: "Ctrl+Shift+F", onSelect: () => showPanel("search"), disabled: !summary, checked: panel === "search", title: noFile },
+        { label: "Problems", badges: problemBadges, icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => showPanel("problems"), disabled: !summary, checked: panel === "problems", title: noFile },
+        { label: "Compare with another file…", icon: GitCompareArrows, onSelect: () => showPanel("compare"), disabled: !summary, checked: panel === "compare", title: noFile },
+        { label: "Layout coverage", icon: Gauge, onSelect: () => showPanel("coverage"), disabled: !summary, checked: panel === "coverage", title: noFile },
+        "separator",
+        {
+          label: "Export",
+          icon: Download,
+          disabled: !summary,
+          submenu: [
+            {
+              label: "Selected item…",
+              disabled: !recordOpen,
+              title: recordOpen ? "The record open in the active tab" : "Open a record first",
+              onSelect: () =>
+                recordOpen &&
+                setExporting({
+                  source: { from: "item", list: listIndex!, row: recordIndex! },
+                  name: rowsCache.current.get(listIndex!)?.[recordIndex!]?.name || `${summary!.lists[listIndex!].name} ${recordIndex}`,
+                  title: `Export ${rowsCache.current.get(listIndex!)?.[recordIndex!]?.name || `record ${recordIndex}`}`,
+                }),
+            },
+            {
+              label: "Selected list…",
+              disabled: !listOpen,
+              title: listOpen ? "Every record of the list open in the active tab" : "Open a list first",
+              onSelect: () =>
+                listOpen &&
+                setExporting({
+                  source: { from: "list", list: listIndex! },
+                  name: summary!.lists[listIndex!].name,
+                  title: `Export ${summary!.lists[listIndex!].name} (${count(summary!.lists[listIndex!].count)} records)`,
+                }),
+            },
+          ],
+        },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+  ];
   const list = summary && listIndex !== null && listIndex >= 0 ? summary.lists[listIndex] : summary && showingDialogs ? dialogsList(summary) : null;
   const row = rows && recordIndex !== null ? (rows[recordIndex] ?? null) : null;
 
@@ -400,9 +475,7 @@ export default function App() {
           <img className="logo" src={logo} alt="" draggable={false} />
           JD IDE
         </div>
-        <button className="btn primary" onClick={chooseFile} title="Open elements.data (Ctrl+O)">
-          <FolderOpen size={15} /> Open…
-        </button>
+        <MenuBar menus={menus} />
         {summary && (
           <div className="file-chip" title={summary.path}>
             <span className="truncate">{fileName(summary.path)}</span>
@@ -423,31 +496,6 @@ export default function App() {
               <Search size={14} />
               <span className="truncate">{lastFind ? lastFind.query : "Find by ID or name…"}</span>
               <kbd>Ctrl G</kbd>
-            </button>
-            <button
-              className={"icon-btn small" + (searchOpen ? " active" : "")}
-              onClick={toggleSearch}
-              title="Advanced search: conditions on fields, or a value in any field (Ctrl+Shift+F)"
-              aria-label="Advanced search"
-            >
-              <ListFilter size={15} />
-            </button>
-            <button
-              className={"icon-btn small problems-btn" + (problemsOpen ? " active" : "")}
-              onClick={toggleProblems}
-              title={
-                problemCounts
-                  ? `Problems: ${problemCounts.errors} error(s), ${problemCounts.warnings} warning(s) (Ctrl+Shift+M)`
-                  : "Problems: scan the file for broken references, duplicate IDs and more (Ctrl+Shift+M)"
-              }
-              aria-label="Problems"
-            >
-              <CircleAlert size={15} />
-              {problemCounts && problemCounts.errors + problemCounts.warnings > 0 && (
-                <span className={"problems-badge" + (problemCounts.errors ? " error" : " warning")}>
-                  {problemCounts.errors || problemCounts.warnings}
-                </span>
-              )}
             </button>
             {lastFind && lastFind.hits.length > 1 && (
               <>
@@ -487,6 +535,8 @@ export default function App() {
           <Settings size={18} />
         </button>
       </header>
+
+      {exporting && <ExportDialog source={exporting.source} name={exporting.name} title={exporting.title} onClose={() => setExporting(null)} />}
 
       {findOpen && summary && (
         <FindPalette
@@ -538,9 +588,22 @@ export default function App() {
           />
         </main>
       ) : summary ? (
-        <main className={"workspace" + (searchOpen || problemsOpen ? " searching" : "")}>
-          {/* Kept mounted while closed, so the search and its results stay. */}
-          <div className="search-slot" hidden={!searchOpen}>
+        <main className={"workspace" + (panel !== "lists" ? " searching" : "")}>
+          <nav className="activity-bar" aria-label="Data files">
+            <button
+              className={"activity" + (panel === "lists" ? " active" : " current")}
+              onClick={() => setPanel("lists")}
+              title={`elements.data: lists and records${panel !== "lists" ? " (back from the tool)" : ""}`}
+              aria-label="elements.data"
+            >
+              <Database size={19} />
+            </button>
+            <span className="activity-soon" title="More game data files (tasks.data, gshop.data, …) will get their own entry here">
+              <FileStack size={17} />
+            </span>
+          </nav>
+          {mounted.has("search") && (
+          <div className="search-slot" hidden={panel !== "search"}>
             <AdvancedSearch
               key={summary.path}
               lists={summary.lists}
@@ -550,11 +613,12 @@ export default function App() {
                 openLocation({ list: hit.list, row: hit.row }, newTab ? { newTab: true } : {});
                 if (off !== null) setFocus({ list: hit.list, row: hit.row, off, nonce: Date.now() });
               }}
-              onClose={() => setSearchOpen(false)}
+              onClose={() => setPanel("lists")}
             />
           </div>
-          {problemsMounted && (
-            <div className="search-slot" hidden={!problemsOpen}>
+          )}
+          {mounted.has("problems") && (
+            <div className="search-slot" hidden={panel !== "problems"}>
               <ProblemsPanel
                 key={summary.path}
                 lists={summary.lists}
@@ -569,14 +633,40 @@ export default function App() {
                     if (p.off !== undefined) setFocus({ list: p.list, row: p.row, off: p.off, nonce: Date.now() });
                   }
                 }}
-                onClose={() => setProblemsOpen(false)}
+                onClose={() => setPanel("lists")}
               />
             </div>
           )}
-          {!searchOpen && !problemsOpen && (
+          {mounted.has("compare") && (
+            <div className="search-slot" hidden={panel !== "compare"}>
+              <ComparePanel
+                key={summary.path}
+                currentPath={summary.path}
+                suggestions={[settingsView?.client?.elementsPath ?? "", lastPath ?? ""]}
+                icon={icon}
+                onOpen={(list, row, newTab) => openLocation({ list, row }, newTab ? { newTab: true } : {})}
+                onClose={() => setPanel("lists")}
+              />
+            </div>
+          )}
+          {mounted.has("coverage") && (
+            <div className="search-slot" hidden={panel !== "coverage"}>
+              <CoveragePanel
+                generation={summary}
+                onOpenList={selectList}
+                onEditSchema={(index) => {
+                  selectList(index);
+                  setEditorIntent(null);
+                  setEditorOpen(true);
+                }}
+                onClose={() => setPanel("lists")}
+              />
+            </div>
+          )}
+          {panel === "lists" && (
             <ListSidebar lists={summary.lists} selected={listIndex} onSelect={selectList} talkCount={summary.talkCount} />
           )}
-          {searchOpen || problemsOpen ? null : list ? (
+          {panel !== "lists" ? null : list ? (
             <RecordTable
               list={list}
               rows={rows}
@@ -682,6 +772,11 @@ export default function App() {
             </span>
             {summary.exporter && <span title="Exporter machine name stored in the file">by {summary.exporter}</span>}
             <span className="spacer" />
+            {problemCounts && (
+              <button className={"status-problems" + (problemCounts.errors ? " error" : problemCounts.warnings ? " warning" : "")} onClick={() => showPanel("problems")} title="Show the problems (Ctrl+Shift+M)">
+                <CircleAlert size={12} /> {problemCounts.errors} · {problemCounts.warnings}
+              </button>
+            )}
             {tabs.tabs.length > 0 && (
               <span title="Ctrl+Tab switches tabs, Ctrl+W closes, Ctrl+1…9 jumps">
                 {tabs.tabs.length} tab{tabs.tabs.length > 1 ? "s" : ""}

@@ -1,5 +1,8 @@
 pub mod align;
+pub mod compare;
+pub mod coverage;
 pub mod decode;
+pub mod export;
 pub mod format;
 pub mod problems;
 pub mod reader;
@@ -752,6 +755,10 @@ impl Document {
 
     /// The advanced search (see [`search`]).
     pub fn search(&self, query: &search::Query) -> Result<search::Report, String> {
+        self.search_limited(query, search::LIMIT)
+    }
+
+    pub fn search_limited(&self, query: &search::Query, limit: usize) -> Result<search::Report, String> {
         let views: Vec<search::ListView> = self
             .file
             .lists
@@ -771,7 +778,7 @@ impl Document {
             let def = self.def(list).map(|(_, d)| d);
             (Self::record_id(bytes), Self::record_name(bytes, Self::name_field(def)), self.record_icon(bytes, Self::icon_field(def)))
         };
-        search::Searcher { set_of: &set_of, describe: &describe }.run(query, &views)
+        search::Searcher { set_of: &set_of, describe: &describe, limit }.run(query, &views)
     }
 
     /// Field names of the file's lists, for search suggestions.
@@ -1133,6 +1140,72 @@ mod tests {
             assert!(r.kinds.iter().find(|k| k.kind == problems::Kind::UnnamedBits).unwrap().count < 500);
             assert!(r.kinds.iter().any(|k| k.count > 0));
         }
+    }
+
+    #[test]
+    fn coverage_adds_up() {
+        for rel in ["Game Dev/JD/zxserver/zgame/gs/config/elements.data", "Game Dev/JD/1792/gamed/config/elements.data"] {
+            let Some(doc) = open(rel) else { continue };
+            let rows = doc.coverage();
+            assert_eq!(rows.len(), doc.file.lists.len());
+            let (mut d, mut p, mut all) = (0, 0, 0);
+            for r in &rows {
+                assert_eq!(r.described + r.placeholder + r.undefined, r.item_size, "{}", r.name);
+                d += r.described * r.count;
+                p += r.placeholder * r.count;
+                all += r.item_size * r.count;
+            }
+            eprintln!("{rel}: {:.1}% described, {:.1}% placeholders (by record bytes)", 100.0 * d as f64 / all as f64, 100.0 * p as f64 / all as f64);
+        }
+    }
+
+    #[test]
+    fn exports_lists_and_search_results() {
+        use export::{Format, Source};
+        let Some(doc) = open("Game Dev/JD/zxserver/zgame/gs/config/elements.data") else { return };
+        let dir = std::env::temp_dir().join(format!("jdide-export-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let csv = dir.join("list3.csv");
+        let r = doc.export(&Source::List { list: 3 }, Format::Csv, true, csv.to_str().unwrap()).unwrap();
+        assert_eq!(r.records, doc.file.lists[3].count);
+        let text = std::fs::read_to_string(&csv).unwrap();
+        let header = text.lines().next().unwrap();
+        assert!(header.starts_with("﻿_list,_listName,_row,id,"), "{}", &header[..60]);
+        assert!(header.contains("proc_type#label"));
+        assert_eq!(text.lines().count(), r.records + 1);
+        // Every match of a search, not just the first 500.
+        let query = search::Query::Conditions { conditions: vec![search::Condition { field: "proc_type".into(), op: search::Op::HasFlags, value: "16".into() }], match_all: true, list: None };
+        let json = dir.join("all.json");
+        let r = doc.export(&Source::Search { query }, Format::Json, false, json.to_str().unwrap()).unwrap();
+        assert!(r.records > search::LIMIT);
+        let parsed: Vec<serde_json::Value> = serde_json::from_str(&std::fs::read_to_string(&json).unwrap()).unwrap();
+        assert_eq!(parsed.len(), r.records);
+        assert!(parsed[0]["id"].is_number());
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn compares_versions_by_struct_and_id() {
+        let (Some(a), Some(b)) = (open("Game Dev/JD/1792/gamed/config/elements.data"), open("Games/ForsakenJD/element/data/elements.data")) else { return };
+        let t = std::time::Instant::now();
+        let s = compare::summary(&a, &b);
+        eprintln!("summary in {:?}: v{} vs v{}, {} list pairs, dialogs {:?}", t.elapsed(), s.this.version, s.other.version, s.lists.len(), s.talks);
+        for l in s.lists.iter().take(6) {
+            eprintln!("  {:30} this {:?} other {:?}: +{} -{} ~{}", l.name, l.this, l.other, l.only_this, l.only_other, l.changed);
+        }
+        // Equipment pairs by struct even when list numbers differ.
+        let equip = s.lists.iter().find(|l| l.struct_name.as_deref() == Some("EQUIPMENT_ESSENCE")).unwrap();
+        assert!(equip.this.is_some() && equip.other.is_some());
+        let d = compare::list_diff(&a, &b, equip.this, equip.other);
+        assert_eq!(d.only_this.len(), equip.only_this);
+        if let Some(c) = d.changed.first() {
+            eprintln!("  e.g. {} ({}): {:?}", c.this.name, c.this.id, c.fields.iter().take(3).map(|f| (&f.field, &f.this, &f.other)).collect::<Vec<_>>());
+            assert!(!c.fields.is_empty());
+        }
+        let md = compare::markdown(&a, &b, true);
+        assert!(md.starts_with("# elements.data changes"));
+        // A file compared with itself has no differences.
+        assert!(compare::summary(&a, &a).lists.iter().all(|l| l.only_this + l.only_other + l.changed == 0));
     }
 
     #[test]

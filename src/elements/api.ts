@@ -1,6 +1,11 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
   FindResult,
+  CompareSummary,
+  CoverageRow,
+  ExportSource,
+  Exported,
+  ListDiff,
   ProblemReport,
   SearchFieldName,
   SearchQuery,
@@ -37,6 +42,19 @@ export const searchFieldNames = () => invoke<SearchFieldName[]>("search_field_na
 
 /** Scans the whole file for problems (see the Problems panel). */
 export const listProblems = () => invoke<ProblemReport>("list_problems");
+
+export const layoutCoverage = () => invoke<CoverageRow[]>("layout_coverage");
+
+export const exportRecords = (source: ExportSource, format: "csv" | "json", labels: boolean, path: string) =>
+  invoke<Exported>("export_records", { source, format, labels, path });
+
+/** Opens a second file to compare the open one with ("this" vs "other"). */
+export const openCompare = (path: string) => invoke<CompareSummary>("open_compare", { path });
+export const compareSummary = () => invoke<CompareSummary>("compare_summary");
+export const compareList = (pair: { this: number | null; other: number | null }) =>
+  invoke<ListDiff>("compare_list", { this: pair.this, other: pair.other });
+export const compareMarkdown = (otherIsOlder: boolean) => invoke<string>("compare_markdown", { otherIsOlder });
+export const closeCompare = () => invoke<void>("close_compare");
 
 export const listTalks = () => invoke<TalkSummary[]>("list_talks");
 export const getTalk = (index: number) => invoke<TalkDetail>("get_talk", { index });

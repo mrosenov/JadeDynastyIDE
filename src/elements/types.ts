@@ -466,3 +466,92 @@ export interface ProblemReport {
   pathsChecked: boolean;
   elapsedMs: number;
 }
+
+// ---------------------------------------------------------------- coverage, export, compare
+
+export interface CoverageRow {
+  index: number;
+  name: string;
+  structName: string | null;
+  itemSize: number;
+  count: number;
+  fit: LayoutFit;
+  layoutId: string | null;
+  custom: boolean;
+  /** Bytes of named fields. */
+  described: number;
+  /** Bytes of placeholder fields ("unknown_12"). */
+  placeholder: number;
+  /** Bytes no field covers. */
+  undefined: number;
+  fields: number;
+}
+
+export type ExportSource =
+  | { from: "item"; list: number; row: number }
+  | { from: "list"; list: number }
+  | { from: "search"; query: SearchQuery };
+
+export interface Exported {
+  path: string;
+  records: number;
+  columns: number;
+}
+
+export interface CompareFile {
+  path: string;
+  version: number;
+  timestamp: number;
+  fileSize: number;
+  lists: number;
+  records: number;
+  talks: number;
+}
+
+export interface ComparePair {
+  this: number | null;
+  other: number | null;
+  name: string;
+  structName?: string;
+  thisCount: number;
+  otherCount: number;
+  thisSize: number;
+  otherSize: number;
+  onlyThis: number;
+  onlyOther: number;
+  changed: number;
+}
+
+export interface CompareSummary {
+  this: CompareFile;
+  other: CompareFile;
+  lists: ComparePair[];
+  /** NPC dialogs: only in this file, only in the other, changed. */
+  talks: [number, number, number];
+}
+
+export interface CompareRecord {
+  row: number;
+  id: number;
+  name: string;
+  icon?: number;
+}
+
+export interface FieldChange {
+  field: string;
+  this: string | null;
+  other: string | null;
+}
+
+export interface ChangedRecord extends CompareRecord {
+  otherRow: number;
+  otherName?: string;
+  fields: FieldChange[];
+}
+
+export interface ListDiff {
+  onlyThis: CompareRecord[];
+  onlyOther: CompareRecord[];
+  changed: ChangedRecord[];
+  truncated: boolean;
+}

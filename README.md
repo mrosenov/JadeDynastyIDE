@@ -125,9 +125,50 @@ window or run a function (Back, Exit, and the NPC services of `SERVICE_TYPE` in 
 
 Dialog tabs work like record tabs (Alt+← goes back to the service you came from).
 
+## File menu and tools
+
+**File** (Alt+F) in the top bar holds: *Open elements.data…* (Ctrl+O), the tools *Advanced
+search* (Ctrl+Shift+F), *Problems* (Ctrl+Shift+M, with error and warning counts), *Compare with
+another file…* and *Layout coverage*, then *Export › Selected item… / Selected list…* and
+*Settings…*. A tool takes the place of the list and record panes; the shortcuts toggle it, and
+the elements.data entry of the bar on the far left goes back to the lists. Tools keep their state
+(results, scans) while hidden. After a scan, the status bar shows the problem counts.
+
+The bar on the far left lists the game data files: elements.data now, others (tasks.data,
+gshop.data, …) later.
+
+## Compare files
+
+**File › Compare with another file…** opens a second elements.data next to the open one: another version, or the
+server's file against the client's. Lists pair by struct name (v160 and v165 line up although
+their list numbers differ), else by name; records pair by ID; fields pair by path
+(case-insensitively), else by the same offset and size.
+
+- Per list: records added, removed and changed, and the record size if it changed.
+- A changed record shows its fields before and after.
+- The arrow between the files swaps which one is older ("before").
+- **Copy patch notes** copies every difference as Markdown.
+- Records of the open file open in the inspector; ones only the other file has are listed.
+
+## Export
+
+**File › Export** saves the selected record or the selected list, and **Export** in the search
+results saves every match (not only the 500 shown), as CSV or JSON. Each record is a row of its scalar fields by path
+(`addons[2].id`), after `_list`, `_listName` and `_row`. *Add enum and mask labels* adds a
+`field#label` column. CSV is UTF-8 with a BOM, so spreadsheet apps show Chinese names right.
+Importing the files back comes with editing and saving.
+
+## Layout coverage
+
+**File › Layout coverage** shows, per list, how many record bytes named fields describe, how many are
+placeholders (`unknown_12`, `Unk3`, `pages_1_goods_2_unknown_4`…) and how many no field covers,
+plus the share over the whole file (weighted by record bytes). Sort by least covered or by most
+undescribed bytes to see where schema work pays off; the braces button opens a list in the
+schema editor.
+
 ## Advanced search
 
-Ctrl+Shift+F (or the filter button next to the find box) opens the search in place of the list
+Ctrl+Shift+F (or File › Advanced search) opens the search in place of the list
 and record panes; it keeps its results while closed.
 
 - **Conditions** on named fields: `= ≠ < ≤ > ≥`, *is one of* / *is none of* (`7, 8, 15`),
@@ -145,7 +186,7 @@ that field selected (Ctrl+click: new tab). *Copy IDs* copies the results' IDs, o
 
 ## Problems
 
-Ctrl+Shift+M (or the alert button in the top bar, which then shows the error count) scans the
+Ctrl+Shift+M (or File › Problems) scans the
 whole file:
 
 | Severity | Check |

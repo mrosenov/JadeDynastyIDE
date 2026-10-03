@@ -19,6 +19,8 @@ use tauri::{Manager, State};
 
 struct AppState {
     document: Mutex<Option<Document>>,
+    /// A second file compared with the open one (locked after `document`).
+    compared: Mutex<Option<Document>>,
     catalog: RwLock<Arc<Catalog>>,
     /// The user's data folder: `layouts/`, `enums/` and `masks/` written by the editors.
     user_dir: PathBuf,
@@ -136,6 +138,64 @@ async fn search_records(query: elements::search::Query, state: State<'_, AppStat
 #[tauri::command]
 async fn search_field_names(state: State<'_, AppState>) -> Result<Vec<elements::search::FieldName>, String> {
     state.with_document(|doc| Ok(doc.field_names()))
+}
+
+#[tauri::command]
+async fn export_records(
+    source: elements::export::Source,
+    format: elements::export::Format,
+    labels: bool,
+    path: String,
+    state: State<'_, AppState>,
+) -> Result<elements::export::Exported, String> {
+    state.with_document(|doc| doc.export(&source, format, labels, &path))
+}
+
+/// Opens a second file to compare the open one with.
+#[tauri::command]
+async fn open_compare(path: String, state: State<'_, AppState>) -> Result<elements::compare::Summary, String> {
+    let catalog = state.catalog();
+    let other = tauri::async_runtime::spawn_blocking(move || Document::open(path, catalog))
+        .await
+        .map_err(|e| e.to_string())??;
+    let summary = state.with_document(|doc| Ok(elements::compare::summary(doc, &other)))?;
+    *state.compared.lock().map_err(|_| "State lock poisoned")? = Some(other);
+    Ok(summary)
+}
+
+fn with_compared<T>(state: &AppState, f: impl FnOnce(&Document, &Document) -> T) -> Result<T, String> {
+    let doc = state.document.lock().map_err(|_| "State lock poisoned")?;
+    let other = state.compared.lock().map_err(|_| "State lock poisoned")?;
+    match (doc.as_ref(), other.as_ref()) {
+        (Some(a), Some(b)) => Ok(f(a, b)),
+        _ => Err("No file to compare with".into()),
+    }
+}
+
+#[tauri::command]
+async fn compare_summary(state: State<'_, AppState>) -> Result<elements::compare::Summary, String> {
+    with_compared(&state, elements::compare::summary)
+}
+
+#[tauri::command]
+async fn compare_list(this: Option<usize>, other: Option<usize>, state: State<'_, AppState>) -> Result<elements::compare::ListDiff, String> {
+    with_compared(&state, |a, b| elements::compare::list_diff(a, b, this, other))
+}
+
+#[tauri::command]
+async fn compare_markdown(other_is_older: bool, state: State<'_, AppState>) -> Result<String, String> {
+    with_compared(&state, |a, b| elements::compare::markdown(a, b, other_is_older))
+}
+
+#[tauri::command]
+async fn close_compare(state: State<'_, AppState>) -> Result<(), String> {
+    *state.compared.lock().map_err(|_| "State lock poisoned")? = None;
+    Ok(())
+}
+
+#[tauri::command]
+async fn layout_coverage(state: State<'_, AppState>) -> Result<Vec<elements::coverage::CoverageRow>, String> {
+    state.with_document(|doc| Ok(doc.coverage()))
 }
 
 #[tauri::command]
@@ -418,6 +478,7 @@ pub fn run() {
             let settings = Settings::load(&settings_path);
             let state = AppState {
                 document: Mutex::new(None),
+                compared: Mutex::new(None),
                 catalog: RwLock::new(catalog),
                 user_dir,
                 settings: Mutex::new(settings.clone()),
@@ -453,6 +514,13 @@ pub fn run() {
             save_settings,
             find_records,
             list_problems,
+            layout_coverage,
+            export_records,
+            open_compare,
+            compare_summary,
+            compare_list,
+            compare_markdown,
+            close_compare,
             search_records,
             search_field_names,
             list_talks,
