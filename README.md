@@ -371,6 +371,22 @@ the built-in layout, and every other list keeps coming from the built-in layout.
 version with no built-in layout, the editor also writes `<id>\layout.json` with the file's
 marker table. "Revert to built-in" deletes the list's file.
 
+**Import from… › Paste a field list…** turns a field list as sELedit and Jade Editor configs
+write it into the list's fields:
+
+```text
+ID;Name;Type;Count;Value_1;Value_2;Value_3
+int32;wstring:64;int32;int32;float;float;float
+```
+
+A line of names and a line of types (`;`, tabs or commas); a whole config block works too, and
+its `001 - NAME` line fills in the struct name. Types: `int32`/`int`, `uint32`, `int16`,
+`uint16`, `int8`/`char`, `uint8`/`byte`, `int64`, `uint64`, `float`, `double`, `wstring:N` and
+`string:N` (N in bytes, so `wstring:64` is 32 characters), `byte:N`, `byte:AUTO` (the rest of
+the record) and arrays such as `int32[4]`. The dialog previews each field's offset and size
+against the record size, marks types it cannot read, and can cover bytes left over with
+`unknown_XXXX` fields. The fields replace the draft; nothing is saved until Save.
+
 ## Development
 
 Prerequisites: Node 20+, Rust (stable, MSVC toolchain), WebView2.

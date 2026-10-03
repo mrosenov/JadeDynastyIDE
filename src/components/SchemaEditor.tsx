@@ -41,6 +41,7 @@ import {
 import { FieldTree } from "./FieldTree";
 import { ReadingsCard } from "./ReadingsCard";
 import { ImportMenu } from "./ImportMenu";
+import { PasteFieldsDialog } from "./PasteFieldsDialog";
 import { RefsPicker } from "./RefsPicker";
 import { isUndefinedNode, undefinedSpan } from "../elements/readings";
 import { HexView } from "./HexView";
@@ -161,6 +162,7 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
   const [picked, setPicked] = useState<Set<number>>(new Set());
   const pickAnchor = useRef<number | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [pasting, setPasting] = useState(false);
   // Fields whose conditional type rules are shown.
   const [rulesOpen, setRulesOpen] = useState<Set<number>>(new Set());
   const [previewRow, setPreviewRow] = useState(initialRow);
@@ -699,7 +701,24 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                     setPicked(new Set());
                     setNotice(`Imported from ${from}. Review it, then save.`);
                   }}
+                  onPaste={() => setPasting(true)}
                 />
+                {pasting && draft && (
+                  <PasteFieldsDialog
+                    list={list}
+                    listName={listSummary.name}
+                    itemSize={itemSize}
+                    onCancel={() => setPasting(false)}
+                    onApply={(fields, struct) => {
+                      setPasting(false);
+                      commit({ ...draft, fields, struct: draft.struct || struct || "" }, "import");
+                      setCollapsed(new Set());
+                      setSelected(null);
+                      setPicked(new Set());
+                      setNotice(`${fields.length} fields from the pasted list. Review them, then save.`);
+                    }}
+                  />
+                )}
                 <button className="btn small" onClick={addField}>
                   <Plus size={14} /> Field
                 </button>

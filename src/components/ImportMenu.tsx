@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { Import } from "lucide-react";
+import { ClipboardPaste, Import } from "lucide-react";
 import { importCandidates } from "../elements/api";
 import type { ImportCandidate, ListDef } from "../elements/types";
 
 interface Props {
   list: number;
   onImport: (def: ListDef, from: string) => void;
+  /** Opens the dialog for a pasted field list. */
+  onPaste: () => void;
 }
 
-/** "Import from…": this list's definition in the other versions' layouts. */
-export function ImportMenu({ list, onImport }: Props) {
+/** "Import from…": this list's definition in the other versions' layouts, or a pasted field list. */
+export function ImportMenu({ list, onImport, onPaste }: Props) {
   const [open, setOpen] = useState(false);
   const [candidates, setCandidates] = useState<ImportCandidate[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +51,7 @@ export function ImportMenu({ list, onImport }: Props) {
       <button
         className={"btn small" + (open ? " active" : "")}
         onClick={() => setOpen((o) => !o)}
-        title={`Copy list ${list}'s structure from another version`}
+        title={`Copy list ${list}'s structure from another version, or from a pasted field list`}
       >
         <Import size={14} /> Import from…
       </button>
@@ -86,6 +88,22 @@ export function ImportMenu({ list, onImport }: Props) {
               </button>
             );
           })}
+          <div className="import-menu-title">From text</div>
+          <button
+            className="import-option"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              onPaste();
+            }}
+            title="A line of names and a line of types, as in sELedit and Jade Editor configs"
+          >
+            <ClipboardPaste size={15} className="accent-icon" />
+            <span className="import-option-name">
+              <span className="truncate">Paste a field list…</span>
+              <span className="mono truncate">ID;Name;… / int32;wstring:64;…</span>
+            </span>
+          </button>
         </div>
       )}
     </div>
