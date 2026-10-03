@@ -168,8 +168,8 @@ elements.data and refuses to start on a mismatch:
 MD5( "ZPWDATA" + path.data + elements.data without its 8-byte checksum slots )
 ```
 
-stored as 32 hex characters, 8 in each of the first four slots (v165 has a fifth slot, skipped
-when hashing). The path.data must be the one the client ships with this elements.data; it is
+stored as 32 hex characters, 8 in each of the first four slots. Only those four are left out of
+the hash: the 8 bytes v165 layouts mark before list 296 are hashed like the rest of the data. The path.data must be the one the client ships with this elements.data; it is
 taken from next to the file, else from the client folder in Settings, or picked in the dialog.
 
 The first save asks first, showing:

@@ -29,8 +29,9 @@ use super::reader::SegmentKind;
 use super::Document;
 
 const SALT: &[u8] = b"ZPWDATA";
-/// Slots holding the digest; the client reads these four (later slots are
-/// skipped when hashing but hold no part of it).
+/// Slots holding the digest. The client knows exactly four (md5pos[0..3]);
+/// any later 8-byte "slot" a layout marks (v165, before list 296) is hashed
+/// like the rest of the data.
 const DIGEST_SLOTS: usize = 4;
 
 /// Size and modification time of a file, to notice changes made by others.
@@ -145,13 +146,14 @@ fn slots_of(segments: &[super::reader::Segment]) -> Vec<usize> {
     segments.iter().filter(|s| s.kind == SegmentKind::Checksum).map(|s| s.offset).collect()
 }
 
-/// The digest the client expects for `data` (its slots at `slots`).
+/// The digest the client expects for `data` (its slots at `slots`; only the
+/// first four are left out of the hash).
 pub fn digest(data: &[u8], slots: &[usize], path_data: &[u8]) -> String {
     let mut md5 = Md5::new();
     md5.update(SALT);
     md5.update(path_data);
     let mut at = 0;
-    for &slot in slots {
+    for &slot in slots.iter().take(DIGEST_SLOTS) {
         md5.update(&data[at..slot]);
         at = slot + 8;
     }
@@ -395,6 +397,18 @@ mod tests {
         let check = doc.check_checksum(Path::new(&doc.path), None).unwrap();
         assert_eq!(check.status, ChecksumStatus::Valid);
         assert_eq!(check.path_data_from, Some("next to the file"));
+    }
+
+    #[test]
+    fn v165_hashes_the_fifth_slot() {
+        // The 8 bytes a v165 layout marks before list 296 are data to the
+        // client: only the first four slots are left out of the hash.
+        let dir = "E:/Game Dev/JD/1792/gamed/config";
+        let Ok(path_data) = std::fs::read(format!("{dir}/path.data")) else { return };
+        let doc = Document::open(format!("{dir}/elements.data"), Arc::new(Catalog::load(None))).unwrap();
+        let slots = doc.checksum_slots();
+        assert_eq!(slots.len(), 5);
+        assert_eq!(Some(digest(&doc.file.data, &slots, &path_data)), stored_digest(&doc.file.data, &slots));
     }
 
     #[test]
