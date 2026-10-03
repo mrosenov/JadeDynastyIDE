@@ -51,7 +51,8 @@
       "off": 84,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "buff"
     },
     {
       "name": "Buff_Str",
@@ -86,7 +87,8 @@
       "off": 104,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "God_Devil_Mask",

@@ -54,7 +54,8 @@
       "t": {
         "k": "u32"
       },
-      "c": "技能id"
+      "c": "技能id",
+      "display": "skill"
     },
     {
       "name": "skill_level",

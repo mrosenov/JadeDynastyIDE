@@ -130,6 +130,17 @@ pub struct RecordRow {
     /// Path ID of the record's item icon, if the client has it.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub icon: Option<u32>,
+    /// The item's name colour in the game (item_color.txt), when not white.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub color: Option<String>,
+}
+
+/// The client's text for a record (configs.pck), and the table it comes from.
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GameText {
+    pub text: String,
+    pub source: &'static str,
 }
 
 /// A record found by Find.
@@ -222,6 +233,12 @@ pub struct RecordDetail {
     /// Created by an edit (a clone).
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub added: bool,
+    /// The client's description of the record (configs.pck).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub game_text: Option<GameText>,
+    /// The name colour in the game, when not white.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name_color: Option<String>,
 }
 
 /// A list that fields can refer to by its struct.
@@ -542,6 +559,7 @@ impl Document {
                     id: Self::record_id(bytes),
                     name: Self::record_name(bytes, name_at),
                     icon: self.record_icon(bytes, icon_at),
+                    color: self.name_color(list, Self::record_id(bytes)),
                 }
             })
             .collect())
@@ -554,6 +572,14 @@ impl Document {
             a.hint = set.label_for(value);
             a.set = field.e.clone();
             return a;
+        }
+        // Skill and buff IDs: their names from configs.pck.
+        if let (Some(role @ ("skill" | "buff")), Some(res)) = (field.display.as_deref(), &self.resources) {
+            if value > 0 && value <= u32::MAX as i64 {
+                let name = if role == "skill" { res.skill_name(value as u32) } else { res.buff_name(value as u32) };
+                a.hint = Some(name.unwrap_or_else(|| format!("no such {role}")));
+                return a;
+            }
         }
         // Path and icon fields hold path.data IDs: show the client's path.
         if let (Some(display @ ("path" | "icon")), Some(res)) = (field.display.as_deref(), &self.resources) {
@@ -624,7 +650,38 @@ impl Document {
             nodes,
             original: self.original(list, index).map(<[u8]>::to_vec),
             added: self.is_added(list, index),
+            game_text: self.game_text(list, Self::record_id(bytes)),
+            name_color: self.name_color(list, Self::record_id(bytes)),
         })
+    }
+
+    /// The ID space the client registers a list's records in.
+    fn space_of(&self, list: usize) -> Option<refs::IdSpace> {
+        self.lists[list].struct_name.as_deref().filter(|s| !s.to_ascii_uppercase().starts_with("UNKNOWN")).map(refs::registry_space)
+    }
+
+    /// The client's text for a record: an item's or monster's description,
+    /// or an addon's text.
+    pub fn game_text(&self, list: usize, id: u32) -> Option<GameText> {
+        use crate::client::table;
+        let res = self.resources.as_ref()?;
+        if id == 0 {
+            return None;
+        }
+        let sources: &[&'static str] = match self.space_of(list)? {
+            refs::IdSpace::Essence => &[table::ITEM_DESC, table::MONSTERS],
+            refs::IdSpace::Addon => &[table::ADDONS],
+            _ => &[],
+        };
+        sources.iter().find_map(|&source| Some(GameText { text: res.text(source, id)?, source }))
+    }
+
+    /// An item's name colour (item_color.txt lists items by their ID).
+    pub fn name_color(&self, list: usize, id: u32) -> Option<String> {
+        if self.space_of(list)? != refs::IdSpace::Essence {
+            return None;
+        }
+        self.resources.as_ref()?.item_color(id).map(str::to_string)
     }
 
     pub fn record(&self, list: usize, index: usize) -> Result<RecordDetail, String> {
@@ -1383,6 +1440,34 @@ mod tests {
         // A name several fields share needs a path.
         let err = doc.bulk_edit(&bulk(BulkOp::Set, "id", "1"), false);
         assert!(err.is_ok() || err.unwrap_err().contains("path"));
+    }
+
+    #[test]
+    fn client_texts_describe_records() {
+        let client = std::path::Path::new("E:/Games/ForsakenJD/element");
+        let Some(mut doc) = open("Games/ForsakenJD/element/data/elements.data") else { return };
+        if !client.join("configs.pck").exists() {
+            return;
+        }
+        let info = crate::client::inspect(client).unwrap();
+        doc.resources = Some(std::sync::Arc::new(crate::client::Resources::new(info)));
+        let t = std::time::Instant::now();
+        let equipment = doc.records(3).unwrap();
+        let described = equipment.iter().filter(|r| doc.game_text(3, r.id).is_some()).count();
+        let coloured = equipment.iter().filter(|r| r.color.is_some()).count();
+        eprintln!("equipment: {described} of {} described, {coloured} coloured ({:?})", equipment.len(), t.elapsed());
+        let table = doc.resources.as_ref().unwrap().table(crate::client::table::ITEM_DESC);
+        let entries = table.as_ref().as_ref().unwrap().strings.len();
+        let mut per_list: Vec<(usize, usize, usize)> = (0..doc.file.lists.len()).map(|l| (doc.records(l).unwrap().iter().filter(|r| doc.game_text(l, r.id).is_some()).count(), l, doc.file.lists[l].count)).filter(|x| x.0 > 0).collect();
+        per_list.sort_by(|a, b| b.cmp(a));
+        eprintln!("item_ext_desc: {entries} entries; described per list: {:?}", per_list.iter().take(12).map(|(n, l, c)| format!("{} {n}/{c}", doc.list_name(*l))).collect::<Vec<_>>());
+        assert!(per_list.iter().map(|x| x.0).sum::<usize>() > 1000 && coloured > 0);
+        let row = equipment.iter().find(|r| doc.game_text(3, r.id).is_some()).unwrap();
+        let detail = doc.record(3, row.index).unwrap();
+        assert_eq!(detail.game_text.as_ref().unwrap().source, "item_ext_desc.txt");
+        let res = doc.resources.as_ref().unwrap();
+        eprintln!("skill 1: {:?}, buff 1: {:?}", res.skill_name(1), res.buff_name(1));
+        assert!(res.buff_name(1).is_some());
     }
 
     #[test]

@@ -3,6 +3,7 @@
 
 pub mod dds;
 pub mod pck;
+pub mod strings;
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -240,6 +241,19 @@ pub struct Resources {
     paths: OnceLock<Result<PathTable, String>>,
     item_icons: OnceLock<Result<IconSet, String>>,
     packages: Mutex<HashMap<String, Arc<Pck>>>,
+    /// String tables of configs.pck by file name, read on first use.
+    tables: Mutex<HashMap<&'static str, Arc<Result<strings::StringTable, String>>>>,
+    item_colors: OnceLock<Option<strings::ItemColors>>,
+}
+
+/// The string tables of configs.pck the editor reads.
+pub mod table {
+    pub const ITEM_DESC: &str = "item_ext_desc.txt";
+    pub const ITEM_TEXTS: &str = "item_desc.txt";
+    pub const SKILLS: &str = "skillstr.txt";
+    pub const BUFFS: &str = "buff_str.txt";
+    pub const ADDONS: &str = "addon_str.txt";
+    pub const MONSTERS: &str = "monster_desc.txt";
 }
 
 impl Resources {
@@ -249,6 +263,8 @@ impl Resources {
             paths: OnceLock::new(),
             item_icons: OnceLock::new(),
             packages: Mutex::new(HashMap::new()),
+            tables: Mutex::new(HashMap::new()),
+            item_colors: OnceLock::new(),
         }
     }
 
@@ -288,6 +304,47 @@ impl Resources {
             })
             .as_ref()
             .map_err(Clone::clone)
+    }
+
+    /// A string table of configs.pck (see [`table`]), read once.
+    pub fn table(&self, name: &'static str) -> Arc<Result<strings::StringTable, String>> {
+        if let Some(t) = self.tables.lock().ok().and_then(|t| t.get(name).cloned()) {
+            return t;
+        }
+        // Read outside the lock: item_ext_desc.txt is several MB.
+        let loaded = Arc::new(self.package("configs").and_then(|p| p.read_path(&format!("configs/{name}"))).and_then(|b| strings::StringTable::parse(&b)).map_err(|e| format!("{name}: {e}")));
+        if let Ok(mut t) = self.tables.lock() {
+            t.entry(name).or_insert(loaded).clone()
+        } else {
+            loaded
+        }
+    }
+
+    /// Entry `n` of a string table, when the table and the entry exist.
+    pub fn text(&self, name: &'static str, n: u32) -> Option<String> {
+        self.table(name).as_ref().as_ref().ok()?.get(n).map(str::to_string)
+    }
+
+    /// A skill's name: entry id × 10 of skillstr.txt.
+    pub fn skill_name(&self, id: u32) -> Option<String> {
+        strings::first_line(&self.text(table::SKILLS, id.checked_mul(10)?)?)
+    }
+
+    /// A buff's name: the first line of its buff_str.txt entry.
+    pub fn buff_name(&self, id: u32) -> Option<String> {
+        strings::first_line(&self.text(table::BUFFS, id)?)
+    }
+
+    /// An item's name colour (item_color.txt), when it is not white.
+    pub fn item_color(&self, id: u32) -> Option<&str> {
+        self.item_colors
+            .get_or_init(|| {
+                let bytes = self.package("configs").ok()?.read_path("configs/item_color.txt").ok()?;
+                let desc = self.table(table::ITEM_TEXTS);
+                Some(strings::ItemColors::parse(&bytes, desc.as_ref().as_ref().ok()))
+            })
+            .as_ref()?
+            .get(id)
     }
 
     /// The item icon cell for a path ID (an item's `file_icon`).
@@ -344,3 +401,4 @@ mod tests {
         assert_eq!((reader.info().width, reader.info().height), (36, 36));
     }
 }
+

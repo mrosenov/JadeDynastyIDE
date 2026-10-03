@@ -123,7 +123,10 @@ export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta
                   ))}
                 <span className="muted mono">{row.index}</span>
                 <span className="mono">{row.id}</span>
-                <span className={"truncate" + (row.name ? "" : " muted")}>
+                <span
+                  className={"truncate" + (row.name ? "" : " muted") + (row.color ? " item-name" : "")}
+                  style={row.color ? ({ "--name-c": row.color } as React.CSSProperties) : undefined}
+                >
                   {added?.has(row.index) ? (
                     <span className="changed-dot added" title="New: created by a clone (not saved yet)" />
                   ) : (

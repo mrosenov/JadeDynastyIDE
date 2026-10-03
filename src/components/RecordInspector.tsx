@@ -4,9 +4,10 @@ import { LAYOUT_LABEL, hex, layoutHelp } from "../elements/format";
 import { FieldTree } from "./FieldTree";
 import { type Path, allPaths, nodeAt, pathAt } from "../elements/fieldPaths";
 import { HexView } from "./HexView";
-import { ArrowLeft, ChevronsDownUp, ChevronsUpDown, Copy, Trash2 } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronsDownUp, ChevronsUpDown, Copy, Trash2 } from "lucide-react";
 import { ReadingsCard } from "./ReadingsCard";
 import { TextCard } from "./TextCard";
+import { GameText } from "./GameText";
 import { hasBreaks, hasColours, isTextNode } from "../elements/text";
 import { SetPopover } from "./SetPopover";
 import { ReferencedByTable } from "./ReferencedByTable";
@@ -179,7 +180,13 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
             </button>
           )}
           {icon?.(detail.icon) && <img className="record-icon" src={icon(detail.icon)} alt="" draggable={false} />}
-          <h2 className="truncate">{row.name || <span className="muted">Unnamed record</span>}</h2>
+          <h2
+            className={"truncate" + (detail.nameColor ? " item-name" : "")}
+            style={detail.nameColor ? ({ "--name-c": detail.nameColor } as React.CSSProperties) : undefined}
+            title={detail.nameColor ? `Name colour in the game: ${detail.nameColor} (item_color.txt)` : undefined}
+          >
+            {row.name || <span className="muted">Unnamed record</span>}
+          </h2>
           <span className={`badge fit-${detail.layout}`} title={layoutHelp(detail.layout, detail.layoutId)}>
             {LAYOUT_LABEL[detail.layout]}
             {detail.layoutId && <span className="badge-sub"> · {detail.layoutId}</span>}
@@ -340,7 +347,42 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           focusKey={focused ? `${detail.index}:${selected}` : null}
           onPick={pickOffset}
         />
+        {/* The client's description, under the bytes (an empty row when there is none). */}
+        <div className="description-slot">{detail.gameText && <DescriptionCard text={detail.gameText.text} source={detail.gameText.source} />}</div>
       </div>
     </section>
+  );
+}
+
+const OPEN_KEY = "jdide.description.open";
+
+/** The client's description of the record, as the game shows it (collapsible, remembered). */
+function DescriptionCard({ text, source }: { text: string; source: string }) {
+  const [open, setOpen] = useState(() => {
+    try {
+      return localStorage.getItem(OPEN_KEY) !== "0";
+    } catch {
+      return true;
+    }
+  });
+  const toggle = () => {
+    setOpen((o) => {
+      try {
+        localStorage.setItem(OPEN_KEY, o ? "0" : "1");
+      } catch {
+        // Remembering is a convenience only.
+      }
+      return !o;
+    });
+  };
+  return (
+    <div className={"description-card" + (open ? " open" : "")}>
+      <button className="description-head" onClick={toggle} title={open ? "Hide the description" : "Show the description"}>
+        <ChevronRight size={13} className={"caret-icon" + (open ? " open" : "")} />
+        <span>Description</span>
+        <span className="muted small mono">{source}</span>
+      </button>
+      {open && <GameText text={text} className="description-text scroll" />}
+    </div>
   );
 }

@@ -236,6 +236,42 @@
     {
       "name": "^element_list_d+_valid_time_(start|end)$",
       "display": "time"
+    },
+    {
+      "name": "(^|_)skill_id(_?d+)?$",
+      "display": "skill"
+    },
+    {
+      "name": "^skill_d+_id$",
+      "display": "skill"
+    },
+    {
+      "name": "^skills_d+_id(_skill)?$",
+      "display": "skill"
+    },
+    {
+      "name": "^skills_id_skill_d+$",
+      "display": "skill"
+    },
+    {
+      "name": "^skill_info_d+_id$",
+      "display": "skill"
+    },
+    {
+      "name": "^id_skill$",
+      "display": "skill"
+    },
+    {
+      "name": "^(cast|xp|shield)_skill$",
+      "display": "skill"
+    },
+    {
+      "name": "^profession_addon_skill_d+$",
+      "display": "skill"
+    },
+    {
+      "name": "^buff_id$",
+      "display": "buff"
     }
   ],
   "refs": [

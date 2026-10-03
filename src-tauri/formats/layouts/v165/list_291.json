@@ -30,1288 +30,1472 @@
       "off": 72,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_2_skill_id",
       "off": 76,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_3_skill_id",
       "off": 80,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_4_skill_id",
       "off": 84,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_5_skill_id",
       "off": 88,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_6_skill_id",
       "off": 92,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_7_skill_id",
       "off": 96,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_8_skill_id",
       "off": 100,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_9_skill_id",
       "off": 104,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_10_skill_id",
       "off": 108,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_11_skill_id",
       "off": 112,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_12_skill_id",
       "off": 116,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_13_skill_id",
       "off": 120,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_14_skill_id",
       "off": 124,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_15_skill_id",
       "off": 128,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_16_skill_id",
       "off": 132,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_17_skill_id",
       "off": 136,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_18_skill_id",
       "off": 140,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_19_skill_id",
       "off": 144,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_20_skill_id",
       "off": 148,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_21_skill_id",
       "off": 152,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_22_skill_id",
       "off": 156,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_23_skill_id",
       "off": 160,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_24_skill_id",
       "off": 164,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_25_skill_id",
       "off": 168,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_26_skill_id",
       "off": 172,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_27_skill_id",
       "off": 176,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_28_skill_id",
       "off": 180,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_29_skill_id",
       "off": 184,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_30_skill_id",
       "off": 188,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_31_skill_id",
       "off": 192,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_32_skill_id",
       "off": 196,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_33_skill_id",
       "off": 200,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_34_skill_id",
       "off": 204,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_35_skill_id",
       "off": 208,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_36_skill_id",
       "off": 212,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_37_skill_id",
       "off": 216,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_38_skill_id",
       "off": 220,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_39_skill_id",
       "off": 224,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_40_skill_id",
       "off": 228,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_41_skill_id",
       "off": 232,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_42_skill_id",
       "off": 236,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_43_skill_id",
       "off": 240,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_44_skill_id",
       "off": 244,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_45_skill_id",
       "off": 248,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_46_skill_id",
       "off": 252,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_47_skill_id",
       "off": 256,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_48_skill_id",
       "off": 260,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_49_skill_id",
       "off": 264,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_50_skill_id",
       "off": 268,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_51_skill_id",
       "off": 272,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_52_skill_id",
       "off": 276,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_53_skill_id",
       "off": 280,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_54_skill_id",
       "off": 284,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_55_skill_id",
       "off": 288,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_56_skill_id",
       "off": 292,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_57_skill_id",
       "off": 296,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_58_skill_id",
       "off": 300,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_59_skill_id",
       "off": 304,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_60_skill_id",
       "off": 308,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_61_skill_id",
       "off": 312,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_62_skill_id",
       "off": 316,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_63_skill_id",
       "off": 320,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_64_skill_id",
       "off": 324,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_65_skill_id",
       "off": 328,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_66_skill_id",
       "off": 332,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_67_skill_id",
       "off": 336,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_68_skill_id",
       "off": 340,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_69_skill_id",
       "off": 344,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_70_skill_id",
       "off": 348,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_71_skill_id",
       "off": 352,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_72_skill_id",
       "off": 356,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_73_skill_id",
       "off": 360,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_74_skill_id",
       "off": 364,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_75_skill_id",
       "off": 368,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_76_skill_id",
       "off": 372,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_77_skill_id",
       "off": 376,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_78_skill_id",
       "off": 380,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_79_skill_id",
       "off": 384,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_80_skill_id",
       "off": 388,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_81_skill_id",
       "off": 392,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_82_skill_id",
       "off": 396,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_83_skill_id",
       "off": 400,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_84_skill_id",
       "off": 404,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_85_skill_id",
       "off": 408,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_86_skill_id",
       "off": 412,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_87_skill_id",
       "off": 416,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_88_skill_id",
       "off": 420,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_89_skill_id",
       "off": 424,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_90_skill_id",
       "off": 428,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_91_skill_id",
       "off": 432,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_92_skill_id",
       "off": 436,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_93_skill_id",
       "off": 440,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_94_skill_id",
       "off": 444,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_95_skill_id",
       "off": 448,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_96_skill_id",
       "off": 452,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_97_skill_id",
       "off": 456,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_98_skill_id",
       "off": 460,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_99_skill_id",
       "off": 464,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_100_skill_id",
       "off": 468,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_101_skill_id",
       "off": 472,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_102_skill_id",
       "off": 476,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_103_skill_id",
       "off": 480,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_104_skill_id",
       "off": 484,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_105_skill_id",
       "off": 488,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_106_skill_id",
       "off": 492,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_107_skill_id",
       "off": 496,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_108_skill_id",
       "off": 500,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_109_skill_id",
       "off": 504,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_110_skill_id",
       "off": 508,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_111_skill_id",
       "off": 512,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_112_skill_id",
       "off": 516,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_113_skill_id",
       "off": 520,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_114_skill_id",
       "off": 524,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_115_skill_id",
       "off": 528,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_116_skill_id",
       "off": 532,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_117_skill_id",
       "off": 536,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_118_skill_id",
       "off": 540,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_119_skill_id",
       "off": 544,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_120_skill_id",
       "off": 548,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_121_skill_id",
       "off": 552,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_122_skill_id",
       "off": 556,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_123_skill_id",
       "off": 560,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_124_skill_id",
       "off": 564,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_125_skill_id",
       "off": 568,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_126_skill_id",
       "off": 572,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_127_skill_id",
       "off": 576,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_128_skill_id",
       "off": 580,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_129_skill_id",
       "off": 584,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_130_skill_id",
       "off": 588,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_131_skill_id",
       "off": 592,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_132_skill_id",
       "off": 596,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_133_skill_id",
       "off": 600,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_134_skill_id",
       "off": 604,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_135_skill_id",
       "off": 608,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_136_skill_id",
       "off": 612,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_137_skill_id",
       "off": 616,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_138_skill_id",
       "off": 620,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_139_skill_id",
       "off": 624,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_140_skill_id",
       "off": 628,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_141_skill_id",
       "off": 632,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_142_skill_id",
       "off": 636,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_143_skill_id",
       "off": 640,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_144_skill_id",
       "off": 644,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_145_skill_id",
       "off": 648,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_146_skill_id",
       "off": 652,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_147_skill_id",
       "off": 656,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_148_skill_id",
       "off": 660,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_149_skill_id",
       "off": 664,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_150_skill_id",
       "off": 668,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_151_skill_id",
       "off": 672,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_152_skill_id",
       "off": 676,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_153_skill_id",
       "off": 680,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_154_skill_id",
       "off": 684,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_155_skill_id",
       "off": 688,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_156_skill_id",
       "off": 692,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_157_skill_id",
       "off": 696,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_158_skill_id",
       "off": 700,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_159_skill_id",
       "off": 704,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_160_skill_id",
       "off": 708,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_161_skill_id",
       "off": 712,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_162_skill_id",
       "off": 716,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_163_skill_id",
       "off": 720,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_164_skill_id",
       "off": 724,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_165_skill_id",
       "off": 728,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_166_skill_id",
       "off": 732,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_167_skill_id",
       "off": 736,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_168_skill_id",
       "off": 740,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_169_skill_id",
       "off": 744,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_170_skill_id",
       "off": 748,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_171_skill_id",
       "off": 752,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_172_skill_id",
       "off": 756,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_173_skill_id",
       "off": 760,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_174_skill_id",
       "off": 764,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_175_skill_id",
       "off": 768,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_176_skill_id",
       "off": 772,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_177_skill_id",
       "off": 776,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_178_skill_id",
       "off": 780,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_179_skill_id",
       "off": 784,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_180_skill_id",
       "off": 788,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_181_skill_id",
       "off": 792,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_182_skill_id",
       "off": 796,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_183_skill_id",
       "off": 800,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "skill_184_skill_id",
       "off": 804,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     }
   ]
 }

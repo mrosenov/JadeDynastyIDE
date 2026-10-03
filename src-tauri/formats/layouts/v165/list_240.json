@@ -72,7 +72,8 @@
       "off": 96,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "card_list_1_buff_list_1_skill_level",
@@ -86,7 +87,8 @@
       "off": 104,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "card_list_1_buff_list_2_skill_level",
@@ -100,7 +102,8 @@
       "off": 112,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "card_list_1_buff_list_3_skill_level",
@@ -163,7 +166,8 @@
       "off": 148,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "card_list_2_buff_list_1_skill_level",
@@ -177,7 +181,8 @@
       "off": 156,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "card_list_2_buff_list_2_skill_level",
@@ -191,7 +196,8 @@
       "off": 164,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "card_list_2_buff_list_3_skill_level",
@@ -254,7 +260,8 @@
       "off": 200,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "card_list_3_buff_list_1_skill_level",
@@ -268,7 +275,8 @@
       "off": 208,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "card_list_3_buff_list_2_skill_level",
@@ -282,7 +290,8 @@
       "off": 216,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "card_list_3_buff_list_3_skill_level",

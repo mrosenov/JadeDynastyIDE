@@ -78,6 +78,19 @@ folder. JD IDE then:
 - reads `path.data`, so path and icon fields show their resource path.
 - reads item icons from `surfaces.pck` (`surfaces\iconset\iconlist_ivtr.dds` + `.txt`).
   Icons show in the record table, the inspector, icon fields and tabs.
+- reads the string tables of `configs.pck` (on first use, each once):
+  - `item_ext_desc.txt`: item descriptions, shown below the bytes in the inspector (with
+    `monster_desc.txt` for monsters and `addon_str.txt` for addons). Most items the client
+    describes are recipes, materials and quest items; equipment texts are mostly generated
+    from stats in game, so few equipment records have one.
+  - `item_color.txt` with the palette in `item_desc.txt`: item names in their game colour in
+    the record table and the inspector (blended toward the text colour so they stay readable).
+  - `skillstr.txt` and `buff_str.txt`: fields with the `skill` or `buff` role show the skill's
+    (entry ID × 10) or buff's name. `tools/type-rules.json` gives the role to ID fields such as
+    `skill_id_1`, `id_skill`, `cast_skill`, `buff_id`.
+
+  The tables are UTF-16 string tables (`#_index`, `#_begin`, quoted strings, `\r` for line
+  breaks), read as the client's CECStringTab does (`src-tauri/src/client/strings.rs`).
 
 Settings are stored in `%APPDATA%\com.jdide.app\settings.json`.
 

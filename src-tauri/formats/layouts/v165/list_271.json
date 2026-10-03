@@ -23,4284 +23,4896 @@
       "off": 68,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_1_upgraded_skill_id",
       "off": 72,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_2_normal_skill_id",
       "off": 76,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_2_upgraded_skill_id",
       "off": 80,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_3_normal_skill_id",
       "off": 84,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_3_upgraded_skill_id",
       "off": 88,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_4_normal_skill_id",
       "off": 92,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_4_upgraded_skill_id",
       "off": 96,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_5_normal_skill_id",
       "off": 100,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_5_upgraded_skill_id",
       "off": 104,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_6_normal_skill_id",
       "off": 108,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_6_upgraded_skill_id",
       "off": 112,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_7_normal_skill_id",
       "off": 116,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_7_upgraded_skill_id",
       "off": 120,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_8_normal_skill_id",
       "off": 124,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_8_upgraded_skill_id",
       "off": 128,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_9_normal_skill_id",
       "off": 132,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_9_upgraded_skill_id",
       "off": 136,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_10_normal_skill_id",
       "off": 140,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_10_upgraded_skill_id",
       "off": 144,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_11_normal_skill_id",
       "off": 148,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_11_upgraded_skill_id",
       "off": 152,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_12_normal_skill_id",
       "off": 156,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_12_upgraded_skill_id",
       "off": 160,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_13_normal_skill_id",
       "off": 164,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_13_upgraded_skill_id",
       "off": 168,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_14_normal_skill_id",
       "off": 172,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_14_upgraded_skill_id",
       "off": 176,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_15_normal_skill_id",
       "off": 180,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_15_upgraded_skill_id",
       "off": 184,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_16_normal_skill_id",
       "off": 188,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_16_upgraded_skill_id",
       "off": 192,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_17_normal_skill_id",
       "off": 196,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_17_upgraded_skill_id",
       "off": 200,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_18_normal_skill_id",
       "off": 204,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_18_upgraded_skill_id",
       "off": 208,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_19_normal_skill_id",
       "off": 212,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_19_upgraded_skill_id",
       "off": 216,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_20_normal_skill_id",
       "off": 220,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_20_upgraded_skill_id",
       "off": 224,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_21_normal_skill_id",
       "off": 228,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_21_upgraded_skill_id",
       "off": 232,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_22_normal_skill_id",
       "off": 236,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_22_upgraded_skill_id",
       "off": 240,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_23_normal_skill_id",
       "off": 244,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_23_upgraded_skill_id",
       "off": 248,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_24_normal_skill_id",
       "off": 252,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_24_upgraded_skill_id",
       "off": 256,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_25_normal_skill_id",
       "off": 260,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_25_upgraded_skill_id",
       "off": 264,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_26_normal_skill_id",
       "off": 268,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_26_upgraded_skill_id",
       "off": 272,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_27_normal_skill_id",
       "off": 276,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_27_upgraded_skill_id",
       "off": 280,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_28_normal_skill_id",
       "off": 284,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_28_upgraded_skill_id",
       "off": 288,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_29_normal_skill_id",
       "off": 292,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_29_upgraded_skill_id",
       "off": 296,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_30_normal_skill_id",
       "off": 300,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_30_upgraded_skill_id",
       "off": 304,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_31_normal_skill_id",
       "off": 308,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_31_upgraded_skill_id",
       "off": 312,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_32_normal_skill_id",
       "off": 316,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_32_upgraded_skill_id",
       "off": 320,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_33_normal_skill_id",
       "off": 324,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_33_upgraded_skill_id",
       "off": 328,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_34_normal_skill_id",
       "off": 332,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_34_upgraded_skill_id",
       "off": 336,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_35_normal_skill_id",
       "off": 340,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_35_upgraded_skill_id",
       "off": 344,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_36_normal_skill_id",
       "off": 348,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_36_upgraded_skill_id",
       "off": 352,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_37_normal_skill_id",
       "off": 356,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_37_upgraded_skill_id",
       "off": 360,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_38_normal_skill_id",
       "off": 364,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_38_upgraded_skill_id",
       "off": 368,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_39_normal_skill_id",
       "off": 372,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_39_upgraded_skill_id",
       "off": 376,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_40_normal_skill_id",
       "off": 380,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_40_upgraded_skill_id",
       "off": 384,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_41_normal_skill_id",
       "off": 388,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_41_upgraded_skill_id",
       "off": 392,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_42_normal_skill_id",
       "off": 396,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_42_upgraded_skill_id",
       "off": 400,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_43_normal_skill_id",
       "off": 404,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_43_upgraded_skill_id",
       "off": 408,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_44_normal_skill_id",
       "off": 412,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_44_upgraded_skill_id",
       "off": 416,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_45_normal_skill_id",
       "off": 420,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_45_upgraded_skill_id",
       "off": 424,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_46_normal_skill_id",
       "off": 428,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_46_upgraded_skill_id",
       "off": 432,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_47_normal_skill_id",
       "off": 436,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_47_upgraded_skill_id",
       "off": 440,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_48_normal_skill_id",
       "off": 444,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_48_upgraded_skill_id",
       "off": 448,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_49_normal_skill_id",
       "off": 452,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_49_upgraded_skill_id",
       "off": 456,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_50_normal_skill_id",
       "off": 460,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_50_upgraded_skill_id",
       "off": 464,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_51_normal_skill_id",
       "off": 468,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_51_upgraded_skill_id",
       "off": 472,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_52_normal_skill_id",
       "off": 476,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_52_upgraded_skill_id",
       "off": 480,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_53_normal_skill_id",
       "off": 484,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_53_upgraded_skill_id",
       "off": 488,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_54_normal_skill_id",
       "off": 492,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_54_upgraded_skill_id",
       "off": 496,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_55_normal_skill_id",
       "off": 500,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_55_upgraded_skill_id",
       "off": 504,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_56_normal_skill_id",
       "off": 508,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_56_upgraded_skill_id",
       "off": 512,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_57_normal_skill_id",
       "off": 516,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_57_upgraded_skill_id",
       "off": 520,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_58_normal_skill_id",
       "off": 524,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_58_upgraded_skill_id",
       "off": 528,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_59_normal_skill_id",
       "off": 532,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_59_upgraded_skill_id",
       "off": 536,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_60_normal_skill_id",
       "off": 540,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_60_upgraded_skill_id",
       "off": 544,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_61_normal_skill_id",
       "off": 548,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_61_upgraded_skill_id",
       "off": 552,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_62_normal_skill_id",
       "off": 556,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_62_upgraded_skill_id",
       "off": 560,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_63_normal_skill_id",
       "off": 564,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_63_upgraded_skill_id",
       "off": 568,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_64_normal_skill_id",
       "off": 572,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_64_upgraded_skill_id",
       "off": 576,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_65_normal_skill_id",
       "off": 580,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_65_upgraded_skill_id",
       "off": 584,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_66_normal_skill_id",
       "off": 588,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_66_upgraded_skill_id",
       "off": 592,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_67_normal_skill_id",
       "off": 596,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_67_upgraded_skill_id",
       "off": 600,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_68_normal_skill_id",
       "off": 604,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_68_upgraded_skill_id",
       "off": 608,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_69_normal_skill_id",
       "off": 612,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_69_upgraded_skill_id",
       "off": 616,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_70_normal_skill_id",
       "off": 620,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_70_upgraded_skill_id",
       "off": 624,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_71_normal_skill_id",
       "off": 628,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_71_upgraded_skill_id",
       "off": 632,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_72_normal_skill_id",
       "off": 636,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_72_upgraded_skill_id",
       "off": 640,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_73_normal_skill_id",
       "off": 644,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_73_upgraded_skill_id",
       "off": 648,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_74_normal_skill_id",
       "off": 652,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_74_upgraded_skill_id",
       "off": 656,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_75_normal_skill_id",
       "off": 660,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_75_upgraded_skill_id",
       "off": 664,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_76_normal_skill_id",
       "off": 668,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_76_upgraded_skill_id",
       "off": 672,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_77_normal_skill_id",
       "off": 676,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_77_upgraded_skill_id",
       "off": 680,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_78_normal_skill_id",
       "off": 684,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_78_upgraded_skill_id",
       "off": 688,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_79_normal_skill_id",
       "off": 692,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_79_upgraded_skill_id",
       "off": 696,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_80_normal_skill_id",
       "off": 700,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_80_upgraded_skill_id",
       "off": 704,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_81_normal_skill_id",
       "off": 708,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_81_upgraded_skill_id",
       "off": 712,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_82_normal_skill_id",
       "off": 716,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_82_upgraded_skill_id",
       "off": 720,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_83_normal_skill_id",
       "off": 724,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_83_upgraded_skill_id",
       "off": 728,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_84_normal_skill_id",
       "off": 732,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_84_upgraded_skill_id",
       "off": 736,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_85_normal_skill_id",
       "off": 740,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_85_upgraded_skill_id",
       "off": 744,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_86_normal_skill_id",
       "off": 748,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_86_upgraded_skill_id",
       "off": 752,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_87_normal_skill_id",
       "off": 756,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_87_upgraded_skill_id",
       "off": 760,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_88_normal_skill_id",
       "off": 764,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_88_upgraded_skill_id",
       "off": 768,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_89_normal_skill_id",
       "off": 772,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_89_upgraded_skill_id",
       "off": 776,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_90_normal_skill_id",
       "off": 780,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_90_upgraded_skill_id",
       "off": 784,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_91_normal_skill_id",
       "off": 788,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_91_upgraded_skill_id",
       "off": 792,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_92_normal_skill_id",
       "off": 796,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_92_upgraded_skill_id",
       "off": 800,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_93_normal_skill_id",
       "off": 804,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_93_upgraded_skill_id",
       "off": 808,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_94_normal_skill_id",
       "off": 812,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_94_upgraded_skill_id",
       "off": 816,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_95_normal_skill_id",
       "off": 820,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_95_upgraded_skill_id",
       "off": 824,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_96_normal_skill_id",
       "off": 828,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_96_upgraded_skill_id",
       "off": 832,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_97_normal_skill_id",
       "off": 836,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_97_upgraded_skill_id",
       "off": 840,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_98_normal_skill_id",
       "off": 844,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_98_upgraded_skill_id",
       "off": 848,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_99_normal_skill_id",
       "off": 852,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_99_upgraded_skill_id",
       "off": 856,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_100_normal_skill_id",
       "off": 860,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_100_upgraded_skill_id",
       "off": 864,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_101_normal_skill_id",
       "off": 868,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_101_upgraded_skill_id",
       "off": 872,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_102_normal_skill_id",
       "off": 876,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_102_upgraded_skill_id",
       "off": 880,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_103_normal_skill_id",
       "off": 884,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_103_upgraded_skill_id",
       "off": 888,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_104_normal_skill_id",
       "off": 892,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_104_upgraded_skill_id",
       "off": 896,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_105_normal_skill_id",
       "off": 900,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_105_upgraded_skill_id",
       "off": 904,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_106_normal_skill_id",
       "off": 908,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_106_upgraded_skill_id",
       "off": 912,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_107_normal_skill_id",
       "off": 916,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_107_upgraded_skill_id",
       "off": 920,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_108_normal_skill_id",
       "off": 924,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_108_upgraded_skill_id",
       "off": 928,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_109_normal_skill_id",
       "off": 932,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_109_upgraded_skill_id",
       "off": 936,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_110_normal_skill_id",
       "off": 940,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_110_upgraded_skill_id",
       "off": 944,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_111_normal_skill_id",
       "off": 948,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_111_upgraded_skill_id",
       "off": 952,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_112_normal_skill_id",
       "off": 956,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_112_upgraded_skill_id",
       "off": 960,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_113_normal_skill_id",
       "off": 964,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_113_upgraded_skill_id",
       "off": 968,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_114_normal_skill_id",
       "off": 972,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_114_upgraded_skill_id",
       "off": 976,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_115_normal_skill_id",
       "off": 980,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_115_upgraded_skill_id",
       "off": 984,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_116_normal_skill_id",
       "off": 988,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_116_upgraded_skill_id",
       "off": 992,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_117_normal_skill_id",
       "off": 996,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_117_upgraded_skill_id",
       "off": 1000,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_118_normal_skill_id",
       "off": 1004,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_118_upgraded_skill_id",
       "off": 1008,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_119_normal_skill_id",
       "off": 1012,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_119_upgraded_skill_id",
       "off": 1016,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_120_normal_skill_id",
       "off": 1020,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_120_upgraded_skill_id",
       "off": 1024,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_121_normal_skill_id",
       "off": 1028,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_121_upgraded_skill_id",
       "off": 1032,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_122_normal_skill_id",
       "off": 1036,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_122_upgraded_skill_id",
       "off": 1040,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_123_normal_skill_id",
       "off": 1044,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_123_upgraded_skill_id",
       "off": 1048,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_124_normal_skill_id",
       "off": 1052,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_124_upgraded_skill_id",
       "off": 1056,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_125_normal_skill_id",
       "off": 1060,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_125_upgraded_skill_id",
       "off": 1064,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_126_normal_skill_id",
       "off": 1068,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_126_upgraded_skill_id",
       "off": 1072,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_127_normal_skill_id",
       "off": 1076,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_127_upgraded_skill_id",
       "off": 1080,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_128_normal_skill_id",
       "off": 1084,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_128_upgraded_skill_id",
       "off": 1088,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_129_normal_skill_id",
       "off": 1092,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_129_upgraded_skill_id",
       "off": 1096,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_130_normal_skill_id",
       "off": 1100,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_130_upgraded_skill_id",
       "off": 1104,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_131_normal_skill_id",
       "off": 1108,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_131_upgraded_skill_id",
       "off": 1112,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_132_normal_skill_id",
       "off": 1116,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_132_upgraded_skill_id",
       "off": 1120,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_133_normal_skill_id",
       "off": 1124,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_133_upgraded_skill_id",
       "off": 1128,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_134_normal_skill_id",
       "off": 1132,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_134_upgraded_skill_id",
       "off": 1136,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_135_normal_skill_id",
       "off": 1140,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_135_upgraded_skill_id",
       "off": 1144,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_136_normal_skill_id",
       "off": 1148,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_136_upgraded_skill_id",
       "off": 1152,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_137_normal_skill_id",
       "off": 1156,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_137_upgraded_skill_id",
       "off": 1160,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_138_normal_skill_id",
       "off": 1164,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_138_upgraded_skill_id",
       "off": 1168,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_139_normal_skill_id",
       "off": 1172,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_139_upgraded_skill_id",
       "off": 1176,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_140_normal_skill_id",
       "off": 1180,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_140_upgraded_skill_id",
       "off": 1184,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_141_normal_skill_id",
       "off": 1188,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_141_upgraded_skill_id",
       "off": 1192,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_142_normal_skill_id",
       "off": 1196,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_142_upgraded_skill_id",
       "off": 1200,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_143_normal_skill_id",
       "off": 1204,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_143_upgraded_skill_id",
       "off": 1208,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_144_normal_skill_id",
       "off": 1212,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_144_upgraded_skill_id",
       "off": 1216,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_145_normal_skill_id",
       "off": 1220,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_145_upgraded_skill_id",
       "off": 1224,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_146_normal_skill_id",
       "off": 1228,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_146_upgraded_skill_id",
       "off": 1232,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_147_normal_skill_id",
       "off": 1236,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_147_upgraded_skill_id",
       "off": 1240,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_148_normal_skill_id",
       "off": 1244,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_148_upgraded_skill_id",
       "off": 1248,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_149_normal_skill_id",
       "off": 1252,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_149_upgraded_skill_id",
       "off": 1256,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_150_normal_skill_id",
       "off": 1260,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_150_upgraded_skill_id",
       "off": 1264,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_151_normal_skill_id",
       "off": 1268,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_151_upgraded_skill_id",
       "off": 1272,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_152_normal_skill_id",
       "off": 1276,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_152_upgraded_skill_id",
       "off": 1280,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_153_normal_skill_id",
       "off": 1284,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_153_upgraded_skill_id",
       "off": 1288,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_154_normal_skill_id",
       "off": 1292,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_154_upgraded_skill_id",
       "off": 1296,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_155_normal_skill_id",
       "off": 1300,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_155_upgraded_skill_id",
       "off": 1304,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_156_normal_skill_id",
       "off": 1308,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_156_upgraded_skill_id",
       "off": 1312,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_157_normal_skill_id",
       "off": 1316,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_157_upgraded_skill_id",
       "off": 1320,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_158_normal_skill_id",
       "off": 1324,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_158_upgraded_skill_id",
       "off": 1328,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_159_normal_skill_id",
       "off": 1332,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_159_upgraded_skill_id",
       "off": 1336,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_160_normal_skill_id",
       "off": 1340,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_160_upgraded_skill_id",
       "off": 1344,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_161_normal_skill_id",
       "off": 1348,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_161_upgraded_skill_id",
       "off": 1352,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_162_normal_skill_id",
       "off": 1356,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_162_upgraded_skill_id",
       "off": 1360,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_163_normal_skill_id",
       "off": 1364,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_163_upgraded_skill_id",
       "off": 1368,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_164_normal_skill_id",
       "off": 1372,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_164_upgraded_skill_id",
       "off": 1376,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_165_normal_skill_id",
       "off": 1380,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_165_upgraded_skill_id",
       "off": 1384,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_166_normal_skill_id",
       "off": 1388,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_166_upgraded_skill_id",
       "off": 1392,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_167_normal_skill_id",
       "off": 1396,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_167_upgraded_skill_id",
       "off": 1400,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_168_normal_skill_id",
       "off": 1404,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_168_upgraded_skill_id",
       "off": 1408,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_169_normal_skill_id",
       "off": 1412,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_169_upgraded_skill_id",
       "off": 1416,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_170_normal_skill_id",
       "off": 1420,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_170_upgraded_skill_id",
       "off": 1424,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_171_normal_skill_id",
       "off": 1428,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_171_upgraded_skill_id",
       "off": 1432,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_172_normal_skill_id",
       "off": 1436,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_172_upgraded_skill_id",
       "off": 1440,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_173_normal_skill_id",
       "off": 1444,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_173_upgraded_skill_id",
       "off": 1448,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_174_normal_skill_id",
       "off": 1452,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_174_upgraded_skill_id",
       "off": 1456,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_175_normal_skill_id",
       "off": 1460,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_175_upgraded_skill_id",
       "off": 1464,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_176_normal_skill_id",
       "off": 1468,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_176_upgraded_skill_id",
       "off": 1472,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_177_normal_skill_id",
       "off": 1476,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_177_upgraded_skill_id",
       "off": 1480,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_178_normal_skill_id",
       "off": 1484,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_178_upgraded_skill_id",
       "off": 1488,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_179_normal_skill_id",
       "off": 1492,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_179_upgraded_skill_id",
       "off": 1496,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_180_normal_skill_id",
       "off": 1500,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_180_upgraded_skill_id",
       "off": 1504,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_181_normal_skill_id",
       "off": 1508,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_181_upgraded_skill_id",
       "off": 1512,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_182_normal_skill_id",
       "off": 1516,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_182_upgraded_skill_id",
       "off": 1520,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_183_normal_skill_id",
       "off": 1524,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_183_upgraded_skill_id",
       "off": 1528,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_184_normal_skill_id",
       "off": 1532,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_184_upgraded_skill_id",
       "off": 1536,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_185_normal_skill_id",
       "off": 1540,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_185_upgraded_skill_id",
       "off": 1544,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_186_normal_skill_id",
       "off": 1548,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_186_upgraded_skill_id",
       "off": 1552,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_187_normal_skill_id",
       "off": 1556,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_187_upgraded_skill_id",
       "off": 1560,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_188_normal_skill_id",
       "off": 1564,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_188_upgraded_skill_id",
       "off": 1568,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_189_normal_skill_id",
       "off": 1572,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_189_upgraded_skill_id",
       "off": 1576,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_190_normal_skill_id",
       "off": 1580,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_190_upgraded_skill_id",
       "off": 1584,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_191_normal_skill_id",
       "off": 1588,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_191_upgraded_skill_id",
       "off": 1592,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_192_normal_skill_id",
       "off": 1596,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_192_upgraded_skill_id",
       "off": 1600,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_193_normal_skill_id",
       "off": 1604,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_193_upgraded_skill_id",
       "off": 1608,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_194_normal_skill_id",
       "off": 1612,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_194_upgraded_skill_id",
       "off": 1616,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_195_normal_skill_id",
       "off": 1620,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_195_upgraded_skill_id",
       "off": 1624,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_196_normal_skill_id",
       "off": 1628,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_196_upgraded_skill_id",
       "off": 1632,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_197_normal_skill_id",
       "off": 1636,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_197_upgraded_skill_id",
       "off": 1640,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_198_normal_skill_id",
       "off": 1644,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_198_upgraded_skill_id",
       "off": 1648,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_199_normal_skill_id",
       "off": 1652,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_199_upgraded_skill_id",
       "off": 1656,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_200_normal_skill_id",
       "off": 1660,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_200_upgraded_skill_id",
       "off": 1664,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_201_normal_skill_id",
       "off": 1668,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_201_upgraded_skill_id",
       "off": 1672,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_202_normal_skill_id",
       "off": 1676,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_202_upgraded_skill_id",
       "off": 1680,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_203_normal_skill_id",
       "off": 1684,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_203_upgraded_skill_id",
       "off": 1688,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_204_normal_skill_id",
       "off": 1692,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_204_upgraded_skill_id",
       "off": 1696,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_205_normal_skill_id",
       "off": 1700,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_205_upgraded_skill_id",
       "off": 1704,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_206_normal_skill_id",
       "off": 1708,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_206_upgraded_skill_id",
       "off": 1712,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_207_normal_skill_id",
       "off": 1716,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_207_upgraded_skill_id",
       "off": 1720,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_208_normal_skill_id",
       "off": 1724,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_208_upgraded_skill_id",
       "off": 1728,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_209_normal_skill_id",
       "off": 1732,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_209_upgraded_skill_id",
       "off": 1736,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_210_normal_skill_id",
       "off": 1740,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_210_upgraded_skill_id",
       "off": 1744,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_211_normal_skill_id",
       "off": 1748,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_211_upgraded_skill_id",
       "off": 1752,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_212_normal_skill_id",
       "off": 1756,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_212_upgraded_skill_id",
       "off": 1760,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_213_normal_skill_id",
       "off": 1764,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_213_upgraded_skill_id",
       "off": 1768,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_214_normal_skill_id",
       "off": 1772,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_214_upgraded_skill_id",
       "off": 1776,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_215_normal_skill_id",
       "off": 1780,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_215_upgraded_skill_id",
       "off": 1784,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_216_normal_skill_id",
       "off": 1788,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_216_upgraded_skill_id",
       "off": 1792,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_217_normal_skill_id",
       "off": 1796,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_217_upgraded_skill_id",
       "off": 1800,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_218_normal_skill_id",
       "off": 1804,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_218_upgraded_skill_id",
       "off": 1808,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_219_normal_skill_id",
       "off": 1812,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_219_upgraded_skill_id",
       "off": 1816,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_220_normal_skill_id",
       "off": 1820,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_220_upgraded_skill_id",
       "off": 1824,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_221_normal_skill_id",
       "off": 1828,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_221_upgraded_skill_id",
       "off": 1832,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_222_normal_skill_id",
       "off": 1836,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_222_upgraded_skill_id",
       "off": 1840,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_223_normal_skill_id",
       "off": 1844,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_223_upgraded_skill_id",
       "off": 1848,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_224_normal_skill_id",
       "off": 1852,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_224_upgraded_skill_id",
       "off": 1856,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_225_normal_skill_id",
       "off": 1860,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_225_upgraded_skill_id",
       "off": 1864,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_226_normal_skill_id",
       "off": 1868,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_226_upgraded_skill_id",
       "off": 1872,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_227_normal_skill_id",
       "off": 1876,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_227_upgraded_skill_id",
       "off": 1880,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_228_normal_skill_id",
       "off": 1884,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_228_upgraded_skill_id",
       "off": 1888,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_229_normal_skill_id",
       "off": 1892,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_229_upgraded_skill_id",
       "off": 1896,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_230_normal_skill_id",
       "off": 1900,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_230_upgraded_skill_id",
       "off": 1904,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_231_normal_skill_id",
       "off": 1908,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_231_upgraded_skill_id",
       "off": 1912,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_232_normal_skill_id",
       "off": 1916,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_232_upgraded_skill_id",
       "off": 1920,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_233_normal_skill_id",
       "off": 1924,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_233_upgraded_skill_id",
       "off": 1928,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_234_normal_skill_id",
       "off": 1932,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_234_upgraded_skill_id",
       "off": 1936,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_235_normal_skill_id",
       "off": 1940,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_235_upgraded_skill_id",
       "off": 1944,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_236_normal_skill_id",
       "off": 1948,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_236_upgraded_skill_id",
       "off": 1952,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_237_normal_skill_id",
       "off": 1956,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_237_upgraded_skill_id",
       "off": 1960,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_238_normal_skill_id",
       "off": 1964,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_238_upgraded_skill_id",
       "off": 1968,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_239_normal_skill_id",
       "off": 1972,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_239_upgraded_skill_id",
       "off": 1976,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_240_normal_skill_id",
       "off": 1980,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_240_upgraded_skill_id",
       "off": 1984,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_241_normal_skill_id",
       "off": 1988,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_241_upgraded_skill_id",
       "off": 1992,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_242_normal_skill_id",
       "off": 1996,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_242_upgraded_skill_id",
       "off": 2000,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_243_normal_skill_id",
       "off": 2004,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_243_upgraded_skill_id",
       "off": 2008,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_244_normal_skill_id",
       "off": 2012,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_244_upgraded_skill_id",
       "off": 2016,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_245_normal_skill_id",
       "off": 2020,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_245_upgraded_skill_id",
       "off": 2024,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_246_normal_skill_id",
       "off": 2028,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_246_upgraded_skill_id",
       "off": 2032,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_247_normal_skill_id",
       "off": 2036,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_247_upgraded_skill_id",
       "off": 2040,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_248_normal_skill_id",
       "off": 2044,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_248_upgraded_skill_id",
       "off": 2048,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_249_normal_skill_id",
       "off": 2052,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_249_upgraded_skill_id",
       "off": 2056,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_250_normal_skill_id",
       "off": 2060,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_250_upgraded_skill_id",
       "off": 2064,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_251_normal_skill_id",
       "off": 2068,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_251_upgraded_skill_id",
       "off": 2072,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_252_normal_skill_id",
       "off": 2076,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_252_upgraded_skill_id",
       "off": 2080,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_253_normal_skill_id",
       "off": 2084,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_253_upgraded_skill_id",
       "off": 2088,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_254_normal_skill_id",
       "off": 2092,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_254_upgraded_skill_id",
       "off": 2096,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_255_normal_skill_id",
       "off": 2100,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_255_upgraded_skill_id",
       "off": 2104,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_256_normal_skill_id",
       "off": 2108,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_256_upgraded_skill_id",
       "off": 2112,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_257_normal_skill_id",
       "off": 2116,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_257_upgraded_skill_id",
       "off": 2120,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_258_normal_skill_id",
       "off": 2124,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_258_upgraded_skill_id",
       "off": 2128,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_259_normal_skill_id",
       "off": 2132,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_259_upgraded_skill_id",
       "off": 2136,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_260_normal_skill_id",
       "off": 2140,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_260_upgraded_skill_id",
       "off": 2144,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_261_normal_skill_id",
       "off": 2148,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_261_upgraded_skill_id",
       "off": 2152,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_262_normal_skill_id",
       "off": 2156,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_262_upgraded_skill_id",
       "off": 2160,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_263_normal_skill_id",
       "off": 2164,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_263_upgraded_skill_id",
       "off": 2168,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_264_normal_skill_id",
       "off": 2172,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_264_upgraded_skill_id",
       "off": 2176,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_265_normal_skill_id",
       "off": 2180,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_265_upgraded_skill_id",
       "off": 2184,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_266_normal_skill_id",
       "off": 2188,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_266_upgraded_skill_id",
       "off": 2192,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_267_normal_skill_id",
       "off": 2196,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_267_upgraded_skill_id",
       "off": 2200,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_268_normal_skill_id",
       "off": 2204,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_268_upgraded_skill_id",
       "off": 2208,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_269_normal_skill_id",
       "off": 2212,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_269_upgraded_skill_id",
       "off": 2216,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_270_normal_skill_id",
       "off": 2220,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_270_upgraded_skill_id",
       "off": 2224,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_271_normal_skill_id",
       "off": 2228,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_271_upgraded_skill_id",
       "off": 2232,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_272_normal_skill_id",
       "off": 2236,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_272_upgraded_skill_id",
       "off": 2240,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_273_normal_skill_id",
       "off": 2244,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_273_upgraded_skill_id",
       "off": 2248,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_274_normal_skill_id",
       "off": 2252,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_274_upgraded_skill_id",
       "off": 2256,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_275_normal_skill_id",
       "off": 2260,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_275_upgraded_skill_id",
       "off": 2264,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_276_normal_skill_id",
       "off": 2268,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_276_upgraded_skill_id",
       "off": 2272,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_277_normal_skill_id",
       "off": 2276,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_277_upgraded_skill_id",
       "off": 2280,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_278_normal_skill_id",
       "off": 2284,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_278_upgraded_skill_id",
       "off": 2288,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_279_normal_skill_id",
       "off": 2292,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_279_upgraded_skill_id",
       "off": 2296,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_280_normal_skill_id",
       "off": 2300,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_280_upgraded_skill_id",
       "off": 2304,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_281_normal_skill_id",
       "off": 2308,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_281_upgraded_skill_id",
       "off": 2312,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_282_normal_skill_id",
       "off": 2316,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_282_upgraded_skill_id",
       "off": 2320,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_283_normal_skill_id",
       "off": 2324,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_283_upgraded_skill_id",
       "off": 2328,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_284_normal_skill_id",
       "off": 2332,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_284_upgraded_skill_id",
       "off": 2336,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_285_normal_skill_id",
       "off": 2340,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_285_upgraded_skill_id",
       "off": 2344,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_286_normal_skill_id",
       "off": 2348,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_286_upgraded_skill_id",
       "off": 2352,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_287_normal_skill_id",
       "off": 2356,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_287_upgraded_skill_id",
       "off": 2360,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_288_normal_skill_id",
       "off": 2364,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_288_upgraded_skill_id",
       "off": 2368,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_289_normal_skill_id",
       "off": 2372,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_289_upgraded_skill_id",
       "off": 2376,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_290_normal_skill_id",
       "off": 2380,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_290_upgraded_skill_id",
       "off": 2384,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_291_normal_skill_id",
       "off": 2388,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_291_upgraded_skill_id",
       "off": 2392,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_292_normal_skill_id",
       "off": 2396,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_292_upgraded_skill_id",
       "off": 2400,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_293_normal_skill_id",
       "off": 2404,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_293_upgraded_skill_id",
       "off": 2408,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_294_normal_skill_id",
       "off": 2412,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_294_upgraded_skill_id",
       "off": 2416,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_295_normal_skill_id",
       "off": 2420,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_295_upgraded_skill_id",
       "off": 2424,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_296_normal_skill_id",
       "off": 2428,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_296_upgraded_skill_id",
       "off": 2432,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_297_normal_skill_id",
       "off": 2436,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_297_upgraded_skill_id",
       "off": 2440,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_298_normal_skill_id",
       "off": 2444,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_298_upgraded_skill_id",
       "off": 2448,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_299_normal_skill_id",
       "off": 2452,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_299_upgraded_skill_id",
       "off": 2456,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_300_normal_skill_id",
       "off": 2460,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_300_upgraded_skill_id",
       "off": 2464,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_301_normal_skill_id",
       "off": 2468,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_301_upgraded_skill_id",
       "off": 2472,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_302_normal_skill_id",
       "off": 2476,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_302_upgraded_skill_id",
       "off": 2480,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_303_normal_skill_id",
       "off": 2484,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_303_upgraded_skill_id",
       "off": 2488,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_304_normal_skill_id",
       "off": 2492,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_304_upgraded_skill_id",
       "off": 2496,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_305_normal_skill_id",
       "off": 2500,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_305_upgraded_skill_id",
       "off": 2504,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_306_normal_skill_id",
       "off": 2508,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "relations_306_upgraded_skill_id",
       "off": 2512,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     }
   ]
 }

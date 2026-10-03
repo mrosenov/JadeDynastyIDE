@@ -30,7 +30,8 @@
       "off": 72,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_1_skill_1_probability",
@@ -44,7 +45,8 @@
       "off": 80,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_1_skill_2_probability",
@@ -58,7 +60,8 @@
       "off": 88,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_1_skill_3_probability",
@@ -79,7 +82,8 @@
       "off": 100,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_2_skill_1_probability",
@@ -93,7 +97,8 @@
       "off": 108,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_2_skill_2_probability",
@@ -107,7 +112,8 @@
       "off": 116,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_2_skill_3_probability",
@@ -128,7 +134,8 @@
       "off": 128,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_3_skill_1_probability",
@@ -142,7 +149,8 @@
       "off": 136,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_3_skill_2_probability",
@@ -156,7 +164,8 @@
       "off": 144,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_3_skill_3_probability",
@@ -177,7 +186,8 @@
       "off": 156,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_4_skill_1_probability",
@@ -191,7 +201,8 @@
       "off": 164,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_4_skill_2_probability",
@@ -205,7 +216,8 @@
       "off": 172,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_4_skill_3_probability",
@@ -226,7 +238,8 @@
       "off": 184,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_5_skill_1_probability",
@@ -240,7 +253,8 @@
       "off": 192,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_5_skill_2_probability",
@@ -254,7 +268,8 @@
       "off": 200,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_5_skill_3_probability",
@@ -275,7 +290,8 @@
       "off": 212,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_6_skill_1_probability",
@@ -289,7 +305,8 @@
       "off": 220,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_6_skill_2_probability",
@@ -303,7 +320,8 @@
       "off": 228,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_6_skill_3_probability",
@@ -324,7 +342,8 @@
       "off": 240,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_7_skill_1_probability",
@@ -338,7 +357,8 @@
       "off": 248,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_7_skill_2_probability",
@@ -352,7 +372,8 @@
       "off": 256,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_7_skill_3_probability",
@@ -373,7 +394,8 @@
       "off": 268,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_8_skill_1_probability",
@@ -387,7 +409,8 @@
       "off": 276,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_8_skill_2_probability",
@@ -401,7 +424,8 @@
       "off": 284,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_8_skill_3_probability",
@@ -422,7 +446,8 @@
       "off": 296,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_9_skill_1_probability",
@@ -436,7 +461,8 @@
       "off": 304,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_9_skill_2_probability",
@@ -450,7 +476,8 @@
       "off": 312,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_9_skill_3_probability",
@@ -471,7 +498,8 @@
       "off": 324,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_10_skill_1_probability",
@@ -485,7 +513,8 @@
       "off": 332,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_10_skill_2_probability",
@@ -499,7 +528,8 @@
       "off": 340,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "list_10_skill_3_probability",

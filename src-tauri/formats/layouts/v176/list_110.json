@@ -79,7 +79,8 @@
       "off": 100,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "Can_Use_Medicine",

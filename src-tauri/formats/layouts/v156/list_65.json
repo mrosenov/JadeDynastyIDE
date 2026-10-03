@@ -61,7 +61,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "技能ID"
+      "c": "技能ID",
+      "display": "skill"
     },
     {
       "name": "level_skill",
@@ -101,7 +102,8 @@
       "t": {
         "k": "u32"
       },
-      "c": "0只能自身使用，1可对非自身目标使用"
+      "c": "0只能自身使用，1可对非自身目标使用",
+      "display": "skill"
     },
     {
       "name": "god_devil_mask",

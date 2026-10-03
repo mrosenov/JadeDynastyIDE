@@ -50,6 +50,8 @@ export interface RecordRow {
   index: number;
   id: number;
   name: string;
+  /** The item's name colour in the game ("#rrggbb"), when not white. */
+  color?: string;
   /** Path ID of the record's item icon (client icons). */
   icon?: number;
 }
@@ -94,6 +96,10 @@ export interface RecordDetail {
   original?: number[];
   /** Created by an edit (a clone). */
   added?: boolean;
+  /** The client's description of the record (configs.pck). */
+  gameText?: { text: string; source: string };
+  /** The name colour in the game, when not white. */
+  nameColor?: string;
 }
 
 // ---------------------------------------------------------------- schemas

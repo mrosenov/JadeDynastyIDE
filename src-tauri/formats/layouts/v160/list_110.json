@@ -91,7 +91,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "变身后屏蔽技能"
+      "c": "变身后屏蔽技能",
+      "display": "skill"
     },
     {
       "name": "can_use_medicine",

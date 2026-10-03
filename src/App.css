@@ -497,7 +497,7 @@ input {
 
 .inspector-body {
   display: grid;
-  grid-template-rows: auto minmax(0, 3fr) auto auto minmax(0, 2fr);
+  grid-template-rows: auto minmax(0, 3fr) auto auto minmax(0, 2fr) auto;
   flex: 1;
   min-height: 0;
 }
@@ -4578,4 +4578,55 @@ select.ie-control {
 }
 .search-pickbar .link {
   white-space: nowrap;
+}
+
+/* ------------------------------------------------------------ client texts */
+
+/* Game name colours, blended toward the text colour so blue stays readable
+   on dark and yellow on light. */
+.item-name {
+  color: color-mix(in srgb, var(--name-c) 72%, var(--text));
+}
+.description-slot:empty {
+  display: none;
+}
+.description-card {
+  margin: 8px 12px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.description-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 5px 10px;
+  border: 0;
+  background: var(--bg-hover);
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+.description-head .mono {
+  margin-left: auto;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+/* As in the game's dark tooltips, whatever the theme. */
+.description-text {
+  max-height: 150px;
+  padding: 8px 12px;
+  background: #15171d;
+  color: #e9e6dc;
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
 }

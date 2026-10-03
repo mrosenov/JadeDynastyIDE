@@ -93,7 +93,8 @@
       "off": 108,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "buff"
     },
     {
       "name": "buff_level",

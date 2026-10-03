@@ -51,7 +51,8 @@
       "off": 84,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "level_skill",
@@ -86,7 +87,8 @@
       "off": 104,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "skill"
     },
     {
       "name": "god_devil_mask",
