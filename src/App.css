@@ -216,7 +216,7 @@ input {
 
 .workspace {
   display: grid;
-  grid-template-columns: 46px 270px minmax(280px, 380px) minmax(0, 1fr);
+  grid-template-columns: 46px minmax(300px, 420px) minmax(0, 1fr);
   min-height: 0;
 }
 
@@ -3951,4 +3951,97 @@ select.sf-control {
 }
 .export-dialog-body .btn.primary {
   align-self: flex-start;
+}
+
+/* ------------------------------------------------------------ list picker */
+
+.records-picker {
+  padding: 10px 12px 8px;
+}
+.records-meta {
+  padding: 0 14px 6px;
+}
+.records .pane-tools .search-box {
+  flex: 1;
+}
+.list-picker {
+  position: relative;
+}
+.list-picker-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 38px;
+  padding: 0 10px 0 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.list-picker-button:hover,
+.list-picker-button.open {
+  border-color: var(--accent);
+}
+.list-picker-button.open {
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.list-picker-button > .muted {
+  flex: 1;
+  padding-left: 12px;
+}
+.list-item.list-picker-current {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  background: none;
+  font-weight: 600;
+  cursor: inherit;
+}
+.list-picker-caret {
+  flex: none;
+  color: var(--text-dim);
+}
+.list-picker-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  max-height: min(70vh, 620px);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg-elev);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+.list-picker-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.list-picker-tools .search-box {
+  flex: 1;
+}
+.list-picker-list {
+  flex: 1;
+  min-height: 0;
+  padding: 4px 0;
+}
+.list-item.hover:not(.active) {
+  background: var(--bg-hover);
+}
+.list-picker-foot {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-top: 1px solid var(--border);
 }

@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import type { ListSummary, RecordRow } from "../elements/types";
 import { count } from "../elements/format";
+import { Search } from "lucide-react";
 
 interface Props {
   list: ListSummary;
@@ -14,11 +15,13 @@ interface Props {
   icon?: (pathId?: number | null) => string | undefined;
   /** Replaces "count × size" in the header (e.g. for NPC dialogs). */
   meta?: string;
+  /** The list picker, shown above the search. */
+  picker: ReactNode;
 }
 
 const ROW_HEIGHT = 28;
 
-export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta }: Props) {
+export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta, picker }: Props) {
   const [filter, setFilter] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -64,23 +67,22 @@ export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta
 
   return (
     <section className="pane records">
-      <div className="pane-head">
-        <span className="pane-title" title={list.structName ?? undefined}>
-          {list.name}
-        </span>
-        <span className="muted">
-          {rows && filter ? `${count(visible.length)} / ` : ""}
-          {meta ?? `${count(list.count)} × ${list.itemSize} B`}
+      <div className="records-picker">{picker}</div>
+      <div className="pane-tools">
+        <span className="search-box">
+          <Search size={14} />
+          <input
+            className="search"
+            placeholder={`Search ${list.name} by ID or name…`}
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            spellCheck={false}
+          />
         </span>
       </div>
-      <div className="pane-tools">
-        <input
-          className="search"
-          placeholder="Search by ID or name…"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          spellCheck={false}
-        />
+      <div className="records-meta muted small">
+        {rows && filter ? `${count(visible.length)} of ` : ""}
+        {meta ?? `${count(list.count)} records × ${list.itemSize} B`}
       </div>
       <div className={"table-head " + grid}>
         {withIcons && <span />}

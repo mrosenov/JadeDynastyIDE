@@ -4,7 +4,7 @@ import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements } from "./elements/api";
 import type { ExportSource, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail } from "./elements/types";
 import { bytes, count } from "./elements/format";
-import { ListSidebar } from "./components/ListSidebar";
+import { ListPicker, type ListPickerHandle } from "./components/ListPicker";
 import { RecordTable } from "./components/RecordTable";
 import { type FieldFocus, RecordInspector } from "./components/RecordInspector";
 import { AdvancedSearch } from "./components/AdvancedSearch";
@@ -358,6 +358,7 @@ export default function App() {
   };
   const stepFindRef = useRef(stepFind);
   stepFindRef.current = stepFind;
+  const pickerRef = useRef<ListPickerHandle>(null);
   const togglePanelRef = useRef(togglePanel);
   togglePanelRef.current = togglePanel;
 
@@ -372,6 +373,11 @@ export default function App() {
       } else if (mod && e.shiftKey && e.key.toLowerCase() === "m") {
         e.preventDefault();
         togglePanelRef.current("problems");
+      } else if (mod && !e.shiftKey && e.key.toLowerCase() === "l") {
+        e.preventDefault();
+        setPanel("lists");
+        // The picker mounts with the lists panel.
+        setTimeout(() => pickerRef.current?.open());
       } else if (mod && e.key.toLowerCase() === "g") {
         e.preventDefault();
         setFindOpen(true);
@@ -410,6 +416,9 @@ export default function App() {
   };
 
   const showingDialogs = listIndex === DIALOGS;
+  const picker = summary && (
+    <ListPicker ref={pickerRef} lists={summary.lists} selected={listIndex} onSelect={selectList} talkCount={summary.talkCount} />
+  );
   const recordOpen = !!summary && listIndex !== null && listIndex >= 0 && recordIndex !== null;
   const listOpen = !!summary && listIndex !== null && listIndex >= 0;
   const problemBadges = [
@@ -663,9 +672,6 @@ export default function App() {
               />
             </div>
           )}
-          {panel === "lists" && (
-            <ListSidebar lists={summary.lists} selected={listIndex} onSelect={selectList} talkCount={summary.talkCount} />
-          )}
           {panel !== "lists" ? null : list ? (
             <RecordTable
               list={list}
@@ -675,9 +681,11 @@ export default function App() {
               onOpen={(index) => openLocation({ list: list.index, row: index }, { pin: true })}
               icon={icon}
               meta={showingDialogs ? `${count(summary.talkCount)} dialogs` : undefined}
+              picker={picker}
             />
           ) : (
             <section className="pane records">
+              <div className="records-picker">{picker}</div>
               <div className="empty-note center">Pick a list to see its records.</div>
             </section>
           )}

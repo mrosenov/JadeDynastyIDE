@@ -112,7 +112,7 @@ Records open in tabs above the inspector:
 
 ## NPC dialogs
 
-**NPC Dialogs**, at the top of the list sidebar, holds the `talk_proc` block at the end of the
+**NPC Dialogs**, first in the list picker, holds the `talk_proc` block at the end of the
 file. A dialog is a tree of windows: each has the NPC's text and options that open a child
 window or run a function (Back, Exit, and the NPC services of `SERVICE_TYPE` in ExpTypes.h).
 
@@ -124,6 +124,13 @@ window or run a function (Back, Exit, and the NPC services of `SERVICE_TYPE` in 
   teleport services…). In those records, `id_dialog` links to the dialog.
 
 Dialog tabs work like record tabs (Alt+← goes back to the service you came from).
+
+## Lists and records
+
+The records column starts with the list picker: the open list, and a dropdown (Ctrl+L) to search
+all lists by name, struct or number (↑ ↓ Enter), with **NPC Dialogs** first and *Hide empty*. The
+dot shows how the layout fits, italics a borrowed one, a pencil your own schema. Below it, the
+search filters the list's records by ID or name.
 
 ## File menu and tools
 
