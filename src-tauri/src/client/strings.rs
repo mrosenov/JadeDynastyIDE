@@ -13,7 +13,11 @@
 //! "text"           without it: strings numbered 0, 1, 2, …
 //! ```
 //!
-//! Strings are double-quoted (no escapes, newlines allowed) or bare words.
+//! Strings are double-quoted (no escapes) or bare words, on the line of
+//! their number (AWScriptFile reads the number across lines, the string not).
+//! A quote left open ends at the end of its line, so a broken line costs one
+//! entry rather than every entry after it (Forsaken's item_ext_desc.txt has a
+//! few).
 //! The files are UTF-16LE with a BOM; UTF-8 and GBK are accepted too. When a
 //! number repeats, the first string wins, as in the client. Line breaks
 //! inside strings are written `\r` (backslash, r) and come out as "\n".
@@ -43,13 +47,18 @@ fn decode(bytes: &[u8]) -> String {
     text.replace("\r\n", "\n").replace('\r', "\n")
 }
 
-/// Quoted strings and bare words, comments left out.
-fn tokens(text: &str) -> Vec<&str> {
+/// Quoted strings and bare words with their line, comments left out.
+fn tokens(text: &str) -> Vec<(usize, &str)> {
     let b = text.as_bytes();
     let mut out = Vec::new();
+    let mut line = 0;
     let mut i = 0;
     while i < b.len() {
         match b[i] {
+            b'\n' => {
+                line += 1;
+                i += 1;
+            }
             c if c.is_ascii_whitespace() => i += 1,
             b'/' if b.get(i + 1) == Some(&b'/') => {
                 while i < b.len() && b[i] != b'\n' {
@@ -59,22 +68,24 @@ fn tokens(text: &str) -> Vec<&str> {
             b'/' if b.get(i + 1) == Some(&b'*') => {
                 i += 2;
                 while i < b.len() && !(b[i] == b'*' && b.get(i + 1) == Some(&b'/')) {
+                    line += usize::from(b[i] == b'\n');
                     i += 1;
                 }
                 i = (i + 2).min(b.len());
             }
             b'"' => {
+                // Up to the closing quote, or the end of the line when it has none.
                 let start = i + 1;
-                let end = text[start..].find('"').map_or(b.len(), |p| start + p);
-                out.push(&text[start..end]);
-                i = end + 1;
+                let end = text[start..].find(['"', '\n']).map_or(b.len(), |p| start + p);
+                out.push((line, &text[start..end]));
+                i = if b.get(end) == Some(&b'"') { end + 1 } else { end };
             }
             _ => {
                 let start = i;
                 while i < b.len() && !b[i].is_ascii_whitespace() && b[i] != b'"' {
                     i += 1;
                 }
-                out.push(&text[start..i]);
+                out.push((line, &text[start..i]));
             }
         }
     }
@@ -85,21 +96,30 @@ impl StringTable {
     pub fn parse(bytes: &[u8]) -> Result<Self, String> {
         let text = decode(bytes);
         let tokens = tokens(&text);
-        let begin = tokens.iter().position(|t| t.eq_ignore_ascii_case("#_begin")).ok_or("not a string table (no #_begin line)")?;
-        let indexed = tokens[..begin].iter().any(|t| t.eq_ignore_ascii_case("#_index"));
+        let begin = tokens.iter().position(|(_, t)| t.eq_ignore_ascii_case("#_begin")).ok_or("not a string table (no #_begin line)")?;
+        let indexed = tokens[..begin].iter().any(|(_, t)| t.eq_ignore_ascii_case("#_index"));
         let mut strings = HashMap::new();
         let body = &tokens[begin + 1..];
         // Line breaks are written "\r" inside strings.
         let text = |t: &str| t.replace("\\r", "\n");
         if indexed {
-            for pair in body.chunks(2) {
-                let [number, value] = pair else { break };
+            // A number, then its string on the same line (none: an empty one).
+            let mut i = 0;
+            while let Some(&(line, number)) = body.get(i) {
+                i += 1;
+                let value = match body.get(i) {
+                    Some(&(l, value)) if l == line => {
+                        i += 1;
+                        value
+                    }
+                    _ => "",
+                };
                 if let Ok(n) = number.parse::<i64>() {
                     strings.entry(n as u32).or_insert_with(|| text(value));
                 }
             }
         } else {
-            for (n, value) in body.iter().enumerate() {
+            for (n, &(_, value)) in body.iter().enumerate() {
                 strings.insert(n as u32, text(value));
             }
         }
@@ -152,7 +172,7 @@ impl ItemColors {
     pub fn parse(item_color: &[u8], item_desc: Option<&StringTable>) -> Self {
         let text = decode(item_color);
         let mut index = HashMap::new();
-        let numbers: Vec<i64> = tokens(&text).iter().filter_map(|t| t.parse().ok()).collect();
+        let numbers: Vec<i64> = tokens(&text).iter().filter_map(|(_, t)| t.parse().ok()).collect();
         for pair in numbers.chunks(2) {
             if let [id, colour] = pair {
                 index.entry(*id as u32).or_insert(*colour as u8);
@@ -199,6 +219,18 @@ mod tests {
         let plain = StringTable::parse(b"#_begin \"a\" \"b\"").unwrap();
         assert_eq!(plain.get(1), Some("b"));
         assert!(StringTable::parse(b"no header").is_err());
+    }
+
+    #[test]
+    fn broken_lines_cost_one_entry() {
+        // As in Forsaken's item_ext_desc.txt: quotes left open, a string
+        // missing its closing quote, a number without a string.
+        let t = StringTable::parse(&utf16(
+            "#_index\r\n#_begin\r\n854472208\t\"\n12941  \"a\"\r\n1401661936\t\"\n12943  \"b\"\r\n12944\t\"c\n12945  \"d\"\r\n12946 \"e\"\r\n12947\r\n12948 \"f\"",
+        ))
+        .unwrap();
+        assert_eq!([12941, 12943, 12944, 12945, 12946, 12948].map(|n| t.get(n)), [Some("a"), Some("b"), Some("c"), Some("d"), Some("e"), Some("f")]);
+        assert_eq!(t.get(12947), None);
     }
 
     #[test]

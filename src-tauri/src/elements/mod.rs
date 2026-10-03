@@ -1681,3 +1681,4 @@ mod tests {
         assert!(def(vec![field("a", 0), field("b", 4)], Some(8)).check().is_ok());
     }
 }
+
