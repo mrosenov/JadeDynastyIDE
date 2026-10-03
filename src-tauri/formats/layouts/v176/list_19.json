@@ -69,10 +69,7 @@
               "t": {
                 "k": "u32"
               },
-              "c": "掉落物品id",
-              "refs": [
-                "EQUIPMENT_ADDON"
-              ]
+              "c": "掉落物品id"
             },
             {
               "name": "probability",

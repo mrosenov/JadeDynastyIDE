@@ -13,7 +13,8 @@ use serde::Serialize;
 use super::format::{Field, Ty};
 
 /// The ID pools the client registers records in (simplified).
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+#[serde(rename_all = "lowercase")]
 pub enum IdSpace {
     /// Items, monsters, NPCs, mines… (the "essence" pool).
     Essence,
@@ -41,6 +42,36 @@ pub fn list_space(struct_name: &str) -> IdSpace {
         IdSpace::Type
     } else if s.contains("_SERVICE") {
         IdSpace::Service
+    } else {
+        IdSpace::Essence
+    }
+}
+
+/// The ID space the client registers a list's records in, per
+/// `elementdataman::add_structure` (server source): types and services share
+/// the essence space, recipe types the recipe space, and a few configs live
+/// among the essences. Structs it does not know fall back to the name.
+pub fn registry_space(struct_name: &str) -> IdSpace {
+    const ESSENCE_CONFIGS: [&str; 11] = [
+        "COLLISION_RAID_AWARD_CONFIG",
+        "BUFF_AREA_CONFIG",
+        "LIVENESS_CONFIG",
+        "CHALLENGE_2012_CONFIG",
+        "TASK_SPECIAL_AWARD_CONFIG",
+        "PROP_ADD_CONFIG",
+        "KING_WAR_CONFIG",
+        "JINFASHEN_TO_MONEY_CONFIG",
+        "BATTLE_201304_CONFIG",
+        "WAR_ROLE_CONFIG",
+        "ITEM_TRADE_CONFIG",
+    ];
+    let s = struct_name.to_ascii_uppercase();
+    if s.ends_with("_ADDON") {
+        IdSpace::Addon
+    } else if matches!(s.as_str(), "RECIPE_ESSENCE" | "RECIPE_MAJOR_TYPE" | "RECIPE_SUB_TYPE") {
+        IdSpace::Recipe
+    } else if matches!(s.as_str(), "RUNE_COMB_PROPERTY" | "UPGRADE_EQUIP_CONFIG_1") || (s.ends_with("_CONFIG") && !ESSENCE_CONFIGS.contains(&s.as_str())) {
+        IdSpace::Config
     } else {
         IdSpace::Essence
     }

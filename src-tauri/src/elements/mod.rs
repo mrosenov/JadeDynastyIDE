@@ -1,6 +1,7 @@
 pub mod align;
 pub mod decode;
 pub mod format;
+pub mod problems;
 pub mod reader;
 pub mod refs;
 pub mod search;
@@ -1115,6 +1116,23 @@ mod tests {
         let q = Query::Conditions { conditions: vec![cond("require_level", Op::Lt, "abc")], match_all: true, list: None };
         assert!(doc.search(&q).is_err());
         assert!(doc.field_names().iter().any(|f| f.name == "proc_type" && f.lists > 50));
+    }
+
+    #[test]
+    fn problems_scan_the_whole_file() {
+        for rel in ["Game Dev/JD/zxserver/zgame/gs/config/elements.data", "Game Dev/JD/1792/gamed/config/elements.data"] {
+            let Some(doc) = open(rel) else { continue };
+            let r = doc.problems();
+            eprintln!("{rel}: {} ms", r.elapsed_ms);
+            for k in &r.kinds {
+                eprintln!("  {:?} {:>6}  {}", k.severity, k.count, k.title);
+            }
+            // Drop tables drop items: their id_obj is no addon reference.
+            assert!(!r.problems.iter().any(|p| p.kind == problems::Kind::BrokenRef && p.field.as_deref().is_some_and(|f| f.contains("id_obj"))));
+            // Masks are reported per field and bit pattern, not per record.
+            assert!(r.kinds.iter().find(|k| k.kind == problems::Kind::UnnamedBits).unwrap().count < 500);
+            assert!(r.kinds.iter().any(|k| k.count > 0));
+        }
     }
 
     #[test]

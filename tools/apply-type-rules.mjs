@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Applies tools/type-rules.json to every layout in src-tauri/formats/layouts:
 // the conditional field types (`rules`), the name-based enum/mask
-// assignments (`sets`) and display roles (`roles`). Run it after
+// assignments (`sets`), display roles (`roles`) and ref fixes (`refs`). Run it after
 // regenerating layouts.
 //
 //   node tools/apply-type-rules.mjs
@@ -12,11 +12,12 @@ import { fileURLToPath } from "node:url";
 import { readLayouts, writeLayout } from "./lib/layouts.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const { rules, sets = [], roles = [] } = JSON.parse(fs.readFileSync(path.join(here, "type-rules.json"), "utf8"));
+const { rules, sets = [], roles = [], refs = [] } = JSON.parse(fs.readFileSync(path.join(here, "type-rules.json"), "utf8"));
 
 const INTEGER = new Set(["i8", "u8", "i16", "u16", "i32", "u32", "i64", "u64"]);
 const setRules = sets.map((r) => ({ ...r, re: new RegExp(r.name, "i") }));
 const roleRules = roles.map((r) => ({ ...r, re: new RegExp(r.name, "i") }));
+const refRules = refs.map((r) => ({ ...r, re: new RegExp(r.name, "i") }));
 
 /** Every field of a list, members of structs and struct arrays included. */
 function* allFields(fields) {
@@ -49,6 +50,16 @@ for (const layout of layouts) {
   let applied = 0;
   let named = 0;
   let roled = 0;
+  let refFixes = 0;
+  for (const def of layout.lists) {
+    for (const f of allFields(def?.fields)) {
+      const rule = refRules.find((r) => (!r.struct || r.struct === def.struct) && r.re.test(f.name));
+      if (!rule || JSON.stringify(f.refs ?? []) === JSON.stringify(rule.refs)) continue;
+      if (rule.refs.length) f.refs = rule.refs;
+      else delete f.refs;
+      refFixes++;
+    }
+  }
   for (const def of layout.lists) {
     for (const f of allFields(def?.fields)) {
       if (f.display || !INTEGER.has(f.t.k)) continue;
@@ -84,8 +95,8 @@ for (const layout of layouts) {
       applied++;
     }
   }
-  if (applied || named || roled) {
+  if (applied || named || roled || refFixes) {
     writeLayout(layout);
-    console.log(`${layout.id}: ${applied} type rule(s), ${named} enum/mask assignment(s), ${roled} display role(s)`);
+    console.log(`${layout.id}: ${applied} type rule(s), ${named} enum/mask assignment(s), ${roled} display role(s), ${refFixes} ref fix(es)`);
   }
 }

@@ -1,6 +1,7 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
   FindResult,
+  ProblemReport,
   SearchFieldName,
   SearchQuery,
   SearchReport,
@@ -33,6 +34,9 @@ export const findRecords = (query: string) => invoke<FindResult>("find_records",
 
 export const searchRecords = (query: SearchQuery) => invoke<SearchReport>("search_records", { query });
 export const searchFieldNames = () => invoke<SearchFieldName[]>("search_field_names");
+
+/** Scans the whole file for problems (see the Problems panel). */
+export const listProblems = () => invoke<ProblemReport>("list_problems");
 
 export const listTalks = () => invoke<TalkSummary[]>("list_talks");
 export const getTalk = (index: number) => invoke<TalkDetail>("get_talk", { index });

@@ -8,6 +8,7 @@ import { ListSidebar } from "./components/ListSidebar";
 import { RecordTable } from "./components/RecordTable";
 import { type FieldFocus, RecordInspector } from "./components/RecordInspector";
 import { AdvancedSearch } from "./components/AdvancedSearch";
+import { ProblemsPanel } from "./components/ProblemsPanel";
 import { SchemaEditor } from "./components/SchemaEditor";
 import { TabBar, type TabLabel } from "./components/TabBar";
 import { SettingsDialog } from "./components/SettingsDialog";
@@ -18,7 +19,7 @@ import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import "./App.css";
 import logo from "./assets/logo.png";
-import { Braces, ChevronLeft, ChevronRight, FolderOpen, Gem, ListFilter, Search, Settings } from "lucide-react";
+import { Braces, ChevronLeft, ChevronRight, CircleAlert, FolderOpen, Gem, ListFilter, Search, Settings } from "lucide-react";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -118,6 +119,25 @@ export default function App() {
   const iconGen = settingsView?.client?.hasItemIcons ? settingsView.iconGeneration : null;
   const [findOpen, setFindOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  // The left side shows the lists, the search or the problems.
+  const [problemsOpen, setProblemsOpen] = useState(false);
+  // Mounted once opened, so a scan is not repeated on every toggle.
+  const [problemsMounted, setProblemsMounted] = useState(false);
+  const [problemCounts, setProblemCounts] = useState<{ errors: number; warnings: number } | null>(null);
+  useEffect(() => {
+    setProblemsMounted(false);
+    setProblemsOpen(false);
+    setProblemCounts(null);
+  }, [summary?.path]);
+  const toggleSearch = () => {
+    setProblemsOpen(false);
+    setSearchOpen((o) => !o);
+  };
+  const toggleProblems = () => {
+    setSearchOpen(false);
+    setProblemsMounted(true);
+    setProblemsOpen((o) => !o);
+  };
   const [focus, setFocus] = useState<FieldFocus | null>(null);
   const [lastFind, setLastFind] = useState<LastFind | null>(null);
   // Hits belong to one file.
@@ -316,6 +336,10 @@ export default function App() {
   };
   const stepFindRef = useRef(stepFind);
   stepFindRef.current = stepFind;
+  const toggleSearchRef = useRef(toggleSearch);
+  toggleSearchRef.current = toggleSearch;
+  const toggleProblemsRef = useRef(toggleProblems);
+  toggleProblemsRef.current = toggleProblems;
 
   // Tab, history and find shortcuts (not while the schema editor is open).
   useEffect(() => {
@@ -324,7 +348,10 @@ export default function App() {
       const mod = e.ctrlKey || e.metaKey;
       if (mod && e.shiftKey && e.key.toLowerCase() === "f") {
         e.preventDefault();
-        setSearchOpen((o) => !o);
+        toggleSearchRef.current();
+      } else if (mod && e.shiftKey && e.key.toLowerCase() === "m") {
+        e.preventDefault();
+        toggleProblemsRef.current();
       } else if (mod && e.key.toLowerCase() === "g") {
         e.preventDefault();
         setFindOpen(true);
@@ -399,11 +426,28 @@ export default function App() {
             </button>
             <button
               className={"icon-btn small" + (searchOpen ? " active" : "")}
-              onClick={() => setSearchOpen((o) => !o)}
+              onClick={toggleSearch}
               title="Advanced search: conditions on fields, or a value in any field (Ctrl+Shift+F)"
               aria-label="Advanced search"
             >
               <ListFilter size={15} />
+            </button>
+            <button
+              className={"icon-btn small problems-btn" + (problemsOpen ? " active" : "")}
+              onClick={toggleProblems}
+              title={
+                problemCounts
+                  ? `Problems: ${problemCounts.errors} error(s), ${problemCounts.warnings} warning(s) (Ctrl+Shift+M)`
+                  : "Problems: scan the file for broken references, duplicate IDs and more (Ctrl+Shift+M)"
+              }
+              aria-label="Problems"
+            >
+              <CircleAlert size={15} />
+              {problemCounts && problemCounts.errors + problemCounts.warnings > 0 && (
+                <span className={"problems-badge" + (problemCounts.errors ? " error" : " warning")}>
+                  {problemCounts.errors || problemCounts.warnings}
+                </span>
+              )}
             </button>
             {lastFind && lastFind.hits.length > 1 && (
               <>
@@ -494,7 +538,7 @@ export default function App() {
           />
         </main>
       ) : summary ? (
-        <main className={"workspace" + (searchOpen ? " searching" : "")}>
+        <main className={"workspace" + (searchOpen || problemsOpen ? " searching" : "")}>
           {/* Kept mounted while closed, so the search and its results stay. */}
           <div className="search-slot" hidden={!searchOpen}>
             <AdvancedSearch
@@ -509,10 +553,30 @@ export default function App() {
               onClose={() => setSearchOpen(false)}
             />
           </div>
-          {!searchOpen && (
+          {problemsMounted && (
+            <div className="search-slot" hidden={!problemsOpen}>
+              <ProblemsPanel
+                key={summary.path}
+                lists={summary.lists}
+                icon={icon}
+                onCounts={(errors, warnings) => setProblemCounts({ errors, warnings })}
+                onOpen={(p, newTab) => {
+                  const options = newTab ? { newTab: true } : {};
+                  if (p.talk !== undefined) openLocation({ list: DIALOGS, row: p.talk }, options);
+                  else if (p.list !== undefined && p.row === undefined) openLocation({ list: p.list, row: null }, options);
+                  else if (p.list !== undefined && p.row !== undefined) {
+                    openLocation({ list: p.list, row: p.row }, options);
+                    if (p.off !== undefined) setFocus({ list: p.list, row: p.row, off: p.off, nonce: Date.now() });
+                  }
+                }}
+                onClose={() => setProblemsOpen(false)}
+              />
+            </div>
+          )}
+          {!searchOpen && !problemsOpen && (
             <ListSidebar lists={summary.lists} selected={listIndex} onSelect={selectList} talkCount={summary.talkCount} />
           )}
-          {searchOpen ? null : list ? (
+          {searchOpen || problemsOpen ? null : list ? (
             <RecordTable
               list={list}
               rows={rows}

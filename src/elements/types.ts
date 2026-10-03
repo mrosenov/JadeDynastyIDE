@@ -419,3 +419,50 @@ export interface SearchFieldName {
   kind: "int" | "float" | "text" | "bytes";
   set?: string;
 }
+
+// ---------------------------------------------------------------- problems
+
+export type ProblemSeverity = "error" | "warning" | "info";
+
+export type ProblemKind =
+  | "duplicate_id"
+  | "shadowed_id"
+  | "broken_ref"
+  | "missing_dialog"
+  | "dialog_window"
+  | "missing_path"
+  | "unterminated_text"
+  | "unknown_enum"
+  | "unnamed_bits"
+  | "layout";
+
+export interface Problem {
+  kind: ProblemKind;
+  /** The record (no list: a dialog, with `talk`). */
+  list?: number;
+  /** No row: the whole list. */
+  row?: number;
+  id: number;
+  name: string;
+  icon?: number;
+  field?: string;
+  off?: number;
+  message: string;
+  talk?: number;
+}
+
+export interface ProblemKindSummary {
+  kind: ProblemKind;
+  severity: ProblemSeverity;
+  title: string;
+  description: string;
+  count: number;
+}
+
+export interface ProblemReport {
+  kinds: ProblemKindSummary[];
+  problems: Problem[];
+  truncated: boolean;
+  pathsChecked: boolean;
+  elapsedMs: number;
+}

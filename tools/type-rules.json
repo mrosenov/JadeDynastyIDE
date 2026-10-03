@@ -7,7 +7,8 @@
     "`sets` give integer fields that have no enum/mask one by name (case-insensitive, whole name).",
     "A field takes the set most other fields of that name already use; else `set`.",
     "`roles` give integer fields without a display role one: `name` (whole name, case-insensitive), optionally only in `struct`.",
-    "Units checked against the values in the v156 and v165 files: e.g. medicine cool_time is in ms (5000-60000), recipe cool_time in seconds (up to 604800 = 7 days) despite its source comment."
+    "Units checked against the values in the v156 and v165 files: e.g. medicine cool_time is in ms (5000-60000), recipe cool_time in seconds (up to 604800 = 7 days) despite its source comment.",
+    "`refs` replace the refs of matching fields (nested ones too), e.g. to drop wrong ones: drop tables drop items, not addons."
   ],
   "rules": [
     {
@@ -235,6 +236,13 @@
     {
       "name": "^element_list_d+_valid_time_(start|end)$",
       "display": "time"
+    }
+  ],
+  "refs": [
+    {
+      "struct": "DROPTABLE_ESSENCE",
+      "name": "^id_obj$",
+      "refs": []
     }
   ]
 }

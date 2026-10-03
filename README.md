@@ -143,6 +143,29 @@ and record panes; it keeps its results while closed.
 Results are grouped by list and show the matching field. Clicking one opens the record with
 that field selected (Ctrl+click: new tab). *Copy IDs* copies the results' IDs, one per line.
 
+## Problems
+
+Ctrl+Shift+M (or the alert button in the top bar, which then shows the error count) scans the
+whole file:
+
+| Severity | Check |
+|---|---|
+| Error | **Duplicate IDs in a list** |
+| Warning | **IDs hidden by another list**: records of different lists in the same ID space share an ID. Client, server and editor keep one ID → record map per space (`elementdataman::add_id_index`), so the record loaded later hides the other from ID lookups. Spaces follow `registry_space`: types and services share the item space, recipe types the recipe space, and 11 configs live among the items |
+| Error | **Broken references**: a field whose `refs` name a list holds an ID that list does not have |
+| Error | **Missing dialogs**: `id_dialog` names no NPC dialog |
+| Warning | **Dialog options** opening windows the dialog does not have |
+| Warning | **Paths** (`path`/`icon` role) missing from the client's path.data (needs the client folder) |
+| Warning | **Texts** filling their whole field with no terminator |
+| Warning | **Values** their enum does not name |
+| Info | **Mask bits** set but not named (all bits set, "every class", is fine) |
+| Info | **Lists** read with a borrowed, partial or no layout |
+
+Enum and mask findings are reported once per field and value, with how many records have it.
+Problems are grouped by kind; the severity buttons and the filter narrow them down. Clicking one
+opens the record with the field selected (dialogs open in the dialog viewer, list problems open
+the list). Each kind keeps its first 1000 problems.
+
 ## Find
 
 Ctrl+G (or the box in the top bar) finds records in every list: by ID

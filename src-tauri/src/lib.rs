@@ -139,6 +139,11 @@ async fn search_field_names(state: State<'_, AppState>) -> Result<Vec<elements::
 }
 
 #[tauri::command]
+async fn list_problems(state: State<'_, AppState>) -> Result<elements::problems::Report, String> {
+    state.with_document(|doc| Ok(doc.problems()))
+}
+
+#[tauri::command]
 async fn list_talks(state: State<'_, AppState>) -> Result<Vec<elements::TalkSummary>, String> {
     state.with_document(|doc| doc.talks())
 }
@@ -447,6 +452,7 @@ pub fn run() {
             inspect_client,
             save_settings,
             find_records,
+            list_problems,
             search_records,
             search_field_names,
             list_talks,

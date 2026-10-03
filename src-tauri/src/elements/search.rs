@@ -162,11 +162,13 @@ pub struct Slot {
     ty: Ty,
     rules: Vec<Rule>,
     pub set: Option<String>,
+    /// Display role ("path", "time", …).
+    pub display: Option<String>,
 }
 
 impl Slot {
     /// The slot's type in this record (conditional types applied).
-    fn ty(&self, bytes: &[u8]) -> &Ty {
+    pub(crate) fn ty(&self, bytes: &[u8]) -> &Ty {
         for r in &self.rules {
             if let Some(Val::Int(v)) = read(&r.ty, bytes, r.off) {
                 if r.values.contains(&v) != r.not {
@@ -179,6 +181,14 @@ impl Slot {
 
     fn read(&self, bytes: &[u8]) -> Option<Val> {
         read(self.ty(bytes), bytes, self.off)
+    }
+
+    /// The value, when the slot holds an integer in this record.
+    pub(crate) fn int(&self, bytes: &[u8]) -> Option<i64> {
+        match self.read(bytes)? {
+            Val::Int(v) => Some(v),
+            _ => None,
+        }
     }
 
     fn names(&self, query: &str) -> bool {
@@ -209,12 +219,12 @@ fn walk(fields: &[Field], base: usize, path: &str, plain: &str, size: usize, out
                 Some(Rule { off: base + s.off, ty: s.t.clone(), values: r.values.clone(), not: r.not, t: r.t.clone() })
             })
             .collect();
-        element(&f.t, base + f.off, &path, &plain, &f.name, f.e.clone(), rules, size, out);
+        element(&f.t, base + f.off, &path, &plain, f, rules, size, out);
     }
 }
 
 #[allow(clippy::too_many_arguments)]
-fn element(ty: &Ty, off: usize, path: &str, plain: &str, name: &str, set: Option<String>, rules: Vec<Rule>, size: usize, out: &mut Vec<Slot>) {
+fn element(ty: &Ty, off: usize, path: &str, plain: &str, f: &Field, rules: Vec<Rule>, size: usize, out: &mut Vec<Slot>) {
     if off + ty.size() > size {
         return;
     }
@@ -222,10 +232,19 @@ fn element(ty: &Ty, off: usize, path: &str, plain: &str, name: &str, set: Option
         Ty::Struct { fields } => walk(fields, off, path, plain, size, out),
         Ty::Array { n, stride, t } => {
             for i in 0..*n {
-                element(t, off + i * stride, &format!("{path}[{i}]"), plain, name, set.clone(), vec![], size, out);
+                element(t, off + i * stride, &format!("{path}[{i}]"), plain, f, vec![], size, out);
             }
         }
-        _ => out.push(Slot { path: path.into(), plain: plain.into(), leaf: name.to_lowercase(), off, ty: ty.clone(), rules, set }),
+        _ => out.push(Slot {
+            path: path.into(),
+            plain: plain.into(),
+            leaf: f.name.to_lowercase(),
+            off,
+            ty: ty.clone(),
+            rules,
+            set: f.e.clone(),
+            display: f.display.clone(),
+        }),
     }
 }
 
