@@ -335,9 +335,34 @@ impl Resources {
         strings::first_line(&self.text(table::SKILLS, id.checked_mul(10)?)?)
     }
 
+    /// A skill's introduction and detailed description: entries id × 10 + 1
+    /// and +2 of skillstr.txt. Some internal skills have only the latter.
+    /// Format placeholders remain because an elements.data reference has no level.
+    pub fn skill_description(&self, id: u32) -> Option<String> {
+        let base = id.checked_mul(10)?;
+        let mut parts = [base.checked_add(1)?, base.checked_add(2)?]
+            .into_iter()
+            .filter_map(|entry| self.text(table::SKILLS, entry))
+            .filter_map(|text| strings::colored_text(&text))
+            .map(|text| text.replace("%%", "%"));
+        let first = parts.next()?;
+        Some(parts.fold(first, |mut description, part| {
+            if part != description {
+                description.push_str("\n\n");
+                description.push_str(&part);
+            }
+            description
+        }))
+    }
+
     /// A buff's name: the first line of its buff_str.txt entry.
     pub fn buff_name(&self, id: u32) -> Option<String> {
         strings::first_line(&self.text(table::BUFFS, id)?)
+    }
+
+    /// A buff's game-formatted name and description from buff_str.txt.
+    pub fn buff_description(&self, id: u32) -> Option<String> {
+        strings::colored_text(&self.text(table::BUFFS, id)?)
     }
 
     /// An item's name colour (item_color.txt), when it is not white.
@@ -404,6 +429,17 @@ mod tests {
         let decoder = png::Decoder::new(&png[..]);
         let reader = decoder.read_info().unwrap();
         assert_eq!((reader.info().width, reader.info().height), (36, 36));
+    }
+
+    #[test]
+    fn reads_multiline_skill_descriptions() {
+        let Some(dir) = client() else { return };
+        let res = Resources::new(inspect(&dir).unwrap());
+        let raw = res.text(table::SKILLS, 2181).expect("Heavy Blow description");
+        assert!(raw.lines().count() > 1, "physical lines were lost: {raw:?}");
+        let description = res.skill_description(218).expect("skill 218 description");
+        assert!(description.lines().count() > 1, "popover description was truncated: {description:?}");
+        assert!(description.contains("^ffffff") && description.contains("^ffcb4a"), "skill colours were lost: {description:?}");
     }
 }
 

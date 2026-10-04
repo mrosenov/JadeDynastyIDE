@@ -1,4 +1,6 @@
 import type { FieldNode } from "../elements/types";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { TIME_ROLES, formatDaytime, formatDuration, formatUnix, formatUnixUtc } from "../elements/time";
 import { type Path, flatten } from "../elements/fieldPaths";
 import { DIALOGS } from "../tabs";
@@ -63,6 +65,99 @@ function TimeChip({ role, value }: { role: string; value: string }) {
     <span className="time-chip duration" title={`Duration: ${value} ${ms ? "milliseconds" : "seconds"}`}>
       <Timer size={11} /> {formatDuration(ms ? n / 1000 : n)}
     </span>
+  );
+}
+
+/** Renders the client's ^RRGGBB colour runs as text spans. */
+function GameText({ text }: { text: string }) {
+  const parts: React.ReactNode[] = [];
+  const codes = /\^([0-9a-f]{6})/gi;
+  let color = "#f1f3f5";
+  let start = 0;
+  let match: RegExpExecArray | null;
+  while ((match = codes.exec(text))) {
+    if (match.index > start) parts.push(<span key={start} style={{ color }}>{text.slice(start, match.index)}</span>);
+    color = `#${match[1]}`;
+    start = codes.lastIndex;
+  }
+  if (start < text.length) parts.push(<span key={start} style={{ color }}>{text.slice(start)}</span>);
+  return <>{parts}</>;
+}
+
+function ResourceHint({ kind, name, description }: { kind: "skill" | "buff"; name: string; description: string }) {
+  const id = useId();
+  const trigger = useRef<HTMLSpanElement>(null);
+  const box = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<number | null>(null);
+  const [anchor, setAnchor] = useState<DOMRect | null>(null);
+  const [pos, setPos] = useState({ left: 0, top: 0 });
+  const cancelClose = () => {
+    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+    closeTimer.current = null;
+  };
+  const show = () => {
+    cancelClose();
+    const rect = trigger.current?.getBoundingClientRect();
+    if (rect) {
+      setAnchor(rect);
+      setPos({ left: rect.left, top: rect.bottom + 6 });
+    }
+  };
+  const hideSoon = () => {
+    cancelClose();
+    closeTimer.current = window.setTimeout(() => setAnchor(null), 80);
+  };
+
+  useLayoutEffect(() => {
+    if (!anchor || !box.current) return;
+    const { width, height } = box.current.getBoundingClientRect();
+    const left = Math.max(8, Math.min(anchor.left, window.innerWidth - width - 8));
+    const below = anchor.bottom + 6;
+    const top = below + height > window.innerHeight - 8 ? Math.max(8, anchor.top - height - 6) : below;
+    setPos({ left, top });
+  }, [anchor, description]);
+
+  useEffect(() => () => cancelClose(), []);
+
+  const firstLine = description.replace(/\^[0-9a-f]{6}/gi, "").split("\n").find((line) => line.trim())?.trim();
+  const descriptionHasName = firstLine?.startsWith(name) ?? false;
+
+  return (
+    <>
+      <span
+        ref={trigger}
+        className="hint resource-hint"
+        tabIndex={0}
+        aria-describedby={anchor ? id : undefined}
+        onMouseEnter={show}
+        onMouseLeave={hideSoon}
+        onFocus={show}
+        onBlur={hideSoon}
+      >
+        {name}
+      </span>
+      {anchor &&
+        createPortal(
+          <div
+            ref={box}
+            id={id}
+            className="resource-popover"
+            role="tooltip"
+            style={pos}
+            onMouseEnter={cancelClose}
+            onMouseLeave={hideSoon}
+          >
+            {!descriptionHasName && (
+              <div className="resource-popover-head">
+                <strong>{name}</strong>
+                <span>{kind}</span>
+              </div>
+            )}
+            <div className="resource-popover-body"><GameText text={description} /></div>
+          </div>,
+          document.body,
+        )}
+    </>
   );
 }
 
@@ -189,7 +284,9 @@ ${node.comment}` : ""}` : node.comment}
                 (node.value ?? (node.children ? <span className="muted">{node.children.length} items</span> : null))
               )}
               {node.hint &&
-                (link(node) ? (
+                (node.description && (node.display === "skill" || node.display === "buff") ? (
+                  <ResourceHint kind={node.display} name={node.hint} description={node.description} />
+                ) : link(node) ? (
                   <button
                     className="hint link-hint"
                     title="Open the referenced record (Ctrl+click or middle-click: in a new tab)"

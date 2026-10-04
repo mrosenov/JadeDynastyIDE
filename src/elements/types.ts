@@ -63,6 +63,8 @@ export interface FieldNode {
   ty: string;
   value?: string;
   hint?: string;
+  /** Longer client text shown when hovering a skill or buff hint. */
+  description?: string;
   /** Referenced record as [list, row]. */
   link?: [number, number];
   /** The NPC dialog this value opens (index into the dialogs). */

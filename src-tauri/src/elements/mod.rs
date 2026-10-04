@@ -587,8 +587,14 @@ impl Document {
         // Skill and buff IDs: their names from configs.pck.
         if let (Some(role @ ("skill" | "buff")), Some(res)) = (field.display.as_deref(), &self.resources) {
             if value > 0 && value <= u32::MAX as i64 {
-                let name = if role == "skill" { res.skill_name(value as u32) } else { res.buff_name(value as u32) };
+                let id = value as u32;
+                let (name, description) = if role == "skill" {
+                    (res.skill_name(id), res.skill_description(id))
+                } else {
+                    (res.buff_name(id), res.buff_description(id))
+                };
                 a.hint = Some(name.unwrap_or_else(|| format!("no such {role}")));
+                a.description = description;
                 return a;
             }
         }
@@ -1525,6 +1531,10 @@ mod tests {
         let res = doc.resources.as_ref().unwrap();
         eprintln!("skill 1: {:?}, buff 1: {:?}", res.skill_name(1), res.buff_name(1));
         assert!(res.buff_name(1).is_some());
+        assert!(res.buff_description(1).is_some());
+        assert!(res.skill_description(1124).is_some());
+        let task_skill = res.skill_description(366).expect("skill 366 uses its +2 description slot");
+        assert!(!task_skill.contains("%%"));
     }
 
     #[test]

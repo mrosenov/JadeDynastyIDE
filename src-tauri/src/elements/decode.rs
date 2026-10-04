@@ -22,6 +22,9 @@ pub struct Node {
     /// Enum label, referenced record or float reading of the value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hint: Option<String>,
+    /// Longer client text shown when hovering a skill or buff hint.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// The record this value refers to, as (list, row).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<(usize, usize)>,
@@ -67,6 +70,7 @@ fn group_node(name: String, color: Option<String>, members: Vec<Node>) -> Node {
         ty: "group".into(),
         value: Some(format!("{fields} field{}", if fields == 1 { "" } else { "s" })),
         hint: None,
+        description: None,
         link: None,
         display: None,
         comment: None,
@@ -184,6 +188,7 @@ fn scalar(ty: &Ty, b: &[u8], off: usize) -> Option<(String, Option<i64>)> {
 #[derive(Default)]
 pub struct Annotation {
     pub hint: Option<String>,
+    pub description: Option<String>,
     pub link: Option<(usize, usize)>,
     pub icon: Option<u32>,
     pub set: Option<String>,
@@ -207,6 +212,7 @@ impl Ctx<'_> {
             ty: ty.label(),
             value: None,
             hint: None,
+            description: None,
             link: None,
             display: field.and_then(|f| f.display.clone()),
             comment: field.and_then(|f| f.c.clone()),
@@ -246,6 +252,7 @@ impl Ctx<'_> {
                 if let (Some(f), Some(v)) = (field, int) {
                     let a = (self.annotate)(f, v);
                     node.hint = a.hint;
+                    node.description = a.description;
                     node.link = a.link;
                     node.icon = a.icon;
                     node.set = a.set;
@@ -313,6 +320,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
                     ty: "int32?".into(),
                     value: Some(v.to_string()),
                     hint: float_hint(v as u32),
+                    description: None,
                     link: None,
                     display: None,
                     comment: None,
@@ -336,6 +344,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
         ty: format!("byte[{size}]"),
         value: Some(preview),
         hint: None,
+        description: None,
         link: None,
         display: None,
         comment: None,
@@ -445,5 +454,17 @@ mod tests {
         assert_eq!(as_int[1].ty, "int32");
         assert_eq!(as_int[1].value.as_deref(), Some("42"));
         assert_eq!(as_int[1].cond.as_deref(), Some("type = 3 → int32"));
+    }
+
+    #[test]
+    fn annotation_description_reaches_the_field_node() {
+        let bytes = 7i32.to_le_bytes();
+        let nodes = decode_record(&bytes, &[field("skill_id", 0, None)], &|_, _| Annotation {
+            hint: Some("Skill name".into()),
+            description: Some("Skill description".into()),
+            ..Annotation::default()
+        });
+        assert_eq!(nodes[0].hint.as_deref(), Some("Skill name"));
+        assert_eq!(nodes[0].description.as_deref(), Some("Skill description"));
     }
 }

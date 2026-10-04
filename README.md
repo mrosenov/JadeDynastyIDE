@@ -55,13 +55,19 @@ folder. JD IDE then:
   - `item_color.txt` with the palette in `item_desc.txt`: item names in their game colour in
     the record table and the inspector (blended toward the text colour so they stay readable).
   - `skillstr.txt` and `buff_str.txt`: fields with the `skill` or `buff` role show the skill's
-    (entry ID × 10) or buff's name. `tools/type-rules.json` gives the role to ID fields such as
+    (entry ID × 10) or buff's name. Hovering that name shows the skill introduction and
+    detailed description (entries ID × 10 + 1 and +2, whichever exist) or the description
+    below the buff name. The dark game-style popover renders the tables' `^RRGGBB` text
+    colours, including white, independently of the app theme. `tools/type-rules.json` gives
+    the role to ID fields such as
     `skill_id_1`, `id_skill`, `cast_skill`, `buff_id`.
 
   The tables are UTF-16 string tables (`#_index`, `#_begin`, quoted strings, `\r` for line
-  breaks), read as the client's CECStringTab does (`src-tauri/src/client/strings.rs`): each
-  string on the line of its number, and a quote left open ending at the end of its line, so a
-  broken line (Forsaken's item_ext_desc.txt has three) costs one entry, not the rest of the file.
+  breaks), read as the client's CECStringTab does (`src-tauri/src/client/strings.rs`). A quoted
+  string can continue across physical lines, which is common in skill descriptions. If another
+  numbered quoted entry begins before the quote closes, the previous row is treated as broken;
+  this keeps Forsaken's three malformed `item_ext_desc.txt` rows from consuming the rest of the
+  file.
 
 Settings are stored in `%APPDATA%\com.jdide.app\settings.json`.
 

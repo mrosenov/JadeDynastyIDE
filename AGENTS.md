@@ -151,11 +151,15 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   resource paths; icons come from `surfaces.pck` (`iconset/iconlist_ivtr.dds` + `.txt`).
 - `configs.pck` string tables (UTF-16LE, `#_index` / `#_begin`, literal `\r` = line
   break): `item_ext_desc.txt` (item descriptions), `monster_desc.txt`, `addon_str.txt`,
-  `skillstr.txt` (skill id × 10), `buff_str.txt`, `item_desc.txt` (palette entries 5–14),
+  `skillstr.txt` (name at skill id × 10, introduction at +1, detailed description at +2),
+  `buff_str.txt` (name then description), `item_desc.txt` (palette entries 5–14),
   `item_color.txt` (name colours).
-- **Parsing rule (important):** like the client's `AWScriptFile`, a string is read **on the
-  same line as its number**, and a quote left open ends at the end of its line. Forsaken's
-  `item_ext_desc.txt` has three broken lines; reading quoted strings across lines used to
+- Skill and buff hover popovers keep and safely render `^RRGGBB` colour runs against a fixed
+  dark background, so their game colours do not depend on the app theme.
+- **Parsing rule (important):** a string starts on the same line as its number, but quoted
+  strings can span physical lines (notably `skillstr.txt`). If another numbered quoted entry
+  starts before the closing quote, treat the previous row as broken. Forsaken's
+  `item_ext_desc.txt` has three such broken rows; blindly reading to the next quote used to
   drop 21,000 of its 26,057 entries.
 
 ## Editing model (`elements/edit.rs`)
