@@ -47,24 +47,12 @@ pub fn list_space(struct_name: &str) -> IdSpace {
     }
 }
 
-/// The ID space the client registers a list's records in, per
-/// `elementdataman::add_structure` (server source): types and services share
-/// the essence space, recipe types the recipe space, and a few configs live
-/// among the essences. Structs it does not know fall back to the name.
+/// The ID space the file loader registers a list's records in, per
+/// `elementdataman::setup_hash_map` (client/server source): types and services
+/// share the essence space, recipe types the recipe space, and two configs
+/// live among the essences. Structs it does not know fall back to the name.
 pub fn registry_space(struct_name: &str) -> IdSpace {
-    const ESSENCE_CONFIGS: [&str; 11] = [
-        "COLLISION_RAID_AWARD_CONFIG",
-        "BUFF_AREA_CONFIG",
-        "LIVENESS_CONFIG",
-        "CHALLENGE_2012_CONFIG",
-        "TASK_SPECIAL_AWARD_CONFIG",
-        "PROP_ADD_CONFIG",
-        "KING_WAR_CONFIG",
-        "JINFASHEN_TO_MONEY_CONFIG",
-        "BATTLE_201304_CONFIG",
-        "WAR_ROLE_CONFIG",
-        "ITEM_TRADE_CONFIG",
-    ];
+    const ESSENCE_CONFIGS: [&str; 2] = ["WAR_ROLE_CONFIG", "ITEM_TRADE_CONFIG"];
     let s = struct_name.to_ascii_uppercase();
     if s.ends_with("_ADDON") {
         IdSpace::Addon
@@ -224,5 +212,11 @@ mod tests {
         assert_eq!(list_space("RECIPE_ESSENCE"), IdSpace::Recipe);
         assert_eq!(list_space("EQUIPMENT_ADDON"), IdSpace::Addon);
         assert_eq!(list_space("GEM_CONFIG"), IdSpace::Config);
+        // Follow setup_hash_map, which is the path used after loading a file.
+        // Some add_structure overloads disagree with it for later configs.
+        assert_eq!(registry_space("COLLISION_RAID_AWARD_CONFIG"), IdSpace::Config);
+        assert_eq!(registry_space("BUFF_AREA_CONFIG"), IdSpace::Config);
+        assert_eq!(registry_space("WAR_ROLE_CONFIG"), IdSpace::Essence);
+        assert_eq!(registry_space("ITEM_TRADE_CONFIG"), IdSpace::Essence);
     }
 }

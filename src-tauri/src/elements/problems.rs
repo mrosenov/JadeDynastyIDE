@@ -13,12 +13,28 @@ use std::time::Instant;
 
 use serde::Serialize;
 
-use super::format::Ty;
+use super::format::{EnumSet, Ty};
 use super::refs::{registry_space, IdSpace};
 use super::{search, Document, LayoutFit};
 
 /// Problems kept per kind (the rest are only counted).
 const PER_KIND: usize = 1000;
+
+/// The value to group into one enum/mask problem, or none when the set names it.
+fn unnamed_set_value(set: &EnumSet, value: i64, all_bits: u64) -> Option<u64> {
+    if !set.flags {
+        return (!set.items.contains_key(&value.to_string())).then_some(value as u64);
+    }
+    let bits = (value as u64) & all_bits;
+    if bits == all_bits {
+        return None;
+    }
+    let unnamed = (0..64)
+        .map(|bit| 1u64 << bit)
+        .filter(|bit| bits & bit != 0 && !set.items.contains_key(&bit.to_string()))
+        .fold(0, |found, bit| found | bit);
+    (unnamed != 0).then_some(unnamed)
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
 #[serde(rename_all = "lowercase")]
@@ -299,20 +315,7 @@ impl Document {
                         }
                     } else if let Some(set) = set {
                         // For masks: the unnamed bits; all bits set means "every one".
-                        let key = if set.flags {
-                            let bits = (v as u64) & all_bits;
-                            if bits == all_bits {
-                                continue;
-                            }
-                            (0..64).map(|b| 1u64 << b).filter(|bit| bits & bit != 0 && !set.items.contains_key(&bit.to_string())).fold(0, |a, b| a | b)
-                        } else if set.items.contains_key(&v.to_string()) {
-                            0
-                        } else {
-                            v as u64
-                        };
-                        if key == 0 && (set.flags || v != 0) {
-                            continue;
-                        }
+                        let Some(key) = unnamed_set_value(set, v, all_bits) else { continue };
                         match odd.iter_mut().find(|(k, _, _)| *k == key) {
                             Some(entry) => entry.2 += 1,
                             None => odd.push((key, row, 1)),
@@ -390,5 +393,31 @@ impl Document {
                 talk: None,
             });
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn set(flags: bool, values: &[i64]) -> EnumSet {
+        EnumSet {
+            label: String::new(),
+            flags,
+            items: values.iter().map(|value| (value.to_string(), String::new())).collect(),
+            descriptions: HashMap::new(),
+        }
+    }
+
+    #[test]
+    fn zero_is_valid_when_an_enum_names_it() {
+        let values = set(false, &[0, 1, 2]);
+        assert_eq!(unnamed_set_value(&values, 0, u32::MAX as u64), None);
+        assert_eq!(unnamed_set_value(&values, 3, u32::MAX as u64), Some(3));
+
+        let flags = set(true, &[1]);
+        assert_eq!(unnamed_set_value(&flags, 0, u32::MAX as u64), None);
+        assert_eq!(unnamed_set_value(&flags, 1, u32::MAX as u64), None);
+        assert_eq!(unnamed_set_value(&flags, 2, u32::MAX as u64), Some(2));
     }
 }

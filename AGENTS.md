@@ -132,9 +132,10 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 - Many private-server files carry stale checksums (edited by tools that don't update it).
   Only v156 (zxserver) and v165 (1792 server) validate with their own `path.data`. JD IDE
   always writes a correct checksum when it has a path.data.
-- **ID spaces** (server `add_structure`): Essence (items, types, services, plus 11 named
-  configs such as ITEM_TRADE_CONFIG), Addon, Recipe (RECIPE_ESSENCE/MAJOR/SUB types),
-  Config (other `*_CONFIG`). One map per space; the later-loaded record wins. Duplicate IDs
+- **ID spaces** (client/server file-loader `setup_hash_map`): Essence (items, types, services,
+  plus WAR_ROLE_CONFIG and ITEM_TRADE_CONFIG), Addon, Recipe
+  (RECIPE_ESSENCE/MAJOR/SUB types), Config (other `*_CONFIG`). Some later config
+  `add_structure` overloads disagree with the loader; model the loader. One map per space; the later-loaded record wins. Duplicate IDs
   in one list are errors; across lists of one space they are warnings (shadowed).
 - **Talk options** with the high bit set are functions from `SERVICE_TYPE`.
 - **Texts**: names are `wchar_t[n]` UTF-16LE; some fields are GBK `char[n]`. The game stores
