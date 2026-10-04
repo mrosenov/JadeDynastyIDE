@@ -34,7 +34,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (67 at last run), ~6 s
+cd src-tauri && cargo test --lib   # Rust tests (68 at last run), ~6 s
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -172,6 +172,7 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   space, as the client does.
 - **Delete** asks first and lists the records that refer to the deleted one ("Referenced by").
 - **Bulk edit** runs from search results, on all hits or only the picked ones.
+- **Compare copy** transfers selected compatible fields from the compared document into existing records of the open document. Missing records can be selected in bulk only when the elements version and structural list fingerprint match; their IDs and complete bytes are preserved. One selection is one undo/history entry.
 - `Journal::mark_saved` (on save): edits count from the saved file from then on (markers
   clear, Revert all goes back to it), while undo still goes back past it. `EditState.lastSaved`
   and `HistoryEntry.savedAt` drive the "Saved" line in the history.

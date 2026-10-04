@@ -1268,7 +1268,7 @@ mod tests {
 
     #[test]
     fn compares_versions_by_struct_and_id() {
-        let (Some(a), Some(b)) = (open("Game Dev/JD/1792/gamed/config/elements.data"), open("Games/ForsakenJD/element/data/elements.data")) else { return };
+        let (Some(mut a), Some(b)) = (open("Game Dev/JD/1792/gamed/config/elements.data"), open("Games/ForsakenJD/element/data/elements.data")) else { return };
         let t = std::time::Instant::now();
         let s = compare::summary(&a, &b);
         eprintln!("summary in {:?}: v{} vs v{}, {} list pairs, dialogs {:?}", t.elapsed(), s.this.version, s.other.version, s.lists.len(), s.talks);
@@ -1286,8 +1286,54 @@ mod tests {
         }
         let md = compare::markdown(&a, &b, true);
         assert!(md.starts_with("# elements.data changes"));
+        // A compatible named field can be copied across versions and undone.
+        if let Some((row, other_row, field)) = d.changed.iter().find_map(|c| {
+            c.fields.iter().find(|f| f.copyable).map(|f| (c.this.row, c.other_row, f.field.clone()))
+        }) {
+            let request = compare::CopyRequest {
+                this_list: equip.this.unwrap(),
+                other_list: equip.other.unwrap(),
+                fields: vec![compare::CopyFields { this_row: row, other_row, fields: vec![field.clone()] }],
+                records: vec![],
+            };
+            let state = compare::copy_selection(&mut a, &b, &request).unwrap();
+            assert!(state.undo.as_deref().is_some_and(|s| s.starts_with("Copy from compared file")));
+            let after = compare::list_diff(&a, &b, equip.this, equip.other);
+            assert!(!after.changed.iter().find(|c| c.this.row == row).is_some_and(|c| c.fields.iter().any(|f| f.field == field)));
+            a.undo();
+        }
         // A file compared with itself has no differences.
         assert!(compare::summary(&a, &a).lists.iter().all(|l| l.only_this + l.only_other + l.changed == 0));
+    }
+
+    #[test]
+    fn compare_copies_missing_records_only_for_matching_layouts() {
+        let (Some(mut a), Some(b)) = (open("Game Dev/JD/zxserver/zgame/gs/config/elements.data"), open("Game Dev/JD/zxserver/zgame/gs/config/elements.data")) else { return };
+        let list = 3;
+        let before = a.file.lists[list].count;
+        let source: Vec<Vec<u8>> = (0..2).map(|row| b.file.record(list, row).unwrap().to_vec()).collect();
+        // Make two records genuinely absent from the opened document, before its edit journal begins.
+        a.file.remove_record(list, 1);
+        a.file.remove_record(list, 0);
+        a.edits = edit::Journal::new(a.file.lists.iter().map(|block| block.count));
+        let pair = compare::summary(&a, &b).lists.into_iter().find(|p| p.this == Some(list) && p.other == Some(list)).unwrap();
+        assert!(pair.can_copy_records_from_other);
+        assert_eq!(pair.only_other, 2);
+        let request = compare::CopyRequest { this_list: list, other_list: list, fields: vec![], records: vec![0, 1] };
+        let state = compare::copy_selection(&mut a, &b, &request).unwrap();
+        assert_eq!(a.file.lists[list].count, before);
+        assert_eq!(state.added.len(), 2);
+        assert_eq!(a.file.record(list, before - 2).unwrap(), source[0]);
+        assert_eq!(a.file.record(list, before - 1).unwrap(), source[1]);
+        let history = a.history();
+        assert_eq!(history[0].records.iter().filter(|r| r.action == "copy").count(), 2);
+        let undone = a.undo();
+        assert_eq!(a.file.lists[list].count, before - 2);
+        assert!(undone.added.is_empty());
+
+        let Some(other_version) = open("Game Dev/JD/1792/gamed/config/elements.data") else { return };
+        let mismatch = compare::CopyRequest { this_list: list, other_list: list, fields: vec![], records: vec![0] };
+        assert!(compare::copy_selection(&mut a, &other_version, &mismatch).unwrap_err().contains("same elements version"));
     }
 
     #[test]

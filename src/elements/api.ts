@@ -7,6 +7,7 @@ import type {
   EditState,
   FieldEdit,
   CompareSummary,
+  CompareCopyRequest,
   CoverageRow,
   ExportSource,
   Exported,
@@ -66,6 +67,7 @@ export const compareSummary = () => invoke<CompareSummary>("compare_summary");
 export const compareList = (pair: { this: number | null; other: number | null }) =>
   invoke<ListDiff>("compare_list", { this: pair.this, other: pair.other });
 export const compareMarkdown = (otherIsOlder: boolean) => invoke<string>("compare_markdown", { otherIsOlder });
+export const copyCompare = (request: CompareCopyRequest) => invoke<EditState>("copy_compare", { request });
 export const closeCompare = () => invoke<void>("close_compare");
 
 /** Sets fields of a record (one undo step). */

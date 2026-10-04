@@ -3756,6 +3756,31 @@ select.sf-control {
 .compare-rec {
   padding-left: 30px;
 }
+.compare-select-rec {
+  grid-template-columns: 16px 24px minmax(0, 1fr) auto;
+  padding-left: 12px;
+}
+.compare-select-rec > input,
+.compare-pick input {
+  margin: 0;
+  accent-color: var(--accent);
+}
+.compare-select-rec.disabled {
+  cursor: not-allowed;
+  color: var(--text-dim);
+}
+.compare-copy-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 5px 12px 5px 30px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-pane);
+}
+.compare-copy-error {
+  margin: 8px 12px 8px 30px;
+}
 .compare-rec.static {
   cursor: default;
 }
@@ -3790,8 +3815,13 @@ select.sf-control {
   text-align: left;
   color: var(--text-dim);
 }
-.field-diff th:first-child {
+.field-diff th:nth-child(2) {
   width: 34%;
+}
+.field-diff .compare-pick {
+  width: 28px;
+  padding-right: 0;
+  text-align: center;
 }
 .field-diff td {
   padding: 4px 8px;

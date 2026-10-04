@@ -8,11 +8,11 @@
 //!
 //! "This" is the open file, "other" the one compared with it.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-use super::{search, Document};
+use super::{edit::EditState, refs::{registry_space, IdSpace}, search, Document};
 
 /// Changed records listed per list (the rest are counted).
 const DETAIL_LIMIT: usize = 2000;
@@ -50,6 +50,10 @@ pub struct ListPair {
     pub only_other: usize,
     /// Records both have whose bytes differ.
     pub changed: usize,
+    /// Complete records can be copied from the compared file into this list.
+    pub can_copy_records_from_other: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub copy_records_reason: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -70,6 +74,8 @@ pub struct FieldChange {
     /// The value in this file (None: the field is not in this file's layout).
     pub this: Option<String>,
     pub other: Option<String>,
+    /// Both layouts describe this field with the same byte size.
+    pub copyable: bool,
 }
 
 #[derive(Debug, Serialize)]
@@ -103,6 +109,26 @@ pub struct ListDiff {
     pub changed: Vec<ChangedRecord>,
     /// More changed records than listed.
     pub truncated: bool,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CopyFields {
+    pub this_row: usize,
+    pub other_row: usize,
+    pub fields: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CopyRequest {
+    pub this_list: usize,
+    pub other_list: usize,
+    #[serde(default)]
+    pub fields: Vec<CopyFields>,
+    /// Rows that exist only in the compared file and should be appended.
+    #[serde(default)]
+    pub records: Vec<usize>,
 }
 
 /// Records keyed by (ID, n-th occurrence of that ID).
@@ -175,6 +201,21 @@ fn pairs(a: &Document, b: &Document) -> Vec<(Option<usize>, Option<usize>)> {
     out
 }
 
+fn record_copy_compatibility(a: &Document, b: &Document, i: Option<usize>, j: Option<usize>) -> (bool, Option<String>) {
+    let (Some(i), Some(j)) = (i, j) else {
+        return (false, Some("The matching list does not exist in both files.".into()));
+    };
+    let (av, bv) = (a.file.raw_version & 0xffff, b.file.raw_version & 0xffff);
+    if av != bv {
+        return (false, Some(format!("Adding records requires the same elements version (open: v{av}, compared: v{bv}).")));
+    }
+    let (am, bm) = (a.export_list_metadata(i), b.export_list_metadata(j));
+    if am.struct_name != bm.struct_name || am.record_size != bm.record_size || am.schema != bm.schema {
+        return (false, Some("Adding records requires matching list layouts.".into()));
+    }
+    (true, None)
+}
+
 pub fn summary(a: &Document, b: &Document) -> Summary {
     let mut lists: Vec<ListPair> = pairs(a, b)
         .into_iter()
@@ -196,6 +237,7 @@ pub fn summary(a: &Document, b: &Document) -> Summary {
                 (None, Some(j)) => (0, b.file.lists[j].count, 0),
                 (None, None) => (0, 0, 0),
             };
+            let (can_copy_records_from_other, copy_records_reason) = record_copy_compatibility(a, b, i, j);
             ListPair {
                 this: i,
                 other: j,
@@ -208,12 +250,35 @@ pub fn summary(a: &Document, b: &Document) -> Summary {
                 only_this,
                 only_other,
                 changed,
+                can_copy_records_from_other,
+                copy_records_reason,
             }
         })
         .collect();
     // Lists with differences first, in file order.
     lists.sort_by_key(|l| (l.only_this + l.only_other + l.changed == 0, l.this.unwrap_or(usize::MAX), l.other));
     Summary { this: side(a), other: side(b), lists, talks: talk_counts(a, b) }
+}
+
+fn slot_partners(a: &Document, b: &Document, i: usize, j: usize) -> (Vec<search::Slot>, Vec<search::Slot>, Vec<Option<usize>>, Vec<bool>) {
+    let slots_a = a.def(i).map(|(_, d)| search::slots(d, a.file.lists[i].item_size)).unwrap_or_default();
+    let slots_b = b.def(j).map(|(_, d)| search::slots(d, b.file.lists[j].item_size)).unwrap_or_default();
+    // Fields pair by path (case-insensitive: layouts spell "ID" and "id"),
+    // else by the same offset and size (layouts naming a field differently).
+    let by_path_b: HashMap<String, usize> = slots_b.iter().enumerate().map(|(k, s)| (s.path.to_lowercase(), k)).collect();
+    let mut partner: Vec<Option<usize>> = slots_a.iter().map(|s| by_path_b.get(&s.path.to_lowercase()).copied()).collect();
+    let mut matched = vec![false; slots_b.len()];
+    partner.iter().flatten().for_each(|&k| matched[k] = true);
+    for (n, sa) in slots_a.iter().enumerate() {
+        if partner[n].is_some() {
+            continue;
+        }
+        if let Some(k) = slots_b.iter().position(|sb| sb.off == sa.off && sb.size() == sa.size()).filter(|&k| !matched[k]) {
+            partner[n] = Some(k);
+            matched[k] = true;
+        }
+    }
+    (slots_a, slots_b, partner, matched)
 }
 
 fn talk_counts(a: &Document, b: &Document) -> [usize; 3] {
@@ -249,23 +314,7 @@ pub fn list_diff(a: &Document, b: &Document, i: Option<usize>, j: Option<usize>)
     only_this.sort_by_key(|r| r.row);
     only_other.sort_by_key(|r| r.row);
 
-    let slots_a = a.def(i).map(|(_, d)| search::slots(d, a.file.lists[i].item_size)).unwrap_or_default();
-    let slots_b = b.def(j).map(|(_, d)| search::slots(d, b.file.lists[j].item_size)).unwrap_or_default();
-    // Fields pair by path (case-insensitive: layouts spell "ID" and "id"),
-    // else by the same offset and size (layouts naming a field differently).
-    let by_path_b: HashMap<String, usize> = slots_b.iter().enumerate().map(|(k, s)| (s.path.to_lowercase(), k)).collect();
-    let mut partner: Vec<Option<usize>> = slots_a.iter().map(|s| by_path_b.get(&s.path.to_lowercase()).copied()).collect();
-    let mut matched = vec![false; slots_b.len()];
-    partner.iter().flatten().for_each(|&k| matched[k] = true);
-    for (n, sa) in slots_a.iter().enumerate() {
-        if partner[n].is_some() {
-            continue;
-        }
-        if let Some(k) = slots_b.iter().position(|sb| sb.off == sa.off && sb.size() == sa.size()).filter(|&k| !matched[k]) {
-            partner[n] = Some(k);
-            matched[k] = true;
-        }
-    }
+    let (slots_a, slots_b, partner, matched) = slot_partners(a, b, i, j);
 
     let mut pairs: Vec<(usize, usize)> = ka.iter().filter_map(|(k, &r)| kb.get(k).map(|&s| (r, s))).collect();
     pairs.sort();
@@ -287,14 +336,14 @@ pub fn list_diff(a: &Document, b: &Document, i: Option<usize>, j: Option<usize>)
                 Some(k) => {
                     let vb = slots_b[*k].text(rb);
                     if va != vb {
-                        fields.push(FieldChange { field: sa.path.clone(), this: Some(va), other: Some(vb) });
+                        fields.push(FieldChange { field: sa.path.clone(), this: Some(va), other: Some(vb), copyable: sa.ty(ra).size() == slots_b[*k].ty(rb).size() });
                     }
                 }
-                None => fields.push(FieldChange { field: sa.path.clone(), this: Some(va), other: None }),
+                None => fields.push(FieldChange { field: sa.path.clone(), this: Some(va), other: None, copyable: false }),
             }
         }
         for (_, sb) in slots_b.iter().enumerate().filter(|(k, _)| !matched[*k]) {
-            fields.push(FieldChange { field: sb.path.clone(), this: None, other: Some(sb.text(rb)) });
+            fields.push(FieldChange { field: sb.path.clone(), this: None, other: Some(sb.text(rb)), copyable: false });
         }
         // No layout (or only undescribed bytes differ): compare 4-byte words.
         if fields.is_empty() {
@@ -303,7 +352,7 @@ pub fn list_diff(a: &Document, b: &Document, i: Option<usize>, j: Option<usize>)
                 let wa = ra.get(off..off + 4).map(|w| u32::from_le_bytes(w.try_into().unwrap()));
                 let wb = rb.get(off..off + 4).map(|w| u32::from_le_bytes(w.try_into().unwrap()));
                 if wa != wb {
-                    fields.push(FieldChange { field: format!("+0x{off:04X}"), this: wa.map(|w| w.to_string()), other: wb.map(|w| w.to_string()) });
+                    fields.push(FieldChange { field: format!("+0x{off:04X}"), this: wa.map(|w| w.to_string()), other: wb.map(|w| w.to_string()), copyable: false });
                 }
             }
         }
@@ -313,6 +362,86 @@ pub fn list_diff(a: &Document, b: &Document, i: Option<usize>, j: Option<usize>)
         changed.push(ChangedRecord { other_name: (other_name != this.name).then_some(other_name), this, other_row: s, fields });
     }
     ListDiff { only_this, only_other, changed, truncated }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+enum IdPool { Known(IdSpace), List(usize) }
+
+fn id_pool(doc: &Document, list: usize) -> IdPool {
+    doc.lists[list]
+        .struct_name
+        .as_deref()
+        .filter(|s| !s.to_ascii_uppercase().starts_with("UNKNOWN"))
+        .map(registry_space)
+        .map_or(IdPool::List(list), IdPool::Known)
+}
+
+/// Copies selected compatible fields and complete missing records from the compared file.
+pub fn copy_selection(a: &mut Document, b: &Document, request: &CopyRequest) -> Result<EditState, String> {
+    let (i, j) = (request.this_list, request.other_list);
+    if a.file.lists.get(i).is_none() || b.file.lists.get(j).is_none() {
+        return Err("The compared list is no longer available. Refresh the comparison.".into());
+    }
+    if request.fields.is_empty() && request.records.is_empty() {
+        return Err("Select at least one field or record to copy.".into());
+    }
+
+    let (slots_a, slots_b, partners, _) = slot_partners(a, b, i, j);
+    let mut updates = Vec::new();
+    let mut target_rows = HashSet::new();
+    for selected in &request.fields {
+        if !target_rows.insert(selected.this_row) {
+            return Err("A target record was selected more than once. Refresh the comparison.".into());
+        }
+        let current = a.file.record(i, selected.this_row).ok_or("A target record moved or was removed. Refresh the comparison.")?;
+        let source = b.file.record(j, selected.other_row).ok_or("A source record moved or was removed. Refresh the comparison.")?;
+        if Document::record_id(current) != Document::record_id(source) {
+            return Err("The selected records no longer have the same ID. Refresh the comparison.".into());
+        }
+        let mut bytes = current.to_vec();
+        let mut names = HashSet::new();
+        for field in &selected.fields {
+            let key = field.to_lowercase();
+            if !names.insert(key.clone()) {
+                continue;
+            }
+            let n = slots_a.iter().position(|s| s.path.to_lowercase() == key).ok_or_else(|| format!("Field “{field}” is not present in the open file."))?;
+            let k = partners[n].ok_or_else(|| format!("Field “{field}” has no compatible field in the compared file."))?;
+            let (target, other) = (&slots_a[n], &slots_b[k]);
+            let (target_size, source_size) = (target.ty(current).size(), other.ty(source).size());
+            if target_size != source_size {
+                return Err(format!("Field “{field}” has a different size in the two records and cannot be copied."));
+            }
+            bytes[target.off..target.off + target_size].copy_from_slice(&source[other.off..other.off + source_size]);
+        }
+        updates.push((i, selected.this_row, bytes));
+    }
+
+    let mut additions = Vec::new();
+    if !request.records.is_empty() {
+        let (compatible, reason) = record_copy_compatibility(a, b, Some(i), Some(j));
+        if !compatible {
+            return Err(reason.unwrap_or_else(|| "The record layouts do not match.".into()));
+        }
+        let mut rows = HashSet::new();
+        let mut pending = HashSet::new();
+        let pool = id_pool(a, i);
+        for &row in &request.records {
+            if !rows.insert(row) {
+                continue;
+            }
+            let bytes = b.file.record(j, row).ok_or("A source record moved or was removed. Refresh the comparison.")?.to_vec();
+            let id = Document::record_id(&bytes);
+            let taken = (0..a.file.lists.len()).filter(|&list| id_pool(a, list) == pool).any(|list| {
+                (0..a.file.lists[list].count).any(|r| Document::record_id(a.file.record(list, r).unwrap()) == id)
+            });
+            if taken || !pending.insert((pool, id)) {
+                return Err(format!("ID {id} is already used in the destination ID space."));
+            }
+            additions.push((i, bytes));
+        }
+    }
+    a.apply_compare_copy(updates, additions)
 }
 
 /// The differences as Markdown, for patch notes. `other_is_older`: the other

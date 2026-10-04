@@ -199,6 +199,18 @@ async fn compare_markdown(other_is_older: bool, state: State<'_, AppState>) -> R
     with_compared(&state, |a, b| elements::compare::markdown(a, b, other_is_older))
 }
 
+/// Copies selected differences from the compared file into the open file.
+#[tauri::command]
+async fn copy_compare(request: elements::compare::CopyRequest, state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    // Keep the documented lock order: open document, then compared document.
+    let mut document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared.lock().map_err(|_| "State lock poisoned")?;
+    match (document.as_mut(), compared.as_ref()) {
+        (Some(open), Some(other)) => elements::compare::copy_selection(open, other, &request),
+        _ => Err("No file to compare with".into()),
+    }
+}
+
 #[tauri::command]
 async fn close_compare(state: State<'_, AppState>) -> Result<(), String> {
     *state.compared.lock().map_err(|_| "State lock poisoned")? = None;
@@ -630,6 +642,7 @@ pub fn run() {
             compare_summary,
             compare_list,
             compare_markdown,
+            copy_compare,
             close_compare,
             search_records,
             search_field_names,

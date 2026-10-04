@@ -220,6 +220,10 @@ their list numbers differ), else by name; records pair by ID; fields pair by pat
 - The arrow between the files swaps which one is older ("before").
 - **Copy patch notes** copies every difference as Markdown.
 - Records of the open file open in the inspector; ones only the other file has are listed.
+- Expand a changed record, pick one or more compatible fields, then **Copy selected** to take their exact values from the compared file into the open file. **Select all copyable** can take every compatible field and missing record shown in that list at once. Copying is one undoable history entry and remains in memory until the open file is saved.
+- A record found only in the compared file can be copied into the open file when the elements versions and that list's record layout and field schema match exactly. The original ID is preserved; an ID already used in the destination ID space stops the copy. Whole records are never copied between incompatible versions or layouts.
+
+Copy always goes from the **compared file into the open file**, independently of which side is shown as Before or After.
 
 ## Export
 

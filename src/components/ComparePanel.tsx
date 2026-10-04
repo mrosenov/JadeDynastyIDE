@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
-import { ArrowLeftRight, Check, ChevronRight, ClipboardCopy, FileDiff, FolderOpen, GitCompareArrows, Loader2, X } from "lucide-react";
-import { closeCompare, compareList, compareMarkdown, openCompare } from "../elements/api";
-import type { ChangedRecord, CompareFile, ComparePair, CompareRecord, CompareSummary, ListDiff } from "../elements/types";
+import { ArrowLeftRight, Check, ChevronRight, ClipboardCopy, Copy, FileDiff, FolderOpen, GitCompareArrows, Loader2, X } from "lucide-react";
+import { closeCompare, compareList, compareMarkdown, compareSummary, copyCompare, openCompare } from "../elements/api";
+import type { ChangedRecord, CompareFile, ComparePair, CompareRecord, CompareSummary, EditState, ListDiff } from "../elements/types";
 import { bytes as fmtBytes, count } from "../elements/format";
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
   icon?: (pathId?: number | null) => string | undefined;
   /** Open a record of the open file (removed records only exist in the other one). */
   onOpen: (list: number, row: number, newTab: boolean) => void;
+  onEdited: (state: EditState) => void;
   onClose: () => void;
 }
 
@@ -21,7 +22,7 @@ const date = (t: number) => new Date(t * 1000).toLocaleDateString();
 const shortPath = (p: string) => p.split(/[\\/]/).filter(Boolean).slice(-4).join("/");
 
 /** Compares the open file with another: records added, removed and changed, per list. */
-export function ComparePanel({ currentPath, suggestions, icon, onOpen, onClose }: Props) {
+export function ComparePanel({ currentPath, suggestions, icon, onOpen, onEdited, onClose }: Props) {
   const [summary, setSummary] = useState<CompareSummary | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,6 +77,13 @@ export function ComparePanel({ currentPath, suggestions, icon, onOpen, onClose }
     await navigator.clipboard.writeText(md);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
+  };
+
+  const refresh = async (pair: ComparePair) => {
+    const key = keyOf(pair);
+    const [nextSummary, nextDiff] = await Promise.all([compareSummary(), compareList(pair)]);
+    setSummary(nextSummary);
+    setDiffs((d) => ({ ...d, [key]: nextDiff }));
   };
 
   // "Added" means: in the newer file only.
@@ -213,7 +221,10 @@ export function ComparePanel({ currentPath, suggestions, icon, onOpen, onClose }
                 {removed(p) > 0 && <span className="diff-del small">−{count(removed(p))}</span>}
                 {p.changed > 0 && <span className="diff-mod small">~{count(p.changed)}</span>}
               </button>
-              {isOpen && (diff === "loading" || !diff ? <div className="empty-note">Comparing…</div> : <ListDiffView diff={diff} pair={p} otherOlder={otherOlder} icon={icon} onOpen={onOpen} />)}
+              {isOpen && (
+                diff === "loading" || !diff ? <div className="empty-note">Comparing…</div> :
+                  <ListDiffView diff={diff} pair={p} otherOlder={otherOlder} icon={icon} onOpen={onOpen} onEdited={onEdited} onRefresh={() => refresh(p)} />
+              )}
             </div>
           );
         })}
@@ -228,37 +239,89 @@ function ListDiffView({
   otherOlder,
   icon,
   onOpen,
+  onEdited,
+  onRefresh,
 }: {
   diff: ListDiff;
   pair: ComparePair;
   otherOlder: boolean;
   icon?: (pathId?: number | null) => string | undefined;
   onOpen: (list: number, row: number, newTab: boolean) => void;
+  onEdited: (state: EditState) => void;
+  onRefresh: () => Promise<void>;
 }) {
   const [openRecord, setOpenRecord] = useState<number | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [addedRecs, removedRecs] = otherOlder ? [diff.onlyThis, diff.onlyOther] : [diff.onlyOther, diff.onlyThis];
-  // Records of this (the open) file can be opened.
-  const inThis = (r: CompareRecord) => (otherOlder ? addedRecs : removedRecs).includes(r);
+  const rowKey = (row: number) => `r:${row}`;
+  const fieldKey = (c: ChangedRecord, field: string) => `f:${c.row}:${c.otherRow}:${field}`;
+  const copyable = [
+    ...(pair.canCopyRecordsFromOther ? diff.onlyOther.map((r) => rowKey(r.row)) : []),
+    ...diff.changed.flatMap((c) => c.fields.filter((f) => f.copyable).map((f) => fieldKey(c, f.field))),
+  ];
+  const chosen = copyable.filter((key) => selected.has(key));
 
-  const record = (r: CompareRecord, kind: "add" | "del", clickable: boolean) => (
-    <button
-      key={`${kind}${r.row}`}
-      className={"search-hit compare-rec" + (clickable ? "" : " static")}
-      onClick={(e) => clickable && pair.this !== null && onOpen(pair.this, r.row, e.ctrlKey || e.metaKey)}
-      disabled={!clickable}
-      title={clickable ? "Open (Ctrl+click: new tab)" : "Only in the other file"}
-    >
-      <span className="find-icon">{icon?.(r.icon) ? <img src={icon(r.icon)} alt="" draggable={false} /> : null}</span>
-      <span className="truncate">
-        <span className={kind === "add" ? "diff-add" : "diff-del"}>{kind === "add" ? "+ " : "− "}</span>
-        {r.name || <span className="muted">#{r.row}</span>}
-      </span>
-      <span className="mono muted small">{r.id}</span>
-    </button>
-  );
+  const setChecked = (keys: string[], checked: boolean) => {
+    setSelected((old) => {
+      const next = new Set(old);
+      for (const key of keys) checked ? next.add(key) : next.delete(key);
+      return next;
+    });
+  };
+
+  const copySelected = async () => {
+    if (pair.this === null || pair.other === null || chosen.length === 0) return;
+    const fields = diff.changed
+      .map((c) => ({ thisRow: c.row, otherRow: c.otherRow, fields: c.fields.filter((f) => selected.has(fieldKey(c, f.field))).map((f) => f.field) }))
+      .filter((r) => r.fields.length > 0);
+    const records = diff.onlyOther.filter((r) => selected.has(rowKey(r.row))).map((r) => r.row);
+    setBusy(true);
+    setError(null);
+    try {
+      onEdited(await copyCompare({ thisList: pair.this, otherList: pair.other, fields, records }));
+      setSelected(new Set());
+      await onRefresh();
+    } catch (e) {
+      setError(String(e).replace(/^Error: /, ""));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const record = (r: CompareRecord, kind: "add" | "del") => {
+    const comparedOnly = diff.onlyOther.includes(r);
+    const contents = (
+      <>
+        <span className="find-icon">{icon?.(r.icon) ? <img src={icon(r.icon)} alt="" draggable={false} /> : null}</span>
+        <span className="truncate">
+          <span className={kind === "add" ? "diff-add" : "diff-del"}>{kind === "add" ? "+ " : "− "}</span>
+          {r.name || <span className="muted">#{r.row}</span>}
+        </span>
+        <span className="mono muted small">{r.id}</span>
+      </>
+    );
+    if (comparedOnly) {
+      const key = rowKey(r.row);
+      return (
+        <label key={`${kind}${r.row}`} className={"search-hit compare-rec compare-select-rec" + (!pair.canCopyRecordsFromOther ? " disabled" : "")} title={pair.canCopyRecordsFromOther ? "Add this complete record to the open file" : pair.copyRecordsReason}>
+          <input type="checkbox" checked={selected.has(key)} disabled={!pair.canCopyRecordsFromOther || busy} onChange={(e) => setChecked([key], e.target.checked)} />
+          {contents}
+        </label>
+      );
+    }
+    return (
+      <button key={`${kind}${r.row}`} className="search-hit compare-rec" onClick={(e) => pair.this !== null && onOpen(pair.this, r.row, e.ctrlKey || e.metaKey)} title="Open (Ctrl+click: new tab)">
+        {contents}
+      </button>
+    );
+  };
 
   const changed = (c: ChangedRecord) => {
     const isOpen = openRecord === c.row;
+    const keys = c.fields.filter((f) => f.copyable).map((f) => fieldKey(c, f.field));
+    const allChecked = keys.length > 0 && keys.every((key) => selected.has(key));
     return (
       <div key={`c${c.row}`}>
         <div className="search-hit compare-rec">
@@ -284,6 +347,9 @@ function ListDiffView({
           <table className="field-diff">
             <thead>
               <tr>
+                <th className="compare-pick">
+                  <input type="checkbox" checked={allChecked} disabled={keys.length === 0 || busy} onChange={(e) => setChecked(keys, e.target.checked)} title="Select all compatible fields in this record" />
+                </th>
                 <th>Field</th>
                 <th>Before</th>
                 <th>After</th>
@@ -294,6 +360,15 @@ function ListDiffView({
                 const [before, after] = otherOlder ? [f.other, f.this] : [f.this, f.other];
                 return (
                   <tr key={f.field}>
+                    <td className="compare-pick">
+                      <input
+                        type="checkbox"
+                        checked={selected.has(fieldKey(c, f.field))}
+                        disabled={!f.copyable || busy}
+                        onChange={(e) => setChecked([fieldKey(c, f.field)], e.target.checked)}
+                        title={f.copyable ? "Copy this field from the compared file" : "This field is missing or incompatible in the open file"}
+                      />
+                    </td>
                     <td className="mono">{f.field}</td>
                     <td className="diff-old">{before ?? <span className="muted">—</span>}</td>
                     <td className="diff-new">{after ?? <span className="muted">—</span>}</td>
@@ -309,8 +384,20 @@ function ListDiffView({
 
   return (
     <div className="list-diff">
-      {addedRecs.map((r) => record(r, "add", inThis(r)))}
-      {removedRecs.map((r) => record(r, "del", inThis(r)))}
+      {copyable.length > 0 && (
+        <div className="compare-copy-tools">
+          <label className="check" title="Select every compatible changed field and every compatible missing record in this list">
+            <input type="checkbox" checked={chosen.length === copyable.length} onChange={(e) => setChecked(copyable, e.target.checked)} disabled={busy} /> Select all copyable
+          </label>
+          <span className="spacer" />
+          <button className="btn small primary" onClick={copySelected} disabled={chosen.length === 0 || busy} title="Copy the selection from the compared file into the open file as one undoable edit">
+            {busy ? <Loader2 size={12} className="spin" /> : <Copy size={12} />} Copy selected ({chosen.length})
+          </button>
+        </div>
+      )}
+      {error && <div className="se-problems compare-copy-error">{error}</div>}
+      {addedRecs.map((r) => record(r, "add"))}
+      {removedRecs.map((r) => record(r, "del"))}
       {diff.changed.map(changed)}
       {diff.truncated && <div className="search-note muted small">Showing the first {count(diff.changed.length)} changed records.</div>}
     </div>

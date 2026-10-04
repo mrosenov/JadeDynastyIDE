@@ -961,6 +961,7 @@ export default function App() {
                 suggestions={[settingsView?.client?.elementsPath ?? "", lastPath ?? ""]}
                 icon={icon}
                 onOpen={(list, row, newTab) => openLocation({ list, row }, newTab ? { newTab: true } : {})}
+                onEdited={afterEdits}
                 onClose={() => setPanel("lists")}
               />
             </div>

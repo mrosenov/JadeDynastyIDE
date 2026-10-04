@@ -33,7 +33,7 @@ const FIXED: [&str; 3] = ["_list", "_listName", "_row"];
 pub const JSON_FORMAT: &str = "jdide-elements";
 pub const JSON_FORMAT_VERSION: u32 = 1;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct JsonList {
     pub list: usize,

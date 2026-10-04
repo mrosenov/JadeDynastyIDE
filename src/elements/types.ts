@@ -546,6 +546,8 @@ export interface ComparePair {
   onlyThis: number;
   onlyOther: number;
   changed: number;
+  canCopyRecordsFromOther: boolean;
+  copyRecordsReason?: string;
 }
 
 export interface CompareSummary {
@@ -567,6 +569,7 @@ export interface FieldChange {
   field: string;
   this: string | null;
   other: string | null;
+  copyable: boolean;
 }
 
 export interface ChangedRecord extends CompareRecord {
@@ -580,6 +583,14 @@ export interface ListDiff {
   onlyOther: CompareRecord[];
   changed: ChangedRecord[];
   truncated: boolean;
+}
+
+export interface CompareCopyRequest {
+  thisList: number;
+  otherList: number;
+  fields: { thisRow: number; otherRow: number; fields: string[] }[];
+  /** Rows in the compared file to append to the open file. */
+  records: number[];
 }
 
 // ---------------------------------------------------------------- editing
@@ -678,7 +689,7 @@ export interface HistoryRecord {
   list: number;
   /** The row now (absent: the record is deleted). */
   row?: number;
-  action: "edit" | "clone" | "import" | "delete";
+  action: "edit" | "clone" | "import" | "copy" | "delete";
   id: number;
   name: string;
   icon?: number;
