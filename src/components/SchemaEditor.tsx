@@ -60,13 +60,14 @@ interface Props {
 }
 
 const INTEGER_KINDS = new Set<Kind>(["i8", "u8", "bool", "i16", "u16", "i32", "u32", "i64", "u64"]);
-const ROLES = ["", "path", "icon", "skill", "buff", "money", "time", "duration", "duration_ms", "daytime"];
+const ROLES = ["", "path", "icon", "skill", "buff", "title", "money", "time", "duration", "duration_ms", "daytime"];
 const ROLE_LABEL: Record<string, string> = {
   "": "—",
   path: "path",
   icon: "icon",
   skill: "skill (name from skillstr.txt)",
   buff: "buff (name from buff_str.txt)",
+  title: "title (name from title_def_u.lua)",
   money: "money (Gold / Silver / Copper)",
   time: "date/time (unix)",
   duration: "duration (seconds)",

@@ -1,4 +1,4 @@
-//! Reader for Angelica File Packages (`.pck`, version 2.2), the archives the
+//! Reader for Angelica File Packages (`.pck`, versions 2.2 and 2.3), the archives the
 //! client keeps its resources in.
 //!
 //! Layout (from AFilePackage.h and the files themselves):
@@ -9,9 +9,10 @@
 //! entry table at (header.entry_offset ^ KEY1):
 //!     per file: u32 len ^ KEY1, u32 len ^ KEY2, len bytes of FILEENTRY
 //!               (zlib-compressed when len < 276)
-//! header (272 B): u32 0xFDFDFEEE, u32 version, u32 entry_offset ^ KEY1,
-//!                 u32 flags, char description[252], u32 0xF00DBEEF
-//! u32 file count, u32 version (0x00020002)
+//! v2.2 header (272 B): u32 0xFDFDFEEE, u32 version, u32 entry_offset ^ KEY1,
+//!                      u32 flags, char description[252], u32 0xF00DBEEF
+//! v2.3 header (280 B): the guard moves four bytes and file entries use u64 offsets
+//! u32 file count, u32 version (0x00020002 or 0x00020003)
 //! ```
 //!
 //! Archives over 2 GB continue in `.pkx` (then `.pkx1`, …) files; offsets
@@ -30,8 +31,12 @@ const KEY1: u32 = 0xa893_7462;
 const KEY2: u32 = 0xf1a4_3653;
 const HEADER_GUARD0: u32 = 0xfdfd_feee;
 const HEADER_GUARD1: u32 = 0xf00d_beef;
-const HEADER_SIZE: u64 = 272;
-const ENTRY_SIZE: usize = 276;
+const HEADER_SIZE_V22: u64 = 272;
+const HEADER_SIZE_V23: u64 = 280;
+const ENTRY_SIZE_V22: usize = 276;
+/// v2.3 entries seen in the client are 284 or 288 bytes; both share the
+/// fields used below.
+const ENTRY_SIZE_V23: usize = 284;
 const NAME_SIZE: usize = 260;
 const MAX_FILE: u32 = 512 << 20;
 
@@ -39,7 +44,7 @@ const MAX_FILE: u32 = 512 << 20;
 pub struct PckEntry {
     /// Path inside the package as stored (backslashes, original case).
     pub path: String,
-    pub offset: u32,
+    pub offset: u64,
     pub length: u32,
     pub compressed: u32,
 }
@@ -67,6 +72,10 @@ fn u32_at(b: &[u8], at: usize) -> u32 {
     u32::from_le_bytes(b[at..at + 4].try_into().unwrap())
 }
 
+fn u64_at(b: &[u8], at: usize) -> u64 {
+    u64::from_le_bytes(b[at..at + 8].try_into().unwrap())
+}
+
 fn err(path: &Path, what: impl std::fmt::Display) -> String {
     format!("{}: {what}", path.display())
 }
@@ -92,22 +101,24 @@ impl Pck {
             start += len;
         }
         let total = start;
-        if total < HEADER_SIZE + 8 + 12 {
+        if total < HEADER_SIZE_V22 + 8 + 12 {
             return Err(err(path, "too small to be a package"));
         }
 
         let mut pck = Self { path: path.to_path_buf(), parts: Mutex::new(parts), entries: Vec::new(), index: HashMap::new() };
         let tail = pck.read_at(total - 8, 8)?;
         let (count, version) = (u32_at(&tail, 0), u32_at(&tail, 4));
-        if version != 0x0002_0002 {
-            return Err(err(path, format!("unsupported package version 0x{version:08x}")));
-        }
-        let header = pck.read_at(total - 8 - HEADER_SIZE, HEADER_SIZE as usize)?;
-        if u32_at(&header, 0) != HEADER_GUARD0 || u32_at(&header, 268) != HEADER_GUARD1 {
+        let (header_size, guard1) = match version {
+            0x0002_0002 => (HEADER_SIZE_V22, 268),
+            0x0002_0003 => (HEADER_SIZE_V23, 272),
+            _ => return Err(err(path, format!("unsupported package version 0x{version:08x}"))),
+        };
+        let header = pck.read_at(total - 8 - header_size, header_size as usize)?;
+        if u32_at(&header, 0) != HEADER_GUARD0 || u32_at(&header, guard1) != HEADER_GUARD1 {
             return Err(err(path, "package header not found"));
         }
         let entry_offset = (u32_at(&header, 8) ^ KEY1) as u64;
-        let table_len = (total - 8 - HEADER_SIZE).checked_sub(entry_offset).ok_or_else(|| err(path, "bad entry table offset"))?;
+        let table_len = (total - 8 - header_size).checked_sub(entry_offset).ok_or_else(|| err(path, "bad entry table offset"))?;
         let table = pck.read_at(entry_offset, table_len as usize)?;
 
         let mut p = 0;
@@ -123,22 +134,25 @@ impl Pck {
             }
             let raw = &table[p + 8..p + 8 + len];
             p += 8 + len;
-            let entry = if len < ENTRY_SIZE {
-                let mut out = Vec::with_capacity(ENTRY_SIZE);
+            let entry_size = if version == 0x0002_0002 { ENTRY_SIZE_V22 } else { ENTRY_SIZE_V23 };
+            let entry = if len < entry_size {
+                let mut out = Vec::with_capacity(entry_size);
                 ZlibDecoder::new(raw).read_to_end(&mut out).map_err(|_| bad())?;
                 out
             } else {
                 raw.to_vec()
             };
-            if entry.len() < NAME_SIZE + 12 {
-                return Err(bad());
-            }
+            let fields = match version {
+                0x0002_0002 if entry.len() >= NAME_SIZE + 12 => (u32_at(&entry, NAME_SIZE) as u64, NAME_SIZE + 4, NAME_SIZE + 8),
+                0x0002_0003 if entry.len() >= NAME_SIZE + 20 => (u64_at(&entry, NAME_SIZE + 4), NAME_SIZE + 12, NAME_SIZE + 16),
+                _ => return Err(bad()),
+            };
             let name_end = entry[..NAME_SIZE].iter().position(|&b| b == 0).unwrap_or(NAME_SIZE);
             entries.push(PckEntry {
                 path: GBK.decode(&entry[..name_end]).0.into_owned(),
-                offset: u32_at(&entry, NAME_SIZE),
-                length: u32_at(&entry, NAME_SIZE + 4),
-                compressed: u32_at(&entry, NAME_SIZE + 8),
+                offset: fields.0,
+                length: u32_at(&entry, fields.1),
+                compressed: u32_at(&entry, fields.2),
             });
         }
         pck.index = entries.iter().enumerate().map(|(i, e)| (normalize(&e.path), i)).collect();
@@ -173,7 +187,7 @@ impl Pck {
         if entry.length > MAX_FILE {
             return Err(err(&self.path, format!("{} is too large", entry.path)));
         }
-        let stored = self.read_at(entry.offset as u64, entry.compressed as usize)?;
+        let stored = self.read_at(entry.offset, entry.compressed as usize)?;
         if entry.compressed >= entry.length {
             return Ok(stored);
         }
@@ -222,7 +236,19 @@ mod tests {
         let pck = Pck::open(&models).unwrap();
         // A file stored past the 2 GB .pck part must come from the .pkx.
         let far = pck.entries.iter().max_by_key(|e| e.offset).unwrap();
-        assert!(far.offset as u64 > std::fs::metadata(&models).unwrap().len());
+        assert!(far.offset > std::fs::metadata(&models).unwrap().len());
         assert_eq!(pck.read(far).unwrap().len(), far.length as usize);
     }
+
+    #[test]
+    fn reads_v23_interfaces_package() {
+        let path = Path::new("E:/Games/Elite Jade Dynasty - HDN/element/interfaces.pck");
+        if !path.exists() {
+            return;
+        }
+        let pck = Pck::open(path).unwrap();
+        let lua = pck.read_path("interfaces/script/config/title_def_u.lua").unwrap();
+        assert!(lua.len() > 10_000);
+    }
+
 }

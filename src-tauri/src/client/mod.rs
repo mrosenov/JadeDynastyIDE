@@ -4,6 +4,7 @@
 pub mod dds;
 pub mod pck;
 pub mod strings;
+pub mod titles;
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -244,6 +245,8 @@ pub struct Resources {
     /// String tables of configs.pck by file name, read on first use.
     tables: Mutex<HashMap<&'static str, Arc<Result<strings::StringTable, String>>>>,
     item_colors: OnceLock<Option<strings::ItemColors>>,
+    /// Title definitions from interfaces.pck, read on first use.
+    titles: OnceLock<Result<titles::TitleTable, String>>,
 }
 
 /// The string tables of configs.pck the editor reads.
@@ -265,6 +268,7 @@ impl Resources {
             packages: Mutex::new(HashMap::new()),
             tables: Mutex::new(HashMap::new()),
             item_colors: OnceLock::new(),
+            titles: OnceLock::new(),
         }
     }
 
@@ -365,6 +369,28 @@ impl Resources {
         strings::colored_text(&self.text(table::BUFFS, id)?)
     }
 
+    fn titles(&self) -> Result<&titles::TitleTable, String> {
+        self.titles
+            .get_or_init(|| {
+                let bytes = self.package("interfaces")?.read_path("interfaces/script/config/title_def_u.lua")?;
+                titles::TitleTable::parse(&bytes)
+            })
+            .as_ref()
+            .map_err(Clone::clone)
+    }
+
+    /// A title's display name, without its game colour code.
+    pub fn title_name(&self, id: u32) -> Option<String> {
+        strings::first_line(&self.titles().ok()?.get(id)?.name)
+    }
+
+    /// A title and its description, retaining game colours for the popover.
+    pub fn title_description(&self, id: u32) -> Option<String> {
+        let title = self.titles().ok()?.get(id)?;
+        let description = strings::colored_text(&title.description)?;
+        Some(format!("{}\n{}", title.name.trim(), description))
+    }
+
     /// An item's name colour (item_color.txt), when it is not white.
     pub fn item_color(&self, id: u32) -> Option<&str> {
         self.item_colors
@@ -440,6 +466,16 @@ mod tests {
         let description = res.skill_description(218).expect("skill 218 description");
         assert!(description.lines().count() > 1, "popover description was truncated: {description:?}");
         assert!(description.contains("^ffffff") && description.contains("^ffcb4a"), "skill colours were lost: {description:?}");
+    }
+
+    #[test]
+    fn reads_title_definitions_from_interfaces() {
+        let Some(dir) = client() else { return };
+        let res = Resources::new(inspect(&dir).unwrap());
+        assert!(res.titles().unwrap().len() > 1000);
+        assert_eq!(res.title_name(1001).as_deref(), Some("The Pinnacle"));
+        let description = res.title_description(1001).expect("title 1001 description");
+        assert!(description.starts_with("^ffbc3cThe Pinnacle\n") && description.lines().count() > 2, "bad title tooltip: {description:?}");
     }
 }
 

@@ -61,6 +61,10 @@ folder. JD IDE then:
     colours, including white, independently of the app theme. `tools/type-rules.json` gives
     the role to ID fields such as
     `skill_id_1`, `id_skill`, `cast_skill`, `buff_id`.
+- reads `Interfaces\script\config\title_def_u.lua` from `interfaces.pck`. Integer fields
+  assigned the `title` role show the title name beside its ID; hovering the name shows its
+  description in the same dark, colour-aware popover. JD IDE parses only the `id`, `note`
+  and `desc` table fields and does not execute the Lua script.
 
   The tables are UTF-16 string tables (`#_index`, `#_begin`, quoted strings, `\r` for line
   breaks), read as the client's CECStringTab does (`src-tauri/src/client/strings.rs`). A quoted
@@ -71,7 +75,7 @@ folder. JD IDE then:
 
 Settings are stored in `%APPDATA%\com.jdide.app\settings.json`.
 
-`src-tauri/src/client/pck.rs` reads Angelica File Packages (version 2.2, including `.pkx`
+`src-tauri/src/client/pck.rs` reads Angelica File Packages (versions 2.2 and 2.3, including `.pkx`
 continuation parts). `dds.rs` decodes DXT1/3/5 and uncompressed DDS, one icon's blocks at a
 time. Icons are served to the UI as PNGs through the `jdicon://` protocol. Path IDs only
 match when `elements.data` comes from the same client as `path.data`.

@@ -584,14 +584,15 @@ impl Document {
             a.set = field.e.clone();
             return a;
         }
-        // Skill and buff IDs: their names from configs.pck.
-        if let (Some(role @ ("skill" | "buff")), Some(res)) = (field.display.as_deref(), &self.resources) {
+        // Skill, buff and title IDs: their names and descriptions from the client.
+        if let (Some(role @ ("skill" | "buff" | "title")), Some(res)) = (field.display.as_deref(), &self.resources) {
             if value > 0 && value <= u32::MAX as i64 {
                 let id = value as u32;
-                let (name, description) = if role == "skill" {
-                    (res.skill_name(id), res.skill_description(id))
-                } else {
-                    (res.buff_name(id), res.buff_description(id))
+                let (name, description) = match role {
+                    "skill" => (res.skill_name(id), res.skill_description(id)),
+                    "buff" => (res.buff_name(id), res.buff_description(id)),
+                    "title" => (res.title_name(id), res.title_description(id)),
+                    _ => unreachable!(),
                 };
                 a.hint = Some(name.unwrap_or_else(|| format!("no such {role}")));
                 a.description = description;

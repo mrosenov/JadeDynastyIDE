@@ -28,7 +28,7 @@ pub struct Node {
     /// The record this value refers to, as (list, row).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<(usize, usize)>,
-    /// Display role of the value ("path", "icon", "skill").
+    /// Display role of the value ("path", "icon", "skill", "buff", "title", …).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

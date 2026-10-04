@@ -84,7 +84,7 @@ function GameText({ text }: { text: string }) {
   return <>{parts}</>;
 }
 
-function ResourceHint({ kind, name, description }: { kind: "skill" | "buff"; name: string; description: string }) {
+function ResourceHint({ kind, name, description }: { kind: "skill" | "buff" | "title"; name: string; description: string }) {
   const id = useId();
   const trigger = useRef<HTMLSpanElement>(null);
   const box = useRef<HTMLDivElement>(null);
@@ -284,7 +284,7 @@ ${node.comment}` : ""}` : node.comment}
                 (node.value ?? (node.children ? <span className="muted">{node.children.length} items</span> : null))
               )}
               {node.hint &&
-                (node.description && (node.display === "skill" || node.display === "buff") ? (
+                (node.description && (node.display === "skill" || node.display === "buff" || node.display === "title") ? (
                   <ResourceHint kind={node.display} name={node.hint} description={node.description} />
                 ) : link(node) ? (
                   <button

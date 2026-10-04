@@ -71,8 +71,9 @@ Environment quirks (Windows 11, Git Bash):
 | `elements/edit.rs` | In-memory editing: journal, undo/redo, history, revert, clone, delete, bulk edit, value encoding. |
 | `elements/save.rs` | Saving: checksum, backup, atomic write, changed-on-disk guard. |
 | `client/mod.rs` | Game client folder: `path.data`, icon atlas, packages, string tables (`Resources`). |
-| `client/pck.rs`, `client/dds.rs` | `.pck` package reader, DDS decoding for icons. |
+| `client/pck.rs`, `client/dds.rs` | `.pck` 2.2/2.3 package reader, DDS decoding for icons. |
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
+| `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 
 ### UI (`src/`)
 
@@ -154,6 +155,9 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `skillstr.txt` (name at skill id × 10, introduction at +1, detailed description at +2),
   `buff_str.txt` (name then description), `item_desc.txt` (palette entries 5–14),
   `item_color.txt` (name colours).
+- `interfaces.pck` supplies `Interfaces/script/config/title_def_u.lua`. Its
+  `title_definition` records map `id` to `note` (coloured title name) and `desc`; the editor
+  parses those assignments without executing Lua.
 - Skill and buff hover popovers keep and safely render `^RRGGBB` colour runs against a fixed
   dark background, so their game colours do not depend on the app theme.
 - **Parsing rule (important):** a string starts on the same line as its number, but quoted
@@ -205,7 +209,7 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 
 ## Display roles, sets and the schema editor
 
-- Roles (`display` on a field): `path`, `icon`, `skill`, `buff`, `time` (unix),
+- Roles (`display` on a field): `path`, `icon`, `skill`, `buff`, `title`, `time` (unix),
   `duration` (s), `duration_ms`, `daytime` (seconds into the day), `money` (copper; shown
   as `12G 34S 56C`, full words on hover; editing accepts `1G 50S`, `1g 50s` or
   `1 Gold 50 Silver`). The user wanted capital letters or full words, never `g/s/c`.
@@ -229,7 +233,7 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 | `E:/Game Dev/JD/zxserver/zgame/gs/config/elements.data` (+ `path.data`) | v156 | Matches the source; valid checksum. Default test file. |
 | `E:/Game Dev/JD/1559/gamed/config/elements.data` | v158 | server |
 | `E:/Game Dev/JD/Clean/root/gamed/config/elements.data` | v160 | server |
-| `E:/Games/ForsakenJD/element/` (client: `data/elements.data`, `configs.pck`, `surfaces.pck`) | v160 | The user's main client; has a `.bak` from a save. |
+| `E:/Games/ForsakenJD/element/` (client: `data/elements.data`, `configs.pck`, `interfaces.pck`, `surfaces.pck`) | v160 | The user's main client; has a `.bak` from a save. |
 | `E:/Game Dev/JD/1792/gamed/config/elements.data` | v165 | server; valid checksum with its path.data |
 | `E:/Games/Elite Jade Dynasty - HDN/element/` | v165 | client |
 | `C:/Users/mitko/Desktop/elements-v112.data`, `elements-v156.data` | v112/v156 | loose copies |

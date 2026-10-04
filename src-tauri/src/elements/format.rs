@@ -133,7 +133,7 @@ pub struct Field {
     /// Key of an enum or mask (`formats/enums` or `formats/masks`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub e: Option<String>,
-    /// How the value is meant to be read: "path", "icon" or "skill".
+    /// How the value is meant to be read: "path", "icon", "skill", "buff", "title", …
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub display: Option<String>,
     /// Structs (e.g. "EQUIPMENT_ADDON") of the lists whose IDs this field holds.

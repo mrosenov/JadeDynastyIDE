@@ -32,7 +32,7 @@ pub struct StringTable {
 }
 
 /// The text of a table file, with "\n" line breaks.
-fn decode(bytes: &[u8]) -> String {
+pub(super) fn decode(bytes: &[u8]) -> String {
     let text = if let Some(rest) = bytes.strip_prefix(&[0xff, 0xfe]) {
         UTF_16LE.decode_without_bom_handling(rest).0.into_owned()
     } else if let Some(rest) = bytes.strip_prefix(&[0xfe, 0xff]) {
