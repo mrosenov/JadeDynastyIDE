@@ -34,6 +34,9 @@ Fields with enums/masks show their labels; fields that hold another list's IDs
 link to that record. Texts show their line breaks (CR LF, or `!$` from the official
 editor's exports) as ↵. Selecting a text with breaks or `^RRGGBB` colour codes opens a
 preview that renders it as the game would, with the raw codes one click away.
+Field rows alternate subtle background shades to make wide records easier to follow.
+Display groups, arrays with more than one element, and nested struct rows use shaded, bold headings so their sections are easy to scan.
+The schema editor can give either heading an optional colour; the colour stays on the heading only.
 
 ## Settings and the game client
 
@@ -416,7 +419,7 @@ schema editor):
 `tools/type-rules.json` assigns roles by field name (`roles`), with units checked against
 real values: medicine and revive scroll `cool_time` are milliseconds, recipe `cool_time` is
 seconds (up to 7 days) although its source comment says milliseconds.
-Each list definition is `{ name, struct, size, fields }`, and fields are `{ name, off, t, c?, e?, display?, refs?, g?, when? }`.
+Each list definition is `{ name, struct, size, fields }`, and fields are `{ name, off, t, c?, e?, display?, refs?, g?, color?, gc?, when? }`.
 Here `t` is a type tree (scalars, `wstr`/`str`/`bytes`, nested `array` and `struct`), and
 `refs` names the target lists by struct, so a definition can be shared between versions.
 `when` holds conditional types, e.g.
@@ -425,6 +428,8 @@ holds one of the values (or none of them, with `"not": true`) decides the type. 
 field size. Otherwise `t` applies.
 An optional `g` puts consecutive fields into a named, collapsible display group
 (collapsed by default). It never changes field names or offsets.
+Struct headings can carry an optional `color`; a group's optional colour is saved as `gc`
+on its members. The schema editor manages both through the colour swatch on the heading row.
 
 The schema editor (top bar, far right) saves each list you edit as
 `%APPDATA%\com.jdide.app\layouts\<id>\list_<n>.json`. That file overrides that one list of

@@ -143,6 +143,13 @@ pub struct Field {
     /// together under one collapsible row. It does not affect the layout.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub g: Option<String>,
+    /// Optional colour of this struct heading in the record inspector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub color: Option<String>,
+    /// Optional colour of the display group named by `g`. Repeated on its
+    /// members because groups are not stored as fields of their own.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gc: Option<String>,
     /// Conditional types: the first rule whose sibling field matches decides
     /// how this field is read; otherwise `t` applies.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

@@ -73,6 +73,8 @@ export interface FieldNode {
   unknown?: boolean;
   /** A display group of fields rather than a value. */
   group?: boolean;
+  /** Optional colour chosen for a group or struct heading. */
+  color?: string;
   /** Why a conditional type was chosen, e.g. "type = 7 → float". */
   cond?: string;
   /** Path ID of the item icon this value points at. */
@@ -121,6 +123,10 @@ export interface Field {
   refs?: string[];
   /** Display group shared by consecutive fields. */
   g?: string;
+  /** Optional colour of this struct heading. */
+  color?: string;
+  /** Optional colour of the display group named by `g`. */
+  gc?: string;
   /** Conditional types: the first matching rule decides how the field is read. */
   when?: TypeRule[];
 }

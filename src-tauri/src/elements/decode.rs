@@ -38,6 +38,9 @@ pub struct Node {
     /// A display group of consecutive fields (see `Field::g`).
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub group: bool,
+    /// Optional colour chosen for a group or struct heading.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub color: Option<String>,
     /// For fields with conditional types: why this type was chosen,
     /// e.g. "type = 7 → float".
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -53,7 +56,7 @@ pub struct Node {
     pub talk: Option<usize>,
 }
 
-fn group_node(name: String, members: Vec<Node>) -> Node {
+fn group_node(name: String, color: Option<String>, members: Vec<Node>) -> Node {
     let off = members.iter().map(|n| n.off).min().unwrap_or(0);
     let end = members.iter().map(|n| n.off + n.size).max().unwrap_or(off);
     let fields = members.iter().filter(|n| !n.unknown).count();
@@ -70,6 +73,7 @@ fn group_node(name: String, members: Vec<Node>) -> Node {
         children: Some(members),
         unknown: false,
         group: true,
+        color,
         cond: None,
         icon: None,
         set: None,
@@ -78,26 +82,29 @@ fn group_node(name: String, members: Vec<Node>) -> Node {
 }
 
 /// Wraps runs of consecutive nodes tagged with the same group into one node.
-fn grouped(items: Vec<(Option<String>, Node)>) -> Vec<Node> {
+fn grouped(items: Vec<(Option<String>, Option<String>, Node)>) -> Vec<Node> {
     let mut out = Vec::new();
-    let mut run: Option<(String, Vec<Node>)> = None;
-    for (g, node) in items {
-        if let (Some((name, members)), Some(g)) = (run.as_mut(), g.as_deref()) {
+    let mut run: Option<(String, Option<String>, Vec<Node>)> = None;
+    for (g, gc, node) in items {
+        if let (Some((name, color, members)), Some(g)) = (run.as_mut(), g.as_deref()) {
             if name == g {
+                if color.is_none() {
+                    *color = gc;
+                }
                 members.push(node);
                 continue;
             }
         }
-        if let Some((name, members)) = run.take() {
-            out.push(group_node(name, members));
+        if let Some((name, color, members)) = run.take() {
+            out.push(group_node(name, color, members));
         }
         match g {
-            Some(g) => run = Some((g, vec![node])),
+            Some(g) => run = Some((g, gc, vec![node])),
             None => out.push(node),
         }
     }
-    if let Some((name, members)) = run {
-        out.push(group_node(name, members));
+    if let Some((name, color, members)) = run {
+        out.push(group_node(name, color, members));
     }
     out
 }
@@ -206,6 +213,7 @@ impl Ctx<'_> {
             children: None,
             unknown: false,
             group: false,
+            color: field.and_then(|f| f.color.clone()),
             cond: None,
             icon: None,
             set: None,
@@ -255,7 +263,7 @@ impl Ctx<'_> {
     }
 
     fn fields(&self, fields: &[Field], base: usize) -> Vec<Node> {
-        grouped(fields.iter().map(|f| (f.g.clone(), self.typed(f, fields, base))).collect())
+        grouped(fields.iter().map(|f| (f.g.clone(), f.gc.clone(), self.typed(f, fields, base))).collect())
     }
 
     /// Decodes a field, applying its conditional type rules: the first rule
@@ -311,6 +319,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
                     children: None,
                     unknown: true,
                     group: false,
+                    color: None,
                     cond: None,
                     icon: None,
                     set: None,
@@ -333,6 +342,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
         children,
         unknown: true,
         group: false,
+        color: None,
         cond: None,
         icon: None,
         set: None,
@@ -347,21 +357,25 @@ pub fn decode_record(bytes: &[u8], fields: &[Field], annotate: &Annotator) -> Ve
     let mut sorted: Vec<&Field> = fields.iter().filter(|f| f.off < bytes.len()).collect();
     sorted.sort_by_key(|f| f.off);
 
-    let mut nodes: Vec<(Option<String>, Node)> = Vec::new();
+    let mut nodes: Vec<(Option<String>, Option<String>, Node)> = Vec::new();
     let mut cursor = 0;
-    let mut previous_group: Option<&str> = None;
+    let mut previous_group: Option<(String, Option<String>)> = None;
     for f in sorted {
         if f.off > cursor {
             // A gap between two fields of one group stays inside the group.
-            let g = previous_group.filter(|&p| f.g.as_deref() == Some(p)).map(str::to_string);
-            nodes.push((g, gap_node(bytes, cursor, f.off - cursor)));
+            let (g, gc) = previous_group
+                .as_ref()
+                .filter(|(name, _)| f.g.as_deref() == Some(name.as_str()))
+                .map(|(name, color)| (Some(name.clone()), color.clone()))
+                .unwrap_or_default();
+            nodes.push((g, gc, gap_node(bytes, cursor, f.off - cursor)));
         }
-        nodes.push((f.g.clone(), ctx.typed(f, fields, 0)));
+        nodes.push((f.g.clone(), f.gc.clone(), ctx.typed(f, fields, 0)));
         cursor = cursor.max(f.off + f.t.size());
-        previous_group = f.g.as_deref();
+        previous_group = f.g.clone().map(|name| (name, f.gc.clone()));
     }
     if cursor < bytes.len() {
-        nodes.push((None, gap_node(bytes, cursor, bytes.len() - cursor)));
+        nodes.push((None, None, gap_node(bytes, cursor, bytes.len() - cursor)));
     }
     grouped(nodes)
 }
@@ -384,12 +398,12 @@ mod tests {
     use super::*;
 
     fn field(name: &str, off: usize, g: Option<&str>) -> Field {
-        Field { name: name.into(), off, t: Ty::I32, c: None, e: None, display: None, refs: vec![], g: g.map(Into::into), when: vec![] }
+        Field { name: name.into(), off, t: Ty::I32, c: None, e: None, display: None, refs: vec![], g: g.map(Into::into), color: None, gc: None, when: vec![] }
     }
 
     #[test]
     fn consecutive_fields_of_a_group_share_one_node() {
-        let fields = [
+        let mut fields = [
             field("id", 0, None),
             field("addon1", 4, Some("Addons")),
             field("addon2", 8, Some("Addons")),
@@ -397,6 +411,9 @@ mod tests {
             field("addon3", 16, Some("Addons")),
             field("price", 20, None),
         ];
+        fields[1].gc = Some("#4f8cff".into());
+        fields[2].gc = Some("#4f8cff".into());
+        fields[3].gc = Some("#4f8cff".into());
         let bytes = [1u8; 28];
         let nodes = decode_record(&bytes, &fields, &|_, _| Annotation::default());
         let names: Vec<&str> = nodes.iter().map(|n| n.name.as_str()).collect();
@@ -407,6 +424,7 @@ mod tests {
         let members: Vec<&str> = group.children.as_ref().unwrap().iter().map(|n| n.name.as_str()).collect();
         assert_eq!(members, ["addon1", "addon2", "unknown @0xc", "addon3"]);
         assert_eq!(group.value.as_deref(), Some("3 fields"));
+        assert_eq!(group.color.as_deref(), Some("#4f8cff"));
     }
 
     #[test]

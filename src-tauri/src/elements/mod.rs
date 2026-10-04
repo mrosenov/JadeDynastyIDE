@@ -1581,6 +1581,8 @@ mod tests {
                 display: None,
                 refs: vec![],
                 g: None,
+                color: None,
+                gc: None,
                 when: vec![],
             }],
         };
@@ -1720,7 +1722,7 @@ mod tests {
 
     #[test]
     fn invalid_definitions_are_rejected() {
-        let field = |name: &str, off| Field { name: name.into(), off, t: Ty::I32, c: None, e: None, display: None, refs: vec![], g: None, when: vec![] };
+        let field = |name: &str, off| Field { name: name.into(), off, t: Ty::I32, c: None, e: None, display: None, refs: vec![], g: None, color: None, gc: None, when: vec![] };
         let def = |fields, size| ListDef { key: None, name: "L".into(), struct_name: None, size, fields };
         assert!(def(vec![field("a", 0), field("a", 4)], Some(8)).check().is_err());
         assert!(def(vec![field("a", 0), field("b", 4)], Some(6)).check().is_err());

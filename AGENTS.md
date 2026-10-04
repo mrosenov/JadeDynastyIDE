@@ -209,7 +209,8 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   Sets can be created, edited, deleted, or reverted to built-in. The 64-bit mask popover
   sizes its hex column with `--hex-w`.
 - Schema editor: types, arrays, structs, groups (group/ungroup, the group checkbox selects
-  its fields), conditional types, refs, roles, Import from other versions, and
+  its fields), optional colours for group/struct headings, conditional types, refs, roles,
+  Import from other versions, and
   **Paste a field list**:
   - sELedit/Jade Editor format: a line of `;`-separated names, then a line of types;
   - types: `int32`, `float`, `wstring:N`, `byte:N`, `byte:AUTO`, …;

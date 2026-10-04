@@ -534,6 +534,12 @@ input {
   height: 26px;
   cursor: default;
 }
+.field-row:nth-of-type(odd) {
+  background: transparent;
+}
+.field-row:nth-of-type(even) {
+  background: color-mix(in srgb, var(--bg-pane) 55%, transparent);
+}
 .field-row:hover {
   background: var(--bg-hover);
 }
@@ -1172,6 +1178,40 @@ select.cell {
   text-overflow: ellipsis;
   font-size: 12px;
 }
+.se-color-control {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+}
+.se-color-control input[type="color"] {
+  width: 24px;
+  height: 22px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-elev);
+  cursor: pointer;
+}
+.se-color-control:not(.set) input[type="color"] {
+  opacity: 0.45;
+}
+.se-color-control > button {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.se-color-control > button:hover {
+  background: var(--bg-elev);
+  color: var(--text);
+}
 .se-group-tag {
   flex: none;
   padding: 0 6px;
@@ -1184,15 +1224,29 @@ select.cell {
   background: var(--accent-soft);
 }
 
-.field-row.group {
+.field-row.group,
+.field-row.structure,
+.field-row.array {
   background: var(--bg-pane);
 }
-.field-row.group .field-label {
+.field-row.group .field-label,
+.field-row.structure .field-label,
+.field-row.array .field-label {
   font-weight: 600;
 }
-.field-row.group .field-value {
+.field-row.group .field-value,
+.field-row.structure .field-value,
+.field-row.array .field-value {
   color: var(--text-dim);
   font-family: var(--font);
+}
+.field-row.custom-heading {
+  background: color-mix(in srgb, var(--heading-color) 16%, var(--bg-pane));
+  box-shadow: inset 3px 0 0 var(--heading-color);
+}
+.field-row.custom-heading:hover,
+.field-row.custom-heading.active {
+  background: color-mix(in srgb, var(--heading-color) 23%, var(--bg-pane));
 }
 
 /* ---------- icons (lucide) ---------- */
@@ -1478,7 +1532,7 @@ svg.lucide {
 .se-grid {
   grid-template-columns:
     minmax(160px, 2fr) 104px 64px 64px minmax(96px, 1.1fr) 70px minmax(96px, 1.1fr)
-    minmax(100px, 1.4fr) 52px 44px 146px;
+    minmax(100px, 1.4fr) 52px 44px 176px;
 }
 
 .se-actions button.on {
@@ -2128,6 +2182,15 @@ svg.lucide {
 
 .se-row:nth-of-type(even):not(.active):not(.picked):not(.se-group-row) {
   background: color-mix(in srgb, var(--bg-pane) 55%, transparent);
+}
+.se-row.custom-heading {
+  background: color-mix(in srgb, var(--heading-color) 16%, var(--bg-pane));
+  box-shadow: inset 3px 0 0 var(--heading-color);
+}
+.se-row.custom-heading:hover,
+.se-row.custom-heading.active,
+.se-row.custom-heading.picked {
+  background: color-mix(in srgb, var(--heading-color) 23%, var(--bg-pane));
 }
 
 /* Every editable cell looks like a control: a box with a border. */

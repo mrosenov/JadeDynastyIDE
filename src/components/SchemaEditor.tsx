@@ -74,6 +74,22 @@ const ROLE_LABEL: Record<string, string> = {
   daytime: "time of day (seconds)",
 };
 
+const DEFAULT_HEADING_COLOR = "#5b8def";
+const headingStyle = (color: string) => (color ? ({ "--heading-color": color } as React.CSSProperties) : undefined);
+
+function HeadingColor({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return (
+    <span className={"se-color-control" + (value ? " set" : "")} onClick={(e) => e.stopPropagation()} title="Optional heading colour">
+      <input type="color" value={value || DEFAULT_HEADING_COLOR} onChange={(e) => onChange(e.target.value)} aria-label="Heading colour" />
+      {value && (
+        <button title="Remove heading colour" onClick={() => onChange("")} aria-label="Remove heading colour">
+          <X size={11} />
+        </button>
+      )}
+    </span>
+  );
+}
+
 // ---------------------------------------------------------------- tree edits
 
 type Op = (siblings: EditField[], index: number) => EditField[];
@@ -114,6 +130,7 @@ function suggestGroupName(members: EditField[]): string {
 function kindPatch(f: EditField, kind: Kind): Partial<EditField> {
   const p: Partial<EditField> = { kind };
   if (kind === "struct" && !f.children.length) p.children = [newField({ name: "value" })];
+  if (kind !== "struct") p.color = "";
   if (kindInfo(kind).len && !(f.len >= 1)) p.len = kind === "bytes" ? 4 : 32;
   if (!INTEGER_KINDS.has(kind)) Object.assign(p, { e: "", display: "", refs: [] });
   return p;
@@ -902,7 +919,8 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                     (f.uid === selected ? " active" : "") +
                     (picked.has(f.uid) && picked.size > 1 ? " picked" : "") +
                     (problem ? " has-problem" : "") +
-                    (pad ? " pad" : "");
+                    (pad ? " pad" : "") +
+                    (hasMembers(f.kind) && f.color ? " custom-heading" : "");
                   if (f.kind === "group") {
                     const open = !collapsed.has(f.uid);
                     const members = f.children.filter((c) => !isPad(c)).length;
@@ -911,6 +929,7 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                         key={f.uid}
                         data-uid={f.uid}
                         className={rowClass + " se-group-row"}
+                        style={headingStyle(f.color)}
                         onClick={(e) => clickRow(e, row)}
                       >
                         <span className="se-name">
@@ -948,6 +967,7 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                         <span className="se-group-info" style={{ gridColumn: "2 / 9" }}>
                           <span className="se-group-tag">group</span>
                           {members} field{members === 1 ? "" : "s"}
+                          <HeadingColor value={f.color} onChange={(color) => patch(f.uid, { color }, "color")} />
                           {!open && (
                             <span className="muted">
                               {" "}
@@ -994,6 +1014,7 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                     <Fragment key={f.uid}>
                     <div
                       className={rowClass}
+                      style={f.kind === "struct" ? headingStyle(f.color) : undefined}
                       onClick={(e) => clickRow(e, row)}
                       data-uid={f.uid}
                       onFocus={() => setSelected(f.uid)}
@@ -1130,6 +1151,7 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                       <span className="mono muted cell-static">{hex(off, 4)}</span>
                       <span className="mono muted cell-static">{fieldSize(f)}</span>
                       <span className="se-actions">
+                        {f.kind === "struct" && <HeadingColor value={f.color} onChange={(color) => patch(f.uid, { color }, "color")} />}
                         <button title="Move up" onClick={() => editField(f.uid, moveOp(-1), "move")} disabled={index === 0}>
                           <ArrowUp size={14} />
                         </button>

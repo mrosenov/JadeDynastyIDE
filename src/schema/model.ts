@@ -77,6 +77,8 @@ export interface EditField {
   display: string;
   refs: string[];
   c: string;
+  /** Optional #RRGGBB colour for this group or struct heading. */
+  color: string;
   /** Conditional types, checked in order. */
   when: EditRule[];
 }
@@ -112,6 +114,7 @@ export function newField(partial: Partial<EditField> = {}): EditField {
     display: "",
     refs: [],
     c: "",
+    color: "",
     when: [],
     ...partial,
   };
@@ -196,16 +199,19 @@ function fromTy(t: Ty, padTo?: number): Pick<EditField, "kind" | "len" | "dims" 
 
 /** Stored fields → editor fields, with gaps (and a tail up to `size`) as pads. */
 export function fromFields(fields: Field[], size?: number): EditField[] {
-  const out: { field: EditField; g?: string }[] = [];
+  const out: { field: EditField; g?: string; gc?: string }[] = [];
   let cursor = 0;
   let previous: string | undefined;
+  let previousColor: string | undefined;
   for (const f of [...fields].sort((a, b) => a.off - b.off)) {
     if (f.off < cursor) continue; // overlapping fields (unions) cannot be laid out in order
     // A gap between two members of one group stays inside the group.
-    if (f.off > cursor) out.push({ field: padField(cursor, f.off - cursor), g: previous === f.g ? f.g : undefined });
+    if (f.off > cursor) out.push({ field: padField(cursor, f.off - cursor), g: previous === f.g ? f.g : undefined, gc: previous === f.g ? previousColor : undefined });
     previous = f.g;
+    previousColor = f.gc;
     out.push({
       g: f.g,
+      gc: f.gc,
       field: {
         uid: uid(),
         name: f.name,
@@ -214,6 +220,7 @@ export function fromFields(fields: Field[], size?: number): EditField[] {
         display: f.display ?? "",
         refs: f.refs ?? [],
         c: f.c ?? "",
+        color: f.color ?? "",
         when: (f.when ?? []).map((r) => ({ uid: uid(), field: r.field, values: r.in, not: !!r.not, kind: r.t.k as Kind })),
       },
     });
@@ -224,11 +231,12 @@ export function fromFields(fields: Field[], size?: number): EditField[] {
   // Fold runs of the same group into group rows.
   const folded: EditField[] = [];
   let group: EditField | null = null;
-  for (const { field, g } of out) {
+  for (const { field, g, gc } of out) {
     if (g && group?.name === g) {
       group.children.push(field);
+      if (!group.color && gc) group.color = gc;
     } else if (g) {
-      group = newField({ name: g, kind: "group", children: [field] });
+      group = newField({ name: g, kind: "group", children: [field], color: gc ?? "" });
       folded.push(group);
     } else {
       group = null;
@@ -276,9 +284,9 @@ function toTy(f: EditField): Ty {
 export function toFields(fields: EditField[]): Field[] {
   const out: Field[] = [];
   let off = 0;
-  const emit = (f: EditField, g?: string) => {
+  const emit = (f: EditField, g?: string, gc?: string) => {
     if (f.kind === "group") {
-      f.children.forEach((child) => emit(child, f.name.trim()));
+      f.children.forEach((child) => emit(child, f.name.trim(), f.color || undefined));
       return;
     }
     if (!isPad(f)) {
@@ -288,6 +296,8 @@ export function toFields(fields: EditField[]): Field[] {
       if (f.display) field.display = f.display;
       if (f.refs.length) field.refs = f.refs;
       if (g) field.g = g;
+      if (f.color) field.color = f.color;
+      if (gc) field.gc = gc;
       if (f.when.length) {
         field.when = f.when.map((r) => ({ field: r.field, in: r.values, ...(r.not ? { not: true } : {}), t: { k: r.kind } as Ty }));
       }

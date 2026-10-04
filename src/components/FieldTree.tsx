@@ -134,6 +134,9 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
         const editable = !!onStartEdit && isEditable(node);
         const changed = !!bytes && isChanged(node, bytes, original);
         const was = changed && !node.children ? decodeValue(node.ty, original!, node.off) : null;
+        const structure = node.ty === "struct" || node.ty.startsWith("struct[");
+        const array = !node.group && node.ty !== "struct" && (node.children?.length ?? 0) > 1;
+        const headingColor = (node.group || structure) && node.color ? node.color : undefined;
         return (
           <div
             key={path}
@@ -142,9 +145,13 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
               (path === selected ? " active" : "") +
               (node.unknown ? " unknown" : "") +
               (node.group ? " group" : "") +
+              (structure ? " structure" : "") +
+              (array ? " array" : "") +
+              (headingColor ? " custom-heading" : "") +
               (changed ? " changed" : "") +
               (editable ? " editable" : "")
             }
+            style={headingColor ? ({ "--heading-color": headingColor } as React.CSSProperties) : undefined}
             onClick={() => onSelect(path)}
             onDoubleClick={() => (node.children ? onToggle(path) : editable && onStartEdit!(path, node))}
             onMouseEnter={() => onHover(path)}
