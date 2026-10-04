@@ -12,12 +12,12 @@ export function isChanged(node: FieldNode, bytes: number[], original?: number[])
   return false;
 }
 
-/** Most characters a text field takes (one is kept for the terminator). */
+/** Full capacity of a fixed-size text field. Full fields have no terminator. */
 export function textCapacity(ty: string): { max: number; unit: "characters" | "bytes" } | null {
   const w = /^wchar\[(\d+)\]$/.exec(ty);
-  if (w) return { max: Number(w[1]) - 1, unit: "characters" };
+  if (w) return { max: Number(w[1]), unit: "characters" };
   const c = /^char\[(\d+)\]$/.exec(ty);
-  if (c) return { max: Number(c[1]) - 1, unit: "bytes" };
+  if (c) return { max: Number(c[1]), unit: "bytes" };
   return null;
 }
 

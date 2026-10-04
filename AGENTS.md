@@ -139,6 +139,8 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 - **Talk options** with the high bit set are functions from `SERVICE_TYPE`.
 - **Texts**: names are `wchar_t[n]` UTF-16LE; some fields are GBK `char[n]`. The game stores
   line breaks as CR LF; the official editor's text exports write `!$`.
+- Fixed-size text can fill all `n` characters/bytes without a terminator. Official data does this
+  (for example NPC 54906's 16-character title); editing permits it and Problems keeps warning about it.
 - **bool** in v112-era data is 4 bytes (an unsigned int); the v112 enums/masks were removed
   as outdated.
 

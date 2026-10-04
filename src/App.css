@@ -4219,6 +4219,9 @@ select.ie-control {
   color: var(--danger);
   font-weight: 700;
 }
+.text-count.full {
+  color: var(--warn);
+}
 .text-area {
   width: 100%;
   margin-top: 8px;

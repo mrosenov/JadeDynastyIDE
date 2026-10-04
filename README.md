@@ -123,10 +123,11 @@ Values are edited in the inspector. Edits stay in memory until the file is saved
 - **Masks**: the calculator (click the labels) has **Apply** for the ticked bits; in an enum's
   list, clicking a value sets it.
 - **Texts** open an editor with a live preview in the game's colours, a length counter
-  (`wchar[n]` holds n − 1 characters, `char[n]` n − 1 GBK bytes; a line break counts as two, as
+  (`wchar[n]` holds n UTF-16 units, `char[n]` n GBK bytes; a line break counts as two, as
   CR LF), colour swatches and a picker that insert `^RRGGBB`. Ctrl+Enter saves.
 - Values are checked against the field's type in that record (conditional types applied):
-  integer ranges, floats, texts that fit with their terminator. Bytes no layout describes edit
+  integer ranges, floats, and texts that fit their fixed-size field. Text may use the final slot
+  without a terminator, matching official data; the Problems scan still warns about these values. Bytes no layout describes edit
   as int32.
 - Changed fields get an amber bar and show their original value on hover; changed records get a
   dot in the table, their tab and (with a count) the list picker; the status bar counts them.

@@ -83,6 +83,7 @@ function TextEditor({ node, onSave, onDone }: { node: FieldNode; onSave: (value:
   const capacity = textCapacity(node.ty);
   const length = capacity ? textLength(draft, capacity.unit) : draft.length;
   const tooLong = !!capacity && length > capacity.max;
+  const full = !!capacity && length === capacity.max && length > 0;
 
   useEffect(() => {
     area.current?.focus();
@@ -130,7 +131,7 @@ function TextEditor({ node, onSave, onDone }: { node: FieldNode; onSave: (value:
         </span>
         <span className="spacer" />
         {capacity && (
-          <span className={"text-count mono" + (tooLong ? " over" : "")} title={`This field holds ${capacity.max} ${capacity.unit} (one is kept for the terminator)`}>
+          <span className={"text-count mono" + (tooLong ? " over" : full ? " full" : "")} title={full ? `This uses all ${capacity.max} ${capacity.unit} and will be stored without a terminator` : `This field holds ${capacity.max} ${capacity.unit}`}>
             {length} / {capacity.max} {capacity.unit === "bytes" ? "B" : ""}
           </span>
         )}

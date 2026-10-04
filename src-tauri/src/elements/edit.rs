@@ -11,8 +11,9 @@
 //! clone counts as added.
 //!
 //! Values come in as text and are checked against the field's type in that
-//! record (conditional types applied): integer ranges, floats, texts that fit
-//! their field with room for the terminator.
+//! record (conditional types applied): integer ranges, floats and texts that
+//! fit their fixed-size field. A text may fill every slot without a terminator,
+//! as records produced by the official tools sometimes do.
 //!
 //! The history lists every edit with its time and what it changed; one edit
 //! can be reverted on its own, asking first when later edits changed the same
@@ -264,8 +265,8 @@ pub fn encode(ty: &Ty, value: &str) -> Result<Vec<u8>, String> {
         }
         Ty::Wstr { n } => {
             let units: Vec<u16> = crlf(value).encode_utf16().collect();
-            if units.len() >= *n {
-                return Err(format!("The text has {} characters; this field holds {} (one is kept for the terminator)", units.len(), n - 1));
+            if units.len() > *n {
+                return Err(format!("The text has {} characters; this field holds {n}", units.len()));
             }
             let mut out: Vec<u8> = units.iter().flat_map(|u| u.to_le_bytes()).collect();
             out.resize(n * 2, 0);
@@ -277,8 +278,8 @@ pub fn encode(ty: &Ty, value: &str) -> Result<Vec<u8>, String> {
             if unmappable {
                 return Err("The text has characters GBK cannot store".into());
             }
-            if bytes.len() >= *n {
-                return Err(format!("The text takes {} bytes; this field holds {} (one is kept for the terminator)", bytes.len(), n - 1));
+            if bytes.len() > *n {
+                return Err(format!("The text takes {} bytes; this field holds {n}", bytes.len()));
             }
             let mut out = bytes.into_owned();
             out.resize(*n, 0);
@@ -1035,10 +1036,13 @@ mod tests {
         assert!(encode(&Ty::I32, "1.5").is_err());
         assert_eq!(encode(&Ty::F32, "1").unwrap(), 1f32.to_le_bytes().to_vec());
         assert_eq!(encode(&Ty::Wstr { n: 4 }, "ab").unwrap(), vec![b'a', 0, b'b', 0, 0, 0, 0, 0]);
-        // Line breaks become CR LF; the terminator must fit.
+        // Line breaks become CR LF. Full fields have no terminator, matching
+        // records produced by the official tools.
         assert_eq!(encode(&Ty::Wstr { n: 8 }, "a\nb").unwrap()[..8], [b'a', 0, b'\r', 0, b'\n', 0, b'b', 0]);
-        assert!(encode(&Ty::Wstr { n: 3 }, "abc").is_err());
+        assert_eq!(encode(&Ty::Wstr { n: 3 }, "abc").unwrap(), vec![b'a', 0, b'b', 0, b'c', 0]);
+        assert!(encode(&Ty::Wstr { n: 3 }, "abcd").is_err());
         assert_eq!(encode(&Ty::Str { n: 4 }, "中").unwrap(), vec![0xd6, 0xd0, 0, 0]);
+        assert_eq!(encode(&Ty::Str { n: 2 }, "中").unwrap(), vec![0xd6, 0xd0]);
         assert_eq!(encode(&Ty::Bytes { n: 3 }, "0b 05").unwrap(), vec![0x0b, 0x05, 0]);
     }
 }
