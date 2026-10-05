@@ -8,6 +8,7 @@ interface Props {
   changed: number;
   added: number;
   deleted: number;
+  dialogs: number;
   onSave: () => void;
   onDiscard: () => void;
   onCancel: () => void;
@@ -16,7 +17,7 @@ interface Props {
 const plural = (n: number, word: string) => `${n.toLocaleString()} ${word}${n === 1 ? "" : "s"}`;
 
 /** Asks what to do with edits that are not saved: save, drop or stay. */
-export function UnsavedDialog({ action, fileName, changed, added, deleted, onSave, onDiscard, onCancel }: Props) {
+export function UnsavedDialog({ action, fileName, changed, added, deleted, dialogs, onSave, onDiscard, onCancel }: Props) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCancel();
@@ -25,7 +26,7 @@ export function UnsavedDialog({ action, fileName, changed, added, deleted, onSav
     return () => window.removeEventListener("keydown", onKey);
   }, [onCancel]);
 
-  const parts = [changed && plural(changed, "changed record"), added && plural(added, "added record"), deleted && plural(deleted, "deleted record")].filter(Boolean);
+  const parts = [changed && plural(changed, "changed record"), added && plural(added, "added record"), deleted && plural(deleted, "deleted record"), dialogs && plural(dialogs, "translated dialog")].filter(Boolean);
 
   return (
     <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onCancel()}>

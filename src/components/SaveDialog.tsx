@@ -109,7 +109,7 @@ export function SaveDialog({ path: initialPath, pathData: initialPathData, onCan
     if (typeof picked === "string") setPathData(picked);
   };
 
-  const changes = plan ? plan.changed + plan.added + plan.deleted : 0;
+  const changes = plan ? plan.changed + plan.added + plan.deleted + plan.dialogs : 0;
 
   return (
     <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && !saving && onCancel()}>
@@ -149,10 +149,11 @@ export function SaveDialog({ path: initialPath, pathData: initialPathData, onCan
                 <span className="spacer" />
                 <span className="save-changes small">
                   {changes === 0 ? (
-                    <span className="muted">No record changes since the last save</span>
+                    <span className="muted">No changes since the last save</span>
                   ) : (
                     <>
                       {plan.changed > 0 && <span className="chg changed">{plural(plan.changed, "changed record")}</span>}
+                      {plan.dialogs > 0 && <span className="chg changed">{plural(plan.dialogs, "translated dialog")}</span>}
                       {plan.added > 0 && <span className="chg added">{plural(plan.added, "added record")}</span>}
                       {plan.deleted > 0 && <span className="chg deleted">{plural(plan.deleted, "deleted record")}</span>}
                     </>

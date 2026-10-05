@@ -449,6 +449,7 @@ input {
 /* ---------- inspector ---------- */
 
 .inspector-head {
+  position: relative;
   padding: 14px 16px 12px;
   border-bottom: 1px solid var(--border);
   background: var(--bg-elev);
@@ -3327,6 +3328,151 @@ kbd {
   margin-top: 12px;
   font-size: 12.5px;
   color: var(--text-dim);
+}
+
+/* Translation-only dialog editor. */
+.dialog-text-editor {
+  width: min(1120px, 96vw);
+  height: min(880px, 94vh);
+}
+.dialog-text-editor .modal-head > div:first-child {
+  min-width: 0;
+}
+.dialog-text-editor .modal-head > .icon-btn {
+  margin-left: auto;
+  flex: none;
+}
+.dialog-text-editor .modal-head h3,
+.dialog-text-editor .modal-foot > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.dialog-text-editor .modal-head p {
+  margin: 4px 0 0;
+}
+.dialog-translation-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-hover);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.dialog-translation-body {
+  flex: 1;
+  padding: 14px 20px 24px;
+}
+.dialog-translation-section {
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--bg-elev);
+}
+.dialog-translation-section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-hover);
+  font-size: 12.5px;
+}
+.dialog-translation-section-head .locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.dialog-translation-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+.dialog-translation-row:first-of-type {
+  border-top: 0;
+}
+.dialog-translation-original,
+.dialog-translation-draft {
+  min-width: 0;
+}
+.dialog-translation-original > .game-text {
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid #2c313c;
+  border-radius: 7px;
+  background: #15171d;
+  color: #e9e6dc;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.dialog-translation-label {
+  display: flex;
+  align-items: center;
+  min-height: 20px;
+  margin-bottom: 5px;
+  color: var(--text-dim);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.dialog-translation-label .limit {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-weight: 400;
+}
+.dialog-translation-label .limit.bad,
+.dialog-text-editor .error-text {
+  color: var(--danger);
+}
+.dialog-translation-draft textarea {
+  display: block;
+  width: 100%;
+  min-height: 62px;
+  resize: vertical;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  line-height: 1.45;
+}
+.dialog-translation-draft textarea:focus {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent-soft);
+}
+.dialog-translation-draft textarea.invalid {
+  border-color: var(--danger);
+  outline-color: color-mix(in srgb, var(--danger) 18%, transparent);
+}
+.dialog-translation-preview {
+  min-height: 34px;
+  margin-top: 6px;
+  padding: 7px 9px;
+  border: 1px solid #2c313c;
+  border-radius: 7px;
+  background: #15171d;
+  color: #e9e6dc;
+  font-size: 12.5px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.dialog-text-editor .modal-foot {
+  flex-shrink: 0;
+}
+@media (max-width: 760px) {
+  .dialog-translation-columns { display: none; }
+  .dialog-translation-row { grid-template-columns: 1fr; }
 }
 
 .outline {

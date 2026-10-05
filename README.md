@@ -117,6 +117,11 @@ window or run a function (Back, Exit, and the NPC services of `SERVICE_TYPE` in 
   Click one to continue the conversation from there.
 - **Opened by** lists the records whose `id_dialog` points at the dialog (talk, shop, heal,
   teleport services…). In those records, `id_dialog` links to the dialog.
+- **Edit text** opens a translation view with the original beside the editable title/prompt,
+  NPC window texts and player option labels. A dark game preview applies line breaks and
+  `^RRGGBB` colours. Fixed 64-character titles and options show their UTF-16 usage. Dialog IDs,
+  window links, functions, parameters, counts and order stay locked; Apply text is one undoable
+  history action.
 
 Dialog tabs work like record tabs (Alt+← goes back to the service you came from).
 
@@ -152,7 +157,7 @@ Values are edited in the inspector. Edits stay in memory until the file is saved
   dot in the table, their tab and (with a count) the list picker; the status bar counts them.
   A record set back to its original bytes is no longer marked.
 - **Edit** menu: *Undo*/*Redo* (Ctrl+Z, Ctrl+Y or Ctrl+Shift+Z) name the edit they act on;
-  *Revert record* and *Revert all changes…* put records back as the file was opened or last saved
+  *Revert record* / *Revert dialog* and *Revert all changes…* put records and dialog translations back as the file was opened or last saved
   (undoable too).
 - **Edit › History** (Ctrl+H) lists every edit, newest first: when, what (e.g. *Set price*), the
   record and each field's old → new value. **Revert** puts that edit's fields back to the values
@@ -160,7 +165,7 @@ Values are edited in the inspector. Edits stay in memory until the file is saved
   of its own, so there is nothing to revert back and forth. Ctrl+Z takes a revert back. If later
   edits changed the same fields it asks before overwriting them. Clicking a record
   or field opens it there; undone edits stay listed (dimmed) until a new edit replaces them, and
-  reverted ones are struck through. The "N changed records · not saved" count in the status bar
+  reverted ones are struck through. The unsaved change count in the status bar
   opens the history too.
 - **Clone** (inspector button, Edit › Clone record or Ctrl+D) copies the open record to the end
   of its list with a new ID: the list's highest ID plus one, moved up past any ID another list of
@@ -194,7 +199,7 @@ taken from next to the file, else from the client folder in Settings, or picked 
 
 The first save asks first, showing:
 
-- the target, whether it replaces a file, and the changed / added / deleted records;
+- the target, whether it replaces a file, and the changed / added / deleted records and translated dialogs;
 - the checksum: whether the file on disk is valid with that path.data. Files saved by tools that
   leave the checksum alone show a mismatch (their clients do not check it); the saved file gets
   the right one either way. Without a path.data the old checksum stays and a client that checks

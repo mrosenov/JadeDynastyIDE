@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ChevronRight, CircleAlert, CornerUpLeft, LogOut, MessagesSquare, RotateCcw, Zap } from "lucide-react";
-import type { ListSummary, TalkDetail, TalkOption, TalkWindow } from "../elements/types";
+import { ArrowLeft, ChevronRight, CircleAlert, CornerUpLeft, LogOut, MessagesSquare, Pencil, RotateCcw, Zap } from "lucide-react";
+import type { ListSummary, TalkDetail, TalkOption, TalkTextEdit, TalkWindow } from "../elements/types";
 import { TALK_EXIT, TALK_RETURN, functionName, isFunction, paramNote, pathTo, rootWindow, windowsById } from "../elements/talk";
 import { hex } from "../elements/format";
 import { GameText } from "./GameText";
+import { DialogTextEditor } from "./DialogTextEditor";
 
 interface Props {
   detail: TalkDetail | null;
@@ -12,16 +13,18 @@ interface Props {
   onBack: () => void;
   /** Open a record that uses the dialog. */
   onFollow: (list: number, row: number, newTab?: boolean) => void;
+  onEdit: (edit: TalkTextEdit) => Promise<string | null>;
 }
 
 type View = "conversation" | "outline";
 
 /** An NPC dialog, played like in the game or laid out as a tree. */
-export function DialogViewer({ detail, lists, canGoBack, onBack, onFollow }: Props) {
+export function DialogViewer({ detail, lists, canGoBack, onBack, onFollow, onEdit }: Props) {
   const [view, setView] = useState<View>("conversation");
   // Windows from the root to the one shown.
   const [path, setPath] = useState<number[]>([]);
   const [ended, setEnded] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const byId = useMemo(() => windowsById(detail?.windows ?? []), [detail]);
   const root = detail ? rootWindow(detail.windows) : null;
@@ -61,6 +64,7 @@ export function DialogViewer({ detail, lists, canGoBack, onBack, onFollow }: Pro
   };
 
   return (
+    <>
     <section className="pane inspector dialog-viewer">
       <div className="inspector-head">
         <div className="inspector-title">
@@ -74,6 +78,8 @@ export function DialogViewer({ detail, lists, canGoBack, onBack, onFollow }: Pro
           </span>
           <h2 className="truncate">{prompt ?? (root?.text.split(/\r?\n/)[0] || <span className="muted">Untitled dialog</span>)}</h2>
           <span className="badge">NPC dialog</span>
+          <span className="spacer" />
+          <button className="btn" onClick={() => setEditing(true)}><Pencil size={13} /> Edit text</button>
         </div>
         <dl className="facts">
           <div>
@@ -192,6 +198,8 @@ export function DialogViewer({ detail, lists, canGoBack, onBack, onFollow }: Pro
         )}
       </div>
     </section>
+    {editing && <DialogTextEditor detail={detail} onApply={onEdit} onClose={() => setEditing(false)} />}
+    </>
   );
 }
 

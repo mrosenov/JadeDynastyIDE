@@ -2,8 +2,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { cloneRecord, deleteRecord, editRecord, fileSummary, getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, saveElements, undoEdit } from "./elements/api";
-import type { EditState, Saved, SaveOptions, ExportSource, FieldEdit, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail } from "./elements/types";
+import { cloneRecord, deleteRecord, editRecord, editTalkText, fileSummary, getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, revertTalk, saveElements, undoEdit } from "./elements/api";
+import type { EditState, Saved, SaveOptions, ExportSource, FieldEdit, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail, TalkTextEdit } from "./elements/types";
 import { bytes, count } from "./elements/format";
 import { ListPicker, type ListPickerHandle } from "./components/ListPicker";
 import { RecordTable } from "./components/RecordTable";
@@ -58,7 +58,7 @@ import {
 
 /** Records changed, added or deleted since the file was opened or saved. */
 function editCountOf(e: EditState): number {
-  return e.changed.length + e.added.length + e.deleted.reduce((n, [, c]) => n + c, 0);
+  return e.changed.length + e.added.length + e.deleted.reduce((n, [, c]) => n + c, 0) + e.changedTalks.length;
 }
 
 /** What the left side of the workspace shows. */
@@ -89,7 +89,7 @@ function writeLastPath(path: string) {
   }
 }
 
-const NO_EDITS: EditState = { changed: [], added: [], deleted: [], shifts: [] };
+const NO_EDITS: EditState = { changed: [], added: [], deleted: [], changedTalks: [], shifts: [] };
 
 const fileName = (path: string) => path.split(/[\\/]/).pop() ?? path;
 
@@ -150,7 +150,7 @@ export default function App() {
   const [rows, setRows] = useState<RecordRow[] | null>(null);
   const [detail, setDetail] = useState<RecordDetail | null>(null);
   const [talk, setTalk] = useState<TalkDetail | null>(null);
-  // Edits in memory (until saving): undo/redo labels and the changed records.
+  // Edits in memory (until saving): undo/redo labels, records and dialogs.
   const [edits, setEdits] = useState<EditState>(NO_EDITS);
   // Bumped after edits, so rows and the open record are read again.
   const [dataVersion, setDataVersion] = useState(0);
@@ -455,6 +455,17 @@ export default function App() {
       return String(e);
     }
   };
+  const commitTalkText = async (edit: TalkTextEdit) => {
+    if (recordIndex === null) return "No dialog is open";
+    try {
+      setEdits(await editTalkText(recordIndex, edit));
+      refreshRows(DIALOGS);
+      setDataVersion((version) => version + 1);
+      return null;
+    } catch (error) {
+      return String(error);
+    }
+  };
   /**
    * Rows moved (a clone or a delete, or their undo): tabs follow their
    * records and the list sizes are read again.
@@ -475,10 +486,13 @@ export default function App() {
   };
   const undo = () => undoEdit().then(afterEdits).catch((e) => setError(String(e)));
   const redo = () => redoEdit().then(afterEdits).catch((e) => setError(String(e)));
-  const revertRecord = () =>
-    listIndex !== null && recordIndex !== null && revertEdits([[listIndex, recordIndex]], "Revert record").then(afterEdits).catch((e) => setError(String(e)));
+  const revertRecord = () => {
+    if (listIndex === null || recordIndex === null) return;
+    const request = listIndex === DIALOGS ? revertTalk(recordIndex, "Revert dialog") : revertEdits([[listIndex, recordIndex]], "Revert record");
+    request.then(afterEdits).catch((e) => setError(String(e)));
+  };
   const revertAll = () => {
-    if (!window.confirm(`Put the file back as it was ${edits.lastSaved ? "last saved" : "opened"} (${editCount} record(s) changed, added or deleted)? Undo brings the edits back.`)) return;
+    if (!window.confirm(`Put the file back as it was ${edits.lastSaved ? "last saved" : "opened"} (${editCount} unsaved change(s))? Undo brings the edits back.`)) return;
     revertEdits(null, "Revert all changes").then(afterEdits).catch((e) => setError(String(e)));
   };
   /** A save went through: the open file now is the saved one. */
@@ -608,7 +622,7 @@ export default function App() {
     if (tab.list === DIALOGS) {
       if (tab.row === null) return { title: "NPC Dialogs", subtitle: "dialogs" };
       const row = rowsCache.current.get(DIALOGS)?.[tab.row];
-      return { title: row?.name || `Dialog #${tab.row}`, subtitle: `NPC dialog · ID ${row?.id ?? "?"}` };
+      return { title: row?.name || `Dialog #${tab.row}`, subtitle: `NPC dialog · ID ${row?.id ?? "?"}`, changed: !!changedRows.get(DIALOGS)?.has(tab.row) };
     }
     const l = summary?.lists[tab.list];
     const listName = l?.name ?? `List ${tab.list}`;
@@ -625,6 +639,7 @@ export default function App() {
   const showingDialogs = listIndex === DIALOGS;
   const changedRows = new Map<number, Set<number>>();
   for (const [l, r] of edits.changed) changedRows.set(l, (changedRows.get(l) ?? new Set()).add(r));
+  if (edits.changedTalks.length) changedRows.set(DIALOGS, new Set(edits.changedTalks));
   const addedRows = new Map<number, Set<number>>();
   for (const [l, r] of edits.added) addedRows.set(l, (addedRows.get(l) ?? new Set()).add(r));
   const changedCounts = new Map<number, number>();
@@ -657,7 +672,7 @@ export default function App() {
           onSelect: saveFile,
           disabled: !summary,
           badges: editCount ? [{ text: String(editCount), tone: "warning" as const }] : [],
-          title: summary ? (editCount ? `Write the ${editCount} changed record(s) to ${fileName(summary.path)}` : "Write the file again (no record changes)") : noFile,
+          title: summary ? (editCount ? `Write ${editCount} unsaved change(s) to ${fileName(summary.path)}` : "Write the file again (no changes)") : noFile,
         },
         { label: "Save as…", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: saveFileAs, disabled: !summary, title: summary ? "Write the file to another place" : noFile },
         "separator",
@@ -688,13 +703,13 @@ export default function App() {
         "separator",
         { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => showPanel("history"), disabled: !summary, checked: panel === "history", title: noFile },
         "separator",
-        { label: "Revert record", icon: RotateCcw, onSelect: revertRecord, disabled: !recordChanged, title: recordChanged ? `Put the open record back as the file was ${edits.lastSaved ? "last saved" : "opened"}` : "The open record has no edits" },
+        { label: showingDialogs ? "Revert dialog" : "Revert record", icon: RotateCcw, onSelect: revertRecord, disabled: !recordChanged, title: recordChanged ? `Put the open ${showingDialogs ? "dialog text" : "record"} back as the file was ${edits.lastSaved ? "last saved" : "opened"}` : `The open ${showingDialogs ? "dialog" : "record"} has no edits` },
         {
           label: "Revert all changes…",
           onSelect: revertAll,
           disabled: editCount === 0,
           badges: editCount ? [{ text: String(editCount), tone: "warning" as const }] : [],
-          title: `Put every changed record back as the file was ${edits.lastSaved ? "last saved" : "opened"} (undoable)`,
+          title: `Put every change back as the file was ${edits.lastSaved ? "last saved" : "opened"} (undoable)`,
         },
       ],
     },
@@ -752,7 +767,7 @@ export default function App() {
           <div className="file-chip" title={summary.path}>
             <span className="truncate">{fileName(summary.path)}</span>
             {editCount > 0 && (
-              <button className="dirty-dot" onClick={saveFile} title={`${editCount} record(s) changed since the file was ${edits.lastSaved ? "saved" : "opened"} · Ctrl+S saves`} aria-label="Unsaved changes, save">
+              <button className="dirty-dot" onClick={saveFile} title={`${editCount} unsaved change(s) since the file was ${edits.lastSaved ? "saved" : "opened"} · Ctrl+S saves`} aria-label="Unsaved changes, save">
                 ●
               </button>
             )}
@@ -828,6 +843,7 @@ export default function App() {
           changed={edits.changed.length}
           added={edits.added.length}
           deleted={edits.deleted.reduce((n, [, c]) => n + c, 0)}
+          dialogs={edits.changedTalks.length}
           onCancel={() => setUnsaved(null)}
           onDiscard={() => {
             const proceed = unsaved.proceed;
@@ -1037,6 +1053,7 @@ export default function App() {
                 canGoBack={(activeTab?.history.length ?? 0) > 0}
                 onBack={() => dispatch({ type: "back" })}
                 onFollow={follow}
+                onEdit={commitTalkText}
               />
             ) : list ? (
               <RecordInspector
@@ -1121,6 +1138,7 @@ export default function App() {
                   edits.changed.length && `${edits.changed.length} changed`,
                   edits.added.length && `${edits.added.length} added`,
                   edits.deleted.length && `${edits.deleted.reduce((n, [, c]) => n + c, 0)} deleted`,
+                  edits.changedTalks.length && `${edits.changedTalks.length} dialog${edits.changedTalks.length === 1 ? "" : "s"} translated`,
                 ]
                   .filter(Boolean)
                   .join(" · ")}{" "}

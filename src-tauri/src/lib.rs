@@ -288,6 +288,11 @@ async fn revert_edits(records: Option<Vec<(usize, usize)>>, label: String, state
 }
 
 #[tauri::command]
+async fn revert_talk(index: usize, label: String, state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    state.with_document_mut(|doc| doc.revert_talk(index, &label))
+}
+
+#[tauri::command]
 async fn edit_history(state: State<'_, AppState>) -> Result<Vec<elements::edit::HistoryEntry>, String> {
     state.with_document(|doc| Ok(doc.history()))
 }
@@ -339,6 +344,11 @@ async fn list_talks(state: State<'_, AppState>) -> Result<Vec<elements::TalkSumm
 #[tauri::command]
 async fn get_talk(index: usize, state: State<'_, AppState>) -> Result<elements::TalkDetail, String> {
     state.with_document(|doc| doc.talk(index))
+}
+
+#[tauri::command]
+async fn edit_talk_text(index: usize, edit: elements::edit::TalkTextEdit, state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    state.with_document_mut(|doc| doc.edit_talk_text(index, &edit))
 }
 
 #[tauri::command]
@@ -651,6 +661,7 @@ pub fn run() {
             undo_edit,
             redo_edit,
             revert_edits,
+            revert_talk,
             edit_state,
             save_plan,
             save_elements,
@@ -669,6 +680,7 @@ pub fn run() {
             search_field_names,
             list_talks,
             get_talk,
+            edit_talk_text,
             named_sets,
             named_set,
             save_named_set,

@@ -402,6 +402,12 @@ export interface TalkDetail {
   users: TalkUser[];
 }
 
+/** Translation-only changes for one dialog. Numeric control data is omitted. */
+export interface TalkTextEdit {
+  text: string;
+  windows: { text: string; options: string[] }[];
+}
+
 // ---------------------------------------------------------------- advanced search
 
 export type SearchOp =
@@ -655,6 +661,8 @@ export interface EditState {
   added: [number, number][];
   /** Records of the opened file deleted: [list, count]. */
   deleted: [number, number][];
+  /** Dialog indexes whose title, window text or option labels differ. */
+  changedTalks: number[];
   /** How the last action moved rows, in order. */
   shifts: { list: number; at: number; delta: number; count: number }[];
   /** For a clone: where the new record is. */
@@ -702,6 +710,7 @@ export interface SavePlan {
   changed: number;
   added: number;
   deleted: number;
+  dialogs: number;
   checksum: ChecksumCheck;
   backup?: string;
 }

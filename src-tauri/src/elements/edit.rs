@@ -36,6 +36,9 @@ enum Op {
     Insert { list: usize, uid: u64, row: usize, bytes: Vec<u8> },
     /// The record at `row` removed.
     Remove { list: usize, uid: u64, row: usize, bytes: Vec<u8> },
+    /// One TALK_PROC replaced by index. Its links and numeric fields are
+    /// unchanged; only its encoded human-facing strings may differ.
+    Talk { index: usize, old: Vec<u8>, new: Vec<u8> },
 }
 
 impl Op {
@@ -44,18 +47,14 @@ impl Op {
             Op::Set { list, uid, off, old, new } => Op::Set { list, uid, off, old: new, new: old },
             Op::Insert { list, uid, row, bytes } => Op::Remove { list, uid, row, bytes },
             Op::Remove { list, uid, row, bytes } => Op::Insert { list, uid, row, bytes },
+            Op::Talk { index, old, new } => Op::Talk { index, old: new, new: old },
         }
     }
 
-    fn list(&self) -> usize {
+    fn record(&self) -> Option<(usize, u64)> {
         match self {
-            Op::Set { list, .. } | Op::Insert { list, .. } | Op::Remove { list, .. } => *list,
-        }
-    }
-
-    fn uid(&self) -> u64 {
-        match self {
-            Op::Set { uid, .. } | Op::Insert { uid, .. } | Op::Remove { uid, .. } => *uid,
+            Op::Set { list, uid, .. } | Op::Insert { list, uid, .. } | Op::Remove { list, uid, .. } => Some((*list, *uid)),
+            Op::Talk { .. } => None,
         }
     }
 }
@@ -82,6 +81,8 @@ pub struct Journal {
     initial: Vec<Vec<u64>>,
     /// Original bytes (and list) of every record of the opened file ever touched.
     originals: HashMap<u64, (usize, Vec<u8>)>,
+    /// Original encoded bytes of dialogs touched since opening or saving.
+    talk_originals: HashMap<usize, Vec<u8>>,
     /// Records created by edits (clones).
     born: HashSet<u64>,
     next_uid: u64,
@@ -110,6 +111,7 @@ impl Journal {
     pub fn mark_saved(&mut self, time: u32) {
         self.initial = self.rows.clone();
         self.originals.clear();
+        self.talk_originals.clear();
         self.born.clear();
         // Reverts are not listed in the history; the save shows after the edit before.
         self.saved = Some((self.done.iter().rev().find(|e| e.reverts.is_none()).map(|e| e.id), time));
@@ -179,6 +181,20 @@ pub struct FieldEdit {
     pub value: String,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TalkWindowTextEdit {
+    pub text: String,
+    pub options: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TalkTextEdit {
+    pub text: String,
+    pub windows: Vec<TalkWindowTextEdit>,
+}
+
 /// Rows of a list moved: from `at` on, by `delta` (+1 inserted, -1 removed).
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -203,6 +219,8 @@ pub struct EditState {
     pub added: Vec<(usize, usize)>,
     /// Records of the opened file deleted, per list.
     pub deleted: Vec<(usize, usize)>,
+    /// Dialog indexes whose translated text differs from the opened/saved file.
+    pub changed_talks: Vec<usize>,
     /// How the last action moved rows (insertions and removals), in order.
     pub shifts: Vec<Shift>,
     /// For a clone: where the new record is.
@@ -330,7 +348,7 @@ impl Document {
             counts[list] += 1;
         }
         if ops.is_empty() { return Ok(self.edit_state()); }
-        let count = ops.iter().map(|op| (op.list(), op.uid())).collect::<HashSet<_>>().len();
+        let count = ops.iter().filter_map(Op::record).collect::<HashSet<_>>().len();
         let entry = self.entry(&format!("{label} ({count} records)"), ops, None);
         Ok(self.apply(entry))
     }
@@ -389,6 +407,23 @@ impl Document {
         }
     }
 
+    fn talk_bytes(&self, index: usize) -> Result<Vec<u8>, String> {
+        let talk = self.talk_data()?.talks.get(index).ok_or("No such dialog")?;
+        Ok(self.file.data[talk.offset..talk.offset + talk.size].to_vec())
+    }
+
+    fn replace_talk(&mut self, index: usize, bytes: &[u8]) -> Result<(), String> {
+        let (offset, size) = {
+            let talk = self.talk_data()?.talks.get(index).ok_or("No such dialog")?;
+            (talk.offset, talk.size)
+        };
+        self.file.data.splice(offset..offset + size, bytes.iter().copied());
+        let segment = self.file.segments.iter_mut().find(|s| s.kind == super::reader::SegmentKind::Talk).ok_or("This file has no NPC dialog block")?;
+        segment.size = segment.size + bytes.len() - size;
+        self.talks.take();
+        Ok(())
+    }
+
     /// Applies one operation; returns how it moved rows.
     fn run(&mut self, op: &Op) -> Option<Shift> {
         match op {
@@ -401,6 +436,9 @@ impl Document {
             }
             Op::Insert { list, uid, row, bytes } => {
                 self.file.insert_record(*list, *row, bytes);
+                // Record bytes move the trailing TALK_PROC block; a mixed
+                // Revert all may apply a dialog operation in this same batch.
+                self.talks.take();
                 self.edits.rows[*list].insert(*row, *uid);
                 Some(Shift { list: *list, at: *row, delta: 1, count: self.file.lists[*list].count })
             }
@@ -408,8 +446,15 @@ impl Document {
                 let bytes = self.file.record(*list, *row).unwrap().to_vec();
                 self.keep_original(*list, *uid, &bytes);
                 self.file.remove_record(*list, *row);
+                self.talks.take();
                 self.edits.rows[*list].remove(*row);
                 Some(Shift { list: *list, at: *row, delta: -1, count: self.file.lists[*list].count })
+            }
+            Op::Talk { index, new, .. } => {
+                let current = self.talk_bytes(*index).expect("edited dialog exists");
+                self.edits.talk_originals.entry(*index).or_insert(current);
+                self.replace_talk(*index, new).expect("validated dialog replacement");
+                None
             }
         }
     }
@@ -418,7 +463,7 @@ impl Document {
         let mut shifts = Vec::new();
         let mut lists = Vec::new();
         for op in ops {
-            lists.push(op.list());
+            if let Some((list, _)) = op.record() { lists.push(list); }
             shifts.extend(self.run(op));
         }
         self.forget_caches(lists);
@@ -455,6 +500,31 @@ impl Document {
             return Ok(self.edit_state());
         }
         let entry = self.entry(label, ops, None);
+        Ok(self.apply(entry))
+    }
+
+    /// Changes only a dialog's title/prompt, window texts and option labels.
+    /// Window/option counts and all numeric control data remain byte-for-byte
+    /// the same. The whole translation is one undo step.
+    pub fn edit_talk_text(&mut self, index: usize, edit: &TalkTextEdit) -> Result<EditState, String> {
+        let mut talk = self.talk_data()?.talks.get(index).ok_or("No such dialog")?.clone();
+        if edit.windows.len() != talk.windows.len() {
+            return Err("The dialog window count changed; reopen the translation editor and try again".into());
+        }
+        talk.text = edit.text.clone();
+        for (wi, (window, changed)) in talk.windows.iter_mut().zip(&edit.windows).enumerate() {
+            if changed.options.len() != window.options.len() {
+                return Err(format!("Window {} option count changed; reopen the translation editor and try again", wi + 1));
+            }
+            window.text = changed.text.clone();
+            for (option, text) in window.options.iter_mut().zip(&changed.options) {
+                option.text = text.clone();
+            }
+        }
+        let old = self.talk_bytes(index)?;
+        let new = super::talk::encode_one(&talk)?;
+        if old == new { return Ok(self.edit_state()); }
+        let entry = self.entry(&format!("Translate NPC dialog {}", talk.id), vec![Op::Talk { index, old, new }], None);
         Ok(self.apply(entry))
     }
 
@@ -567,11 +637,32 @@ impl Document {
                 ops.push(Op::Set { list, uid, off: 0, old: current.to_vec(), new: original });
             }
         }
+        // Dialog translations are part of Revert all. A record-only revert
+        // deliberately leaves them alone.
+        if records.is_none() {
+            let talks: Vec<_> = self.edits.talk_originals.iter().map(|(&index, bytes)| (index, bytes.clone())).collect();
+            for (index, original) in talks {
+                if let Ok(current) = self.talk_bytes(index) {
+                    if current != original {
+                        ops.push(Op::Talk { index, old: current, new: original });
+                    }
+                }
+            }
+        }
         if ops.is_empty() {
             return self.edit_state();
         }
         let entry = self.entry(label, ops, None);
         self.apply(entry)
+    }
+
+    /// Restores one dialog's strings to the opened or last-saved bytes.
+    pub fn revert_talk(&mut self, index: usize, label: &str) -> Result<EditState, String> {
+        let Some(original) = self.edits.talk_originals.get(&index).cloned() else { return Ok(self.edit_state()) };
+        let current = self.talk_bytes(index)?;
+        if current == original { return Ok(self.edit_state()); }
+        let entry = self.entry(label, vec![Op::Talk { index, old: current, new: original }], None);
+        Ok(self.apply(entry))
     }
 
     /// Takes back one edit of the history (its record changes, clone or
@@ -618,6 +709,15 @@ impl Document {
                     let at = (*row).min(rows[*list].len());
                     ops.push(Op::Insert { list: *list, uid: *uid, row: at, bytes: bytes.clone() });
                     rows[*list].insert(at, *uid);
+                }
+                Op::Talk { index, old, new } => {
+                    let current = self.talk_bytes(*index)?;
+                    if &current != new {
+                        overwritten.push(format!("NPC dialog {} text", index));
+                    }
+                    if &current != old {
+                        ops.push(Op::Talk { index: *index, old: current, new: old.clone() });
+                    }
                 }
             }
         }
@@ -678,7 +778,7 @@ impl Document {
         let describe = |e: &Entry, undone: bool| {
             let mut records: Vec<HistoryRecord> = Vec::new();
             for op in &e.ops {
-                let (list, uid) = (op.list(), op.uid());
+                let Some((list, uid)) = op.record() else { continue };
                 let row = self.edits.row_of(list, uid);
                 let size = self.file.lists[list].item_size;
                 // The record as it is now (or, when gone, as the edit knew it).
@@ -686,6 +786,7 @@ impl Document {
                     (Some(r), _) => self.file.record(list, r).unwrap().to_vec(),
                     (None, Op::Insert { bytes, .. } | Op::Remove { bytes, .. }) => bytes.clone(),
                     (None, Op::Set { .. }) => self.edits.originals.get(&uid).map(|o| o.1.clone()).unwrap_or_else(|| vec![0; size]),
+                    (None, Op::Talk { .. }) => unreachable!(),
                 };
                 let (action, fields) = match op {
                     Op::Set { off, old, new, .. } => ("edit", self.diff_fields(list, &bytes, *off, old, new)),
@@ -694,6 +795,7 @@ impl Document {
                         vec![],
                     ),
                     Op::Remove { .. } => ("delete", vec![]),
+                    Op::Talk { .. } => unreachable!(),
                 };
                 let def = self.def(list).map(|(_, d)| d);
                 match records.iter_mut().find(|r| r.list == list && r.id == Self::record_id(&bytes) && r.action == action) {
@@ -759,12 +861,20 @@ impl Document {
         }
         let mut deleted: Vec<(usize, usize)> = deleted.into_iter().collect();
         deleted.sort();
+        let mut changed_talks: Vec<usize> = self
+            .edits
+            .talk_originals
+            .iter()
+            .filter_map(|(&index, original)| self.talk_bytes(index).ok().filter(|current| current != original).map(|_| index))
+            .collect();
+        changed_talks.sort_unstable();
         EditState {
             undo: self.edits.done.last().map(|e| e.label.clone()),
             redo: self.edits.undone.last().map(|e| e.label.clone()),
             changed,
             added,
             deleted,
+            changed_talks,
             shifts: vec![],
             created: None,
             last_saved: self.edits.saved.map(|(_, t)| t),

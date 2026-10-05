@@ -19,6 +19,7 @@ import type {
   SearchReport,
   TalkDetail,
   TalkSummary,
+  TalkTextEdit,
   FileSummary,
   ImportCandidate,
   ListDef,
@@ -91,6 +92,7 @@ export const undoEdit = () => invoke<EditState>("undo_edit");
 export const redoEdit = () => invoke<EditState>("redo_edit");
 /** Puts records (all changed ones without any) back as the file was opened. */
 export const revertEdits = (records: [number, number][] | null, label: string) => invoke<EditState>("revert_edits", { records, label });
+export const revertTalk = (index: number, label: string) => invoke<EditState>("revert_talk", { index, label });
 export const editHistory = () => invoke<HistoryEntry[]>("edit_history");
 /** Takes back one edit; fails with "CONFLICT: …" when later edits changed the same fields (unless forced). */
 export const revertHistoryEntry = (id: number, force: boolean) => invoke<EditState>("revert_history_entry", { id, force });
@@ -98,6 +100,8 @@ export const getEditState = () => invoke<EditState>("edit_state");
 
 export const listTalks = () => invoke<TalkSummary[]>("list_talks");
 export const getTalk = (index: number) => invoke<TalkDetail>("get_talk", { index });
+/** Changes only human-facing dialog strings, as one undo step. */
+export const editTalkText = (index: number, edit: TalkTextEdit) => invoke<EditState>("edit_talk_text", { index, edit });
 
 export const getRecord = (list: number, index: number) => invoke<RecordDetail>("get_record", { list, index });
 

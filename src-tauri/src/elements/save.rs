@@ -101,6 +101,7 @@ pub struct SavePlan {
     pub changed: usize,
     pub added: usize,
     pub deleted: usize,
+    pub dialogs: usize,
     pub checksum: ChecksumCheck,
     /// The backup the save would make (when asked for).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -278,6 +279,7 @@ impl Document {
             changed: state.changed.len(),
             added: state.added.len(),
             deleted: state.deleted.iter().map(|(_, n)| n).sum(),
+            dialogs: state.changed_talks.len(),
             checksum: self.check_checksum(&target, options.path_data.as_deref())?,
             backup: (options.backup && replaces && !self.backed_up.contains(&target)).then(|| backup_path(&target).display().to_string()),
         })

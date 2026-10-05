@@ -135,6 +135,7 @@ export function HistoryPanel({ lists, edits, icon, onUndo, onRedo, onChanged, on
         <div className="muted small">
           {entries ? `${entries.filter((e) => !e.undone).length} edit(s) applied` : "…"}
           {edits.changed.length > 0 && ` · ${edits.changed.length} record(s) differ from the ${edits.lastSaved ? "saved" : "opened"} file`}
+          {edits.changedTalks.length > 0 && ` · ${edits.changedTalks.length} dialog translation(s) differ`}
           {edits.lastSaved ? ` · saved at ${new Date(edits.lastSaved * 1000).toLocaleTimeString()}` : " · kept in memory until saved"}
         </div>
         {error && <div className="se-problems">{error}</div>}

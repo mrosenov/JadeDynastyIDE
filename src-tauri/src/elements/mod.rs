@@ -1210,6 +1210,52 @@ mod tests {
     }
 
     #[test]
+    fn dialogs_encode_byte_exact_and_text_edits_undo() {
+        for rel in ["Game Dev/JD/zxserver/zgame/gs/config/elements.data", "Game Dev/JD/1792/gamed/config/elements.data", "Games/ForsakenJD/element/data/elements.data"] {
+            let Some(mut doc) = open(rel) else { continue };
+            let parsed = doc.talk_data().unwrap().talks.clone();
+            for talk in &parsed {
+                assert_eq!(talk::encode_one(talk).unwrap(), doc.file.data[talk.offset..talk.offset + talk.size], "{rel}: dialog {}", talk.id);
+            }
+
+            let before = doc.file.data.clone();
+            let first = doc.talk(0).unwrap().talk;
+            let mut edit = edit::TalkTextEdit {
+                text: first.text.clone(),
+                windows: first.windows.iter().map(|w| edit::TalkWindowTextEdit {
+                    text: w.text.clone(),
+                    options: w.options.iter().map(|o| o.text.clone()).collect(),
+                }).collect(),
+            };
+            edit.windows[0].text.push_str(" translated");
+            let state = doc.edit_talk_text(0, &edit).unwrap();
+            assert_eq!(state.changed_talks, vec![0]);
+            let changed = doc.talk(0).unwrap();
+            assert!(changed.talk.windows[0].text.ends_with(" translated"));
+            assert_eq!(changed.talk.windows[0].id, first.windows[0].id);
+            assert_eq!(changed.talk.windows[0].parent, first.windows[0].parent);
+            assert_eq!(changed.talk.windows[0].options.iter().map(|o| (o.id, o.param)).collect::<Vec<_>>(), first.windows[0].options.iter().map(|o| (o.id, o.param)).collect::<Vec<_>>());
+            doc.undo();
+            assert_eq!(doc.file.data, before, "{rel}: undo restores every byte");
+            edit.text = "x".repeat(65);
+            assert!(doc.edit_talk_text(0, &edit).unwrap_err().contains("64"), "{rel}: fixed title limit");
+            assert_eq!(doc.file.data, before, "{rel}: a rejected edit changes nothing");
+
+            // Revert all can mix a record insertion/removal (which moves the
+            // trailing dialog block) and a variable-length dialog edit.
+            edit.text = first.text.clone();
+            edit.windows[0].text.push_str(" again");
+            doc.edit_talk_text(0, &edit).unwrap();
+            doc.clone_record(3, 0).unwrap();
+            doc.revert(None, "Revert all changes");
+            assert_eq!(doc.file.data, before, "{rel}: mixed Revert all restores every byte");
+            doc.edit_talk_text(0, &edit).unwrap();
+            doc.revert_talk(0, "Revert dialog").unwrap();
+            assert_eq!(doc.file.data, before, "{rel}: Revert dialog restores every byte");
+        }
+    }
+
+    #[test]
     fn search_by_conditions_and_values() {
         use search::{Condition, Op, Query, ValueKind};
         let Some(doc) = open("Game Dev/JD/zxserver/zgame/gs/config/elements.data") else { return };
