@@ -171,6 +171,10 @@ impl PathTable {
         self.paths.get(&id).map(String::as_str)
     }
 
+    fn iter(&self) -> impl Iterator<Item = (u32, &str)> {
+        self.paths.iter().map(|(&id, path)| (id, path.as_str()))
+    }
+
     #[cfg(test)]
     pub fn len(&self) -> usize {
         self.paths.len()
@@ -247,6 +251,14 @@ pub struct Resources {
     item_colors: OnceLock<Option<strings::ItemColors>>,
     /// Title definitions from interfaces.pck, read on first use.
     titles: OnceLock<Result<titles::TitleTable, String>>,
+}
+
+#[derive(Debug)]
+pub(crate) struct ResourceChoice {
+    pub id: u32,
+    pub name: String,
+    pub description: Option<String>,
+    pub icon: bool,
 }
 
 /// The string tables of configs.pck the editor reads.
@@ -409,6 +421,68 @@ impl Resources {
         self.item_icons().ok()?.find(path)
     }
 
+    /// Searches one of the numeric resources used by a display role. Tables
+    /// stay lazy and only the bounded matches are enriched with descriptions.
+    pub(crate) fn search_choices(&self, role: &str, query: &str, current: Option<u32>, offset: usize, limit: usize) -> Result<(Vec<ResourceChoice>, usize), String> {
+        let query = query.trim();
+        let numeric = query.parse::<u32>().ok();
+        let needle = query.to_lowercase();
+        let rank = |id: u32, name: &str| {
+            if numeric == Some(id) || (query.is_empty() && current == Some(id)) {
+                Some(0)
+            } else if query.is_empty() {
+                Some(4)
+            } else {
+                let lower = name.to_lowercase();
+                if lower == needle { Some(1) } else if lower.starts_with(&needle) { Some(2) } else if lower.contains(&needle) { Some(3) } else { None }
+            }
+        };
+
+        let mut found: Vec<(u8, u32, String)> = match role {
+            "skill" => {
+                let table = self.table(table::SKILLS);
+                let table = table.as_ref().as_ref().map_err(Clone::clone)?;
+                table.strings.iter().filter_map(|(&entry, text)| {
+                    (entry > 0 && entry % 10 == 0).then_some((entry / 10, text)).and_then(|(id, text)| {
+                        let name = strings::first_line(text)?;
+                        Some((rank(id, &name)?, id, name))
+                    })
+                }).collect()
+            }
+            "buff" => {
+                let table = self.table(table::BUFFS);
+                let table = table.as_ref().as_ref().map_err(Clone::clone)?;
+                table.strings.iter().filter_map(|(&id, text)| {
+                    if id == 0 { return None; }
+                    let name = strings::first_line(text)?;
+                    Some((rank(id, &name)?, id, name))
+                }).collect()
+            }
+            "title" => self.titles()?.iter().filter_map(|(id, title)| {
+                if id == 0 { return None; }
+                let name = strings::first_line(&title.name)?;
+                Some((rank(id, &name)?, id, name))
+            }).collect(),
+            "path" | "icon" => self.paths()?.iter().filter_map(|(id, path)| {
+                if id == 0 { return None; }
+                Some((rank(id, path)?, id, path.to_string()))
+            }).collect(),
+            _ => return Err(format!("{role} does not have a value picker")),
+        };
+        found.sort_by(|a, b| (a.0, a.1).cmp(&(b.0, b.1)));
+        let total = found.len();
+        let choices = found.into_iter().skip(offset).take(limit).map(|(_, id, name)| {
+            let description = match role {
+                "skill" => self.skill_description(id),
+                "buff" => self.buff_description(id),
+                "title" => self.title_description(id),
+                _ => None,
+            };
+            ResourceChoice { id, name, description, icon: role == "icon" && self.item_icon(id).is_some() }
+        }).collect();
+        Ok((choices, total))
+    }
+
     /// The item icon for a path ID as a PNG.
     pub fn item_icon_png(&self, path_id: u32) -> Result<Arc<Vec<u8>>, String> {
         let cell = self.item_icon(path_id).ok_or_else(|| format!("no icon for path {path_id}"))?;
@@ -466,6 +540,24 @@ mod tests {
         let description = res.skill_description(218).expect("skill 218 description");
         assert!(description.lines().count() > 1, "popover description was truncated: {description:?}");
         assert!(description.contains("^ffffff") && description.contains("^ffcb4a"), "skill colours were lost: {description:?}");
+    }
+
+    #[test]
+    fn searches_client_resources_for_picker() {
+        let Some(dir) = client() else { return };
+        let res = Resources::new(inspect(&dir).unwrap());
+        let (choices, total) = res.search_choices("skill", "Heavy Blow", None, 0, 10).unwrap();
+        assert!(total > 0);
+        let heavy = choices.iter().find(|choice| choice.id == 218).expect("skill 218 in picker results");
+        assert!(heavy.name.contains("Heavy Blow"));
+        assert!(heavy.description.as_deref().is_some_and(|text| text.lines().count() > 1));
+
+        let (first, all) = res.search_choices("skill", "", None, 0, 10).unwrap();
+        let (second, again) = res.search_choices("skill", "", None, 10, 10).unwrap();
+        assert_eq!(all, again);
+        assert_eq!(first.len(), 10);
+        assert_eq!(second.len(), 10);
+        assert!(first.iter().all(|a| second.iter().all(|b| a.id != b.id)));
     }
 
     #[test]

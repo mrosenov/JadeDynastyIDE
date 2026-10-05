@@ -4,6 +4,7 @@ use encoding_rs::GBK;
 use serde::Serialize;
 
 use super::format::{Field, Ty};
+use super::refs::{self, IdSpace};
 
 /// Arrays of plain values are previewed inline up to this many elements.
 const PREVIEW_ITEMS: usize = 8;
@@ -31,6 +32,9 @@ pub struct Node {
     /// Display role of the value ("path", "icon", "skill", "buff", "title", …).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display: Option<String>,
+    /// Searchable value source for this integer field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub picker: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub comment: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -73,6 +77,7 @@ fn group_node(name: String, color: Option<String>, members: Vec<Node>) -> Node {
         description: None,
         link: None,
         display: None,
+        picker: None,
         comment: None,
         children: Some(members),
         unknown: false,
@@ -197,6 +202,35 @@ pub struct Annotation {
 
 pub type Annotator<'a> = dyn Fn(&Field, i64) -> Annotation + 'a;
 
+fn picker_kind(field: &Field, ty: &Ty, off: usize) -> Option<&'static str> {
+    if !matches!(ty, Ty::I32 | Ty::U32) {
+        return None;
+    }
+    if let Some(role) = field.display.as_deref() {
+        let supported = match role {
+            "skill" => Some("skill"),
+            "buff" => Some("buff"),
+            "title" => Some("title"),
+            "path" => Some("path"),
+            "icon" => Some("icon"),
+            _ => None,
+        };
+        if supported.is_some() {
+            return supported;
+        }
+    }
+    if field.name.eq_ignore_ascii_case("id_dialog") {
+        return Some("dialog");
+    }
+    if !field.refs.is_empty() {
+        return Some("reference");
+    }
+    if off != 0 && field.e.is_none() && field.display.is_none() && refs::id_like(&field.name) && refs::field_space(&field.name) != IdSpace::Other {
+        return Some("reference");
+    }
+    None
+}
+
 struct Ctx<'a> {
     bytes: &'a [u8],
     annotate: &'a Annotator<'a>,
@@ -215,6 +249,7 @@ impl Ctx<'_> {
             description: None,
             link: None,
             display: field.and_then(|f| f.display.clone()),
+            picker: field.and_then(|f| picker_kind(f, ty, off).map(str::to_string)),
             comment: field.and_then(|f| f.c.clone()),
             children: None,
             unknown: false,
@@ -323,6 +358,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
                     description: None,
                     link: None,
                     display: None,
+                    picker: None,
                     comment: None,
                     children: None,
                     unknown: true,
@@ -347,6 +383,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
         description: None,
         link: None,
         display: None,
+        picker: None,
         comment: None,
         children,
         unknown: true,

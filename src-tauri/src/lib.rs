@@ -136,6 +136,26 @@ async fn find_records(query: String, state: State<'_, AppState>) -> Result<eleme
 }
 
 #[tauri::command]
+async fn picker_search(request: elements::picker::Request, state: State<'_, AppState>) -> Result<elements::picker::ResultPage, String> {
+    // Resolve the field while holding the document briefly. Client package
+    // parsing can be slower, so it runs without the document lock.
+    let spec = state.with_document(|doc| doc.picker_spec(&request))?;
+    let page = request.page;
+    if matches!(&spec.source, elements::picker::Source::Resource(_)) {
+        let resources = state.resources().ok_or("Choose a game client folder in Settings to search this field")?;
+        let query = request.query;
+        return tauri::async_runtime::spawn_blocking(move || elements::picker::resource_page(&resources, &spec, &query, page))
+            .await
+            .map_err(|error| error.to_string())?;
+    }
+    state.with_document(|doc| match &spec.source {
+        elements::picker::Source::Records(_) => doc.picker_records(&spec, &request.query, page),
+        elements::picker::Source::Dialogs => doc.picker_dialogs(&spec, &request.query, page),
+        elements::picker::Source::Resource(_) => unreachable!(),
+    })
+}
+
+#[tauri::command]
 async fn search_records(query: elements::search::Query, state: State<'_, AppState>) -> Result<elements::search::Report, String> {
     state.with_document(|doc| doc.search(&query))
 }
@@ -621,6 +641,7 @@ pub fn run() {
             inspect_client,
             save_settings,
             find_records,
+            picker_search,
             list_problems,
             edit_record,
             bulk_edit,

@@ -136,6 +136,11 @@ Values are edited in the inspector. Edits stay in memory until the file is saved
   ones the enum lacks), bools as true/false. Enter saves, Esc cancels.
 - **Masks**: the calculator (click the labels) has **Apply** for the ticked bits; in an enum's
   list, clicking a value sets it.
+- **Smart value picker**: the search button beside a reference, skill, buff, title, path, icon
+  or dialog ID finds valid values by ID or name and applies the selected value. References stay
+  inside the field's declared lists or inferred ID space; client resources use the folder from
+  Settings and can preview their coloured description. Search is on demand and debounced; results
+  are paged in groups of 80, so every match remains reachable without transferring whole lists to the UI.
 - **Texts** open an editor with a live preview in the game's colours, a length counter
   (`wchar[n]` holds n UTF-16 units, `char[n]` n GBK bytes; a line break counts as two, as
   CR LF), colour swatches and a picker that insert `^RRGGBB`. Ctrl+Enter saves.

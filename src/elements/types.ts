@@ -83,6 +83,38 @@ export interface FieldNode {
   icon?: number;
   /** Key of the enum or mask naming this value. */
   set?: string;
+  /** On-demand source for choosing this integer value. */
+  picker?: "reference" | "skill" | "buff" | "title" | "path" | "icon" | "dialog";
+}
+
+export interface PickerEntry {
+  value: number;
+  name: string;
+  detail?: string;
+  description?: string;
+  /** Path ID of an item icon. */
+  icon?: number;
+  list?: number;
+  row?: number;
+}
+
+export interface PickerResult {
+  kind: string;
+  title: string;
+  scope: string;
+  current: number | null;
+  entries: PickerEntry[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export interface PickerRequest {
+  list: number;
+  row: number;
+  off: number;
+  query: string;
+  page: number;
 }
 
 export interface RecordDetail {

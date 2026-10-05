@@ -178,6 +178,10 @@ impl TitleTable {
         self.titles.get(&id)
     }
 
+    pub(super) fn iter(&self) -> impl Iterator<Item = (u32, &Title)> {
+        self.titles.iter().map(|(&id, title)| (id, title))
+    }
+
     #[cfg(test)]
     pub fn len(&self) -> usize {
         self.titles.len()

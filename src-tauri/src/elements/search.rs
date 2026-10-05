@@ -165,6 +165,8 @@ pub struct Slot {
     pub set: Option<String>,
     /// Display role ("path", "time", …).
     pub display: Option<String>,
+    /// Struct names this integer value may point at.
+    pub refs: Vec<String>,
 }
 
 impl Slot {
@@ -274,6 +276,7 @@ fn element(ty: &Ty, off: usize, path: &str, plain: &str, f: &Field, rules: Vec<R
             rules,
             set: f.e.clone(),
             display: f.display.clone(),
+            refs: f.refs.clone(),
         }),
     }
 }

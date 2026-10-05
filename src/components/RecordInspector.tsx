@@ -16,6 +16,7 @@ import type { FieldNode, ReferencedBy } from "../elements/types";
 import { isUndefinedNode, undefinedSpan } from "../elements/readings";
 import type { FieldSpec } from "../schema/model";
 import type { FieldEdit } from "../elements/types";
+import { ValuePicker } from "./ValuePicker";
 
 interface Props {
   list: ListSummary;
@@ -68,6 +69,8 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
   }, [detail?.list, detail?.index]);
   const [setPopover, setSetPopover] = useState<{ node: FieldNode; anchor: DOMRect } | null>(null);
   useEffect(() => setSetPopover(null), [detail]);
+  const [valuePicker, setValuePicker] = useState<FieldNode | null>(null);
+  useEffect(() => setValuePicker(null), [detail]);
   // Fields, or the records that refer to this one. The choice stays while browsing.
   const [view, setView] = useState<"fields" | "refs">("fields");
   const [refs, setRefs] = useState<ReferencedBy | null>(null);
@@ -289,6 +292,10 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           editing={editing}
           onStartEdit={onEdit ? startEdit : undefined}
           onCommit={setField}
+          onPick={(path, node) => {
+            selectNode(path);
+            setValuePicker(node);
+          }}
           onCancelEdit={() => setEditing(null)}
           bytes={detail.bytes}
           original={detail.original}
@@ -350,6 +357,16 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
         {/* The client's description, under the bytes (an empty row when there is none). */}
         <div className="description-slot">{detail.gameText && <DescriptionCard text={detail.gameText.text} source={detail.gameText.source} />}</div>
       </div>
+      {valuePicker && (
+        <ValuePicker
+          list={detail.list}
+          row={detail.index}
+          node={valuePicker}
+          icon={icon}
+          onApply={(value) => setField(valuePicker, value)}
+          onClose={() => setValuePicker(null)}
+        />
+      )}
     </section>
   );
 }

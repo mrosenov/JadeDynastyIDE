@@ -5,7 +5,7 @@ import { TIME_ROLES, formatDaytime, formatDuration, formatUnix, formatUnixUtc } 
 import { type Path, flatten } from "../elements/fieldPaths";
 import { DIALOGS } from "../tabs";
 import { isTextNode, textLines } from "../elements/text";
-import { CalendarClock, ChevronRight, Clock, CornerDownLeft, GitBranch, Timer } from "lucide-react";
+import { CalendarClock, ChevronRight, Clock, CornerDownLeft, GitBranch, Search, Timer } from "lucide-react";
 import { decodeValue, isChanged, isEditable } from "../elements/edit";
 import { InlineEditor } from "./InlineEditor";
 import { coins, formatMoneyWords } from "../elements/money";
@@ -215,13 +215,15 @@ interface Props {
   onStartEdit?: (path: Path, node: FieldNode) => void;
   /** Saves a value; resolves to an error message, or null when applied. */
   onCommit?: (node: FieldNode, value: string) => Promise<string | null>;
+  /** Opens the bounded value picker for a reference or client resource. */
+  onPick?: (path: Path, node: FieldNode) => void;
   onCancelEdit?: () => void;
   /** The record's bytes now and as the file was opened (marks changed fields). */
   bytes?: number[];
   original?: number[];
 }
 
-export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, onSet, editing, onStartEdit, onCommit, onCancelEdit, bytes, original }: Props) {
+export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, onSet, editing, onStartEdit, onCommit, onPick, onCancelEdit, bytes, original }: Props) {
   const rows = flatten(nodes, expanded);
   const onKeyDown = (e: React.KeyboardEvent) => {
     if ((e.key === "Enter" || e.key === "F2") && selected && !editing && onStartEdit) {
@@ -298,6 +300,20 @@ ${node.comment}` : ""}` : node.comment}
                 <OneLine text={node.value!} />
               ) : (
                 (node.value ?? (node.children ? <span className="muted">{node.children.length} items</span> : null))
+              )}
+              {editable && node.picker && onPick && (
+                <button
+                  className="value-picker-button"
+                  title={`Choose ${node.name} by ID or name`}
+                  aria-label={`Choose ${node.name}`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onPick(path, node);
+                  }}
+                  onDoubleClick={(event) => event.stopPropagation()}
+                >
+                  <Search size={12} />
+                </button>
               )}
               {node.hint &&
                 (node.description && (node.display === "skill" || node.display === "buff" || node.display === "title") ? (

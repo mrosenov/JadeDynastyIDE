@@ -38,6 +38,8 @@ import type {
   SaveOptions,
   SavePlan,
   Saved,
+  PickerRequest,
+  PickerResult,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -46,6 +48,9 @@ export const listRecords = (list: number) => invoke<RecordRow[]>("list_records",
 
 /** Records of every list by ID or name. */
 export const findRecords = (query: string) => invoke<FindResult>("find_records", { query });
+
+/** Bounded, on-demand choices for a reference or client resource field. */
+export const searchPicker = (request: PickerRequest) => invoke<PickerResult>("picker_search", { request });
 
 export const searchRecords = (query: SearchQuery) => invoke<SearchReport>("search_records", { query });
 export const searchFieldNames = (list: number | null) => invoke<SearchFieldName[]>("search_field_names", { list });

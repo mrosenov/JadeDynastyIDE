@@ -6,6 +6,7 @@ pub mod edit;
 pub mod export;
 pub mod format;
 pub mod import;
+pub mod picker;
 pub mod problems;
 pub mod reader;
 pub mod refs;
@@ -918,12 +919,7 @@ impl Document {
         if query.is_empty() {
             return FindResult { hits: vec![], total: 0 };
         }
-        let index = self.find_index.get_or_init(|| {
-            (0..self.file.lists.len())
-                .flat_map(|list| self.records(list).unwrap_or_default().into_iter().map(move |r| (list, r)))
-                .map(|(list, r)| FindEntry { list, index: r.index, id: r.id, lower: r.name.to_lowercase(), name: r.name })
-                .collect()
-        });
+        let index = self.find_entries();
         let mut ranked: Vec<(u8, &FindEntry)> = index
             .iter()
             .filter_map(|e| {
@@ -954,6 +950,21 @@ impl Document {
             })
             .collect();
         FindResult { hits, total }
+    }
+
+    fn find_entries(&self) -> &[FindEntry] {
+        self.find_index.get_or_init(|| {
+            (0..self.file.lists.len())
+                .flat_map(|list| {
+                    let name_at = Self::name_field(self.def(list).map(|(_, def)| def));
+                    (0..self.file.lists[list].count).filter_map(move |index| {
+                        let bytes = self.file.record(list, index)?;
+                        let name = Self::record_name(bytes, name_at);
+                        Some(FindEntry { list, index, id: Self::record_id(bytes), lower: name.to_lowercase(), name })
+                    })
+                })
+                .collect()
+        })
     }
 
     pub fn referenced_by(&self, list: usize, row: usize) -> Result<refs::ReferencedBy, String> {
@@ -1147,6 +1158,21 @@ mod tests {
         assert!(major.link.is_some(), "{:?}", major.hint);
         assert_eq!(major.link.unwrap().0, doc.by_struct["EQUIPMENT_MAJOR_TYPE"][0]);
         assert!(find("proc_type").hint.is_some());
+    }
+
+    #[test]
+    fn picker_limits_a_reference_to_its_declared_list() {
+        let Some(doc) = open("Game Dev/JD/zxserver/zgame/gs/config/elements.data") else { return };
+        let equipment = doc.by_struct["EQUIPMENT_ESSENCE"][0];
+        let row = doc.records(equipment).unwrap().into_iter().find(|record| record.id == 132).unwrap().index;
+        let node = doc.record(equipment, row).unwrap().nodes.into_iter().find(|node| node.name == "id_major_type").unwrap();
+        assert_eq!(node.picker.as_deref(), Some("reference"));
+        let request = picker::Request { list: equipment, row, off: node.off, query: node.value.unwrap(), page: 0 };
+        let spec = doc.picker_spec(&request).unwrap();
+        let page = doc.picker_records(&spec, &request.query, request.page).unwrap();
+        assert!(!page.entries.is_empty());
+        assert!(page.entries.iter().all(|entry| entry.list == Some(doc.by_struct["EQUIPMENT_MAJOR_TYPE"][0])));
+        assert!(page.entries.iter().any(|entry| entry.value.to_string() == request.query));
     }
 
     #[test]
