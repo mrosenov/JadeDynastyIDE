@@ -1,0 +1,85 @@
+{
+  "name": "SOUL_ENHANCE_CONFIG",
+  "struct": "SOUL_ENHANCE_CONFIG",
+  "size": 772,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "souls_required_per_point",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Properties List",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 24,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      }
+    },
+    {
+      "name": "level_limit",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Level Up List Settings",
+      "off": 172,
+      "t": {
+        "k": "array",
+        "n": 50,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "required_points",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "success_probability",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              },
+              "display": "probability"
+            },
+            {
+              "name": "failure_probability",
+              "off": 8,
+              "t": {
+                "k": "f32"
+              },
+              "display": "probability"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

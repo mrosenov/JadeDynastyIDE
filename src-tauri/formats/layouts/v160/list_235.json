@@ -1,0 +1,107 @@
+{
+  "name": "FACTION_BASE_ACTIVITY_CONFIG",
+  "struct": "FACTION_BASE_ACTIVITY_CONFIG",
+  "size": 228,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Activity Lists",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 40,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "title",
+              "off": 0,
+              "t": {
+                "k": "wstr",
+                "n": 8
+              }
+            },
+            {
+              "name": "Building",
+              "off": 16,
+              "t": {
+                "k": "struct",
+                "fields": [
+                  {
+                    "name": "build_id",
+                    "off": 0,
+                    "t": {
+                      "k": "i32"
+                    },
+                    "refs": [
+                      "BUILDING_ESSENCE"
+                    ]
+                  },
+                  {
+                    "name": "build_level",
+                    "off": 4,
+                    "t": {
+                      "k": "i32"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Res",
+              "off": 24,
+              "t": {
+                "k": "struct",
+                "fields": [
+                  {
+                    "name": "type",
+                    "off": 0,
+                    "t": {
+                      "k": "i32"
+                    }
+                  },
+                  {
+                    "name": "count",
+                    "off": 4,
+                    "t": {
+                      "k": "i32"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "name": "controller_id",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "region_index",
+              "off": 36,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "name": "BABY_CONFIG",
+  "struct": "BABY_CONFIG",
+  "size": 720,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "pick_range",
+      "off": 68,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "name_color",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "sight_range",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "aggro_range",
+      "off": 80,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "hunger_speed",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "stand_mode",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "move_speed",
+      "off": 92,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "per_copper_hp",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "per_silver_hp",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hp_limit",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "per_copper_mp",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "per_silver_mp",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "mp_limit",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Skill Deity",
+      "off": 120,
+      "t": {
+        "k": "array",
+        "n": 15,
+        "stride": 40,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "skills",
+              "off": 0,
+              "t": {
+                "k": "array",
+                "n": 10,
+                "stride": 4,
+                "t": {
+                  "k": "i32"
+                }
+              },
+              "display": "buff"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

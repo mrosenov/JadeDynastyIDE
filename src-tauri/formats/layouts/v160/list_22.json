@@ -1,6 +1,6 @@
 {
   "key": "offline_trustee_essence",
-  "name": "Offline Trustee Essence",
+  "name": "OFFLINE_TRUSTEE_ESSENCE",
   "struct": "OFFLINE_TRUSTEE_ESSENCE",
   "size": 96,
   "fields": [

@@ -1,0 +1,78 @@
+{
+  "name": "MATRIX_COMBINE_CONFIG",
+  "struct": "MATRIX_COMBINE_CONFIG",
+  "size": 3428,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Decompose Settings",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 120,
+        "stride": 28,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "card",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "MATRIX_CARD_ESSENCE",
+                "MATRIX_EQUIP_ESSENCE"
+              ]
+            },
+            {
+              "name": "decompose",
+              "off": 4,
+              "t": {
+                "k": "array",
+                "n": 3,
+                "stride": 8,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "decompose_id",
+                      "off": 0,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "refs": [
+                        "TASKNORMALMATTER_ESSENCE"
+                      ]
+                    },
+                    {
+                      "name": "decompose_amount",
+                      "off": 4,
+                      "t": {
+                        "k": "i32"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

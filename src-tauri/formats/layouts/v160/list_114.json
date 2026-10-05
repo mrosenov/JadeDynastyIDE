@@ -1,6 +1,6 @@
 {
   "key": "mercenary_credential_essence",
-  "name": "Mercenary Credential Essence",
+  "name": "MERCENARY_CREDENTIAL_ESSENCE",
   "struct": "MERCENARY_CREDENTIAL_ESSENCE",
   "size": 92,
   "fields": [

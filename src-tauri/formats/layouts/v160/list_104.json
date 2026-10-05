@@ -1,6 +1,6 @@
 {
   "key": "battle_score_config",
-  "name": "Battle Score Config",
+  "name": "BATTLE_SCORE_CONFIG",
   "struct": "BATTLE_SCORE_CONFIG",
   "size": 548,
   "fields": [
@@ -89,7 +89,11 @@
               "off": 0,
               "t": {
                 "k": "u32"
-              }
+              },
+              "refs": [
+                "MONSTER_ESSENCE",
+                "NPC_ESSENCE"
+              ]
             },
             {
               "name": "monster_score",

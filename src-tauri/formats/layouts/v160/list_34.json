@@ -1,17 +1,17 @@
 {
-  "name": "Npc Essence",
+  "name": "NPC_ESSENCE",
   "struct": "NPC_ESSENCE",
   "size": 856,
   "fields": [
     {
-      "name": "ID",
+      "name": "id",
       "off": 0,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Name",
+      "name": "name",
       "off": 4,
       "t": {
         "k": "wstr",
@@ -19,14 +19,14 @@
       }
     },
     {
-      "name": "Type",
+      "name": "type",
       "off": 68,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Title",
+      "name": "title",
       "off": 72,
       "t": {
         "k": "wstr",
@@ -34,39 +34,44 @@
       }
     },
     {
-      "name": "Refresh_Time",
+      "name": "refresh_time",
       "off": 104,
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "Size",
+      "name": "size",
       "off": 108,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Model_Path_ID",
+      "name": "model_path_id",
       "off": 112,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
-      "name": "Profile_Path_ID",
+      "name": "profile_path_id",
       "off": 116,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
       "name": "Monster_Source",
       "off": 120,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MONSTER_ESSENCE"
+      ]
     },
     {
       "name": "Greeting",
@@ -116,7 +121,10 @@
       "off": 656,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "NPC_TALK_SERVICE"
+      ]
     },
     {
       "name": "Shop",
@@ -144,14 +152,20 @@
       "off": 672,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "NPC_TASK_OUT_SERVICE"
+      ]
     },
     {
       "name": "Task_End_Map",
       "off": 676,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "NPC_TASK_IN_SERVICE"
+      ]
     },
     {
       "name": "Taskmatter_Service",
@@ -200,7 +214,10 @@
       "off": 704,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "NPC_RESETPROP_SERVICE"
+      ]
     },
     {
       "name": "Bind_Service",
@@ -231,39 +248,29 @@
       }
     },
     {
-      "name": "Exchange_1_1",
+      "name": "Item Exchange",
       "off": 724,
       "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Exchange_1_2",
-      "off": 728,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Exchange_1_3",
-      "off": 732,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Exchange_1_4",
-      "off": 736,
-      "t": {
-        "k": "i32"
-      }
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "refs": [
+        "ITEM_TRADE_CONFIG"
+      ]
     },
     {
       "name": "Crafting_Service",
       "off": 740,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "EQUIP_SOUL_MELD_SERVICE"
+      ]
     },
     {
       "name": "Consignment_Service",
@@ -294,46 +301,54 @@
       }
     },
     {
-      "name": "Exchange_2_1",
+      "name": "Item Exchange 2",
       "off": 760,
       "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Exchange_2_2",
-      "off": 764,
-      "t": {
-        "k": "i32"
-      }
+        "k": "array",
+        "n": 2,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "refs": [
+        "ITEM_TRADE2_CONFIG"
+      ]
     },
     {
       "name": "Special_Mode_1",
       "off": 768,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "combined_services",
+      "g": "Special Modes"
     },
     {
       "name": "Special_Mode_2",
       "off": 772,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "combined_services2",
+      "g": "Special Modes"
     },
     {
       "name": "Special_Mode_3",
       "off": 776,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "combined_services3",
+      "g": "Special Modes"
     },
     {
       "name": "Special_Mode_4",
       "off": 780,
       "t": {
         "k": "i32"
-      }
+      },
+      "g": "Special Modes"
     },
     {
       "name": "Has_PK_Service",

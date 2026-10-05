@@ -1,17 +1,17 @@
 {
-  "name": "Special Id Config",
+  "name": "SPECIAL_ID_CONFIG",
   "struct": "SPECIAL_ID_CONFIG",
   "size": 484,
   "fields": [
     {
-      "name": "ID",
+      "name": "id",
       "off": 0,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Name",
+      "name": "name",
       "off": 4,
       "t": {
         "k": "wstr",
@@ -19,18 +19,21 @@
       }
     },
     {
-      "name": "Version",
+      "name": "version",
       "off": 68,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "ID_Tmpl_Jinfashen_Confiq",
+      "name": "jinfashen_confiq",
       "off": 72,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "JINFASHEN_TO_MONEY_CONFIG"
+      ]
     },
     {
       "name": "Monster_Drop_Prob",
@@ -40,32 +43,44 @@
       }
     },
     {
-      "name": "ID_Money_Matter",
+      "name": "money_matter",
       "off": 80,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MATERIAL_ESSENCE"
+      ]
     },
     {
-      "name": "ID_Speaker",
+      "name": "speaker_id",
       "off": 84,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MATERIAL_ESSENCE"
+      ]
     },
     {
-      "name": "ID_Destroying_Matter",
+      "name": "destroying_matter",
       "off": 88,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "DESTROYING_ESSENCE"
+      ]
     },
     {
-      "name": "ID_Townscroll",
+      "name": "townscroll_id",
       "off": 92,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TOWNSCROLL_ESSENCE"
+      ]
     },
     {
       "name": "ID_Attacker_Droptable",
@@ -86,140 +101,182 @@
       "off": 104,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MATERIAL_ESSENCE"
+      ]
     },
     {
-      "name": "Fee_Talisman_Merge",
+      "name": "talisman_merge_fee",
       "off": 108,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
-      "name": "Fee_Talisman_Enchant",
+      "name": "talisman_enchant_fee",
       "off": 112,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "ID_War_Material_1",
       "off": 116,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MATERIAL_ESSENCE"
+      ]
     },
     {
       "name": "ID_War_Material_2",
       "off": 120,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MATERIAL_ESSENCE"
+      ]
     },
     {
       "name": "Fee_Pet_Gained",
       "off": 124,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Fee_Pet_Free",
       "off": 128,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Fee_Pet_Refine",
       "off": 132,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Fee_Pet_Rename",
       "off": 136,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "ID_Male_War_Statue",
       "off": 140,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "NPC_ESSENCE"
+      ]
     },
     {
       "name": "ID_Female_War_Statue",
       "off": 144,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "NPC_ESSENCE"
+      ]
     },
     {
       "name": "ID_Vehicle_Upgrade_Item",
       "off": 148,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "Fee_Lock",
       "off": 152,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Fee_Unlock",
       "off": 156,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "Unlock_Item_ID",
       "off": 160,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "Unlocking_Item_ID",
       "off": 164,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "DESTROYING_ESSENCE"
+      ]
     },
     {
       "name": "ID_Damaged_Item",
       "off": 168,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "DESTROYING_ESSENCE"
+      ]
     },
     {
       "name": "ID_Repair_Damaged_Item",
       "off": 172,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "ID_Bleed_Identity_Host_Item",
       "off": 176,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "Fee_Restore_Soul",
       "off": 180,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "ID_Lowgrade_Soul_Stone",

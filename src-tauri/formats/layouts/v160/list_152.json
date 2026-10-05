@@ -1,6 +1,6 @@
 {
   "key": "xingzuo_item_essence",
-  "name": "Xingzuo Item Essence",
+  "name": "XINGZUO_ITEM_ESSENCE",
   "struct": "XINGZUO_ITEM_ESSENCE",
   "size": 104,
   "fields": [

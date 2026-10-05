@@ -1,6 +1,6 @@
 {
   "key": "npc_storage_service",
-  "name": "Npc Storage Service",
+  "name": "NPC_STORAGE_SERVICE",
   "struct": "NPC_STORAGE_SERVICE",
   "size": 68,
   "fields": [

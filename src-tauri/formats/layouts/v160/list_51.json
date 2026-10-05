@@ -1,0 +1,38 @@
+{
+  "key": "player_secondlevel_config",
+  "name": "PLAYER_SECONDLEVEL_CONFIG",
+  "struct": "PLAYER_SECONDLEVEL_CONFIG",
+  "size": 1092,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "id"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "exp_lost",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 256,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "c": "经验损失表"
+    }
+  ]
+}

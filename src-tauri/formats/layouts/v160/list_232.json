@@ -1,0 +1,49 @@
+{
+  "name": "FORBID_GODEVIL_SKILL_CONFIG",
+  "struct": "FORBID_GODEVIL_SKILL_CONFIG",
+  "size": 1148,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Skill Lists",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 18,
+        "stride": 60,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "skill_ids",
+              "off": 0,
+              "t": {
+                "k": "array",
+                "n": 15,
+                "stride": 4,
+                "t": {
+                  "k": "i32"
+                }
+              },
+              "display": "skill"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

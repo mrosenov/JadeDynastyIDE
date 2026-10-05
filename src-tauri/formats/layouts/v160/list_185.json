@@ -1,0 +1,38 @@
+{
+  "key": "phase_config",
+  "name": "PHASE_CONFIG",
+  "struct": "PHASE_CONFIG",
+  "size": 868,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "phaselist",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 200,
+        "stride": 4,
+        "t": {
+          "k": "u32"
+        }
+      },
+      "c": "默认信息"
+    }
+  ]
+}

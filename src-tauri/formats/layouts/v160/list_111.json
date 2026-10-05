@@ -1,6 +1,6 @@
 {
   "key": "original_shape_config",
-  "name": "Original Shape Config",
+  "name": "ORIGINAL_SHAPE_CONFIG",
   "struct": "ORIGINAL_SHAPE_CONFIG",
   "size": 872,
   "fields": [
@@ -44,7 +44,10 @@
               "off": 0,
               "t": {
                 "k": "i32"
-              }
+              },
+              "refs": [
+                "MONSTER_ESSENCE"
+              ]
             },
             {
               "name": "original",

@@ -1,6 +1,6 @@
 {
   "key": "skillmatter_essence",
-  "name": "Skillmatter Essence",
+  "name": "SKILLMATTER_ESSENCE",
   "struct": "SKILLMATTER_ESSENCE",
   "size": 128,
   "fields": [

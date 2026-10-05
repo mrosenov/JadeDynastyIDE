@@ -1,6 +1,6 @@
 {
   "key": "deity_character_config",
-  "name": "Deity Character Config",
+  "name": "DEITY_CHARACTER_CONFIG",
   "struct": "DEITY_CHARACTER_CONFIG",
   "size": 7268,
   "fields": [

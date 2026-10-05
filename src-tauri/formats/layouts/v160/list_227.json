@@ -1,0 +1,58 @@
+{
+  "name": "SOUL_EXCHANGE_CONFIG",
+  "struct": "SOUL_EXCHANGE_CONFIG",
+  "size": 148,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Exchange List",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "TASKDICE_ESSENCE",
+                "REFINE_TICKET_ESSENCE",
+                "GIFT_BAG_ESSENCE",
+                "TALISMAN_MAINPART_ESSENCE",
+                "CHANGE_SHAPE_CARD_ESSENCE",
+                "TITLE_ITEM_ESSENCE"
+              ]
+            },
+            {
+              "name": "star_soul_points_required",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

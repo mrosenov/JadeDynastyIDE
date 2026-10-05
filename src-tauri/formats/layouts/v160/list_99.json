@@ -1,6 +1,6 @@
 {
   "key": "special_name_item_essence",
-  "name": "Special Name Item Essence",
+  "name": "SPECIAL_NAME_ITEM_ESSENCE",
   "struct": "SPECIAL_NAME_ITEM_ESSENCE",
   "size": 92,
   "fields": [

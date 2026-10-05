@@ -1,0 +1,46 @@
+{
+  "name": "MATRIX_CARD_UPGREAD_CONFIG",
+  "struct": "MATRIX_CARD_UPGREAD_CONFIG",
+  "size": 320,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Ice Orb of Vastness",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 59,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      }
+    },
+    {
+      "name": "Probability",
+      "off": 304,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      }
+    }
+  ]
+}

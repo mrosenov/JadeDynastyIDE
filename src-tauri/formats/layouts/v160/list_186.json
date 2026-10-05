@@ -1,0 +1,101 @@
+{
+  "key": "cross6v6_item_exchange_config",
+  "name": "CROSS6V6_ITEM_EXCHANGE_CONFIG",
+  "struct": "CROSS6V6_ITEM_EXCHANGE_CONFIG",
+  "size": 428,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "cross6v6_item_exchange_info",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 15,
+        "stride": 24,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "物品ID",
+              "refs": [
+                "CHANGE_SHAPE_CARD_ESSENCE",
+                "EQUIPMENT_ESSENCE",
+                "GIFT_BAG_ESSENCE",
+                "TASKDICE_ESSENCE",
+                "REFINE_TICKET_ESSENCE",
+                "VEHICLE_ESSENCE",
+                "UPGRADE_EQUIP_STONE_ESSENCE",
+                "GENERAL_ARTICLE_ESSENCE",
+                "MEDICINE_ESSENCE"
+              ]
+            },
+            {
+              "name": "item_num",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "物品数量"
+            },
+            {
+              "name": "require_currency_id",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "所需兑换币ID",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE"
+              ]
+            },
+            {
+              "name": "require_currnecy_num",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "c": "所需兑换币数量"
+            },
+            {
+              "name": "time_limit",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              },
+              "c": "时间限制"
+            },
+            {
+              "name": "exchange_count",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              },
+              "c": "兑换次数"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,311 @@
+{
+  "name": "BABY_FASHION_ESSENCE",
+  "struct": "BABY_FASHION_ESSENCE",
+  "size": 220,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "model_path",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "icon_path",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "display": "icon"
+    },
+    {
+      "name": "equip_mask",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "equip_location",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "action_type",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "model_normal",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "g": "models"
+    },
+    {
+      "name": "model_tetra",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "g": "models"
+    },
+    {
+      "name": "model_left",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "g": "models"
+    },
+    {
+      "name": "model_back",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "g": "models"
+    },
+    {
+      "name": "model_chanqdao",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "g": "models"
+    },
+    {
+      "name": "model_judao",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "g": "models"
+    },
+    {
+      "name": "model_gonq",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "g": "models"
+    },
+    {
+      "name": "model_sha_back",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "g": "models"
+    },
+    {
+      "name": "model_sha_01",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "g": "models"
+    },
+    {
+      "name": "model_sha_02",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "g": "models"
+    },
+    {
+      "name": "require_gender",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "e": "gender"
+    },
+    {
+      "name": "require_level",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "sect_mask",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      },
+      "e": "sect_mask"
+    },
+    {
+      "name": "require_title",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "health",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "spirit",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "min_attack",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "max_attack",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "defence",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "attack",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "armor",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "attack_range",
+      "off": 172,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Attribute_1",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "EQUIPMENT_ADDON"
+      ],
+      "g": "Attributes"
+    },
+    {
+      "name": "Attribute_2",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      },
+      "g": "Attributes"
+    },
+    {
+      "name": "Attribute_3",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      },
+      "g": "Attributes"
+    },
+    {
+      "name": "Attribute_4",
+      "off": 188,
+      "t": {
+        "k": "i32"
+      },
+      "g": "Attributes"
+    },
+    {
+      "name": "Attribute_5",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      },
+      "g": "Attributes"
+    },
+    {
+      "name": "fee_install_sstone",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "fee_uninstall_sstone",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "sell_price",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "buy_price",
+      "off": 208,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pile_num_max",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      },
+      "e": "trade_behavior"
+    }
+  ]
+}

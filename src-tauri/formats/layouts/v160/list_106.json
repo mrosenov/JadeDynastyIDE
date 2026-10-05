@@ -1,6 +1,6 @@
 {
   "key": "vip_card_essence",
-  "name": "Vip Card Essence",
+  "name": "VIP_CARD_ESSENCE",
   "struct": "VIP_CARD_ESSENCE",
   "size": 176,
   "fields": [
@@ -45,7 +45,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "vip 卡的类型：白银卡（1），黄金卡（2），白金卡（3）……"
+      "c": "vip 卡的类型：白银卡（1），黄金卡（2），白金卡（3）……",
+      "e": "vip_card_type"
     },
     {
       "name": "expires",

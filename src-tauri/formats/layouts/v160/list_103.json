@@ -1,6 +1,6 @@
 {
   "key": "battle_deprive_config",
-  "name": "Battle Deprive Config",
+  "name": "BATTLE_DEPRIVE_CONFIG",
   "struct": "BATTLE_DEPRIVE_CONFIG",
   "size": 152,
   "fields": [
@@ -45,7 +45,12 @@
               "t": {
                 "k": "u32"
               },
-              "c": "掠夺物品的id"
+              "c": "掠夺物品的id",
+              "refs": [
+                "MATERIAL_ESSENCE",
+                "VEHICLE_ESSENCE",
+                "EQUIPMENT_ESSENCE"
+              ]
             },
             {
               "name": "max_num",

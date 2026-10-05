@@ -1,6 +1,6 @@
 {
   "key": "npc_consign_service",
-  "name": "Npc Consign Service",
+  "name": "NPC_CONSIGN_SERVICE",
   "struct": "NPC_CONSIGN_SERVICE",
   "size": 72,
   "fields": [

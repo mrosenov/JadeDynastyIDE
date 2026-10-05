@@ -1,0 +1,97 @@
+{
+  "name": "ELITE_GAME_AWARD_CONFIG",
+  "struct": "ELITE_GAME_AWARD_CONFIG",
+  "size": 1084,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "delivery_award_time",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "time"
+    },
+    {
+      "name": "guess_end_time",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "display": "time"
+    },
+    {
+      "name": "award_info",
+      "off": 76,
+      "t": {
+        "k": "array",
+        "n": 6,
+        "stride": 168,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "start",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "end",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "item_award",
+              "off": 8,
+              "t": {
+                "k": "array",
+                "n": 20,
+                "stride": 8,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "id",
+                      "off": 0,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "refs": [
+                        "TITLE_ITEM_ESSENCE"
+                      ]
+                    },
+                    {
+                      "name": "amount",
+                      "off": 4,
+                      "t": {
+                        "k": "i32"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

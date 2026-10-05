@@ -1,6 +1,6 @@
 {
   "key": "collision_raid_award_config",
-  "name": "Collision Raid Award Config",
+  "name": "COLLISION_RAID_AWARD_CONFIG",
   "struct": "COLLISION_RAID_AWARD_CONFIG",
   "size": 472,
   "fields": [
@@ -27,7 +27,10 @@
       "t": {
         "k": "i32"
       },
-      "c": "每日奖励物品"
+      "c": "每日奖励物品",
+      "refs": [
+        "GIFT_BAG_ESSENCE"
+      ]
     },
     {
       "name": "award_list",

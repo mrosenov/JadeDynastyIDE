@@ -1,6 +1,6 @@
 {
   "key": "cash_medic_merge_item_essence",
-  "name": "Cash Medic Merge Item Essence",
+  "name": "CASH_MEDIC_MERGE_ITEM_ESSENCE",
   "struct": "CASH_MEDIC_MERGE_ITEM_ESSENCE",
   "size": 188,
   "fields": [

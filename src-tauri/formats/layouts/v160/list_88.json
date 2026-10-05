@@ -1,6 +1,6 @@
 {
   "key": "pet_auto_food_essence",
-  "name": "Pet Auto Food Essence",
+  "name": "PET_AUTO_FOOD_ESSENCE",
   "struct": "PET_AUTO_FOOD_ESSENCE",
   "size": 108,
   "fields": [

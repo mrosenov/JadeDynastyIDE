@@ -1,6 +1,6 @@
 {
   "key": "title_prop_config",
-  "name": "Title Prop Config",
+  "name": "TITLE_PROP_CONFIG",
   "struct": "TITLE_PROP_CONFIG",
   "size": 84,
   "fields": [
@@ -27,7 +27,8 @@
       "t": {
         "k": "u32"
       },
-      "c": "称谓id"
+      "c": "称谓id",
+      "display": "title"
     },
     {
       "name": "id_addons",

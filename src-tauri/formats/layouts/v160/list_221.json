@@ -1,0 +1,107 @@
+{
+  "name": "ITEM_TRADE2_CONFIG",
+  "struct": "ITEM_TRADE2_CONFIG",
+  "size": 2024,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "pages",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 2,
+        "stride": 976,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "title",
+              "off": 0,
+              "t": {
+                "k": "wstr",
+                "n": 8
+              }
+            },
+            {
+              "name": "items",
+              "off": 16,
+              "t": {
+                "k": "array",
+                "n": 30,
+                "stride": 32,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "id",
+                      "off": 0,
+                      "t": {
+                        "k": "i32"
+                      }
+                    },
+                    {
+                      "name": "amount",
+                      "off": 4,
+                      "t": {
+                        "k": "i32"
+                      }
+                    },
+                    {
+                      "name": "requirements",
+                      "off": 8,
+                      "t": {
+                        "k": "array",
+                        "n": 3,
+                        "stride": 8,
+                        "t": {
+                          "k": "struct",
+                          "fields": [
+                            {
+                              "name": "id",
+                              "off": 0,
+                              "t": {
+                                "k": "i32"
+                              }
+                            },
+                            {
+                              "name": "amount",
+                              "off": 4,
+                              "t": {
+                                "k": "i32"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "dialog_id",
+      "off": 2020,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

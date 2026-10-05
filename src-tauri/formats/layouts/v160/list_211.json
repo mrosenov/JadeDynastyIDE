@@ -1,0 +1,80 @@
+{
+  "name": "VEHICLE_ENHANCE_ESSENCE",
+  "struct": "VEHICLE_ENHANCE_ESSENCE",
+  "size": 100,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "matter_path",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "icon_path",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "display": "icon"
+    },
+    {
+      "name": "increase_speed",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "moment",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "sell_price",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "buy_price",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "pile_num_max",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "key": "rune_comb_property",
-  "name": "Rune Comb Property",
+  "name": "RUNE_COMB_PROPERTY",
   "struct": "RUNE_COMB_PROPERTY",
   "size": 148,
   "fields": [
@@ -40,7 +40,10 @@
           "k": "u32"
         }
       },
-      "c": "符文id1~10"
+      "c": "符文id1~10",
+      "refs": [
+        "RUNE_SLOT_ESSENCE"
+      ]
     },
     {
       "name": "addons",

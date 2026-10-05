@@ -1,6 +1,6 @@
 {
   "key": "interaction_object_hook_config",
-  "name": "Interaction Object Hook Config",
+  "name": "INTERACTION_OBJECT_HOOK_CONFIG",
   "struct": "INTERACTION_OBJECT_HOOK_CONFIG",
   "size": 2368,
   "fields": [

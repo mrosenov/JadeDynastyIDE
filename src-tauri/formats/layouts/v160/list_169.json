@@ -1,6 +1,6 @@
 {
   "key": "battle_201304_config",
-  "name": "Battle 201304 Config",
+  "name": "BATTLE_201304_CONFIG",
   "struct": "BATTLE_201304_CONFIG",
   "size": 148,
   "fields": [
@@ -8,9 +8,8 @@
       "name": "id",
       "off": 0,
       "t": {
-        "k": "u32"
-      },
-      "c": "ID"
+        "k": "i32"
+      }
     },
     {
       "name": "name",
@@ -18,51 +17,45 @@
       "t": {
         "k": "wstr",
         "n": 32
-      },
-      "c": "名称, 最多15个汉字"
+      }
     },
     {
       "name": "map_id",
       "off": 68,
       "t": {
-        "k": "u32"
-      },
-      "c": "地图号"
+        "k": "i32"
+      }
     },
     {
       "name": "add_time_if_full",
       "off": 72,
       "t": {
-        "k": "bool"
-      },
-      "c": "人满是否延时"
+        "k": "i32"
+      }
     },
     {
-      "name": "minite_add",
+      "name": "minute_add",
       "off": 76,
       "t": {
         "k": "i32"
-      },
-      "c": "延时长度"
+      }
     },
     {
-      "name": "require_level",
+      "name": "required_Level",
       "off": 80,
       "t": {
         "k": "i32"
-      },
-      "c": "等级限制"
+      }
     },
     {
-      "name": "renascence_count",
+      "name": "ascension_count",
       "off": 84,
       "t": {
         "k": "i32"
-      },
-      "c": "转生次数要求"
+      }
     },
     {
-      "name": "monster_info",
+      "name": "Monster Info",
       "off": 88,
       "t": {
         "k": "array",
@@ -72,7 +65,7 @@
           "k": "struct",
           "fields": [
             {
-              "name": "id",
+              "name": "monster_id",
               "off": 0,
               "t": {
                 "k": "i32"
@@ -94,40 +87,35 @@
       "off": 128,
       "t": {
         "k": "i32"
-      },
-      "c": "人头基础分值"
+      }
     },
     {
-      "name": "score_target",
+      "name": "score_tarqet",
       "off": 132,
       "t": {
         "k": "i32"
-      },
-      "c": "目标分数"
+      }
     },
     {
-      "name": "taskid_success_human",
+      "name": "task_id_success_human",
       "off": 136,
       "t": {
         "k": "i32"
-      },
-      "c": "人族完成发奖任务"
+      }
     },
     {
-      "name": "taskid_success_wild",
+      "name": "task_id_success_wild",
       "off": 140,
       "t": {
         "k": "i32"
-      },
-      "c": "神族完成发奖任务"
+      }
     },
     {
-      "name": "taskid_everyone",
+      "name": "task_id_everyone",
       "off": 144,
       "t": {
         "k": "i32"
-      },
-      "c": "参与奖发放任务"
+      }
     }
   ]
 }

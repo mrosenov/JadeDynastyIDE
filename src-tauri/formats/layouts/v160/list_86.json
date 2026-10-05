@@ -1,6 +1,6 @@
 {
   "key": "pet_skill_essence",
-  "name": "Pet Skill Essence",
+  "name": "PET_SKILL_ESSENCE",
   "struct": "PET_SKILL_ESSENCE",
   "size": 116,
   "fields": [

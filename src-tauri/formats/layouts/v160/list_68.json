@@ -1,6 +1,6 @@
 {
   "key": "lottery_essence",
-  "name": "Lottery Essence",
+  "name": "LOTTERY_ESSENCE",
   "struct": "LOTTERY_ESSENCE",
   "size": 1252,
   "fields": [
@@ -80,7 +80,8 @@
               "t": {
                 "k": "i32"
               },
-              "c": "图标路径名"
+              "c": "图标路径名",
+              "display": "icon"
             }
           ]
         }

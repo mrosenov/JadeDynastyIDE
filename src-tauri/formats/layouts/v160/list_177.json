@@ -1,6 +1,6 @@
 {
   "key": "colorant_item_essence",
-  "name": "Colorant Item Essence",
+  "name": "COLORANT_ITEM_ESSENCE",
   "struct": "COLORANT_ITEM_ESSENCE",
   "size": 104,
   "fields": [
@@ -45,7 +45,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "色系 0:红 1:橙 2:黄 3:绿 4:青 5:蓝 6:紫 7:黑 8:白 9:褐 10:粉 11:灰"
+      "c": "色系 0:红 1:橙 2:黄 3:绿 4:青 5:蓝 6:紫 7:黑 8:白 9:褐 10:粉 11:灰",
+      "e": "dye_colors"
     },
     {
       "name": "quality",

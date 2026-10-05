@@ -1,6 +1,6 @@
 {
   "key": "talisman_energyfood_essence",
-  "name": "Talisman Energyfood Essence",
+  "name": "TALISMAN_ENERGYFOOD_ESSENCE",
   "struct": "TALISMAN_ENERGYFOOD_ESSENCE",
   "size": 100,
   "fields": [

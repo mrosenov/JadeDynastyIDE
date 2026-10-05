@@ -1,0 +1,49 @@
+{
+  "name": "FORBID_COMMON_SKILL_CONFIG",
+  "struct": "FORBID_COMMON_SKILL_CONFIG",
+  "size": 716,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Skill Lists",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 18,
+        "stride": 36,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "skill_ids",
+              "off": 0,
+              "t": {
+                "k": "array",
+                "n": 9,
+                "stride": 4,
+                "t": {
+                  "k": "i32"
+                }
+              },
+              "display": "skill"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

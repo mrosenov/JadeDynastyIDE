@@ -1,6 +1,6 @@
 {
   "key": "change_shape_stone_essence",
-  "name": "Change Shape Stone Essence",
+  "name": "CHANGE_SHAPE_STONE_ESSENCE",
   "struct": "CHANGE_SHAPE_STONE_ESSENCE",
   "size": 104,
   "fields": [

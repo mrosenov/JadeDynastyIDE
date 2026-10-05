@@ -1,0 +1,527 @@
+{
+  "name": "EGGS_GIFT_BAG_ESSENCE",
+  "struct": "EGGS_GIFT_BAG_ESSENCE",
+  "size": 2268,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "model_path",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "icon_path",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "display": "icon"
+    },
+    {
+      "name": "level_ever_limit",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_required",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "level_upper_limit",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "require_gender",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "e": "gender"
+    },
+    {
+      "name": "ascension_count",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "character_combo_id",
+      "off": 96,
+      "t": {
+        "k": "i64"
+      },
+      "e": "character_combo_id"
+    },
+    {
+      "name": "character_combo_id_2",
+      "off": 104,
+      "t": {
+        "k": "i64"
+      },
+      "e": "character_combo_id2"
+    },
+    {
+      "name": "god_devil_mask",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "e": "god_devil_mask"
+    },
+    {
+      "name": "open_time",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "display": "duration"
+    },
+    {
+      "name": "probability",
+      "off": 120,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "success_disappear",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "failure_disappear",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "open_requirements",
+      "off": 132,
+      "t": {
+        "k": "struct",
+        "fields": [
+          {
+            "name": "items",
+            "off": 0,
+            "t": {
+              "k": "array",
+              "n": 2,
+              "stride": 8,
+              "t": {
+                "k": "struct",
+                "fields": [
+                  {
+                    "name": "id",
+                    "off": 0,
+                    "t": {
+                      "k": "i32"
+                    }
+                  },
+                  {
+                    "name": "amount",
+                    "off": 4,
+                    "t": {
+                      "k": "i32"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "required_money",
+            "off": 16,
+            "t": {
+              "k": "i32"
+            },
+            "display": "money"
+          }
+        ]
+      }
+    },
+    {
+      "name": "reward_items_count",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "rewards",
+      "off": 156,
+      "t": {
+        "k": "array",
+        "n": 16,
+        "stride": 24,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "probability",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              }
+            },
+            {
+              "name": "min_quantity",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "max_quantity",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "bind",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "expire",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              },
+              "display": "duration"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "normalize_group_1",
+      "off": 540,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "normalize_group_2",
+      "off": 544,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "normalize_group_3",
+      "off": 548,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "normalize_group_4",
+      "off": 552,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "world_tag",
+      "off": 556,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "x",
+      "off": 560,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "y",
+      "off": 564,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "z",
+      "off": 568,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "x_1",
+      "off": 572,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "y_2",
+      "off": 576,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "z_1",
+      "off": 580,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "logic",
+      "off": 584,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "type",
+      "off": 588,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "year",
+      "off": 592,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "month",
+      "off": 596,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "day",
+      "off": 600,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hour",
+      "off": 604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "minutes",
+      "off": 608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "wday",
+      "off": 612,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "year_2",
+      "off": 616,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "month_2",
+      "off": 620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "day_2",
+      "off": 624,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "hour_2",
+      "off": 628,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "minutes_2",
+      "off": 632,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "wday_2",
+      "off": 636,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "special_award_1",
+      "off": 640,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "factor_1",
+      "off": 644,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "special_words_1",
+      "off": 648,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "special_award_2",
+      "off": 848,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "special_words_2",
+      "off": 852,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "award_words_1",
+      "off": 1052,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "award_words_2",
+      "off": 1252,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "award_words_3",
+      "off": 1452,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "award_words_4",
+      "off": 1652,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "award_words_5",
+      "off": 1852,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "award_words_6",
+      "off": 2052,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    },
+    {
+      "name": "sell_price",
+      "off": 2252,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "buy_price",
+      "off": 2256,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 2260,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 2264,
+      "t": {
+        "k": "i32"
+      },
+      "e": "trade_behavior"
+    }
+  ]
+}

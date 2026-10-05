@@ -1,0 +1,110 @@
+{
+  "name": "GROUPRAID_EVALAWARD_CONFIG",
+  "struct": "GROUPRAID_EVALAWARD_CONFIG",
+  "size": 284,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Eval",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "max",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "min",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Award List",
+      "off": 100,
+      "t": {
+        "k": "array",
+        "n": 6,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "refs": [
+        "GIFT_BAG_ESSENCE"
+      ]
+    },
+    {
+      "name": "Raid Level Settings",
+      "off": 124,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 16,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "boss_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "MONSTER_ESSENCE"
+              ]
+            },
+            {
+              "name": "eval_id",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "time_id",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "controller_id",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

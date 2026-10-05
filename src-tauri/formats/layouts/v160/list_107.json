@@ -1,6 +1,6 @@
 {
   "key": "instancing_battle_config",
-  "name": "Instancing Battle Config",
+  "name": "INSTANCING_BATTLE_CONFIG",
   "struct": "INSTANCING_BATTLE_CONFIG",
   "size": 2172,
   "fields": [
@@ -275,7 +275,11 @@
               "t": {
                 "k": "i32"
               },
-              "c": "怪物id"
+              "c": "怪物id",
+              "refs": [
+                "MONSTER_ESSENCE",
+                "NPC_ESSENCE"
+              ]
             },
             {
               "name": "score",

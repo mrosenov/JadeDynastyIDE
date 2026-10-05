@@ -1,6 +1,6 @@
 {
   "key": "team_season_award_config",
-  "name": "Team Season Award Config",
+  "name": "TEAM_SEASON_AWARD_CONFIG",
   "struct": "TEAM_SEASON_AWARD_CONFIG",
   "size": 1268,
   "fields": [
@@ -63,7 +63,14 @@
                       "t": {
                         "k": "i32"
                       },
-                      "c": "奖励物品ID"
+                      "c": "奖励物品ID",
+                      "refs": [
+                        "TASKDICE_ESSENCE",
+                        "GIFT_BAG_ESSENCE",
+                        "TALISMAN_MAINPART_ESSENCE",
+                        "EQUIPMENT_ESSENCE",
+                        "MEDICINE_ESSENCE"
+                      ]
                     },
                     {
                       "name": "item_num",
@@ -79,7 +86,8 @@
                       "t": {
                         "k": "i32"
                       },
-                      "c": "时间限制"
+                      "c": "时间限制",
+                      "display": "duration"
                     }
                   ]
                 }

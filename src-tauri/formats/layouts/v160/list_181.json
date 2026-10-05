@@ -1,0 +1,80 @@
+{
+  "key": "faction_transfer_config",
+  "name": "FACTION_TRANSFER_CONFIG",
+  "struct": "FACTION_TRANSFER_CONFIG",
+  "size": 1508,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "transfer_location",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 30,
+        "stride": 48,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "region_index",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "区域索引"
+            },
+            {
+              "name": "name",
+              "off": 4,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              },
+              "c": "区域名称"
+            },
+            {
+              "name": "x",
+              "off": 36,
+              "t": {
+                "k": "i32"
+              },
+              "c": "X坐标"
+            },
+            {
+              "name": "y",
+              "off": 40,
+              "t": {
+                "k": "i32"
+              },
+              "c": "Y坐标"
+            },
+            {
+              "name": "z",
+              "off": 44,
+              "t": {
+                "k": "i32"
+              },
+              "c": "Z坐标"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

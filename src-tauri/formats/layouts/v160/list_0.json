@@ -1,6 +1,6 @@
 {
   "key": "equipment_addon",
-  "name": "Equipment Addon",
+  "name": "EQUIPMENT_ADDON",
   "struct": "EQUIPMENT_ADDON",
   "size": 88,
   "fields": [

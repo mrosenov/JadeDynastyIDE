@@ -1,0 +1,99 @@
+{
+  "key": "building_region_config",
+  "name": "BUILDING_REGION_CONFIG",
+  "struct": "BUILDING_REGION_CONFIG",
+  "size": 1748,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "build_region",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 30,
+        "stride": 56,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "name",
+              "off": 0,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              },
+              "c": "区域名称"
+            },
+            {
+              "name": "centerx",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              },
+              "c": "区域中心点X"
+            },
+            {
+              "name": "centery",
+              "off": 36,
+              "t": {
+                "k": "i32"
+              },
+              "c": "区域中心点Y"
+            },
+            {
+              "name": "length",
+              "off": 40,
+              "t": {
+                "k": "i32"
+              },
+              "c": "区域长度"
+            },
+            {
+              "name": "width",
+              "off": 44,
+              "t": {
+                "k": "i32"
+              },
+              "c": "区域宽度"
+            },
+            {
+              "name": "region_index",
+              "off": 48,
+              "t": {
+                "k": "i32"
+              },
+              "c": "区域索引"
+            },
+            {
+              "name": "region_id",
+              "off": 52,
+              "t": {
+                "k": "u32"
+              },
+              "c": "区域id",
+              "refs": [
+                "REGION_BLOCK_ESSENCE"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "key": "aircraft_essence",
-  "name": "Aircraft Essence",
+  "name": "AIRCRAFT_ESSENCE",
   "struct": "AIRCRAFT_ESSENCE",
   "size": 124,
   "fields": [

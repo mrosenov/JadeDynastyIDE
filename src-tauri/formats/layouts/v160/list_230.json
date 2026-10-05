@@ -1,0 +1,164 @@
+{
+  "name": "RED_PACKETS_ESSENCE",
+  "struct": "RED_PACKETS_ESSENCE",
+  "size": 140,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "display": "icon"
+    },
+    {
+      "name": "cooldown",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "display": "duration"
+    },
+    {
+      "name": "min_money",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "max_money",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "min_gold_coin",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "max_gold_coin",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "min_player",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "max_player",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "summon_npc_id",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "NPC_ESSENCE"
+      ]
+    },
+    {
+      "name": "skill_id",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "display": "skill"
+    },
+    {
+      "name": "buff_level",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "file_gfx_1",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_gfx_2",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "price",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "shop_price",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      },
+      "e": "trade_behavior"
+    }
+  ]
+}

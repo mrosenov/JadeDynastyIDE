@@ -1,6 +1,6 @@
 {
   "key": "ui_transfer_config",
-  "name": "Ui Transfer Config",
+  "name": "UI_TRANSFER_CONFIG",
   "struct": "UI_TRANSFER_CONFIG",
   "size": 14404,
   "fields": [
@@ -75,7 +75,8 @@
               "t": {
                 "k": "i32"
               },
-              "c": "费用"
+              "c": "费用",
+              "display": "money"
             }
           ]
         }

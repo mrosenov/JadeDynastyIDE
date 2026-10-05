@@ -1,0 +1,77 @@
+{
+  "name": "NEW_TOWNSCROLL_ESSENCE",
+  "struct": "NEW_TOWNSCROLL_ESSENCE",
+  "size": 96,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "display": "icon"
+    },
+    {
+      "name": "use_time",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "display": "duration"
+    },
+    {
+      "name": "price",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "shop_price",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "e": "trade_behavior"
+    }
+  ]
+}

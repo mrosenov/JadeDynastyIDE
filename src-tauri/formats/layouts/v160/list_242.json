@@ -1,0 +1,98 @@
+{
+  "name": "EQUIPMENT_RANDOMEXT_CONFIG",
+  "struct": "EQUIPMENT_RANDOMEXT_CONFIG",
+  "size": 352,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "prop_probabilities",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 6,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "display": "probability"
+    },
+    {
+      "name": "Base Prop List",
+      "off": 92,
+      "t": {
+        "k": "array",
+        "n": 12,
+        "stride": 20,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "prop_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "max_value",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              }
+            },
+            {
+              "name": "min_value",
+              "off": 8,
+              "t": {
+                "k": "f32"
+              }
+            },
+            {
+              "name": "add_value",
+              "off": 12,
+              "t": {
+                "k": "f32"
+              }
+            },
+            {
+              "name": "probability",
+              "off": 16,
+              "t": {
+                "k": "f32"
+              },
+              "display": "probability"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "level_probabilities",
+      "off": 332,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "display": "probability"
+    }
+  ]
+}

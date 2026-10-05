@@ -1,6 +1,6 @@
 {
   "key": "player_skill_point_config",
-  "name": "Player Skill Point Config",
+  "name": "PLAYER_SKILL_POINT_CONFIG",
   "struct": "PLAYER_SKILL_POINT_CONFIG",
   "size": 3268,
   "fields": [

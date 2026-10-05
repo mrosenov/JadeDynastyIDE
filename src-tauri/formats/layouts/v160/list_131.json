@@ -1,5 +1,5 @@
 {
-  "name": "Transcription Config",
+  "name": "TRANSCRIPTION_CONFIG",
   "struct": "TRANSCRIPTION_CONFIG",
   "size": 444,
   "fields": [
@@ -37,7 +37,11 @@
       "off": 76,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE",
+        "MEDICINE_ESSENCE"
+      ]
     },
     {
       "name": "Open_Room_Item_Count",

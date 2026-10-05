@@ -1,6 +1,6 @@
 {
   "key": "gift_bag_lottery_deliver_essence",
-  "name": "Gift Bag Lottery Deliver Essence",
+  "name": "GIFT_BAG_LOTTERY_DELIVER_ESSENCE",
   "struct": "GIFT_BAG_LOTTERY_DELIVER_ESSENCE",
   "size": 572,
   "fields": [
@@ -122,7 +122,8 @@
       "t": {
         "k": "f32"
       },
-      "c": "开启成功的概率"
+      "c": "开启成功的概率",
+      "display": "probability"
     },
     {
       "name": "success_disappear",
@@ -204,7 +205,11 @@
               "t": {
                 "k": "u32"
               },
-              "c": "物品id"
+              "c": "物品id",
+              "refs": [
+                "TASKDICE_ESSENCE",
+                "GIFT_BAG_ESSENCE"
+              ]
             },
             {
               "name": "probability",
@@ -212,7 +217,8 @@
               "t": {
                 "k": "f32"
               },
-              "c": "物品产出概率"
+              "c": "物品产出概率",
+              "display": "probability"
             },
             {
               "name": "num_min",

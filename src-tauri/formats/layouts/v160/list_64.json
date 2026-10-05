@@ -1,6 +1,6 @@
 {
   "key": "npc_equipundestroy_service",
-  "name": "Npc Equipundestroy Service",
+  "name": "NPC_EQUIPUNDESTROY_SERVICE",
   "struct": "NPC_EQUIPUNDESTROY_SERVICE",
   "size": 76,
   "fields": [

@@ -1,6 +1,6 @@
 {
   "key": "rune_slot",
-  "name": "Rune Slot",
+  "name": "RUNE_SLOT_ESSENCE",
   "struct": "RUNE_SLOT_ESSENCE",
   "size": 92,
   "fields": [

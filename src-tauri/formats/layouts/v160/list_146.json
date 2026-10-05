@@ -1,6 +1,6 @@
 {
   "key": "collision_raid_transfigure_config",
-  "name": "Collision Raid Transfigure Config",
+  "name": "COLLISION_RAID_TRANSFIGURE_CONFIG",
   "struct": "COLLISION_RAID_TRANSFIGURE_CONFIG",
   "size": 4388,
   "fields": [
@@ -45,7 +45,8 @@
               "t": {
                 "k": "i32"
               },
-              "c": "变身模型路径"
+              "c": "变身模型路径",
+              "display": "path"
             },
             {
               "name": "file_icon",
@@ -53,7 +54,8 @@
               "t": {
                 "k": "i32"
               },
-              "c": "选体型图标路径"
+              "c": "选体型图标路径",
+              "display": "icon"
             },
             {
               "name": "mass",

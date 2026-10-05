@@ -1,6 +1,6 @@
 {
   "key": "drop_interval_config",
-  "name": "Drop Interval Config",
+  "name": "DROP_INTERNAL_CONFIG",
   "struct": "DROP_INTERNAL_CONFIG",
   "size": 488,
   "fields": [
@@ -44,7 +44,10 @@
       "t": {
         "k": "i32"
       },
-      "c": "掉落物品id"
+      "c": "掉落物品id",
+      "refs": [
+        "GENERAL_ARTICLE_ESSENCE"
+      ]
     },
     {
       "name": "item_num",

@@ -1,6 +1,6 @@
 {
   "key": "npc_war_buy_archer_service",
-  "name": "Npc War Buy Archer Service",
+  "name": "NPC_WAR_BUY_ARCHER_SERVICE",
   "struct": "NPC_WAR_BUY_ARCHER_SERVICE",
   "size": 168,
   "fields": [
@@ -52,7 +52,10 @@
       "t": {
         "k": "u32"
       },
-      "c": "需要包裹中有某物品"
+      "c": "需要包裹中有某物品",
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "remove_one_item",

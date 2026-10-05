@@ -1,0 +1,59 @@
+{
+  "name": "MATRIX_EXP_CONFIG",
+  "struct": "MATRIX_EXP_CONFIG",
+  "size": 348,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "configs",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 7,
+        "stride": 40,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "name",
+              "off": 0,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              }
+            },
+            {
+              "name": "cards_count",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              },
+              "c": "how many cards can be equipped"
+            },
+            {
+              "name": "exp",
+              "off": 36,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

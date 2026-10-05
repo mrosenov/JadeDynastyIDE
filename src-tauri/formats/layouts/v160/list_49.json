@@ -1,6 +1,6 @@
 {
   "key": "player_levelexp_config",
-  "name": "Player Levelexp Config",
+  "name": "PLAYER_LEVELEXP_CONFIG",
   "struct": "PLAYER_LEVELEXP_CONFIG",
   "size": 10908,
   "fields": [

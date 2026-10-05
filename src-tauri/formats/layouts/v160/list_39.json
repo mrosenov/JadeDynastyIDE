@@ -1,6 +1,6 @@
 {
   "key": "character_class_config",
-  "name": "Character Class Config",
+  "name": "CHARACTER_CLASS_CONFIG",
   "struct": "CHARACTER_CLASS_CONFIG",
   "size": 264,
   "fields": [
@@ -27,7 +27,8 @@
       "t": {
         "k": "u32"
       },
-      "c": "职业id, 可能的有:0-新手, 1-术士, 2-武士, 3-战士, 4-剑士, 5-牧师, 6-法师, 7-将军, 8-重骑士, 9-刺客, 10-剑圣, 11-贤者, 12-祭司, 13-秘法师, 14-召唤使"
+      "c": "职业id, 可能的有:0-新手, 1-术士, 2-武士, 3-战士, 4-剑士, 5-牧师, 6-法师, 7-将军, 8-重骑士, 9-刺客, 10-剑圣, 11-贤者, 12-祭司, 13-秘法师, 14-召唤使",
+      "e": "sect_mask"
     },
     {
       "name": "faction",

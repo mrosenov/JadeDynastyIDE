@@ -1,6 +1,6 @@
 {
   "key": "liveness_config",
-  "name": "Liveness Config",
+  "name": "LIVENESS_CONFIG",
   "struct": "LIVENESS_CONFIG",
   "size": 6384,
   "fields": [

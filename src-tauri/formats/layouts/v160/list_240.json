@@ -1,0 +1,250 @@
+{
+  "name": "CHARGE_AWARD_CONFIG",
+  "struct": "CHARGE_AWARD_CONFIG",
+  "size": 1716,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "feedback_list",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 192,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_list",
+              "off": 0,
+              "t": {
+                "k": "array",
+                "n": 12,
+                "stride": 16,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "score_min",
+                      "off": 0,
+                      "t": {
+                        "k": "i32"
+                      }
+                    },
+                    {
+                      "name": "item_id",
+                      "off": 4,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "refs": [
+                        "TASKDICE_ESSENCE",
+                        "TASKNORMALMATTER_ESSENCE",
+                        "EQUIPMENT_ESSENCE",
+                        "DOUBLE_EXP_ESSENCE",
+                        "PROP_ADD_MATERIAL_ITEM_ESSENCE"
+                      ]
+                    },
+                    {
+                      "name": "item_count",
+                      "off": 8,
+                      "t": {
+                        "k": "i32"
+                      }
+                    },
+                    {
+                      "name": "indate",
+                      "off": 12,
+                      "t": {
+                        "k": "i32"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "exchange_list",
+      "off": 836,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 192,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_list",
+              "off": 0,
+              "t": {
+                "k": "array",
+                "n": 12,
+                "stride": 16,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "required_score",
+                      "off": 0,
+                      "t": {
+                        "k": "i32"
+                      }
+                    },
+                    {
+                      "name": "item_id",
+                      "off": 4,
+                      "t": {
+                        "k": "i32"
+                      }
+                    },
+                    {
+                      "name": "item_count",
+                      "off": 8,
+                      "t": {
+                        "k": "i32"
+                      }
+                    },
+                    {
+                      "name": "indate",
+                      "off": 12,
+                      "t": {
+                        "k": "i32"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "version",
+      "off": 1604,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_open",
+      "off": 1608,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "activity_start_time",
+      "off": 1612,
+      "t": {
+        "k": "i32"
+      },
+      "display": "time"
+    },
+    {
+      "name": "activity_end_time",
+      "off": 1616,
+      "t": {
+        "k": "i32"
+      },
+      "display": "time"
+    },
+    {
+      "name": "score_multiplier",
+      "off": 1620,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "extra_item",
+      "off": 1624,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 20,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "min_score",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "max_score",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "item_id",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "item_count",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "indate",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "extra_award_open",
+      "off": 1704,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "extra_award_start_time",
+      "off": 1708,
+      "t": {
+        "k": "i32"
+      },
+      "display": "time"
+    },
+    {
+      "name": "extra_award_end_time",
+      "off": 1712,
+      "t": {
+        "k": "i32"
+      },
+      "display": "time"
+    }
+  ]
+}

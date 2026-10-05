@@ -1,6 +1,6 @@
 {
   "key": "king_war_config",
-  "name": "King War Config",
+  "name": "KING_WAR_CONFIG",
   "struct": "KING_WAR_CONFIG",
   "size": 572,
   "fields": [
@@ -53,7 +53,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "副战场怪物id"
+              "c": "副战场怪物id",
+              "refs": [
+                "MONSTER_ESSENCE"
+              ]
             },
             {
               "name": "hp_delta",
@@ -82,7 +85,10 @@
               "off": 0,
               "t": {
                 "k": "i32"
-              }
+              },
+              "refs": [
+                "TASKDICE_ESSENCE"
+              ]
             },
             {
               "name": "num",

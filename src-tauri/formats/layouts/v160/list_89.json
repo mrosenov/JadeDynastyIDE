@@ -1,6 +1,6 @@
 {
   "key": "pet_refine_essence",
-  "name": "Pet Refine Essence",
+  "name": "PET_REFINE_ESSENCE",
   "struct": "PET_REFINE_ESSENCE",
   "size": 108,
   "fields": [

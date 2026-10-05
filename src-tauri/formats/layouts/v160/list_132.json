@@ -1,6 +1,6 @@
 {
   "key": "online_gift_bag_config",
-  "name": "Online Gift Bag Config",
+  "name": "ONLINE_GIFT_BAG_CONFIG",
   "struct": "ONLINE_GIFT_BAG_CONFIG",
   "size": 264,
   "fields": [

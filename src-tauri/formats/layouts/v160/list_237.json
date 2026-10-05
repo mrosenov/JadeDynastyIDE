@@ -1,0 +1,163 @@
+{
+  "name": "AMULET_CONFIG",
+  "struct": "AMULET_CONFIG",
+  "size": 996,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Probabilities",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      }
+    },
+    {
+      "name": "Base Prop Lists",
+      "off": 84,
+      "t": {
+        "k": "array",
+        "n": 12,
+        "stride": 20,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "prop_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "max_value",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              }
+            },
+            {
+              "name": "min_value",
+              "off": 8,
+              "t": {
+                "k": "f32"
+              }
+            },
+            {
+              "name": "add_value",
+              "off": 12,
+              "t": {
+                "k": "f32"
+              }
+            },
+            {
+              "name": "probability",
+              "off": 16,
+              "t": {
+                "k": "f32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Hide Prop Lists",
+      "off": 324,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 124,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "level",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "Properties",
+              "off": 4,
+              "t": {
+                "k": "array",
+                "n": 10,
+                "stride": 12,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "prop_id",
+                      "off": 0,
+                      "t": {
+                        "k": "i32"
+                      }
+                    },
+                    {
+                      "name": "probability",
+                      "off": 4,
+                      "t": {
+                        "k": "f32"
+                      }
+                    },
+                    {
+                      "name": "value",
+                      "off": 8,
+                      "t": {
+                        "k": "f32"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Level Probabilities",
+      "off": 944,
+      "t": {
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      }
+    },
+    {
+      "name": "Hole Levels",
+      "off": 964,
+      "t": {
+        "k": "array",
+        "n": 8,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "key": "npc_ui_transfer_service",
-  "name": "Npc Ui Transfer Service",
+  "name": "NPC_UI_TRANSFER_SERVICE",
   "struct": "NPC_UI_TRANSFER_SERVICE",
   "size": 1092,
   "fields": [

@@ -1,6 +1,6 @@
 {
   "key": "pet_armor_essence",
-  "name": "Pet Armor Essence",
+  "name": "PET_ARMOR_ESSENCE",
   "struct": "PET_ARMOR_ESSENCE",
   "size": 300,
   "fields": [

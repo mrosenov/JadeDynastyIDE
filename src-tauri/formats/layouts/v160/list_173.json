@@ -1,6 +1,6 @@
 {
   "key": "arena_season_time_config",
-  "name": "Arena Season Time Config",
+  "name": "ARENA_SEASON_TIME_CONFIG",
   "struct": "ARENA_SEASON_TIME_CONFIG",
   "size": 100,
   "fields": [
@@ -36,14 +36,16 @@
               "off": 0,
               "t": {
                 "k": "i32"
-              }
+              },
+              "display": "time"
             },
             {
               "name": "end_time",
               "off": 4,
               "t": {
                 "k": "i32"
-              }
+              },
+              "display": "time"
             }
           ]
         }

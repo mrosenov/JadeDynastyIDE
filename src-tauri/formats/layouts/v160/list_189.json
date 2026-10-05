@@ -1,0 +1,87 @@
+{
+  "key": "faction_auction_config",
+  "name": "FACTION_AUCTION_CONFIG",
+  "struct": "FACTION_AUCTION_CONFIG",
+  "size": 21668,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "faction_auction_list",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 216,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "物品id",
+              "refs": [
+                "TASKDICE_ESSENCE",
+                "TASKNORMALMATTER_ESSENCE",
+                "UPGRADE_EQUIP_STONE_ESSENCE"
+              ]
+            },
+            {
+              "name": "baseprice",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "底价"
+            },
+            {
+              "name": "file_icon",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "物品大图标",
+              "display": "icon"
+            },
+            {
+              "name": "aucitontime",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "c": "拍卖时间",
+              "display": "duration"
+            },
+            {
+              "name": "words",
+              "off": 16,
+              "t": {
+                "k": "wstr",
+                "n": 100
+              },
+              "c": "产出喊话"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

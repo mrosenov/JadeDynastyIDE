@@ -1,6 +1,6 @@
 {
   "key": "pet_assist_refine_essence",
-  "name": "Pet Assist Refine Essence",
+  "name": "PET_ASSIST_REFINE_ESSENCE",
   "struct": "PET_ASSIST_REFINE_ESSENCE",
   "size": 92,
   "fields": [

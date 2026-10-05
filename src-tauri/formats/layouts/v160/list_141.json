@@ -1,5 +1,5 @@
 {
-  "name": "Rune Comb Property",
+  "name": "RUNE_COMB_PROPERTY",
   "struct": "RUNE_COMB_PROPERTY",
   "size": 112,
   "fields": [
@@ -19,7 +19,7 @@
       }
     },
     {
-      "name": "File_Model",
+      "name": "file_model",
       "off": 68,
       "t": {
         "k": "i32"
@@ -27,7 +27,7 @@
       "display": "path"
     },
     {
-      "name": "Model_Path_ID",
+      "name": "matter_path",
       "off": 72,
       "t": {
         "k": "i32"
@@ -35,7 +35,7 @@
       "display": "path"
     },
     {
-      "name": "Icon_Path_ID",
+      "name": "icon_path",
       "off": 76,
       "t": {
         "k": "i32"
@@ -43,35 +43,35 @@
       "display": "icon"
     },
     {
-      "name": "Quality",
+      "name": "quality",
       "off": 80,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Hole_max",
+      "name": "max_runes",
       "off": 84,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Req_Level",
+      "name": "required_level",
       "off": 88,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Renascense_Count",
+      "name": "ascension_count",
       "off": 92,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Sell_Price",
+      "name": "sell_price",
       "off": 96,
       "t": {
         "k": "i32"
@@ -79,7 +79,7 @@
       "display": "money"
     },
     {
-      "name": "Buy_Price",
+      "name": "buy_price",
       "off": 100,
       "t": {
         "k": "i32"
@@ -87,14 +87,14 @@
       "display": "money"
     },
     {
-      "name": "Stack_Amt",
+      "name": "pile_num_max",
       "off": 104,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Trade_Behavior",
+      "name": "proc_type",
       "off": 108,
       "t": {
         "k": "i32"

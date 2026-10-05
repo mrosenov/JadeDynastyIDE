@@ -1,5 +1,5 @@
 {
-  "name": "Vehicle Essence",
+  "name": "VEHICLE_ESSENCE",
   "struct": "VEHICLE_ESSENCE",
   "size": 324,
   "fields": [
@@ -128,378 +128,46 @@
       }
     },
     {
-      "name": "addon_prop_1",
+      "name": "Attribute Probabilities",
       "off": 128,
       "t": {
-        "k": "f32"
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
       }
     },
     {
-      "name": "addon_prop_2",
-      "off": 132,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_prop_3",
-      "off": 136,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_prop_4",
-      "off": 140,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_prop_5",
-      "off": 144,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_1_id",
+      "name": "Attributes",
       "off": 148,
       "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_1_prop",
-      "off": 152,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_2_id",
-      "off": 156,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_2_prop",
-      "off": 160,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_3_id",
-      "off": 164,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_3_prop",
-      "off": 168,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_4_id",
-      "off": 172,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_4_prop",
-      "off": 176,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_5_id",
-      "off": 180,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_5_prop",
-      "off": 184,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_6_id",
-      "off": 188,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_6_prop",
-      "off": 192,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_7_id",
-      "off": 196,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_7_prop",
-      "off": 200,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_8_id",
-      "off": 204,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_8_prop",
-      "off": 208,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_9_id",
-      "off": 212,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_9_prop",
-      "off": 216,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_10_id",
-      "off": 220,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_10_prop",
-      "off": 224,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_11_id",
-      "off": 228,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_11_prop",
-      "off": 232,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_12_id",
-      "off": 236,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_12_prop",
-      "off": 240,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_13_id",
-      "off": 244,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_13_prop",
-      "off": 248,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_14_id",
-      "off": 252,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_14_prop",
-      "off": 256,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_15_id",
-      "off": 260,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_15_prop",
-      "off": 264,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_16_id",
-      "off": 268,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_16_prop",
-      "off": 272,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_17_id",
-      "off": 276,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_17_prop",
-      "off": 280,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_18_id",
-      "off": 284,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_18_prop",
-      "off": 288,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_19_id",
-      "off": 292,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_19_prop",
-      "off": 296,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "addon_20_id",
-      "off": 300,
-      "t": {
-        "k": "i32"
-      },
-      "refs": [
-        "EQUIPMENT_ADDON"
-      ]
-    },
-    {
-      "name": "addon_20_prop",
-      "off": 304,
-      "t": {
-        "k": "f32"
+        "k": "array",
+        "n": 20,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "attribute_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "EQUIPMENT_ADDON"
+              ]
+            },
+            {
+              "name": "probability",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              }
+            }
+          ]
+        }
       }
     },
     {

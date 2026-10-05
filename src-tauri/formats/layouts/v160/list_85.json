@@ -1,6 +1,6 @@
 {
   "key": "pet_food_essence",
-  "name": "Pet Food Essence",
+  "name": "PET_FOOD_ESSENCE",
   "struct": "PET_FOOD_ESSENCE",
   "size": 116,
   "fields": [
@@ -61,8 +61,7 @@
       "t": {
         "k": "u32"
       },
-      "c": "宠物种族限制",
-      "e": "zx_pet_type_mask"
+      "c": "宠物种族限制"
     },
     {
       "name": "food_usage",

@@ -1,6 +1,6 @@
 {
   "key": "npc_resetprop_service",
-  "name": "Npc Resetprop Service",
+  "name": "NPC_RESETPROP_SERVICE",
   "struct": "NPC_RESETPROP_SERVICE",
   "size": 116,
   "fields": [
@@ -37,7 +37,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "所需要的物品"
+              "c": "所需要的物品",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE"
+              ]
             },
             {
               "name": "resetprop_type",
@@ -45,7 +48,8 @@
               "t": {
                 "k": "i32"
               },
-              "c": "洗点方式"
+              "c": "洗点方式",
+              "e": "reset_services"
             }
           ]
         }

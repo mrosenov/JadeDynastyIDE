@@ -1,6 +1,6 @@
 {
   "key": "scroll_region_config",
-  "name": "Scroll Region Config",
+  "name": "SCROLL_REGION_CONFIG",
   "struct": "SCROLL_REGION_CONFIG",
   "size": 3792,
   "fields": [
@@ -59,7 +59,8 @@
           "k": "f32"
         }
       },
-      "c": "区域等级初始出现概率，分别对应0-5等级时的概率，注意：概率总和为1"
+      "c": "区域等级初始出现概率，分别对应0-5等级时的概率，注意：概率总和为1",
+      "display": "probability"
     },
     {
       "name": "region_level_up_prob",
@@ -72,7 +73,8 @@
           "k": "f32"
         }
       },
-      "c": "区域等级升级概率，分别对应1-5等级的升级概率"
+      "c": "区域等级升级概率，分别对应1-5等级的升级概率",
+      "display": "probability"
     },
     {
       "name": "region_award_list",
@@ -110,7 +112,8 @@
                 "t": {
                   "k": "f32"
                 },
-                "c": "发放该物品的概率"
+                "c": "发放该物品的概率",
+                "display": "probability"
               },
               {
                 "name": "event_id",

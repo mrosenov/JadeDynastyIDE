@@ -1,6 +1,6 @@
 {
   "key": "npc_reputation_shop_service",
-  "name": "Npc Reputation Shop Service",
+  "name": "NPC_REPUTATION_SHOP_SERVICE",
   "struct": "NPC_REPUTATION_SHOP_SERVICE",
   "size": 10116,
   "fields": [

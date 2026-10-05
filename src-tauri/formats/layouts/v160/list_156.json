@@ -1,6 +1,6 @@
 {
   "key": "buff_area_config",
-  "name": "Buff Area Config",
+  "name": "BUFF_AREA_CONFIG",
   "struct": "BUFF_AREA_CONFIG",
   "size": 112,
   "fields": [

@@ -1,6 +1,6 @@
 {
   "key": "equipment_major_type",
-  "name": "Equipment Major Type",
+  "name": "EQUIPMENT_MAJOR_TYPE",
   "struct": "EQUIPMENT_MAJOR_TYPE",
   "size": 68,
   "fields": [

@@ -1,6 +1,6 @@
 {
   "key": "upgrade_equip_config",
-  "name": "Upgrade Equip Config",
+  "name": "UPGRADE_EQUIP_CONFIG",
   "struct": "UPGRADE_EQUIP_CONFIG",
   "size": 3268,
   "fields": [
@@ -37,7 +37,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "装备id"
+              "c": "装备id",
+              "refs": [
+                "EQUIPMENT_ESSENCE"
+              ]
             },
             {
               "name": "stone_id",
@@ -45,7 +48,12 @@
               "t": {
                 "k": "i32"
               },
-              "c": "模具id"
+              "c": "模具id",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE",
+                "GENERAL_ARTICLE_ESSENCE",
+                "TASKMATTER_ESSENCE"
+              ]
             },
             {
               "name": "num",
@@ -61,7 +69,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "产出的武器id"
+              "c": "产出的武器id",
+              "refs": [
+                "EQUIPMENT_ESSENCE"
+              ]
             }
           ]
         }

@@ -1,0 +1,201 @@
+{
+  "name": "BABY_ESSENCE",
+  "struct": "BABY_ESSENCE",
+  "size": 400,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "file_model",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_weapon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_body",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_boots",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_head",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_normal",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_tetra",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_left",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_back",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_changdao",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_judao",
+      "off": 108,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_gong",
+      "off": 112,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_sha_back",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_sha_01",
+      "off": 120,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "file_model_sha_02",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path",
+      "g": "file_model"
+    },
+    {
+      "name": "gender",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      },
+      "e": "gender"
+    },
+    {
+      "name": "sect_mask",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      },
+      "e": "sect_mask"
+    },
+    {
+      "name": "attack_range",
+      "off": 136,
+      "t": {
+        "k": "f32"
+      }
+    },
+    {
+      "name": "Skills",
+      "off": 140,
+      "t": {
+        "k": "array",
+        "n": 15,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "display": "skill"
+    },
+    {
+      "name": "description",
+      "off": 200,
+      "t": {
+        "k": "wstr",
+        "n": 100
+      }
+    }
+  ]
+}

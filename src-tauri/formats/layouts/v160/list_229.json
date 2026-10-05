@@ -1,0 +1,83 @@
+{
+  "name": "DAILY_SIGN_CONFIG",
+  "struct": "DAILY_SIGN_CONFIG",
+  "size": 1152,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "start_time",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "time"
+    },
+    {
+      "name": "Award List",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 120,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "TASKDICE_ESSENCE",
+                "DOUBLE_EXP_ESSENCE",
+                "TASKNORMALMATTER_ESSENCE",
+                "REFINE_TICKET_ESSENCE",
+                "GIFT_BAG_ESSENCE",
+                "PET_FOOD_ESSENCE",
+                "TALISMAN_EXPFOOD_ESSENCE",
+                "PROP_ADD_MATERIAL_ITEM_ESSENCE",
+                "GENERAL_ARTICLE_ESSENCE",
+                "GEM_DUST_ESSENCE",
+                "MEDICINE_ESSENCE"
+              ]
+            },
+            {
+              "name": "item_count",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Cost List",
+      "off": 1032,
+      "t": {
+        "k": "array",
+        "n": 30,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      }
+    }
+  ]
+}

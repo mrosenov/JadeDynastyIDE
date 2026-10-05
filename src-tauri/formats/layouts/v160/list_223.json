@@ -1,0 +1,30 @@
+{
+  "name": "ELITE_GAME_RESULT_CONFIG",
+  "struct": "ELITE_GAME_RESULT_CONFIG",
+  "size": 72,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "date",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "time"
+    }
+  ]
+}

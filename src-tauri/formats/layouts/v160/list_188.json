@@ -1,0 +1,89 @@
+{
+  "key": "faction_shop_config",
+  "name": "FACTION_SHOP_CONFIG",
+  "struct": "FACTION_SHOP_CONFIG",
+  "size": 2068,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "faction_item_list",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 20,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_index",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "物品编号"
+            },
+            {
+              "name": "item_id",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "物品id",
+              "refs": [
+                "TASKDICE_ESSENCE",
+                "TASKNORMALMATTER_ESSENCE",
+                "PROP_ADD_MATERIAL_ITEM_ESSENCE",
+                "GENERAL_ARTICLE_ESSENCE",
+                "UPGRADE_EQUIP_STONE_ESSENCE"
+              ]
+            },
+            {
+              "name": "build_id",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "建筑id",
+              "refs": [
+                "BUILDING_ESSENCE"
+              ]
+            },
+            {
+              "name": "build_level",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "c": "建筑等级"
+            },
+            {
+              "name": "contribution",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              },
+              "c": "贡献度价格"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

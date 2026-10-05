@@ -1,6 +1,6 @@
 {
   "key": "teleportation_stone_essence",
-  "name": "Teleportation Stone Essence",
+  "name": "TELEPORTATION_STONE_ESSENCE",
   "struct": "TELEPORTATION_STONE_ESSENCE",
   "size": 96,
   "fields": [

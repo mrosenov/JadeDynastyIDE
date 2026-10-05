@@ -383,7 +383,7 @@ IDs are only unique within an ID space, so one ID can match an item, an addon an
 | v156 | 193 | server sources (`zx_source`), all typed | zxserver, Desktop copy |
 | v156-signin | 194 | server sources (`JD1447`), extra `SIGN_IN_CONFIG` | none (no file) |
 | v158 | 230 | Laravel jdide, 8 typed | 1559 server |
-| v160 | 246 | Laravel jdide, 177 typed | Clean/1601 server, ForsakenJD client |
+| v160 | 246 | JD IDE curated, 246 typed | Clean/1601 server, ForsakenJD client |
 | v165 | 318 | Laravel jdide, 186 typed | 1792 server, Elite JD client |
 | v176 | 294+ | Laravel jdide, 211 typed | none (list count unverified) |
 

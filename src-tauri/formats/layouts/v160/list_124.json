@@ -1,6 +1,6 @@
 {
   "key": "gem_config",
-  "name": "Gem Config",
+  "name": "GEM_CONFIG",
   "struct": "GEM_CONFIG",
   "size": 148,
   "fields": [
@@ -37,7 +37,10 @@
               "t": {
                 "k": "u32"
               },
-              "c": "普通品质宝石id"
+              "c": "普通品质宝石id",
+              "refs": [
+                "GEM_ESSENCE"
+              ]
             },
             {
               "name": "perfect_gem_id",
@@ -45,7 +48,10 @@
               "t": {
                 "k": "u32"
               },
-              "c": "完美品质宝石id"
+              "c": "完美品质宝石id",
+              "refs": [
+                "GEM_ESSENCE"
+              ]
             }
           ]
         }

@@ -1,6 +1,6 @@
 {
   "key": "gem_extract_config",
-  "name": "Gem Extract Config",
+  "name": "GEM_EXTRACT_CONFIG",
   "struct": "GEM_EXTRACT_CONFIG",
   "size": 104,
   "fields": [
@@ -37,7 +37,10 @@
               "t": {
                 "k": "u32"
               },
-              "c": "生成的宝石粉尘ID"
+              "c": "生成的宝石粉尘ID",
+              "refs": [
+                "GEM_DUST_ESSENCE"
+              ]
             },
             {
               "name": "gem_dust_num",
@@ -53,7 +56,8 @@
               "t": {
                 "k": "f32"
               },
-              "c": "生成该宝石粉尘的概率"
+              "c": "生成该宝石粉尘的概率",
+              "display": "probability"
             }
           ]
         }

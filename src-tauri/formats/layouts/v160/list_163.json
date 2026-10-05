@@ -1,6 +1,6 @@
 {
   "key": "gift_pack_item_essence",
-  "name": "Gift Pack Item Essence",
+  "name": "GIFT_PACK_ITEM_ESSENCE",
   "struct": "GIFT_PACK_ITEM_ESSENCE",
   "size": 128,
   "fields": [

@@ -1,5 +1,5 @@
 {
-  "name": "Talisman Mainpart Essence",
+  "name": "TALISMAN_MAINPART_ESSENCE",
   "struct": "TALISMAN_MAINPART_ESSENCE",
   "size": 340,
   "fields": [
@@ -23,56 +23,64 @@
       "off": 68,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
       "name": "file_model_2",
       "off": 72,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
       "name": "file_model_3",
       "off": 76,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
       "name": "file_model_4",
       "off": 80,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
       "name": "file_model_5",
       "off": 84,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
       "name": "file_model_6",
       "off": 88,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
       "name": "file_model_7",
       "off": 92,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
       "name": "file_matter",
       "off": 96,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
       "name": "file_icon",
@@ -174,7 +182,8 @@
       "off": 212,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "gender"
     },
     {
       "name": "require_level",
@@ -249,7 +258,8 @@
       "off": 252,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "title"
     },
     {
       "name": "max_level",
@@ -291,21 +301,24 @@
       "off": 276,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "fee_expfood",
       "off": 280,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "fee_reset",
       "off": 284,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "is_aircraft",
@@ -354,14 +367,20 @@
       "off": 312,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TALISMAN_MERGEKATALYST_ESSENCE"
+      ]
     },
     {
       "name": "auxilary_item",
       "off": 316,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "auxilary_item_amount",

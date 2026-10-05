@@ -1,0 +1,83 @@
+{
+  "name": "TALENT_SCROLL_REFINE_ESSENCE",
+  "struct": "TALENT_SCROLL_REFINE_ESSENCE",
+  "size": 100,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "display": "icon"
+    },
+    {
+      "name": "refine_type",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "refine_type_mask",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "price",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "shop_price",
+      "off": 88,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 92,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "e": "trade_behavior"
+    }
+  ]
+}

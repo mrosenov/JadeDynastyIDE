@@ -1,6 +1,6 @@
 {
   "key": "little_pet_upgrade_config",
-  "name": "Little Pet Upgrade Config",
+  "name": "LITTLE_PET_UPGRADE_CONFIG",
   "struct": "LITTLE_PET_UPGRADE_CONFIG",
   "size": 148,
   "fields": [
@@ -37,7 +37,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "饲养诛小仙所需道具"
+              "c": "饲养诛小仙所需道具",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE"
+              ]
             },
             {
               "name": "gain_exp",
@@ -58,7 +61,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "诛小仙默认形象模型路径"
+      "c": "诛小仙默认形象模型路径",
+      "display": "path"
     },
     {
       "name": "pet_upgrade_info_list",
@@ -76,7 +80,8 @@
               "t": {
                 "k": "i32"
               },
-              "c": "该等级所对应的形象路径"
+              "c": "该等级所对应的形象路径",
+              "display": "path"
             },
             {
               "name": "required_exp",
@@ -92,7 +97,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "达到该等级可以领取的奖励物品ID"
+              "c": "达到该等级可以领取的奖励物品ID",
+              "refs": [
+                "GIFT_BAG_ESSENCE"
+              ]
             }
           ]
         }

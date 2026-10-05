@@ -1,6 +1,6 @@
 {
   "key": "prop_add_item_essence",
-  "name": "Prop Add Item Essence",
+  "name": "PROP_ADD_ITEM_ESSENCE",
   "struct": "PROP_ADD_ITEM_ESSENCE",
   "size": 224,
   "fields": [
@@ -45,7 +45,10 @@
       "t": {
         "k": "i32"
       },
-      "c": "原材料id，用来重练"
+      "c": "原材料id，用来重练",
+      "refs": [
+        "PROP_ADD_MATERIAL_ITEM_ESSENCE"
+      ]
     },
     {
       "name": "require_level",

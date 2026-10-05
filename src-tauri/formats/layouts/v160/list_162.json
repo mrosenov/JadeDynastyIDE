@@ -1,6 +1,6 @@
 {
   "key": "task_special_award_config",
-  "name": "Task Special Award Config",
+  "name": "TASK_SPECIAL_AWARD_CONFIG",
   "struct": "TASK_SPECIAL_AWARD_CONFIG",
   "size": 308,
   "fields": [
@@ -32,7 +32,8 @@
           "k": "i32"
         }
       },
-      "c": "路径"
+      "c": "路径",
+      "display": "path"
     },
     {
       "name": "mini_game",

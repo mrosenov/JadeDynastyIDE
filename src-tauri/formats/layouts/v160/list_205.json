@@ -1,0 +1,78 @@
+{
+  "name": "MATRIX_COLLECT_CONFIG",
+  "struct": "MATRIX_COLLECT_CONFIG",
+  "size": 692,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Matrix Sets",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 156,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "name",
+              "off": 0,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              }
+            },
+            {
+              "name": "addon_id",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "EQUIPMENT_ADDON"
+              ]
+            },
+            {
+              "name": "cards",
+              "off": 36,
+              "t": {
+                "k": "array",
+                "n": 30,
+                "stride": 4,
+                "t": {
+                  "k": "struct",
+                  "fields": [
+                    {
+                      "name": "card",
+                      "off": 0,
+                      "t": {
+                        "k": "i32"
+                      },
+                      "refs": [
+                        "MATRIX_CARD_ESSENCE"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "key": "droptable_essence",
-  "name": "Droptable Essence",
+  "name": "DROPTABLE_ESSENCE",
   "struct": "DROPTABLE_ESSENCE",
   "size": 604,
   "fields": [
@@ -30,25 +30,44 @@
       "c": "名称, 最多15个汉字"
     },
     {
-      "name": "num_to_drop",
+      "name": "probability_1",
       "off": 72,
       "t": {
-        "k": "array",
-        "n": 5,
-        "stride": 4,
-        "t": {
-          "k": "struct",
-          "fields": [
-            {
-              "name": "probability",
-              "off": 0,
-              "t": {
-                "k": "f32"
-              }
-            }
-          ]
-        }
-      }
+        "k": "f32"
+      },
+      "g": "probability"
+    },
+    {
+      "name": "probability_2",
+      "off": 76,
+      "t": {
+        "k": "f32"
+      },
+      "g": "probability"
+    },
+    {
+      "name": "probability_3",
+      "off": 80,
+      "t": {
+        "k": "f32"
+      },
+      "g": "probability"
+    },
+    {
+      "name": "probability_4",
+      "off": 84,
+      "t": {
+        "k": "f32"
+      },
+      "g": "probability"
+    },
+    {
+      "name": "probability_5",
+      "off": 88,
+      "t": {
+        "k": "f32"
+      },
+      "g": "probability"
     },
     {
       "name": "drops",
@@ -66,7 +85,105 @@
               "t": {
                 "k": "u32"
               },
-              "c": "掉落物品id"
+              "c": "掉落物品id",
+              "refs": [
+                "MATERIAL_ESSENCE",
+                "EQUIPMENT_ESSENCE",
+                "AMULET_ESSENCE",
+                "BABY_BOOK_ESSENCE",
+                "TASKNORMALMATTER_ESSENCE",
+                "AIRCRAFT_ESSENCE",
+                "ESTONE_ESSENCE",
+                "GEM_DUST_ESSENCE",
+                "AMULET_STONE_ESSENCE",
+                "BABY_ESSENCE",
+                "BABY_FOOD_ESSENCE",
+                "BABY_TOY_ESSENCE",
+                "BOOK_ESSENCE",
+                "BOOTH_FIGURE_ITEM_ESSENCE",
+                "CHANGE_SHAPE_CARD_ESSENCE",
+                "CAMRECORDER_ESSENCE",
+                "BUILDING_ESSENCE",
+                "CASH_MEDIC_MERGE_ITEM_ESSENCE",
+                "CHANGE_SHAPE_STONE_ESSENCE",
+                "COLORANT_ITEM_ESSENCE",
+                "COMPOUND_MINE_ESSENCE",
+                "COUPLE_JUMPTO_ESSENCE",
+                "DESTROYING_ESSENCE",
+                "DOUBLE_EXP_ESSENCE",
+                "EQUIP_SOUL_ESSENCE",
+                "FIREWORKS_ESSENCE",
+                "FLAG_BUFF_ITEM_ESSENCE",
+                "FLY_ENERGYFOOD_ESSENCE",
+                "GEM_ESSENCE",
+                "GEM_SEAL_ESSENCE",
+                "GENERAL_ARTICLE_ESSENCE",
+                "GIFT_BAG_ESSENCE",
+                "GIFT_BAG_LOTTERY_DELIVER_ESSENCE",
+                "GIFT_PACK_ITEM_ESSENCE",
+                "GM_GENERATOR_ESSENCE",
+                "INTERACTION_OBJECT_ESSENCE",
+                "LOTTERY_ESSENCE",
+                "LOTTERY_TANGYUAN_ITEM_ESSENCE",
+                "LOTTERY2_ESSENCE",
+                "LOTTERY3_ESSENCE",
+                "LUCKYROLL_ESSENCE",
+                "MATRIX_CARD_ESSENCE",
+                "MATRIX_EQUIP_ESSENCE",
+                "MEDICINE_ESSENCE",
+                "MERCENARY_CREDENTIAL_ESSENCE",
+                "MINE_ESSENCE",
+                "NEW_TOWNSCROLL_ESSENCE",
+                "OFFLINE_TRUSTEE_ESSENCE",
+                "PET_ARMOR_ESSENCE",
+                "PET_ASSIST_REFINE_ESSENCE",
+                "PET_AUTO_FOOD_ESSENCE",
+                "PET_BEDGE_ESSENCE",
+                "PET_FOOD_ESSENCE",
+                "PET_REFINE_ESSENCE",
+                "PET_SKILL_ESSENCE",
+                "POTENTIAL_TOME_ESSENCE",
+                "PROP_ADD_ITEM_ESSENCE",
+                "PROP_ADD_MATERIAL_ITEM_ESSENCE",
+                "PSTONE_ESSENCE",
+                "RECIPE_ESSENCE",
+                "RECIPEROLL_ESSENCE",
+                "RED_PACKETS_ESSENCE",
+                "REFINE_TICKET_ESSENCE",
+                "REGION_BLOCK_ESSENCE",
+                "REVIVESCROLL_ESSENCE",
+                "RUNE_SLOT_ESSENCE",
+                "RUNE2013_ITEM_ESSENCE",
+                "SALE_PROMOTION_ITEM_ESSENCE",
+                "SCROLL_DIG_COUNT_INC_ESSENCE",
+                "SCROLL_UNLOCK_ESSENCE",
+                "SIEGE_ARTILLERY_SCROLL_ESSENCE",
+                "SKILLMATTER_ESSENCE",
+                "SKILLTOME_ESSENCE",
+                "SMALL_ONLINE_GIFT_BAG_ESSENCE",
+                "SPEAKER_ESSENCE",
+                "SPECIAL_NAME_ITEM_ESSENCE",
+                "SSTONE_ESSENCE",
+                "TALENT_SCROLL_REFINE_ESSENCE",
+                "TALISMAN_ENERGYFOOD_ESSENCE",
+                "TALISMAN_EXPFOOD_ESSENCE",
+                "TALISMAN_MAINPART_ESSENCE",
+                "TALISMAN_MERGEKATALYST_ESSENCE",
+                "TASKDICE_ESSENCE",
+                "TASKMATTER_ESSENCE",
+                "TELEPORTATION_ESSENCE",
+                "TELEPORTATION_STONE_ESSENCE",
+                "TEXT_FIREWORKS_ESSENCE",
+                "TOWNSCROLL_ESSENCE",
+                "TRANSMITROLL_ESSENCE",
+                "UPGRADE_EQUIP_STONE_ESSENCE",
+                "VEHICLE_ESSENCE",
+                "VIP_CARD_ESSENCE",
+                "XINGZUO_ENERGY_ITEM_ESSENCE",
+                "XINGZUO_ITEM_ESSENCE",
+                "VEHICLE_ENHANCE_ESSENCE",
+                "TALENT_SCROLL_ESSENCE"
+              ]
             },
             {
               "name": "probability",

@@ -1,6 +1,6 @@
 {
   "key": "booth_figure_item",
-  "name": "Booth Figure Item",
+  "name": "BOOTH_FIGURE_ITEM_ESSENCE",
   "struct": "BOOTH_FIGURE_ITEM_ESSENCE",
   "size": 96,
   "fields": [

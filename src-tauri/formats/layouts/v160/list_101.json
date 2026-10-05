@@ -1,6 +1,6 @@
 {
   "key": "score_to_rank_config",
-  "name": "Score To Rank Config",
+  "name": "SCORE_TO_RANK_CONFIG",
   "struct": "SCORE_TO_RANK_CONFIG",
   "size": 476,
   "fields": [

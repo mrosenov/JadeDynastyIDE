@@ -1,6 +1,6 @@
 {
   "key": "rune_data_config",
-  "name": "Rune Data Config",
+  "name": "RUNE_DATA_CONFIG",
   "struct": "RUNE_DATA_CONFIG",
   "size": 2976,
   "fields": [
@@ -196,7 +196,10 @@
           "k": "u32"
         }
       },
-      "c": "元魂鉴定所需物品id"
+      "c": "元魂鉴定所需物品id",
+      "refs": [
+        "GENERAL_ARTICLE_ESSENCE"
+      ]
     },
     {
       "name": "id_rune_refine",
@@ -209,7 +212,10 @@
           "k": "u32"
         }
       },
-      "c": "元魂洗练所需物品id"
+      "c": "元魂洗练所需物品id",
+      "refs": [
+        "GENERAL_ARTICLE_ESSENCE"
+      ]
     },
     {
       "name": "id_rune_reset",
@@ -222,7 +228,10 @@
           "k": "u32"
         }
       },
-      "c": "元魂归元所需物品id"
+      "c": "元魂归元所需物品id",
+      "refs": [
+        "GENERAL_ARTICLE_ESSENCE"
+      ]
     },
     {
       "name": "id_rune_change_slot",
@@ -235,7 +244,10 @@
           "k": "u32"
         }
       },
-      "c": "元魂改变孔位所需物品id"
+      "c": "元魂改变孔位所需物品id",
+      "refs": [
+        "GENERAL_ARTICLE_ESSENCE"
+      ]
     }
   ]
 }

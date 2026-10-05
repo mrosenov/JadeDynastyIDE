@@ -1,0 +1,64 @@
+{
+  "name": "CLASS_BABY_RELATION_CONFIG",
+  "struct": "CLASS_BABY_RELATION_CONFIG",
+  "size": 1268,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Class Relations",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "class_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "e": "sect_mask"
+            },
+            {
+              "name": "male_baby_id",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "BABY_ESSENCE"
+              ]
+            },
+            {
+              "name": "female_baby_id",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "BABY_ESSENCE"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

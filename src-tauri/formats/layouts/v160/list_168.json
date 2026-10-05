@@ -1,6 +1,6 @@
 {
   "key": "jinfashen_to_money_config",
-  "name": "Jinfashen To Money Config",
+  "name": "JINFASHEN_TO_MONEY_CONFIG",
   "struct": "JINFASHEN_TO_MONEY_CONFIG",
   "size": 668,
   "fields": [
@@ -36,14 +36,18 @@
               "off": 0,
               "t": {
                 "k": "i32"
-              }
+              },
+              "refs": [
+                "EQUIPMENT_ESSENCE"
+              ]
             },
             {
               "name": "money",
               "off": 4,
               "t": {
                 "k": "i32"
-              }
+              },
+              "display": "money"
             },
             {
               "name": "reputation",
@@ -72,14 +76,18 @@
               "off": 0,
               "t": {
                 "k": "i32"
-              }
+              },
+              "refs": [
+                "EQUIPMENT_ESSENCE"
+              ]
             },
             {
               "name": "money",
               "off": 4,
               "t": {
                 "k": "i32"
-              }
+              },
+              "display": "money"
             },
             {
               "name": "reputation",

@@ -1,0 +1,106 @@
+{
+  "name": "RAID18V18_AWARD_CONFIG",
+  "struct": "RAID18V18_AWARD_CONFIG",
+  "size": 632,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "first_win_award",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "GIFT_BAG_ESSENCE"
+      ]
+    },
+    {
+      "name": "Award List",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 20,
+        "stride": 28,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "TASKDICE_ESSENCE",
+                "GIFT_BAG_ESSENCE",
+                "PROP_ADD_MATERIAL_ITEM_ESSENCE",
+                "TASKNORMALMATTER_ESSENCE",
+                "REFINE_TICKET_ESSENCE",
+                "UPGRADE_EQUIP_STONE_ESSENCE",
+                "GENERAL_ARTICLE_ESSENCE"
+              ]
+            },
+            {
+              "name": "item_count",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "genesis_morale",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "g": "Required Points"
+            },
+            {
+              "name": "genesis_merit",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              },
+              "g": "Required Points"
+            },
+            {
+              "name": "win_count",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "time_limit",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "count_limit",
+              "off": 24,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

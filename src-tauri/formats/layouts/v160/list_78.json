@@ -1,6 +1,6 @@
 {
   "key": "player_talent_config",
-  "name": "Player Talent Config",
+  "name": "PLAYER_TALENT_CONFIG",
   "struct": "PLAYER_TALENT_CONFIG",
   "size": 3268,
   "fields": [

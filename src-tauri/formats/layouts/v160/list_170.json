@@ -1,6 +1,6 @@
 {
   "key": "rune2013_item_essence",
-  "name": "Rune2013 Item Essence",
+  "name": "RUNE2013_ITEM_ESSENCE",
   "struct": "RUNE2013_ITEM_ESSENCE",
   "size": 108,
   "fields": [
@@ -53,7 +53,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "增益类型：enum PlayerPropType"
+      "c": "增益类型：enum PlayerPropType",
+      "e": "fatecharm_type"
     },
     {
       "name": "add_value",

@@ -1,0 +1,75 @@
+{
+  "name": "SOUL_DROP_CONFIG",
+  "struct": "SOUL_DROP_CONFIG",
+  "size": 136,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "monster_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "MONSTER_ESSENCE"
+      ]
+    },
+    {
+      "name": "Soul Drop List",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 16,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "min_count",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "max_count",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "probability",
+              "off": 8,
+              "t": {
+                "k": "f32"
+              },
+              "display": "probability"
+            },
+            {
+              "name": "value",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

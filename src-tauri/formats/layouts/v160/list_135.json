@@ -1,6 +1,6 @@
 {
   "key": "scroll_unlock_essence",
-  "name": "Scroll Unlock Essence",
+  "name": "SCROLL_UNLOCK_ESSENCE",
   "struct": "SCROLL_UNLOCK_ESSENCE",
   "size": 100,
   "fields": [

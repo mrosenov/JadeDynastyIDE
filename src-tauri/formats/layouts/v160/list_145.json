@@ -1,6 +1,6 @@
 {
   "key": "pk2012_guess_config",
-  "name": "Pk2012 Guess Config",
+  "name": "PK2012_GUESS_CONFIG",
   "struct": "PK2012_GUESS_CONFIG",
   "size": 136,
   "fields": [
@@ -87,7 +87,11 @@
       "t": {
         "k": "i32"
       },
-      "c": "冠军投注道具"
+      "c": "冠军投注道具",
+      "refs": [
+        "GIFT_BAG_ESSENCE",
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "champion_guess_itemNum",
@@ -103,7 +107,10 @@
       "t": {
         "k": "i32"
       },
-      "c": "冠军竞猜礼包"
+      "c": "冠军竞猜礼包",
+      "refs": [
+        "GIFT_BAG_ESSENCE"
+      ]
     },
     {
       "name": "award_back_ratio",
@@ -119,7 +126,10 @@
       "t": {
         "k": "i32"
       },
-      "c": "竞猜道具"
+      "c": "竞猜道具",
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "guess_item_num",
@@ -135,7 +145,10 @@
       "t": {
         "k": "i32"
       },
-      "c": "三强竞猜礼包"
+      "c": "三强竞猜礼包",
+      "refs": [
+        "GIFT_BAG_ESSENCE"
+      ]
     },
     {
       "name": "guess_award_item3",
@@ -143,7 +156,10 @@
       "t": {
         "k": "i32"
       },
-      "c": "三强全中礼包"
+      "c": "三强全中礼包",
+      "refs": [
+        "TASKDICE_ESSENCE"
+      ]
     },
     {
       "name": "guess_award_item2",
@@ -151,7 +167,10 @@
       "t": {
         "k": "i32"
       },
-      "c": "猜中两强礼包"
+      "c": "猜中两强礼包",
+      "refs": [
+        "TASKDICE_ESSENCE"
+      ]
     },
     {
       "name": "guess_award_item1",
@@ -159,7 +178,10 @@
       "t": {
         "k": "i32"
       },
-      "c": "猜中一强礼包"
+      "c": "猜中一强礼包",
+      "refs": [
+        "TASKDICE_ESSENCE"
+      ]
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "key": "siege_artillery_scroll_essence",
-  "name": "Siege Artillery Scroll Essence",
+  "name": "SIEGE_ARTILLERY_SCROLL_ESSENCE",
   "struct": "SIEGE_ARTILLERY_SCROLL_ESSENCE",
   "size": 92,
   "fields": [

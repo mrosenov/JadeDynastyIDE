@@ -1,6 +1,6 @@
 {
   "key": "npc_talk_service",
-  "name": "Npc Talk Service",
+  "name": "NPC_TALK_SERVICE",
   "struct": "NPC_TALK_SERVICE",
   "size": 72,
   "fields": [

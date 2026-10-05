@@ -1,6 +1,6 @@
 {
   "key": "npc_equipbind_service",
-  "name": "Npc Equipbind Service",
+  "name": "NPC_EQUIPBIND_SERVICE",
   "struct": "NPC_EQUIPBIND_SERVICE",
   "size": 76,
   "fields": [

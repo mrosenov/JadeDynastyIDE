@@ -1,0 +1,80 @@
+{
+  "name": "EQUIPMENT_IDENTIFY_CONFIG",
+  "struct": "EQUIPMENT_IDENTIFY_CONFIG",
+  "size": 4268,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "identify_equipment",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 150,
+        "stride": 28,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "equipment_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "EQUIPMENT_ESSENCE"
+              ]
+            },
+            {
+              "name": "character_combo_id",
+              "off": 4,
+              "t": {
+                "k": "i64"
+              },
+              "e": "character_combo_id"
+            },
+            {
+              "name": "character_combo_id_2",
+              "off": 12,
+              "t": {
+                "k": "i64"
+              },
+              "e": "character_combo_id2"
+            },
+            {
+              "name": "required_gender",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              },
+              "e": "gender"
+            },
+            {
+              "name": "equipment_result",
+              "off": 24,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "EQUIPMENT_ESSENCE"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "key": "equip_soul_essence",
-  "name": "Equip Soul Essence",
+  "name": "EQUIP_SOUL_ESSENCE",
   "struct": "EQUIP_SOUL_ESSENCE",
   "size": 152,
   "fields": [

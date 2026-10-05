@@ -1,6 +1,6 @@
 {
   "key": "scroll_dig_count_inc_essence",
-  "name": "Scroll Dig Count Inc Essence",
+  "name": "SCROLL_DIG_COUNT_INC_ESSENCE",
   "struct": "SCROLL_DIG_COUNT_INC_ESSENCE",
   "size": 96,
   "fields": [

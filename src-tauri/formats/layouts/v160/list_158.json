@@ -1,6 +1,6 @@
 {
   "key": "challenge_2012_config",
-  "name": "Challenge 2012 Config",
+  "name": "CHALLENGE_2012_CONFIG",
   "struct": "CHALLENGE_2012_CONFIG",
   "size": 816,
   "fields": [

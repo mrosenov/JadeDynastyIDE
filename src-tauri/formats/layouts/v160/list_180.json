@@ -1,6 +1,6 @@
 {
   "key": "colorant_config",
-  "name": "Colorant Config",
+  "name": "COLORANT_CONFIG",
   "struct": "COLORANT_CONFIG",
   "size": 868,
   "fields": [
@@ -37,7 +37,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "染色剂ID"
+              "c": "染色剂ID",
+              "refs": [
+                "COLORANT_ITEM_ESSENCE"
+              ]
             },
             {
               "name": "probability",
@@ -45,7 +48,8 @@
               "t": {
                 "k": "f32"
               },
-              "c": "概率"
+              "c": "概率",
+              "display": "probability"
             }
           ]
         }

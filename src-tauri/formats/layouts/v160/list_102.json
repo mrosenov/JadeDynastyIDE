@@ -1,6 +1,6 @@
 {
   "key": "battle_drop_config",
-  "name": "Battle Drop Config",
+  "name": "BATTLE_DROP_CONFIG",
   "struct": "BATTLE_DROP_CONFIG",
   "size": 872,
   "fields": [
@@ -49,7 +49,12 @@
                 "t": {
                   "k": "u32"
                 },
-                "c": "掉落物品id"
+                "c": "掉落物品id",
+                "refs": [
+                  "TASKNORMALMATTER_ESSENCE",
+                  "MATERIAL_ESSENCE",
+                  "SPECIAL_NAME_ITEM_ESSENCE"
+                ]
               },
               {
                 "name": "probability",

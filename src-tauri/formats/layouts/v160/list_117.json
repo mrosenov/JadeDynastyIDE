@@ -1,6 +1,6 @@
 {
   "key": "combine_skill_edit_config",
-  "name": "Combine Skill Edit Config",
+  "name": "COMBINE_SKILL_EDIT_CONFIG",
   "struct": "COMBINE_SKILL_EDIT_CONFIG",
   "size": 428,
   "fields": [

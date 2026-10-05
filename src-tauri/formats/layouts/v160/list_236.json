@@ -1,0 +1,190 @@
+{
+  "name": "AMULET_ESSENCE",
+  "struct": "AMULET_ESSENCE",
+  "size": 188,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "file_matter",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "file_icon",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "display": "icon"
+    },
+    {
+      "name": "title",
+      "off": 76,
+      "t": {
+        "k": "wstr",
+        "n": 16
+      }
+    },
+    {
+      "name": "character_combo_id",
+      "off": 108,
+      "t": {
+        "k": "i64"
+      },
+      "e": "character_combo_id"
+    },
+    {
+      "name": "character_combo_id_2",
+      "off": 116,
+      "t": {
+        "k": "i64"
+      },
+      "e": "character_combo_id2"
+    },
+    {
+      "name": "require_gender",
+      "off": 124,
+      "t": {
+        "k": "i32"
+      },
+      "e": "gender"
+    },
+    {
+      "name": "require_level",
+      "off": 128,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "sect_1",
+      "off": 132,
+      "t": {
+        "k": "i32"
+      },
+      "e": "sect_mask"
+    },
+    {
+      "name": "sect_2",
+      "off": 136,
+      "t": {
+        "k": "i32"
+      },
+      "e": "sect_mask"
+    },
+    {
+      "name": "sect_3",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      },
+      "e": "sect_mask"
+    },
+    {
+      "name": "sect_4",
+      "off": 144,
+      "t": {
+        "k": "i32"
+      },
+      "e": "sect_mask"
+    },
+    {
+      "name": "require_race",
+      "off": 148,
+      "t": {
+        "k": "i32"
+      },
+      "e": "race"
+    },
+    {
+      "name": "require_level_2",
+      "off": 152,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "require_ascenstion_count",
+      "off": 156,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "fee_estone",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "estone_id",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "ESTONE_ESSENCE"
+      ]
+    },
+    {
+      "name": "config_id",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      },
+      "refs": [
+        "AMULET_CONFIG"
+      ]
+    },
+    {
+      "name": "price",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "shop_price",
+      "off": 176,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 180,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 184,
+      "t": {
+        "k": "i32"
+      },
+      "e": "trade_behavior"
+    }
+  ]
+}

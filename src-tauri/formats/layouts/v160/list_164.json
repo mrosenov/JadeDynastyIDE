@@ -1,6 +1,6 @@
 {
   "key": "prop_add_config",
-  "name": "Prop Add Config",
+  "name": "PROP_ADD_CONFIG",
   "struct": "PROP_ADD_CONFIG",
   "size": 188,
   "fields": [

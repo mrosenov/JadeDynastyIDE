@@ -1,0 +1,62 @@
+{
+  "name": "BABY_UPGRADE_CONFIG",
+  "struct": "BABY_UPGRADE_CONFIG",
+  "size": 908,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "upgrade_exp_requirement",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      }
+    },
+    {
+      "name": "baby_upgrade_list",
+      "off": 108,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "exp_required",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "success_probability",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

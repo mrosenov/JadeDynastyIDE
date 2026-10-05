@@ -1,0 +1,163 @@
+{
+  "name": "INDISCRIMINATION_BATTLE_CONFIG",
+  "struct": "INDISCRIMINATION_BATTLE_CONFIG",
+  "size": 3116,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "max_repeat",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "need_win_amount",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 48,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "amount",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "char_add_fee",
+      "off": 264,
+      "t": {
+        "k": "array",
+        "n": 48,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "fee",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "char_mask_fee",
+      "off": 456,
+      "t": {
+        "k": "array",
+        "n": 8,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "mask_fee",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "player_names",
+      "off": 488,
+      "t": {
+        "k": "array",
+        "n": 76,
+        "stride": 32,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "name",
+              "off": 0,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "first_win_award",
+      "off": 2920,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "award_list",
+      "off": 2924,
+      "t": {
+        "k": "array",
+        "n": 12,
+        "stride": 16,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "item_count",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "score_amount",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "time_limit",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

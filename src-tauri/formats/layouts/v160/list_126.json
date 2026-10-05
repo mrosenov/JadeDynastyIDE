@@ -1,6 +1,6 @@
 {
   "key": "gem_seal_essence",
-  "name": "Gem Seal Essence",
+  "name": "GEM_SEAL_ESSENCE",
   "struct": "GEM_SEAL_ESSENCE",
   "size": 96,
   "fields": [

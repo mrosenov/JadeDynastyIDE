@@ -1,6 +1,6 @@
 {
   "key": "potential_tome_essence",
-  "name": "Potential Tome Essence",
+  "name": "POTENTIAL_TOME_ESSENCE",
   "struct": "POTENTIAL_TOME_ESSENCE",
   "size": 108,
   "fields": [

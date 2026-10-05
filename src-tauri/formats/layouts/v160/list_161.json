@@ -1,6 +1,6 @@
 {
   "key": "lottery_tangyuan_item_essence",
-  "name": "Lottery Tangyuan Item Essence",
+  "name": "LOTTERY_TANGYUAN_ITEM_ESSENCE",
   "struct": "LOTTERY_TANGYUAN_ITEM_ESSENCE",
   "size": 388,
   "fields": [
@@ -45,7 +45,10 @@
       "t": {
         "k": "i32"
       },
-      "c": "开启消耗物品id"
+      "c": "开启消耗物品id",
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "open_item_num",

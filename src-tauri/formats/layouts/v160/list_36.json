@@ -1,6 +1,6 @@
 {
   "key": "recipe_sub_type",
-  "name": "Recipe Sub Type",
+  "name": "RECIPE_SUB_TYPE",
   "struct": "RECIPE_SUB_TYPE",
   "size": 68,
   "fields": [

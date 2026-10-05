@@ -1,6 +1,6 @@
 {
   "key": "npc_task_in_service",
-  "name": "Npc Task In Service",
+  "name": "NPC_TASK_IN_SERVICE",
   "struct": "NPC_TASK_IN_SERVICE",
   "size": 1092,
   "fields": [

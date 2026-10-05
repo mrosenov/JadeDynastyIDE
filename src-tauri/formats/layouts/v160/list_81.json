@@ -1,6 +1,6 @@
 {
   "key": "war_role_config",
-  "name": "War Role Config",
+  "name": "WAR_ROLE_CONFIG",
   "struct": "WAR_ROLE_CONFIG",
   "size": 524,
   "fields": [

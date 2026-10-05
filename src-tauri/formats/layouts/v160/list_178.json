@@ -1,6 +1,6 @@
 {
   "key": "interaction_object_essence",
-  "name": "Interaction Object Essence",
+  "name": "INTERACTION_OBJECT_ESSENCE",
   "struct": "INTERACTION_OBJECT_ESSENCE",
   "size": 188,
   "fields": [
@@ -174,7 +174,10 @@
       "t": {
         "k": "u32"
       },
-      "c": "套用的怪物模板"
+      "c": "套用的怪物模板",
+      "refs": [
+        "MONSTER_ESSENCE"
+      ]
     },
     {
       "name": "path_id",
@@ -182,7 +185,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "关联路径"
+      "c": "关联路径",
+      "display": "path"
     },
     {
       "name": "move_enable",

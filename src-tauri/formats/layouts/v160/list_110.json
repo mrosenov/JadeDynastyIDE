@@ -1,6 +1,6 @@
 {
   "key": "change_shape_prop_config",
-  "name": "Change Shape Prop Config",
+  "name": "CHANGE_SHAPE_PROP_CONFIG",
   "struct": "CHANGE_SHAPE_PROP_CONFIG",
   "size": 140,
   "fields": [
@@ -27,7 +27,10 @@
       "t": {
         "k": "i32"
       },
-      "c": "对应的变身怪物id"
+      "c": "对应的变身怪物id",
+      "refs": [
+        "MONSTER_ESSENCE"
+      ]
     },
     {
       "name": "action_type",

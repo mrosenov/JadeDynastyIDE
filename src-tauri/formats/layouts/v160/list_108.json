@@ -1,6 +1,6 @@
 {
   "key": "change_shape_card_essence",
-  "name": "Change Shape Card Essence",
+  "name": "CHANGE_SHAPE_CARD_ESSENCE",
   "struct": "CHANGE_SHAPE_CARD_ESSENCE",
   "size": 220,
   "fields": [

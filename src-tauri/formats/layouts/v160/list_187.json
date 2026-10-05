@@ -1,0 +1,61 @@
+{
+  "key": "transcript_strategy_config",
+  "name": "TRANSCRIPT_STRATEGY_CONFIG",
+  "struct": "TRANSCRIPT_STRATEGY_CONFIG",
+  "size": 508,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "level_list",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 10,
+        "stride": 44,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "level_type",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "monster",
+              "off": 4,
+              "t": {
+                "k": "array",
+                "n": 10,
+                "stride": 4,
+                "t": {
+                  "k": "i32"
+                }
+              },
+              "refs": [
+                "MONSTER_ESSENCE"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

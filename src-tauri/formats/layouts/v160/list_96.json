@@ -1,6 +1,6 @@
 {
   "key": "book_essence",
-  "name": "Book Essence",
+  "name": "BOOK_ESSENCE",
   "struct": "BOOK_ESSENCE",
   "size": 224,
   "fields": [

@@ -1,0 +1,63 @@
+{
+  "key": "upgrade_equip_config_1",
+  "name": "UPGRADE_EQUIP_CONFIG_1",
+  "struct": "UPGRADE_EQUIP_CONFIG_1",
+  "size": 2468,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "upgrade_config",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 200,
+        "stride": 12,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "equip_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "装备id"
+            },
+            {
+              "name": "stone_id",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "模具id"
+            },
+            {
+              "name": "out_equip_id",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "产出的武器id"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

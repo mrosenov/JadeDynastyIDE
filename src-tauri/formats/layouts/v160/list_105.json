@@ -1,6 +1,6 @@
 {
   "key": "gift_bag_essence",
-  "name": "Gift Bag Essence",
+  "name": "GIFT_BAG_ESSENCE",
   "struct": "GIFT_BAG_ESSENCE",
   "size": 572,
   "fields": [
@@ -178,7 +178,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "开启需要金钱"
+      "c": "开启需要金钱",
+      "display": "money"
     },
     {
       "name": "num_object",

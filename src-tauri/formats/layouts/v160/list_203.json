@@ -1,0 +1,155 @@
+{
+  "name": "MATRIX_EQUIP_ESSENCE",
+  "struct": "MATRIX_EQUIP_ESSENCE",
+  "size": 176,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "model_path_id",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "icon_path_id",
+      "off": 72,
+      "t": {
+        "k": "i32"
+      },
+      "display": "icon"
+    },
+    {
+      "name": "normal_icon",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "big_icon",
+      "off": 80,
+      "t": {
+        "k": "i32"
+      },
+      "display": "path"
+    },
+    {
+      "name": "quality",
+      "off": 84,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Base Addon",
+      "off": 88,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "addon_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "EQUIPMENT_ADDON"
+              ]
+            },
+            {
+              "name": "probability",
+              "off": 4,
+              "t": {
+                "k": "f32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Level Addons",
+      "off": 112,
+      "t": {
+        "k": "array",
+        "n": 6,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "addon_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "refs": [
+                "EQUIPMENT_ADDON"
+              ]
+            },
+            {
+              "name": "level",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "its either card or addon"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sell_price",
+      "off": 160,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "buy_price",
+      "off": 164,
+      "t": {
+        "k": "i32"
+      },
+      "display": "money"
+    },
+    {
+      "name": "pile_num_max",
+      "off": 168,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "proc_type",
+      "off": 172,
+      "t": {
+        "k": "i32"
+      },
+      "e": "trade_behavior"
+    }
+  ]
+}

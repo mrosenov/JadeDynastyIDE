@@ -1,6 +1,6 @@
 {
   "key": "pet_bedge_essence",
-  "name": "Pet Bedge Essence",
+  "name": "PET_BEDGE_ESSENCE",
   "struct": "PET_BEDGE_ESSENCE",
   "size": 256,
   "fields": [

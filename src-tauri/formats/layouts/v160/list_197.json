@@ -1,0 +1,120 @@
+{
+  "name": "BABY_PROPERTY_CONFIG",
+  "struct": "BABY_PROPERTY_CONFIG",
+  "size": 3268,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Perception Ratio",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "perception_ratio",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Charm Ratio",
+      "off": 468,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 4,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "charm_ratio",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Deity Ratio",
+      "off": 868,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 24,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "attack_ratio",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "defence_ratio",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "hit_ratio",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "evade_ratio",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "crit_damage_ratio",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "crit_ratio",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

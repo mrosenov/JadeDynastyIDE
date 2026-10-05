@@ -1,6 +1,6 @@
 {
   "key": "teleportation_essence",
-  "name": "Teleportation Essence",
+  "name": "TELEPORTATION_ESSENCE",
   "struct": "TELEPORTATION_ESSENCE",
   "size": 100,
   "fields": [

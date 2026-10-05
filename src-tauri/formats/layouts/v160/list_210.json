@@ -1,0 +1,35 @@
+{
+  "name": "BABY_TITLE_CONFIG",
+  "struct": "BABY_TITLE_CONFIG",
+  "size": 468,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "Titles",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 100,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "display": "title"
+    }
+  ]
+}

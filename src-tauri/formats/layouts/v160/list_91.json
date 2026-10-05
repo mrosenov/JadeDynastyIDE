@@ -1,6 +1,6 @@
 {
   "key": "renasence_skill_config",
-  "name": "Renasence Skill Config",
+  "name": "RENASCENCE_SKILL_CONFIG",
   "struct": "RENASCENCE_SKILL_CONFIG",
   "size": 228,
   "fields": [
@@ -97,7 +97,8 @@
               "off": 0,
               "t": {
                 "k": "i32"
-              }
+              },
+              "display": "skill"
             },
             {
               "name": "lev",

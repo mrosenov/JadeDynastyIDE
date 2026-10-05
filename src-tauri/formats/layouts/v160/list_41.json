@@ -1,6 +1,6 @@
 {
   "key": "pie_love_config",
-  "name": "Pie Love Config",
+  "name": "PIE_LOVE_CONFIG",
   "struct": "PIE_LOVE_CONFIG",
   "size": 388,
   "fields": [
@@ -45,7 +45,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "发布信息消耗物品id"
+              "c": "发布信息消耗物品id",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE"
+              ]
             },
             {
               "name": "id2_press_msg_item",
@@ -53,7 +56,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "发布消息消耗物品id2"
+              "c": "发布消息消耗物品id2",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE"
+              ]
             },
             {
               "name": "id_press_msg_task",
@@ -69,7 +75,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "投票支持信息消耗物品id"
+              "c": "投票支持信息消耗物品id",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE"
+              ]
             },
             {
               "name": "id_support_msg_task",
@@ -85,7 +94,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "投票反对信息消耗物品ID"
+              "c": "投票反对信息消耗物品ID",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE"
+              ]
             },
             {
               "name": "id_against_msg_task",
@@ -109,7 +121,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "申请信息消耗物品ID"
+              "c": "申请信息消耗物品ID",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE"
+              ]
             },
             {
               "name": "id_apply_msg_task",
@@ -133,7 +148,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "留言板回复信息消耗物品ID"
+              "c": "留言板回复信息消耗物品ID",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE"
+              ]
             },
             {
               "name": "id_accept_apply_task1",

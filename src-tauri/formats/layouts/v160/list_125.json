@@ -1,6 +1,6 @@
 {
   "key": "gem_essence",
-  "name": "Gem Essence",
+  "name": "GEM_ESSENCE",
   "struct": "GEM_ESSENCE",
   "size": 168,
   "fields": [
@@ -78,7 +78,10 @@
       "t": {
         "k": "u32"
       },
-      "c": "宝石上/下品级和品质的配置模板id"
+      "c": "宝石上/下品级和品质的配置模板id",
+      "refs": [
+        "GEM_CONFIG"
+      ]
     },
     {
       "name": "addon_property",
@@ -104,7 +107,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "附加属性模板id"
+              "c": "附加属性模板id",
+              "refs": [
+                "EQUIPMENT_ADDON"
+              ]
             }
           ]
         }
@@ -117,7 +123,8 @@
       "t": {
         "k": "i32"
       },
-      "c": "指定进行宝石升品操作时扣除的游戏币数量"
+      "c": "指定进行宝石升品操作时扣除的游戏币数量",
+      "display": "money"
     },
     {
       "name": "gem_extract_config_id",
@@ -125,7 +132,10 @@
       "t": {
         "k": "u32"
       },
-      "c": "宝石萃取后分解物配置模板ID"
+      "c": "宝石萃取后分解物配置模板ID",
+      "refs": [
+        "GEM_EXTRACT_CONFIG"
+      ]
     },
     {
       "name": "price",

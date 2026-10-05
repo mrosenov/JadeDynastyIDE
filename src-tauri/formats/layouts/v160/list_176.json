@@ -1,6 +1,6 @@
 {
   "key": "week_currency_award_config",
-  "name": "Week Currency Award Config",
+  "name": "WEEK_CURRNCY_AWARD_CONFIG",
   "struct": "WEEK_CURRNCY_AWARD_CONFIG",
   "size": 428,
   "fields": [
@@ -53,7 +53,10 @@
               "t": {
                 "k": "i32"
               },
-              "c": "可领取的兑换币ID"
+              "c": "可领取的兑换币ID",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE"
+              ]
             },
             {
               "name": "receive_currnecy_num",
@@ -77,7 +80,8 @@
               "t": {
                 "k": "i32"
               },
-              "c": "时间限制"
+              "c": "时间限制",
+              "display": "duration"
             }
           ]
         }

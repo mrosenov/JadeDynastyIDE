@@ -1,6 +1,6 @@
 {
   "key": "npc_transmit_service",
-  "name": "Npc Transmit Service",
+  "name": "NPC_TRANSMIT_SERVICE",
   "struct": "NPC_TRANSMIT_SERVICE",
   "size": 968,
   "fields": [
@@ -78,7 +78,8 @@
               "t": {
                 "k": "i32"
               },
-              "c": "费用"
+              "c": "费用",
+              "display": "money"
             },
             {
               "name": "required_level",

@@ -1,6 +1,6 @@
 {
   "key": "recycle_item_config",
-  "name": "Recycle Item Config",
+  "name": "RECYCLE_ITEM_CONFIG",
   "struct": "RECYCLE_ITEM_CONFIG",
   "size": 872,
   "fields": [
@@ -44,7 +44,11 @@
               "off": 0,
               "t": {
                 "k": "i32"
-              }
+              },
+              "refs": [
+                "EQUIPMENT_ESSENCE",
+                "MEDICINE_ESSENCE"
+              ]
             }
           ]
         }

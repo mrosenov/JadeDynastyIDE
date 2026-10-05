@@ -1,6 +1,6 @@
 {
   "key": "medicine_major_type",
-  "name": "Medicine Major Type",
+  "name": "MEDICINE_MAJOR_TYPE",
   "struct": "MEDICINE_MAJOR_TYPE",
   "size": 68,
   "fields": [

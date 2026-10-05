@@ -1,6 +1,6 @@
 {
   "key": "equip_soul_meld_service",
-  "name": "Equip Soul Meld Service",
+  "name": "EQUIP_SOUL_MELD_SERVICE",
   "struct": "EQUIP_SOUL_MELD_SERVICE",
   "size": 2068,
   "fields": [

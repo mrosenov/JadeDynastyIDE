@@ -1,6 +1,6 @@
 {
   "key": "flag_buff_item",
-  "name": "Flag Buff Item",
+  "name": "FLAG_BUFF_ITEM_ESSENCE",
   "struct": "FLAG_BUFF_ITEM_ESSENCE",
   "size": 192,
   "fields": [

@@ -1,6 +1,6 @@
 {
   "key": "tower_transcription_config",
-  "name": "Tower Transcription Config",
+  "name": "TOWER_TRANSCRIPTION_CONFIG",
   "struct": "TOWER_TRANSCRIPTION_CONFIG",
   "size": 772,
   "fields": [
@@ -305,7 +305,8 @@
           "k": "i32"
         }
       },
-      "c": "趴塔副本内额外可用技能ID列表 最多20个"
+      "c": "趴塔副本内额外可用技能ID列表 最多20个",
+      "display": "skill"
     },
     {
       "name": "property_config_id",

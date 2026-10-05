@@ -1,0 +1,33 @@
+{
+  "key": "npc_heal_service",
+  "name": "NPC_HEAL_SERVICE",
+  "struct": "NPC_HEAL_SERVICE",
+  "size": 72,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "服务(类型)ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称, 最多15个汉字"
+    },
+    {
+      "name": "id_dialog",
+      "off": 68,
+      "t": {
+        "k": "u32"
+      },
+      "c": "对话ID"
+    }
+  ]
+}

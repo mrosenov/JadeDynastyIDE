@@ -1,6 +1,6 @@
 {
   "key": "rune2013_config",
-  "name": "Rune2013 Config",
+  "name": "RUNE2013_CONFIG",
   "struct": "RUNE2013_CONFIG",
   "size": 232,
   "fields": [
@@ -22,7 +22,7 @@
       "c": "名称, 最多15个汉字"
     },
     {
-      "name": "lv_limit",
+      "name": "fatecharm_max_level",
       "off": 68,
       "t": {
         "k": "i32"
@@ -30,22 +30,61 @@
       "c": "等级上限"
     },
     {
-      "name": "lvup_exp",
+      "name": "Fatecharm Level Requirements",
       "off": 72,
       "t": {
-        "k": "array",
-        "n": 4,
-        "stride": 40,
-        "t": {
-          "k": "array",
-          "n": 10,
-          "stride": 4,
-          "t": {
-            "k": "i32"
+        "k": "struct",
+        "fields": [
+          {
+            "name": "Basic",
+            "off": 0,
+            "t": {
+              "k": "array",
+              "n": 10,
+              "stride": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
+          },
+          {
+            "name": "Advanced",
+            "off": 40,
+            "t": {
+              "k": "array",
+              "n": 10,
+              "stride": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
+          },
+          {
+            "name": "Celestial",
+            "off": 80,
+            "t": {
+              "k": "array",
+              "n": 10,
+              "stride": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
+          },
+          {
+            "name": "Eternal",
+            "off": 120,
+            "t": {
+              "k": "array",
+              "n": 10,
+              "stride": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
           }
-        }
-      },
-      "c": "符文升级所需经验，初等、中等、高等、极品 1-10"
+        ]
+      }
     }
   ]
 }

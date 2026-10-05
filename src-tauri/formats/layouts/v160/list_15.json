@@ -1,6 +1,6 @@
 {
   "key": "townscroll_essence",
-  "name": "Townscroll Essence",
+  "name": "TOWNSCROLL_ESSENCE",
   "struct": "TOWNSCROLL_ESSENCE",
   "size": 100,
   "fields": [

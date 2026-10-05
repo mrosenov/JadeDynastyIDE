@@ -1,6 +1,6 @@
 {
   "key": "gem_dust_essence",
-  "name": "Gem Dust Essence",
+  "name": "GEM_DUST_ESSENCE",
   "struct": "GEM_DUST_ESSENCE",
   "size": 168,
   "fields": [
@@ -63,7 +63,8 @@
               "t": {
                 "k": "f32"
               },
-              "c": "对普通宝石的升品概率"
+              "c": "对普通宝石的升品概率",
+              "display": "probability"
             },
             {
               "name": "perfect_upgrade_prob",
@@ -71,7 +72,8 @@
               "t": {
                 "k": "f32"
               },
-              "c": "对完美宝石的升品概率"
+              "c": "对完美宝石的升品概率",
+              "display": "probability"
             }
           ]
         }

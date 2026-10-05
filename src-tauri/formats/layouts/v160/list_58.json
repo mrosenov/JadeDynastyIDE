@@ -1,6 +1,6 @@
 {
   "key": "reciperoll_essence",
-  "name": "Reciperoll Essence",
+  "name": "RECIPEROLL_ESSENCE",
   "struct": "RECIPEROLL_ESSENCE",
   "size": 104,
   "fields": [
@@ -62,12 +62,15 @@
       "display": "icon"
     },
     {
-      "name": "id_recipe",
+      "name": "crafting_config",
       "off": 84,
       "t": {
         "k": "u32"
       },
-      "c": "对应的配方ID"
+      "c": "对应的配方ID",
+      "refs": [
+        "RECIPE_ESSENCE"
+      ]
     },
     {
       "name": "price",
@@ -75,8 +78,7 @@
       "t": {
         "k": "i32"
       },
-      "c": "卖店价",
-      "display": "money"
+      "c": "卖店价"
     },
     {
       "name": "shop_price",
@@ -84,8 +86,7 @@
       "t": {
         "k": "i32"
       },
-      "c": "店卖价",
-      "display": "money"
+      "c": "店卖价"
     },
     {
       "name": "pile_num_max",

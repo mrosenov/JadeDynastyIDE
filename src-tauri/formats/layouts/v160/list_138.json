@@ -1,6 +1,6 @@
 {
   "key": "tower_transcription_property_config",
-  "name": "Tower Transcription Property Config",
+  "name": "TOWER_TRANSCRIPTION_PROPERTY_CONFIG",
   "struct": "TOWER_TRANSCRIPTION_PROPERTY_CONFIG",
   "size": 568,
   "fields": [
@@ -235,7 +235,10 @@
           "k": "i32"
         }
       },
-      "c": "怪物库ID列表"
+      "c": "怪物库ID列表",
+      "refs": [
+        "MONSTER_ESSENCE"
+      ]
     },
     {
       "name": "life_time_award",

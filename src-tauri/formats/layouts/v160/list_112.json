@@ -1,6 +1,6 @@
 {
   "key": "life_skill_config",
-  "name": "Life Skill Config",
+  "name": "LIFE_SKILL_CONFIG",
   "struct": "LIFE_SKILL_CONFIG",
   "size": 1476,
   "fields": [

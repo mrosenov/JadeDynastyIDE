@@ -1,6 +1,6 @@
 {
   "key": "reciperoll_sub_type",
-  "name": "Reciperoll Sub Type",
+  "name": "RECIPEROLL_SUB_TYPE",
   "struct": "RECIPEROLL_SUB_TYPE",
   "size": 68,
   "fields": [

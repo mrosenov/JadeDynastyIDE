@@ -1,6 +1,6 @@
 {
   "key": "arena_droptable_config",
-  "name": "Arena Droptable Config",
+  "name": "ARENA_DROPTABLE_CONFIG",
   "struct": "ARENA_DROPTABLE_CONFIG",
   "size": 112,
   "fields": [
@@ -45,7 +45,11 @@
               "t": {
                 "k": "i32"
               },
-              "c": "掉落物品id"
+              "c": "掉落物品id",
+              "refs": [
+                "EQUIPMENT_ESSENCE",
+                "TASKNORMALMATTER_ESSENCE"
+              ]
             }
           ]
         }

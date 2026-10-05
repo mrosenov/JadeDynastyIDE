@@ -1,31 +1,37 @@
 {
-  "name": "Medicine Essence",
+  "name": "MEDICINE_ESSENCE",
   "struct": "MEDICINE_ESSENCE",
   "size": 192,
   "fields": [
     {
-      "name": "ID",
+      "name": "id",
       "off": 0,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Type",
+      "name": "type",
       "off": 4,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MEDICINE_MAJOR_TYPE"
+      ]
     },
     {
-      "name": "Sub_Type",
+      "name": "sub_type",
       "off": 8,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MEDICINE_SUB_TYPE"
+      ]
     },
     {
-      "name": "Name",
+      "name": "name",
       "off": 12,
       "t": {
         "k": "wstr",
@@ -33,14 +39,15 @@
       }
     },
     {
-      "name": "Model_Path_ID",
+      "name": "matter_path",
       "off": 76,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
-      "name": "Icon_Path_ID",
+      "name": "icon_path",
       "off": 80,
       "t": {
         "k": "i32"
@@ -66,7 +73,8 @@
       "off": 92,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "duration_ms"
     },
     {
       "name": "Only_in_War",
@@ -80,136 +88,66 @@
       "off": 100,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "medicine_type"
     },
     {
-      "name": "Health_1",
+      "name": "Health",
       "off": 104,
       "t": {
-        "k": "i32"
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
       }
     },
     {
-      "name": "Health_2",
-      "off": 108,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Health_3",
-      "off": 112,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Health_4",
-      "off": 116,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Spirit_1",
+      "name": "Spirit",
       "off": 120,
       "t": {
-        "k": "i32"
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
       }
     },
     {
-      "name": "Spirit_2",
-      "off": 124,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Spirit_3",
-      "off": 128,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Spirit_4",
-      "off": 132,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Vigor_1",
+      "name": "Vigor",
       "off": 136,
       "t": {
-        "k": "i32"
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
       }
     },
     {
-      "name": "Vigor_2",
-      "off": 140,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Vigor_3",
-      "off": 144,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Vigor_4",
-      "off": 148,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "HMP",
+      "name": "Health_Spirit_Pool",
       "off": 152,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Map_Restrict_1",
+      "name": "Map_Restrictions",
       "off": 156,
       "t": {
-        "k": "i32"
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
       }
     },
     {
-      "name": "Map_Restrict_2",
-      "off": 160,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Map_Restrict_3",
-      "off": 164,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Map_Restrict_4",
-      "off": 168,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Map_Restrict_5",
-      "off": 172,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "Sell_Price",
+      "name": "sell_price",
       "off": 176,
       "t": {
         "k": "i32"
@@ -217,7 +155,7 @@
       "display": "money"
     },
     {
-      "name": "Buy_Price",
+      "name": "buy_price",
       "off": 180,
       "t": {
         "k": "i32"
@@ -225,18 +163,19 @@
       "display": "money"
     },
     {
-      "name": "Stack_Amt",
+      "name": "pile_num_max",
       "off": 184,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Trade_Behavior",
+      "name": "proc_type",
       "off": 188,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "trade_behavior"
     }
   ]
 }

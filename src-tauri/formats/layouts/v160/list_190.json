@@ -1,0 +1,164 @@
+{
+  "key": "faction_money_shop_config",
+  "name": "FACTION_MONEY_SHOP_CONFIG",
+  "struct": "FACTION_MONEY_SHOP_CONFIG",
+  "size": 66708,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "名称，最多15个汉字"
+    },
+    {
+      "name": "Alliance Market List",
+      "off": 68,
+      "t": {
+        "k": "array",
+        "n": 140,
+        "stride": 476,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "item_index",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "c": "物品索引"
+            },
+            {
+              "name": "build_id",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              },
+              "c": "建筑id",
+              "refs": [
+                "BUILDING_ESSENCE"
+              ]
+            },
+            {
+              "name": "build_level",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              },
+              "c": "建筑等级"
+            },
+            {
+              "name": "item_name",
+              "off": 12,
+              "t": {
+                "k": "wstr",
+                "n": 16
+              },
+              "c": "商品名称"
+            },
+            {
+              "name": "price",
+              "off": 44,
+              "t": {
+                "k": "i32"
+              },
+              "c": "价格",
+              "display": "money"
+            },
+            {
+              "name": "file_icon",
+              "off": 48,
+              "t": {
+                "k": "i32"
+              },
+              "c": "图标",
+              "display": "icon"
+            },
+            {
+              "name": "item_description",
+              "off": 52,
+              "t": {
+                "k": "wstr",
+                "n": 100
+              },
+              "c": "描述"
+            },
+            {
+              "name": "cooltime",
+              "off": 252,
+              "t": {
+                "k": "i32"
+              },
+              "c": "冷却时间",
+              "display": "duration"
+            },
+            {
+              "name": "words",
+              "off": 256,
+              "t": {
+                "k": "wstr",
+                "n": 100
+              },
+              "c": "喊话"
+            },
+            {
+              "name": "type",
+              "off": 456,
+              "t": {
+                "k": "i32"
+              },
+              "c": "类型"
+            },
+            {
+              "name": "auction_item_id",
+              "off": 460,
+              "t": {
+                "k": "i32"
+              },
+              "c": "产出拍卖品id",
+              "refs": [
+                "TASKNORMALMATTER_ESSENCE",
+                "TASKDICE_ESSENCE"
+              ]
+            },
+            {
+              "name": "pen_controller_id",
+              "off": 464,
+              "t": {
+                "k": "i32"
+              },
+              "c": "开启控制器id"
+            },
+            {
+              "name": "exp_multi",
+              "off": 468,
+              "t": {
+                "k": "i32"
+              },
+              "c": "经验倍数"
+            },
+            {
+              "name": "multi_exp_time",
+              "off": 472,
+              "t": {
+                "k": "i32"
+              },
+              "c": "多倍经验时间"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

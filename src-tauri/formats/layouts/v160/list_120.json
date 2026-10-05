@@ -1,6 +1,6 @@
 {
   "key": "upgrade_equip_stone_essence",
-  "name": "Upgrade Equip Stone Essence",
+  "name": "UPGRADE_EQUIP_STONE_ESSENCE",
   "struct": "UPGRADE_EQUIP_STONE_ESSENCE",
   "size": 100,
   "fields": [

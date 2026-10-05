@@ -1,6 +1,6 @@
 {
   "key": "speaker_essence",
-  "name": "Speaker Essence",
+  "name": "SPEAKER_ESSENCE",
   "struct": "SPEAKER_ESSENCE",
   "size": 96,
   "fields": [

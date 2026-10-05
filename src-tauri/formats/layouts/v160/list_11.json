@@ -1,0 +1,25 @@
+{
+  "key": "skilltome_sub_type",
+  "name": "SKILLTOME_SUB_TYPE",
+  "struct": "SKILLTOME_SUB_TYPE",
+  "size": 68,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "u32"
+      },
+      "c": "技能书小类别ID"
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      },
+      "c": "技能书小类别名称"
+    }
+  ]
+}
