@@ -4,7 +4,7 @@
 //! bounded set of records that exist in both files, then validate the returned
 //! `ListDef` before the schema editor can load it as an unsaved draft.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -165,9 +165,17 @@ fn anchors(reference_def: &ListDef, records: &[(u32, &[u8], &[u8])]) -> Vec<Fiel
 /// Builds the bounded evidence sent to the model. Kept separate so it can be
 /// prepared while holding the document lock and the network request can run
 /// after that lock is released.
-pub fn prompt(target: &Document, reference: &Document, list: usize) -> Result<(String, usize, usize, usize), String> {
+pub fn prompt(target: &Document, reference: &Document, list: usize, expected_layout: Option<&str>) -> Result<(String, usize, usize, usize), String> {
     let reference_list = reference_list(target, reference, list)?;
-    let (_, reference_def) = reference.def(reference_list).ok_or("The reference list has no fields")?;
+    let (reference_layout, reference_def) = reference.def(reference_list).ok_or("The reference list has no fields")?;
+    if let Some(expected) = expected_layout {
+        if expected != reference_layout.id {
+            return Err(format!(
+                "The selected schema is {expected}, but this reference file uses {}. Choose the matching schema version or a different reference file.",
+                reference_layout.id
+            ));
+        }
+    }
     let target_block = target.file.lists.get(list).ok_or("No such list")?;
     let reference_block = &reference.file.lists[reference_list];
     let ids = selected_ids(target, reference, list, reference_list);
@@ -212,6 +220,128 @@ pub fn prompt(target: &Document, reference: &Document, list: usize) -> Result<(S
         target_size = target_block.item_size,
     );
     Ok((prompt, reference_list, raw.len(), target_block.item_size))
+}
+
+fn unknown_field(off: usize, size: usize) -> Field {
+    Field {
+        name: format!("unknown_{off:04X}"),
+        off,
+        t: Ty::Bytes { n: size },
+        c: Some("New or unidentified bytes found while aligning an older schema".into()),
+        e: None,
+        display: None,
+        refs: Vec::new(),
+        g: None,
+        color: None,
+        gc: None,
+        when: Vec::new(),
+    }
+}
+
+/// Builds a conservative proposal without an AI call. Known fields are moved
+/// using byte anchors found in same-ID record pairs; gaps become raw byte
+/// fields so the schema remains exact without pretending to know their type.
+pub fn from_reference(target: &Document, reference: &Document, list: usize, expected_layout: &str) -> Result<LayoutAnalysis, String> {
+    let reference_list = reference_list(target, reference, list)?;
+    let (reference_layout, reference_def) = reference.def(reference_list).ok_or("The reference list has no fields")?;
+    if reference_layout.id != expected_layout {
+        return Err(format!(
+            "The selected schema is {expected_layout}, but this reference file uses {}. Choose the matching schema version or a different reference file.",
+            reference_layout.id
+        ));
+    }
+    let target_size = target.file.lists.get(list).ok_or("No such list")?.item_size;
+    let ids = selected_ids(target, reference, list, reference_list);
+    if ids.len() < 2 {
+        return Err(format!("Only {} matching record ID(s) were found. At least two are needed to align fields safely.", ids.len()));
+    }
+    let target_ids = target.id_index(list);
+    let reference_ids = reference.id_index(reference_list);
+    let raw: Vec<(u32, &[u8], &[u8])> = ids
+        .iter()
+        .filter_map(|id| {
+            let target_row = *target_ids.get(id)?;
+            let reference_row = *reference_ids.get(id)?;
+            Some((*id, reference.file.record(reference_list, reference_row)?, target.file.record(list, target_row)?))
+        })
+        .collect();
+    let found = anchors(reference_def, &raw);
+    if found.len() < 2 {
+        return Err("Too few stable fields could be located in the newer records. This list needs AI analysis or a closer reference version.".into());
+    }
+
+    let direct: HashMap<&str, &FieldAnchor> = found.iter().map(|anchor| (anchor.name.as_str(), anchor)).collect();
+    let delta_of = |field: &Field| -> isize {
+        direct
+            .get(field.name.as_str())
+            .copied()
+            .or_else(|| found.iter().min_by_key(|anchor| anchor.reference_offset.abs_diff(field.off)))
+            .map(|anchor| anchor.target_offset as isize - anchor.reference_offset as isize)
+            .unwrap_or(0)
+    };
+
+    let mut fields = Vec::new();
+    let mut cursor = 0usize;
+    let mut inferred = 0usize;
+    let mut omitted = 0usize;
+    for source in &reference_def.fields {
+        let Some(mapped) = source.off.checked_add_signed(delta_of(source)) else {
+            omitted += 1;
+            continue;
+        };
+        let size = source.t.size();
+        if mapped < cursor || mapped.checked_add(size).is_none_or(|end| end > target_size) {
+            omitted += 1;
+            continue;
+        }
+        if mapped > cursor {
+            fields.push(unknown_field(cursor, mapped - cursor));
+        }
+        let mut field = source.clone();
+        field.off = mapped;
+        if !direct.contains_key(source.name.as_str()) {
+            inferred += 1;
+        }
+        cursor = mapped + size;
+        fields.push(field);
+    }
+    if cursor < target_size {
+        fields.push(unknown_field(cursor, target_size - cursor));
+    }
+
+    let direct_count = direct.len();
+    let unknown_count = fields.iter().filter(|field| field.name.starts_with("unknown_")).count();
+    let mut warnings = vec![format!(
+        "{direct_count} fields were placed by matching bytes; {inferred} used the nearest proven offset shift. Review every inferred field."
+    )];
+    if unknown_count > 0 {
+        warnings.push(format!("{unknown_count} new or uncertain byte span(s) are marked unknown and still need names and types."));
+    }
+    if omitted > 0 {
+        warnings.push(format!("{omitted} older field(s) conflicted with proven positions or no longer fit and were left inside unknown spans."));
+    }
+    let confidence = ((direct_count * 100) / reference_def.fields.len().max(1)).min(95) as u8;
+    let analysis = LayoutAnalysis {
+        summary: format!(
+            "Aligned {} from {} (v{}) to the {target_size}-byte target using {} same-ID records.",
+            reference_def.struct_name.as_deref().unwrap_or(&reference_def.name),
+            reference_layout.id,
+            reference.file.version(),
+            raw.len()
+        ),
+        confidence,
+        warnings,
+        definition: ListDef {
+            key: reference_def.key.clone(),
+            name: reference_def.name.clone(),
+            struct_name: reference_def.struct_name.clone(),
+            size: Some(target_size),
+            fields,
+        },
+        reference_list,
+        matched_records: raw.len(),
+    };
+    validate(analysis, target_size, reference_list, raw.len())
 }
 
 fn extract_text(value: &Value) -> Option<&str> {
@@ -443,11 +573,18 @@ mod tests {
             target.file.lists[list].item_size != reference.file.lists[other].item_size && selected_ids(&target, &reference, list, other).len() >= 2
         });
         let list = candidate.expect("the real v165 sample should have a grown list with matching IDs");
-        let (prompt, _, matched, target_size) = super::prompt(&target, &reference, list).unwrap();
+        let (prompt, _, matched, target_size) = super::prompt(&target, &reference, list, Some("v160")).unwrap();
         assert!(matched >= 2);
         assert!(target_size > 0);
         assert!(prompt.contains("\"targetVersion\":165"));
         assert!(prompt.contains("\"targetCurrentDefinition\":null"), "an exact target layout must stay hidden from the model");
         assert!(prompt.len() < 350_000, "prompt is {} bytes", prompt.len());
+
+        let aligned = from_reference(&target, &reference, list, "v160").unwrap();
+        assert_eq!(aligned.definition.size, Some(target_size));
+        assert!(aligned.definition.fields.iter().any(|field| field.name.starts_with("unknown_")));
+        let unknown_bytes: usize = aligned.definition.fields.iter().filter(|field| field.name.starts_with("unknown_")).map(|field| field.t.size()).sum();
+        assert_eq!(unknown_bytes, target_size - reference.file.lists[reference_list(&target, &reference, list).unwrap()].item_size);
+        assert!(aligned.matched_records >= 2);
     }
 }

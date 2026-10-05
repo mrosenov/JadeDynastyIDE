@@ -76,9 +76,9 @@ theme. The discovered data-file and package lists stay collapsed until clicked. 
 
 Settings are stored in `%APPDATA%\com.jdide.app\settings.json`.
 The optional **AI layout analysis** section is collapsed by default and stores an API endpoint,
-model and API key there as well. The schema editor shows **Analyze** only after all three are set. A URL ending in
-`/responses` uses the OpenAI Responses API; other base URLs use their OpenAI-compatible
-`/chat/completions` endpoint. The key is sent only to that configured endpoint.
+model and API key there as well. The AI method inside **Analyze** is enabled after all three are
+set. A URL ending in `/responses` uses the OpenAI Responses API; other base URLs use their
+OpenAI-compatible `/chat/completions` endpoint. The key is sent only to that configured endpoint.
 
 `src-tauri/src/client/pck.rs` reads Angelica File Packages (versions 2.2 and 2.3, including `.pkx`
 continuation parts). `dds.rs` decodes DXT1/3/5 and uncompressed DDS, one icon's blocks at a
@@ -461,6 +461,7 @@ holds one of the values (or none of them, with `"not": true`) decides the type. 
 field size. Otherwise `t` applies.
 An optional `g` puts consecutive fields into a named, collapsible display group
 (collapsed by default). It never changes field names or offsets.
+To add existing fields to a group, select the group's checkbox and the outside fields, then use **Add to _group name_**. Fields between the selected rows are included so their byte order and offsets stay unchanged.
 Struct headings can carry an optional `color`; a group's optional colour is saved as `gc`
 on its members. The schema editor manages both through the colour swatch on the heading row.
 
@@ -487,11 +488,13 @@ against the record size, marks types it cannot read, and can cover bytes left ov
 `unknown_XXXX` fields. The fields replace the draft; nothing is saved until Save.
 
 **Analyze** helps migrate one list when a newer `elements.data` has a changed record layout.
-Pick an older reference file whose existing layout is known to match exactly. JD IDE finds the
-same struct (or list slot), pairs records by ID, locates stable known fields in the target bytes,
-and sends a bounded set of paired records plus both schema definitions to the configured model.
-It does not upload either whole file. New fields may be inserted anywhere in the record, so the
-analysis does not assume that a version only appends bytes.
+It offers two methods. **Analyze from an older schema** runs locally: choose an older layout and
+an `elements.data` that matches it exactly. JD IDE pairs records by ID, relocates stable known
+fields from their byte values, and covers new or uncertain spans with `unknown_XXXX` byte fields.
+**Analyze with AI** uses the same evidence, then asks the configured model to infer the added
+fields' names and types. It sends only a bounded set of records for the selected list, not either
+whole file. New fields may be inserted anywhere; neither method assumes a version only appends
+bytes.
 
 The returned definition must use the target's exact record size and pass local checks for field
 counts, nesting, offsets, arrays and conditional types. It is also previewed against target

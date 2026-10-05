@@ -432,7 +432,7 @@ async fn import_candidates(list: usize, state: State<'_, AppState>) -> Result<Ve
 /// model for a schema proposal, and validates it. The proposal is returned to
 /// the schema editor and is not saved here.
 #[tauri::command]
-async fn analyze_list_layout(reference_path: String, list: usize, state: State<'_, AppState>) -> Result<elements::analyze::LayoutAnalysis, String> {
+async fn analyze_list_layout(reference_path: String, source_layout: String, list: usize, state: State<'_, AppState>) -> Result<elements::analyze::LayoutAnalysis, String> {
     let (endpoint, model, api_key) = {
         let settings = state.settings.lock().map_err(|_| "State lock poisoned")?;
         let (endpoint, model, api_key) = settings.ai().ok_or("Configure an AI endpoint, model and API key in Settings first")?;
@@ -441,7 +441,7 @@ async fn analyze_list_layout(reference_path: String, list: usize, state: State<'
     let catalog = state.catalog.read().map_err(|_| "State lock poisoned")?.clone();
     let reference = Document::open(reference_path.trim().to_string(), catalog)?;
     let (target_path, target_version, prompt, reference_list, matched_records, target_size) = state.with_document(|doc| {
-        let (prompt, reference_list, matched_records, target_size) = elements::analyze::prompt(doc, &reference, list)?;
+        let (prompt, reference_list, matched_records, target_size) = elements::analyze::prompt(doc, &reference, list, Some(&source_layout))?;
         Ok((doc.path.clone(), doc.file.version(), prompt, reference_list, matched_records, target_size))
     })?;
 
@@ -459,6 +459,15 @@ async fn analyze_list_layout(reference_path: String, list: usize, state: State<'
         }
         Ok(analysis)
     })
+}
+
+/// Aligns an exact older schema to the open list using matching record bytes.
+/// This is fully local and marks unrecognised spans as raw bytes.
+#[tauri::command]
+async fn analyze_list_from_reference(reference_path: String, source_layout: String, list: usize, state: State<'_, AppState>) -> Result<elements::analyze::LayoutAnalysis, String> {
+    let catalog = state.catalog.read().map_err(|_| "State lock poisoned")?.clone();
+    let reference = Document::open(reference_path.trim().to_string(), catalog)?;
+    state.with_document(|doc| elements::analyze::from_reference(doc, &reference, list, &source_layout))
 }
 
 #[tauri::command]
@@ -681,6 +690,7 @@ pub fn run() {
             reset_list_schema,
             import_candidates,
             analyze_list_layout,
+            analyze_list_from_reference,
             get_settings,
             inspect_client,
             save_settings,

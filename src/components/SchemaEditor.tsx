@@ -487,13 +487,47 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
   };
 
   const pickedRows = tableRows.filter((r) => picked.has(r.field.uid));
-  const canGroup =
+  const canCreateGroup =
     pickedRows.length > 0 &&
     pickedRows.every((r) => r.parent === pickedRows[0].parent && r.field.kind !== "group") &&
     pickedRows[0].owner?.kind !== "group";
 
+  // Selecting a group through its checkbox also selects its members. If fields at
+  // the same level as that group are picked, Group extends the existing group over
+  // the whole range, keeping byte order and offsets unchanged.
+  const extendGroup = (() => {
+    const groups = tableRows.filter((r) => picked.has(r.field.uid) && r.field.kind === "group");
+    if (groups.length !== 1) return null;
+    const row = groups[0];
+    const group = row.field;
+    const peers = row.parent.filter((field) => picked.has(field.uid));
+    if (peers.length < 2) return null;
+    const allowed = new Set([group.uid, ...fieldUids(group.children), ...peers.map((field) => field.uid)]);
+    if ([...picked].some((fieldUid) => !allowed.has(fieldUid))) return null;
+    const indexes = peers.map((field) => row.parent.indexOf(field));
+    const lo = Math.min(...indexes);
+    const hi = Math.max(...indexes);
+    const span = row.parent.slice(lo, hi + 1);
+    if (span.some((field) => field.kind === "group" && field.uid !== group.uid)) return null;
+    return { group, parent: row.parent, lo, span };
+  })();
+  const canGroup = canCreateGroup || extendGroup !== null;
+  const groupActionLabel = extendGroup
+    ? `Add ${extendGroup.span.length - 1} row${extendGroup.span.length === 2 ? "" : "s"} to ${extendGroup.group.name}`
+    : `Group${pickedRows.length > 1 ? ` ${pickedRows.length} rows` : ""}`;
+
   const groupPicked = () => {
     if (!canGroup) return;
+    if (extendGroup) {
+      const { group, parent, lo, span } = extendGroup;
+      const children = span.flatMap((field) => (field.uid === group.uid ? group.children : [field]));
+      const extended = { ...group, children };
+      editField(parent[lo].uid, (list, i) => [...list.slice(0, i), extended, ...list.slice(i + span.length)], "group");
+      setSelected(group.uid);
+      setPicked(new Set([group.uid]));
+      pickAnchor.current = group.uid;
+      return;
+    }
     const parent = pickedRows[0].parent;
     const indexes = pickedRows.map((r) => parent.indexOf(r.field));
     const lo = Math.min(...indexes);
@@ -720,11 +754,9 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
           {tab === "fields" ? (
             <>
               <div className="se-toolbar">
-                {aiConfigured && (
-                  <button className="btn small" onClick={() => setAnalyzing(true)} title="Compare this list with a trusted elements.data and prepare a schema draft">
-                    <WandSparkles size={14} /> Analyze
-                  </button>
-                )}
+                <button className="btn small" onClick={() => setAnalyzing(true)} title="Compare this list with an older schema, locally or with AI">
+                  <WandSparkles size={14} /> Analyze
+                </button>
                 <ImportMenu
                   list={list}
                   onImport={(def, from) => {
@@ -769,9 +801,13 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                   className="btn small"
                   onClick={groupPicked}
                   disabled={!canGroup}
-                  title="Put the picked rows (and any between them) into a collapsible group. Shift+click picks a range, Ctrl+click adds rows."
+                  title={
+                    extendGroup
+                      ? `Add the selected rows and any between them to ${extendGroup.group.name}`
+                      : "Put the picked rows (and any between them) into a collapsible group. Shift+click picks a range, Ctrl+click adds rows."
+                  }
                 >
-                  <Group size={14} /> Group{pickedRows.length > 1 ? ` ${pickedRows.length} rows` : ""}
+                  <Group size={14} /> {groupActionLabel}
                 </button>
                 <button
                   className="btn small"
@@ -875,8 +911,19 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                   <button className="btn small" onClick={() => applyBulk((f) => (f.refs.length ? { refs: [] } : null), "bulk-refs")}>
                     Clear refs
                   </button>
-                  <button className="btn small" onClick={groupPicked} disabled={!canGroup} title={canGroup ? "Group the selected rows" : "Only rows of one level can be grouped"}>
-                    <Group size={14} /> Group
+                  <button
+                    className="btn small"
+                    onClick={groupPicked}
+                    disabled={!canGroup}
+                    title={
+                      extendGroup
+                        ? `Add the selected rows and any between them to ${extendGroup.group.name}`
+                        : canGroup
+                          ? "Group the selected rows"
+                          : "Select rows at one level, or select one group and adjacent outside rows"
+                    }
+                  >
+                    <Group size={14} /> {extendGroup ? `Add to ${extendGroup.group.name}` : "Group"}
                   </button>
                   {groupsToUngroup.length > 0 && (
                     <button className="btn small" onClick={ungroupChosen} title="Put the fields of the selected groups back in place">
@@ -1356,6 +1403,8 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
           list={list}
           listName={listSummary.name}
           itemSize={itemSize}
+          targetVersion={summary.version}
+          aiConfigured={aiConfigured}
           suggestedReference={analysisReference}
           onClose={() => setAnalyzing(false)}
           onApply={(analysis) => {

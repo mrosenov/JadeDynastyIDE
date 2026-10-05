@@ -119,8 +119,12 @@ export const resetListSchema = (list: number) => invoke<FileSummary>("reset_list
 
 export const importCandidates = (list: number) => invoke<ImportCandidate[]>("import_candidates", { list });
 
-/** Builds a schema proposal from a trusted reference file. Nothing is saved by this command. */
-export const analyzeListLayout = (referencePath: string, list: number) => invoke<LayoutAnalysis>("analyze_list_layout", { referencePath, list });
+/** Builds an AI schema proposal from a trusted reference file. Nothing is saved by this command. */
+export const analyzeListLayout = (referencePath: string, sourceLayout: string, list: number) => invoke<LayoutAnalysis>("analyze_list_layout", { referencePath, sourceLayout, list });
+
+/** Locally aligns an older exact schema from matching record bytes. */
+export const analyzeListFromReference = (referencePath: string, sourceLayout: string, list: number) =>
+  invoke<LayoutAnalysis>("analyze_list_from_reference", { referencePath, sourceLayout, list });
 
 export const getSettings = () => invoke<SettingsView>("get_settings");
 

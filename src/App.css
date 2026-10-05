@@ -2204,6 +2204,52 @@ svg.lucide {
 .layout-analyzer-dialog > .modal-head > div p {
   margin-top: 2px;
 }
+.analyzer-methods {
+  display: grid;
+  gap: 10px;
+}
+.analyzer-method {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 4px 10px;
+  padding: 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  background: var(--bg-pane);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.analyzer-method:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.analyzer-method:disabled {
+  opacity: 0.58;
+  cursor: default;
+}
+.analyzer-method > svg {
+  grid-row: 1 / span 2;
+  color: var(--accent);
+}
+.analyzer-method:disabled > svg {
+  color: var(--text-faint);
+}
+.analyzer-method > span {
+  display: grid;
+  gap: 2px;
+}
+.analyzer-method > span small {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+.analyzer-method > p {
+  grid-column: 2;
+  margin: 5px 0 0;
+  color: var(--text-dim);
+  font-size: 12px;
+  line-height: 1.45;
+}
 .analyzer-intro {
   display: flex;
   gap: 10px;
@@ -2249,6 +2295,10 @@ svg.lucide {
 .analyzer-running > div {
   display: grid;
   gap: 3px;
+}
+.analyzer-running.compact {
+  min-height: 42px;
+  justify-content: flex-start;
 }
 .analyzer-result {
   display: grid;
