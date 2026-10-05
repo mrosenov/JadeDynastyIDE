@@ -339,7 +339,7 @@ whole file:
 | Severity | Check |
 |---|---|
 | Error | **Duplicate IDs in a list** |
-| Warning | **IDs hidden by another list**: records of different lists in the same ID space share an ID. Client, server and editor keep one ID → record map per space, so the record loaded later hides the other from ID lookups. Spaces follow the file loader's `elementdataman::setup_hash_map`: types and services share the item space, recipe types the recipe space, and WAR_ROLE_CONFIG plus ITEM_TRADE_CONFIG live among the items |
+| Warning | **IDs hidden by another list**: records of different lists in the same ID space share an ID. Client, server and editor keep one ID → record map per space, so the record loaded later hides the other from ID lookups. Spaces follow the file loader's `elementdataman::setup_hash_map`: types and services share the item space, recipe types the recipe space, and WAR_ROLE_CONFIG plus ITEM_TRADE_CONFIG live among the items. A custom schema name can keep the recipe space by using `RECIPE` as a separate underscore-delimited part, such as `CRAFTING_RECIPE` |
 | Error | **Broken references**: a field whose `refs` name a list holds an ID that list does not have |
 | Error | **Missing dialogs**: `id_dialog` names no NPC dialog |
 | Warning | **Dialog options** opening windows the dialog does not have |

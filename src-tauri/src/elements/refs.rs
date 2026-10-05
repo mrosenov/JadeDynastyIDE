@@ -29,12 +29,19 @@ pub enum IdSpace {
     Other,
 }
 
+/// Custom schema names can preserve the recipe ID space by using `RECIPE`
+/// as a complete underscore-separated part (for example `CRAFTING_RECIPE`).
+/// `RECIPEROLL_ESSENCE` is an item and deliberately does not match.
+fn names_recipe_space(struct_name: &str) -> bool {
+    struct_name.split('_').any(|part| part.eq_ignore_ascii_case("RECIPE"))
+}
+
 /// The space a list's records live in, from its struct name.
 pub fn list_space(struct_name: &str) -> IdSpace {
     let s = struct_name.to_ascii_uppercase();
     if s.ends_with("_ADDON") {
         IdSpace::Addon
-    } else if s == "RECIPE_ESSENCE" {
+    } else if names_recipe_space(&s) {
         IdSpace::Recipe
     } else if s.ends_with("_CONFIG") {
         IdSpace::Config
@@ -56,7 +63,7 @@ pub fn registry_space(struct_name: &str) -> IdSpace {
     let s = struct_name.to_ascii_uppercase();
     if s.ends_with("_ADDON") {
         IdSpace::Addon
-    } else if matches!(s.as_str(), "RECIPE_ESSENCE" | "RECIPE_MAJOR_TYPE" | "RECIPE_SUB_TYPE") {
+    } else if names_recipe_space(&s) {
         IdSpace::Recipe
     } else if matches!(s.as_str(), "RUNE_COMB_PROPERTY" | "UPGRADE_EQUIP_CONFIG_1") || (s.ends_with("_CONFIG") && !ESSENCE_CONFIGS.contains(&s.as_str())) {
         IdSpace::Config
@@ -210,6 +217,9 @@ mod tests {
         assert_eq!(field_space("id_addon3"), IdSpace::Addon);
         assert_eq!(list_space("EQUIPMENT_ESSENCE"), IdSpace::Essence);
         assert_eq!(list_space("RECIPE_ESSENCE"), IdSpace::Recipe);
+        assert_eq!(list_space("CRAFTING_RECIPE"), IdSpace::Recipe);
+        assert_eq!(list_space("CRAFTING_RECIPE_MAJOR_TYPE"), IdSpace::Recipe);
+        assert_eq!(list_space("RECIPEROLL_ESSENCE"), IdSpace::Essence);
         assert_eq!(list_space("EQUIPMENT_ADDON"), IdSpace::Addon);
         assert_eq!(list_space("GEM_CONFIG"), IdSpace::Config);
         // Follow setup_hash_map, which is the path used after loading a file.
@@ -218,5 +228,8 @@ mod tests {
         assert_eq!(registry_space("BUFF_AREA_CONFIG"), IdSpace::Config);
         assert_eq!(registry_space("WAR_ROLE_CONFIG"), IdSpace::Essence);
         assert_eq!(registry_space("ITEM_TRADE_CONFIG"), IdSpace::Essence);
+        assert_eq!(registry_space("CRAFTING_RECIPE"), IdSpace::Recipe);
+        assert_eq!(registry_space("CRAFTING_RECIPE_MAJOR_TYPE"), IdSpace::Recipe);
+        assert_eq!(registry_space("RECIPEROLL_ESSENCE"), IdSpace::Essence);
     }
 }
