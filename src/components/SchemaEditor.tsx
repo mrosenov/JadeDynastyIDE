@@ -42,6 +42,7 @@ import { FieldTree } from "./FieldTree";
 import { ReadingsCard } from "./ReadingsCard";
 import { ImportMenu } from "./ImportMenu";
 import { PasteFieldsDialog } from "./PasteFieldsDialog";
+import { LayoutAnalyzerDialog } from "./LayoutAnalyzerDialog";
 import { RefsPicker } from "./RefsPicker";
 import { isUndefinedNode, undefinedSpan } from "../elements/readings";
 import { HexView } from "./HexView";
@@ -55,6 +56,8 @@ interface Props {
   intent?: { list: number; offset: number; spec: FieldSpec } | null;
   /** Open the enums & masks editor (at a set, if given). */
   onEditSets?: (key: string | null) => void;
+  aiConfigured: boolean;
+  analysisReference: string;
   onSaved: (summary: FileSummary) => void;
   onClose: (list: number) => void;
 }
@@ -170,7 +173,7 @@ function ancestorsOf(fields: EditField[], uid: number, chain: number[] = []): nu
   return null;
 }
 
-export function SchemaEditor({ summary, initialList, initialRow, intent, onEditSets, onSaved, onClose }: Props) {
+export function SchemaEditor({ summary, initialList, initialRow, intent, onEditSets, aiConfigured, analysisReference, onSaved, onClose }: Props) {
   const [list, setList] = useState(initialList);
   const [schema, setSchema] = useState<ListSchema | null>(null);
   const [context, setContext] = useState<SchemaContext | null>(null);
@@ -188,6 +191,7 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
   const pickAnchor = useRef<number | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [pasting, setPasting] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
   // Fields whose conditional type rules are shown.
   const [rulesOpen, setRulesOpen] = useState<Set<number>>(new Set());
   const [previewRow, setPreviewRow] = useState(initialRow);
@@ -716,6 +720,11 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
           {tab === "fields" ? (
             <>
               <div className="se-toolbar">
+                {aiConfigured && (
+                  <button className="btn small" onClick={() => setAnalyzing(true)} title="Compare this list with a trusted elements.data and prepare a schema draft">
+                    <WandSparkles size={14} /> Analyze
+                  </button>
+                )}
                 <ImportMenu
                   list={list}
                   onImport={(def, from) => {
@@ -1341,6 +1350,25 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
           )}
         </section>
       </div>
+
+      {analyzing && (
+        <LayoutAnalyzerDialog
+          list={list}
+          listName={listSummary.name}
+          itemSize={itemSize}
+          suggestedReference={analysisReference}
+          onClose={() => setAnalyzing(false)}
+          onApply={(analysis) => {
+            const proposed = fromDef(analysis.definition, analysis.definition.name);
+            commit(proposed, "ai-analysis");
+            setCollapsed(new Set(groupUids(proposed.fields)));
+            setSelected(null);
+            setPicked(new Set());
+            setAnalyzing(false);
+            setNotice(`AI proposal loaded (${analysis.confidence}% confidence, ${analysis.matchedRecords} paired records). Review the fields and record preview, then save.`);
+          }}
+        />
+      )}
 
 
       <footer className="se-foot">

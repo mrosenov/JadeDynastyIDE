@@ -1,4 +1,5 @@
 pub mod align;
+pub mod analyze;
 pub mod compare;
 pub mod coverage;
 pub mod decode;

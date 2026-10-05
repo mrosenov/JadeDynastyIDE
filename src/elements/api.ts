@@ -22,6 +22,7 @@ import type {
   TalkTextEdit,
   FileSummary,
   ImportCandidate,
+  LayoutAnalysis,
   ListDef,
   ListSchema,
   RecordDetail,
@@ -117,6 +118,9 @@ export const saveListSchema = (list: number, def: ListDef) => invoke<FileSummary
 export const resetListSchema = (list: number) => invoke<FileSummary>("reset_list_schema", { list });
 
 export const importCandidates = (list: number) => invoke<ImportCandidate[]>("import_candidates", { list });
+
+/** Builds a schema proposal from a trusted reference file. Nothing is saved by this command. */
+export const analyzeListLayout = (referencePath: string, list: number) => invoke<LayoutAnalysis>("analyze_list_layout", { referencePath, list });
 
 export const getSettings = () => invoke<SettingsView>("get_settings");
 

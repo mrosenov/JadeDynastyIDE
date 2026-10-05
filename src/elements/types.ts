@@ -228,6 +228,16 @@ export interface ImportCandidate {
   def: ListDef;
 }
 
+/** A locally validated AI proposal. It remains unsaved until the user saves it in the schema editor. */
+export interface LayoutAnalysis {
+  summary: string;
+  confidence: number;
+  warnings: string[];
+  definition: ListDef;
+  referenceList: number;
+  matchedRecords: number;
+}
+
 // ---------------------------------------------------------------- settings
 
 export type Theme = "system" | "light" | "dark";
@@ -236,6 +246,9 @@ export interface Settings {
   clientDir: string | null;
   openOnStart: boolean;
   theme: Theme;
+  aiEndpoint: string | null;
+  aiModel: string | null;
+  aiApiKey: string | null;
 }
 
 export interface DataFile {

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { ChevronRight, CircleAlert, CircleCheck, Database, FolderSearch, Loader2, Monitor, Moon, Package, Settings as SettingsIcon, Sun, X } from "lucide-react";
+import { ChevronRight, CircleAlert, CircleCheck, Database, Eye, EyeOff, FolderSearch, KeyRound, Loader2, Monitor, Moon, Package, Settings as SettingsIcon, Sparkles, Sun, X } from "lucide-react";
 import { inspectClient, saveSettings } from "../elements/api";
 import type { ClientInfo, SettingsView, Theme } from "../elements/types";
 import { bytes } from "../elements/format";
@@ -15,9 +15,14 @@ interface Props {
 
 /** App settings: the game client folder and what was found in it. */
 export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
+  const defaultAiEndpoint = "https://api.openai.com/v1/responses";
   const [dir, setDir] = useState(view.settings.clientDir ?? "");
   const [openOnStart, setOpenOnStart] = useState(view.settings.openOnStart);
   const [theme, setTheme] = useState<Theme>(view.settings.theme);
+  const [aiEndpoint, setAiEndpoint] = useState(view.settings.aiEndpoint ?? defaultAiEndpoint);
+  const [aiModel, setAiModel] = useState(view.settings.aiModel ?? "");
+  const [aiApiKey, setAiApiKey] = useState(view.settings.aiApiKey ?? "");
+  const [showAiKey, setShowAiKey] = useState(false);
   const [client, setClient] = useState<ClientInfo | null>(view.client);
   const [problem, setProblem] = useState<string | null>(view.clientError);
   const [checking, setChecking] = useState(false);
@@ -82,7 +87,14 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
   const save = async () => {
     setSaving(true);
     try {
-      const next = await saveSettings({ clientDir: dir.trim() || null, openOnStart, theme });
+      const next = await saveSettings({
+        clientDir: dir.trim() || null,
+        openOnStart,
+        theme,
+        aiEndpoint: aiEndpoint.trim() || null,
+        aiModel: aiModel.trim() || null,
+        aiApiKey: aiApiKey.trim() || null,
+      });
       keepPreviewedTheme.current = true;
       onSaved(next);
       onClose();
@@ -93,7 +105,15 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
     }
   };
 
-  const changed = (view.settings.clientDir ?? "") !== dir.trim() || view.settings.openOnStart !== openOnStart || view.settings.theme !== theme;
+  const changed =
+    (view.settings.clientDir ?? "") !== dir.trim() ||
+    view.settings.openOnStart !== openOnStart ||
+    view.settings.theme !== theme ||
+    (view.settings.aiEndpoint ?? defaultAiEndpoint) !== aiEndpoint.trim() ||
+    (view.settings.aiModel ?? "") !== aiModel.trim() ||
+    (view.settings.aiApiKey ?? "") !== aiApiKey.trim();
+  const aiStarted = Boolean(aiModel.trim() || aiApiKey.trim());
+  const aiComplete = Boolean(aiEndpoint.trim() && aiModel.trim() && aiApiKey.trim());
   const canSave = !saving && !checking && (!dir.trim() || client !== null);
 
   return (
@@ -123,6 +143,43 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
               ))}
             </div>
             <p className="muted small settings-theme-note">System follows the light or dark preference in Windows.</p>
+          </section>
+
+          <section className="settings-section">
+            <details className="settings-ai">
+              <summary>
+                <ChevronRight size={14} className="settings-ai-caret" />
+                <Sparkles size={15} />
+                <b>AI layout analysis</b>
+                <span className={"settings-ai-state" + (aiComplete ? " ready" : "")}>{aiComplete ? "Configured" : "Not configured"}</span>
+              </summary>
+              <div className="settings-ai-body">
+                <p className="muted small">
+                  Compare an unfamiliar list with a trusted elements.data and prepare a schema draft. The Analyze button appears only when the endpoint, model and API key are set.
+                </p>
+                <label className="settings-field">
+                  <span>API endpoint</span>
+                  <input className="se-input mono" value={aiEndpoint} onChange={(e) => setAiEndpoint(e.target.value)} placeholder={defaultAiEndpoint} spellCheck={false} />
+                </label>
+                <label className="settings-field">
+                  <span>Model</span>
+                  <input className="se-input mono" value={aiModel} onChange={(e) => setAiModel(e.target.value)} placeholder="Model name supported by the endpoint" spellCheck={false} />
+                </label>
+                <label className="settings-field">
+                  <span>API key</span>
+                  <span className="settings-secret">
+                    <KeyRound size={14} />
+                    <input className="se-input mono" type={showAiKey ? "text" : "password"} value={aiApiKey} onChange={(e) => setAiApiKey(e.target.value)} placeholder="API key" spellCheck={false} autoComplete="off" />
+                    <button type="button" className="icon-btn" onClick={() => setShowAiKey((shown) => !shown)} aria-label={showAiKey ? "Hide API key" : "Show API key"}>
+                      {showAiKey ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
+                  </span>
+                </label>
+                {aiStarted && !aiComplete && <div className="settings-status bad"><CircleAlert size={14} /> Layout analysis stays disabled until all three fields are complete.</div>}
+                {aiComplete && <div className="settings-status ok"><CircleCheck size={14} /> Layout analysis will be available in the schema editor.</div>}
+                <p className="muted small settings-ai-note">The API key is stored in JD IDE's local settings and sent only to this endpoint.</p>
+              </div>
+            </details>
           </section>
 
           <section className="settings-section">

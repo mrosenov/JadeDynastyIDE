@@ -917,6 +917,8 @@ export default function App() {
             intent={editorIntent}
             initialRow={showingDialogs ? 0 : (recordIndex ?? 0)}
             onEditSets={(key) => setSetsEditor({ key })}
+            aiConfigured={Boolean(settingsView?.settings.aiEndpoint?.trim() && settingsView?.settings.aiModel?.trim() && settingsView?.settings.aiApiKey?.trim())}
+            analysisReference={settingsView?.client?.elementsPath ?? ""}
             onSaved={onSchemaSaved}
             onClose={closeEditor}
           />

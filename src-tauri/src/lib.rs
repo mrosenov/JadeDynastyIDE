@@ -428,6 +428,39 @@ async fn import_candidates(list: usize, state: State<'_, AppState>) -> Result<Ve
     state.with_document(|doc| doc.import_candidates(list))
 }
 
+/// Compares one target list with an exact reference file, asks the configured
+/// model for a schema proposal, and validates it. The proposal is returned to
+/// the schema editor and is not saved here.
+#[tauri::command]
+async fn analyze_list_layout(reference_path: String, list: usize, state: State<'_, AppState>) -> Result<elements::analyze::LayoutAnalysis, String> {
+    let (endpoint, model, api_key) = {
+        let settings = state.settings.lock().map_err(|_| "State lock poisoned")?;
+        let (endpoint, model, api_key) = settings.ai().ok_or("Configure an AI endpoint, model and API key in Settings first")?;
+        (endpoint.to_string(), model.to_string(), api_key.to_string())
+    };
+    let catalog = state.catalog.read().map_err(|_| "State lock poisoned")?.clone();
+    let reference = Document::open(reference_path.trim().to_string(), catalog)?;
+    let (target_path, target_version, prompt, reference_list, matched_records, target_size) = state.with_document(|doc| {
+        let (prompt, reference_list, matched_records, target_size) = elements::analyze::prompt(doc, &reference, list)?;
+        Ok((doc.path.clone(), doc.file.version(), prompt, reference_list, matched_records, target_size))
+    })?;
+
+    let analysis = elements::analyze::request(&endpoint, &model, &api_key, prompt, reference_list, matched_records, target_size).await?;
+
+    // The request can take a while. Refuse to apply its result to a different
+    // file/list if the user changed documents while it was running.
+    state.with_document(|doc| {
+        let block = doc.file.lists.get(list).ok_or("The target list is no longer open")?;
+        if doc.path != target_path || doc.file.version() != target_version || block.item_size != target_size {
+            return Err("The open file changed while the AI was analyzing it. Run the analysis again.".into());
+        }
+        for row in 0..block.count.min(8) {
+            doc.preview(list, row, &analysis.definition)?;
+        }
+        Ok(analysis)
+    })
+}
+
 #[tauri::command]
 async fn reset_list_schema(list: usize, state: State<'_, AppState>) -> Result<FileSummary, String> {
     let dir = state.user_dir.join("layouts");
@@ -647,6 +680,7 @@ pub fn run() {
             save_list_schema,
             reset_list_schema,
             import_candidates,
+            analyze_list_layout,
             get_settings,
             inspect_client,
             save_settings,

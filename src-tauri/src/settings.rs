@@ -22,6 +22,12 @@ pub struct Settings {
     pub open_on_start: bool,
     /// Application colours: follow the operating system, or force light/dark.
     pub theme: Theme,
+    /// Full URL of an OpenAI-compatible Responses or Chat Completions endpoint.
+    pub ai_endpoint: Option<String>,
+    /// Model used for layout analysis.
+    pub ai_model: Option<String>,
+    /// API key sent only to the configured endpoint.
+    pub ai_api_key: Option<String>,
 }
 
 impl Settings {
@@ -47,6 +53,14 @@ impl Settings {
     pub fn client_dir(&self) -> Option<&str> {
         self.client_dir.as_deref().map(str::trim).filter(|d| !d.is_empty())
     }
+
+    /// Config needed before the layout analyzer is exposed in the UI.
+    pub fn ai(&self) -> Option<(&str, &str, &str)> {
+        let endpoint = self.ai_endpoint.as_deref().map(str::trim).filter(|s| !s.is_empty())?;
+        let model = self.ai_model.as_deref().map(str::trim).filter(|s| !s.is_empty())?;
+        let key = self.ai_api_key.as_deref().map(str::trim).filter(|s| !s.is_empty())?;
+        Some((endpoint, model, key))
+    }
 }
 
 #[cfg(test)]
@@ -58,12 +72,19 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("jdide-settings-{}", std::process::id()));
         let path = dir.join("settings.json");
         assert_eq!(Settings::load(&path), Settings::default());
-        let s = Settings { client_dir: Some("E:/Games/ForsakenJD".into()), open_on_start: true, theme: Theme::Dark };
+        let s = Settings {
+            client_dir: Some("E:/Games/ForsakenJD".into()),
+            open_on_start: true,
+            theme: Theme::Dark,
+            ai_endpoint: Some("https://api.openai.com/v1/responses".into()),
+            ai_model: Some("test-model".into()),
+            ai_api_key: Some("secret".into()),
+        };
         s.save(&path).unwrap();
         assert_eq!(Settings::load(&path), s);
         // Unknown or missing keys fall back to defaults.
         std::fs::write(&path, r#"{ "clientDir": "X", "futureOption": 1 }"#).unwrap();
-        assert_eq!(Settings::load(&path), Settings { client_dir: Some("X".into()), open_on_start: false, theme: Theme::System });
+        assert_eq!(Settings::load(&path), Settings { client_dir: Some("X".into()), open_on_start: false, theme: Theme::System, ..Settings::default() });
         let _ = std::fs::remove_dir_all(&dir);
     }
 }

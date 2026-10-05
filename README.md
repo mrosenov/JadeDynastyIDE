@@ -75,6 +75,10 @@ theme. The discovered data-file and package lists stay collapsed until clicked. 
   file.
 
 Settings are stored in `%APPDATA%\com.jdide.app\settings.json`.
+The optional **AI layout analysis** section is collapsed by default and stores an API endpoint,
+model and API key there as well. The schema editor shows **Analyze** only after all three are set. A URL ending in
+`/responses` uses the OpenAI Responses API; other base URLs use their OpenAI-compatible
+`/chat/completions` endpoint. The key is sent only to that configured endpoint.
 
 `src-tauri/src/client/pck.rs` reads Angelica File Packages (versions 2.2 and 2.3, including `.pkx`
 continuation parts). `dds.rs` decodes DXT1/3/5 and uncompressed DDS, one icon's blocks at a
@@ -481,6 +485,19 @@ its `001 - NAME` line fills in the struct name. Types: `int32`/`int`, `uint32`, 
 the record) and arrays such as `int32[4]`. The dialog previews each field's offset and size
 against the record size, marks types it cannot read, and can cover bytes left over with
 `unknown_XXXX` fields. The fields replace the draft; nothing is saved until Save.
+
+**Analyze** helps migrate one list when a newer `elements.data` has a changed record layout.
+Pick an older reference file whose existing layout is known to match exactly. JD IDE finds the
+same struct (or list slot), pairs records by ID, locates stable known fields in the target bytes,
+and sends a bounded set of paired records plus both schema definitions to the configured model.
+It does not upload either whole file. New fields may be inserted anywhere in the record, so the
+analysis does not assume that a version only appends bytes.
+
+The returned definition must use the target's exact record size and pass local checks for field
+counts, nesting, offsets, arrays and conditional types. It is also previewed against target
+records. **Use proposal** only loads it as an unsaved schema draft, with the model's confidence
+and uncertainties shown first. Review its fields and decoded record preview before pressing the
+schema editor's Save button; analysis never changes `elements.data` bytes.
 
 ## Development
 
