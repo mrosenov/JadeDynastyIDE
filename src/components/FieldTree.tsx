@@ -9,6 +9,7 @@ import { CalendarClock, ChevronRight, Clock, CornerDownLeft, GitBranch, Timer } 
 import { decodeValue, isChanged, isEditable } from "../elements/edit";
 import { InlineEditor } from "./InlineEditor";
 import { coins, formatMoneyWords } from "../elements/money";
+import { formatProbability } from "../elements/probability";
 
 /** A copper amount as gold, silver and copper coins. */
 function MoneyChip({ value }: { value: string }) {
@@ -30,6 +31,21 @@ function MoneyChip({ value }: { value: string }) {
           <i>{unit}</i>
         </span>
       ))}
+    </span>
+  );
+}
+
+/** A probability stored by the game as a 0..1 ratio. */
+function ProbabilityChip({ value }: { value: string }) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  const usual = n >= 0 && n <= 1;
+  return (
+    <span
+      className={"probability-chip" + (usual ? "" : " unusual")}
+      title={usual ? `Stored probability ${value} × 100` : `Stored value ${value} is outside the usual 0–1 probability range`}
+    >
+      {formatProbability(n)}
     </span>
   );
 }
@@ -320,7 +336,8 @@ ${node.comment}` : ""}` : node.comment}
                 ))}
               {node.display && TIME_ROLES.has(node.display) && node.value !== undefined && <TimeChip role={node.display} value={node.value} />}
               {node.display === "money" && node.value !== undefined && <MoneyChip value={node.value} />}
-              {node.display && !TIME_ROLES.has(node.display) && node.display !== "money" && <span className="role">{node.display}</span>}
+              {node.display === "probability" && node.value !== undefined && <ProbabilityChip value={node.value} />}
+              {node.display && !TIME_ROLES.has(node.display) && node.display !== "money" && node.display !== "probability" && <span className="role">{node.display}</span>}
               {node.cond && (
                 <span className="cond-chip" title={`Conditional type: ${node.cond}`}>
                   <GitBranch size={11} /> {node.cond}

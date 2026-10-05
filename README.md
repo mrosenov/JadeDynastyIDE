@@ -417,8 +417,8 @@ a built-in set writes `{ "key": …, "deleted": true }` there, which hides it; i
 **Deleted** to restore. Removing a user file reverts the set. In the inspector, clicking a mask field's labels opens a
 calculator: tick bits to get the resulting value in decimal and hex.
 
-Integer fields can also have a display role (`"display"` in a list file, **Role** in the
-schema editor):
+Fields can also have a display role (`"display"` in a list file, **Role** in the schema
+editor). Most roles apply to integers; `probability` applies to floats:
 
 | Role | Value | Shown as |
 |---|---|---|
@@ -429,6 +429,11 @@ schema editor):
 | `duration_ms` | milliseconds | `1m`, `5s`, `250 ms` |
 | `daytime` | seconds after midnight | `14:30`, `23:59:59` |
 | `money` | Copper (100 Copper = 1 Silver, 100 Silver = 1 Gold) | `12G 34S 56C` (full words on hover); editing also takes `1G 50S` or `1 Gold 50 Silver` |
+| `probability` | float ratio from 0 to 1 | `0.5` → `50%`; editing also takes `25%` and stores `0.25` |
+
+The 0–1 probability scale is confirmed in the game source: common probability fields are
+compared with random floats from 0 to 1, and several loaders reject values above 1. Some
+arrays use the same values as relative selection weights whose total is 1.
 
 `tools/type-rules.json` assigns roles by field name (`roles`), with units checked against
 real values: medicine and revive scroll `cool_time` are milliseconds, recipe `cool_time` is

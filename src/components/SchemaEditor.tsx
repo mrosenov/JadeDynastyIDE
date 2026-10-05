@@ -60,7 +60,9 @@ interface Props {
 }
 
 const INTEGER_KINDS = new Set<Kind>(["i8", "u8", "bool", "i16", "u16", "i32", "u32", "i64", "u64"]);
-const ROLES = ["", "path", "icon", "skill", "buff", "title", "money", "time", "duration", "duration_ms", "daytime"];
+const FLOAT_KINDS = new Set<Kind>(["f32", "f64"]);
+const INTEGER_ROLES = ["path", "icon", "skill", "buff", "title", "money", "time", "duration", "duration_ms", "daytime"];
+const ROLES = ["", ...INTEGER_ROLES, "probability"];
 const ROLE_LABEL: Record<string, string> = {
   "": "—",
   path: "path",
@@ -73,7 +75,11 @@ const ROLE_LABEL: Record<string, string> = {
   duration: "duration (seconds)",
   duration_ms: "duration (ms)",
   daytime: "time of day (seconds)",
+  probability: "probability (0–1 → %)",
 };
+
+const roleAllowed = (kind: Kind, role: string) => !role || (role === "probability" ? FLOAT_KINDS.has(kind) : INTEGER_KINDS.has(kind));
+const rolesForKind = (kind: Kind) => (FLOAT_KINDS.has(kind) ? ["", "probability"] : INTEGER_KINDS.has(kind) ? ["", ...INTEGER_ROLES] : []);
 
 const DEFAULT_HEADING_COLOR = "#5b8def";
 const headingStyle = (color: string) => (color ? ({ "--heading-color": color } as React.CSSProperties) : undefined);
@@ -127,13 +133,14 @@ function suggestGroupName(members: EditField[]): string {
 }
 
 /** The changes a type switch brings: members for structs, a length for
- *  strings and bytes, and no enum/role/refs for non-integers. */
+ *  strings and bytes, and only roles valid for the new scalar type. */
 function kindPatch(f: EditField, kind: Kind): Partial<EditField> {
   const p: Partial<EditField> = { kind };
   if (kind === "struct" && !f.children.length) p.children = [newField({ name: "value" })];
   if (kind !== "struct") p.color = "";
   if (kindInfo(kind).len && !(f.len >= 1)) p.len = kind === "bytes" ? 4 : 32;
-  if (!INTEGER_KINDS.has(kind)) Object.assign(p, { e: "", display: "", refs: [] });
+  if (!INTEGER_KINDS.has(kind)) Object.assign(p, { e: "", refs: [] });
+  if (!roleAllowed(kind, f.display)) p.display = "";
   return p;
 }
 
@@ -836,14 +843,15 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                       ))}
                     </select>
                   </label>
-                  <label title="Applies to integer fields only">
+                  <label title="Most roles apply to integer fields; probability applies to float fields">
                     Role
                     <select
                       className="cell"
                       value=""
                       onChange={(e) => {
                         const v = e.target.value;
-                        if (v) applyBulk((f) => (INTEGER_KINDS.has(f.kind) ? { display: v === "__none__" ? "" : v } : null), "bulk-role");
+                        if (v === "__none__") applyBulk((f) => (f.display ? { display: "" } : null), "bulk-role");
+                        else if (v) applyBulk((f) => (roleAllowed(f.kind, v) ? { display: v } : null), "bulk-role");
                       }}
                     >
                       <option value="">set…</option>
@@ -1121,7 +1129,7 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                         {onEditSets && <option value="__edit__">Edit enums &amp; masks…</option>}
                       </select>
                       )}
-                      {!integer ? (
+                      {!INTEGER_KINDS.has(f.kind) && !FLOAT_KINDS.has(f.kind) ? (
                         <span className="muted cell-static">—</span>
                       ) : (
                         <select
@@ -1129,7 +1137,7 @@ export function SchemaEditor({ summary, initialList, initialRow, intent, onEditS
                           value={f.display}
                           onChange={(e) => patch(f.uid, { display: e.target.value }, "display")}
                         >
-                          {ROLES.map((r) => (
+                          {rolesForKind(f.kind).map((r) => (
                             <option key={r} value={r}>
                               {ROLE_LABEL[r] ?? r}
                             </option>

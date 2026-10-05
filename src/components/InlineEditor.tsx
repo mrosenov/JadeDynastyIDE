@@ -3,6 +3,7 @@ import { Check, CircleAlert, Loader2, X } from "lucide-react";
 import { namedSet } from "../elements/api";
 import type { FieldNode, SetDetail } from "../elements/types";
 import { formatMoney, parseMoney } from "../elements/money";
+import { formatProbability, parseProbability } from "../elements/probability";
 
 interface Props {
   node: FieldNode;
@@ -44,7 +45,8 @@ export function InlineEditor({ node, onCommit, onCancel }: Props) {
     if (busy) return;
     // Money fields also take "12G 34S 56C" or "1 Gold 50 Silver".
     const money = node.display === "money" ? parseMoney(raw) : null;
-    const v = money !== null ? String(money) : raw;
+    const probability = node.display === "probability" ? parseProbability(raw) : null;
+    const v = money !== null ? String(money) : probability !== null ? String(probability) : raw;
     if (v === node.value) return onCancel();
     setBusy(true);
     setError(null);
@@ -111,8 +113,14 @@ export function InlineEditor({ node, onCommit, onCancel }: Props) {
             onKeyDown={onKey}
             spellCheck={false}
             aria-label={`New value of ${node.name}`}
-            placeholder={node.display === "money" ? "Copper, or 1G 2S 3C" : undefined}
-            title={node.display === "money" ? `Copper, or Gold / Silver / Copper like 1G 50S${Number.isFinite(Number(value)) ? ` · now ${formatMoney(Number(value))}` : ""}` : undefined}
+            placeholder={node.display === "money" ? "Copper, or 1G 2S 3C" : node.display === "probability" ? "0–1, or 25%" : undefined}
+            title={
+              node.display === "money"
+                ? `Copper, or Gold / Silver / Copper like 1G 50S${Number.isFinite(Number(value)) ? ` · now ${formatMoney(Number(value))}` : ""}`
+                : node.display === "probability"
+                  ? `A 0–1 probability, or a percentage like 25%${Number.isFinite(Number(value)) ? ` · now ${formatProbability(Number(value))}` : ""}`
+                  : undefined
+            }
           />
           <button className="icon-btn small ie-ok" onMouseDown={(e) => e.preventDefault()} onClick={() => commit(value)} title="Save (Enter)" disabled={busy}>
             {busy ? <Loader2 size={13} className="spin" /> : <Check size={14} />}
