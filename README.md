@@ -41,7 +41,8 @@ The schema editor can give either heading an optional colour; the colour stays o
 ## Settings and the game client
 
 Settings (gear icon, top right) take the game client folder: the client root or its `element`
-folder. JD IDE then:
+folder. The Appearance setting follows the Windows theme by default or forces the light or dark
+theme. The discovered data-file and package lists stay collapsed until clicked. JD IDE then:
 
 - lists the client's data files (`element\data\*.data`) and opens `elements.data` from there.
   Other kinds (tasks, gshop, npcgen, …) are listed for later versions. It can also open
@@ -316,13 +317,16 @@ and record panes; it keeps its results while closed.
 
 - **Conditions** on named fields: `= ≠ < ≤ > ≥`, *is one of* / *is none of* (`7, 8, 15`),
   *has flags* / *lacks flags*, *contains*, *starts with*, *ends with*, *is empty*. Match all
-  conditions (lists without one of the fields are skipped) or any. Field names are suggested
-  from the open file; a dotted path (`addons.id`) picks a struct member. Fields inside arrays
+  conditions (lists without one of the fields are skipped) or any. Pick a field from the
+  searchable field menu, which follows the selected list scope; a dotted path (`addons.id`)
+  picks a struct member. Fields inside arrays
   match when any element does (for ≠, *is none of* and *lacks flags*: when every element does).
   Values can be numbers, `0x` hex, or the labels of the field's enum or mask
   (`Cannot be traded | Quest item`).
-- **Value** in any field: an integer, float, text (case-insensitive unless asked) or hex bytes,
-  optionally in bytes no layout describes.
+- **All fields**: choose one list (including the list currently open) or all lists, then search
+  every decoded field of every record. Automatic mode treats the entered value as text and, when
+  possible, as a number; integer, float, text and hex-byte modes are also available. Numeric modes
+  can optionally search bytes no layout describes.
 
 Results are grouped by list and show the matching field. Clicking one opens the record with
 that field selected (Ctrl+click: new tab). *Copy IDs* copies the IDs of the picked results (or all shown), one per line.

@@ -141,8 +141,8 @@ async fn search_records(query: elements::search::Query, state: State<'_, AppStat
 }
 
 #[tauri::command]
-async fn search_field_names(state: State<'_, AppState>) -> Result<Vec<elements::search::FieldName>, String> {
-    state.with_document(|doc| Ok(doc.field_names()))
+async fn search_field_names(list: Option<usize>, state: State<'_, AppState>) -> Result<Vec<elements::search::FieldName>, String> {
+    state.with_document(|doc| Ok(doc.field_names(list)))
 }
 
 #[tauri::command]

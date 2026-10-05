@@ -24,6 +24,7 @@ const MATCHES_PER_RECORD: usize = 5;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum ValueKind {
+    Auto,
     Int,
     Float,
     Text,
@@ -655,8 +656,8 @@ fn find(hay: &[u8], needle: &[u8]) -> Option<usize> {
 
 struct Needle {
     kind: ValueKind,
-    int: i64,
-    float: f64,
+    int: Option<i64>,
+    float: Option<f64>,
     text: String,
     case_sensitive: bool,
     /// The value's bytes (int32 / float32 / hex pattern).
@@ -667,15 +668,25 @@ struct Needle {
 impl Needle {
     fn parse(value: &str, kind: ValueKind, case_sensitive: bool) -> Result<Self, String> {
         let value = value.trim();
-        let mut n = Needle { kind, int: 0, float: 0.0, text: String::new(), case_sensitive, bytes: vec![], shown: value.into() };
+        let mut n = Needle { kind, int: None, float: None, text: String::new(), case_sensitive, bytes: vec![], shown: value.into() };
         match kind {
+            ValueKind::Auto => {
+                if value.is_empty() {
+                    return Err("Enter a value to search for.".into());
+                }
+                n.int = parse_int(value);
+                n.float = value.parse().ok();
+                n.text = if case_sensitive { value.into() } else { value.to_lowercase() };
+            }
             ValueKind::Int => {
-                n.int = parse_int(value).ok_or("Enter a whole number, e.g. 1291 or 0x50B.")?;
-                n.bytes = (n.int as u32).to_le_bytes().to_vec();
+                let int = parse_int(value).ok_or("Enter a whole number, e.g. 1291 or 0x50B.")?;
+                n.int = Some(int);
+                n.bytes = (int as u32).to_le_bytes().to_vec();
             }
             ValueKind::Float => {
-                n.float = value.parse().map_err(|_| "Enter a number, e.g. 1.5.")?;
-                n.bytes = (n.float as f32).to_le_bytes().to_vec();
+                let float = value.parse().map_err(|_| "Enter a number, e.g. 1.5.")?;
+                n.float = Some(float);
+                n.bytes = (float as f32).to_le_bytes().to_vec();
             }
             ValueKind::Text => {
                 if value.is_empty() {
@@ -697,9 +708,9 @@ impl Needle {
 
     fn matches(&self, v: &Val) -> bool {
         match (self.kind, v) {
-            (ValueKind::Int, Val::Int(x)) => *x == self.int || (*x as u32 as i64) == self.int,
-            (ValueKind::Float, Val::Float(x)) => (*x as f32) == (self.float as f32),
-            (ValueKind::Text, Val::Text(s)) => {
+            (ValueKind::Auto | ValueKind::Int, Val::Int(x)) => self.int.is_some_and(|int| *x == int || (*x as u32 as i64) == int),
+            (ValueKind::Auto | ValueKind::Float, Val::Float(x)) => self.float.is_some_and(|float| (*x as f32) == (float as f32)),
+            (ValueKind::Auto | ValueKind::Text, Val::Text(s)) => {
                 if self.case_sensitive {
                     s.contains(&self.text)
                 } else {

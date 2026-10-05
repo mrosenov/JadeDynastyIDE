@@ -198,9 +198,12 @@ export interface ImportCandidate {
 
 // ---------------------------------------------------------------- settings
 
+export type Theme = "system" | "light" | "dark";
+
 export interface Settings {
   clientDir: string | null;
   openOnStart: boolean;
+  theme: Theme;
 }
 
 export interface DataFile {
@@ -397,7 +400,7 @@ export type SearchQuery =
   | {
       mode: "value";
       value: string;
-      kind: "int" | "float" | "text" | "hex";
+      kind: "auto" | "int" | "float" | "text" | "hex";
       list: number | null;
       includeUnknown: boolean;
       caseSensitive: boolean;

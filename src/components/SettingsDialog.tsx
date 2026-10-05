@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { CircleAlert, CircleCheck, Database, FolderSearch, Loader2, Package, Settings as SettingsIcon, X } from "lucide-react";
+import { ChevronRight, CircleAlert, CircleCheck, Database, FolderSearch, Loader2, Monitor, Moon, Package, Settings as SettingsIcon, Sun, X } from "lucide-react";
 import { inspectClient, saveSettings } from "../elements/api";
-import type { ClientInfo, SettingsView } from "../elements/types";
+import type { ClientInfo, SettingsView, Theme } from "../elements/types";
 import { bytes } from "../elements/format";
+import { applyTheme } from "../theme";
 
 interface Props {
   view: SettingsView;
@@ -16,10 +17,21 @@ interface Props {
 export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
   const [dir, setDir] = useState(view.settings.clientDir ?? "");
   const [openOnStart, setOpenOnStart] = useState(view.settings.openOnStart);
+  const [theme, setTheme] = useState<Theme>(view.settings.theme);
   const [client, setClient] = useState<ClientInfo | null>(view.client);
   const [problem, setProblem] = useState<string | null>(view.clientError);
   const [checking, setChecking] = useState(false);
   const [saving, setSaving] = useState(false);
+  const keepPreviewedTheme = useRef(false);
+
+  // Preview theme choices immediately, but restore the saved choice when cancelled.
+  useEffect(() => applyTheme(theme), [theme]);
+  useEffect(
+    () => () => {
+      if (!keepPreviewedTheme.current) applyTheme(view.settings.theme);
+    },
+    [view.settings.theme],
+  );
 
   // Check the folder as it is typed or picked.
   useEffect(() => {
@@ -70,7 +82,9 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
   const save = async () => {
     setSaving(true);
     try {
-      onSaved(await saveSettings({ clientDir: dir.trim() || null, openOnStart }));
+      const next = await saveSettings({ clientDir: dir.trim() || null, openOnStart, theme });
+      keepPreviewedTheme.current = true;
+      onSaved(next);
       onClose();
     } catch (e) {
       setProblem(String(e));
@@ -79,7 +93,7 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
     }
   };
 
-  const changed = (view.settings.clientDir ?? "") !== dir.trim() || view.settings.openOnStart !== openOnStart;
+  const changed = (view.settings.clientDir ?? "") !== dir.trim() || view.settings.openOnStart !== openOnStart || view.settings.theme !== theme;
   const canSave = !saving && !checking && (!dir.trim() || client !== null);
 
   return (
@@ -95,6 +109,22 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
         </header>
 
         <div className="modal-body scroll">
+          <section className="settings-section">
+            <h4>Appearance</h4>
+            <div className="settings-theme" role="radiogroup" aria-label="Theme">
+              {([
+                ["system", Monitor, "System"],
+                ["light", Sun, "Light"],
+                ["dark", Moon, "Dark"],
+              ] as const).map(([value, Icon, label]) => (
+                <button type="button" role="radio" aria-checked={theme === value} className={theme === value ? "active" : ""} onClick={() => setTheme(value)} key={value}>
+                  <Icon size={15} /> {label}
+                </button>
+              ))}
+            </div>
+            <p className="muted small settings-theme-note">System follows the light or dark preference in Windows.</p>
+          </section>
+
           <section className="settings-section">
             <h4>Game client</h4>
             <p className="muted small">
@@ -147,47 +177,59 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
                   Open the client's elements.data when JD IDE starts
                 </label>
 
-                <h5>
-                  <Database size={14} /> Data files <span className="muted">{client.elementDir}\data</span>
-                </h5>
-                <div className="settings-table">
-                  {client.dataFiles.map((f) => (
-                    <div className="settings-file" key={f.path}>
-                      <span className="mono truncate">{f.name}</span>
-                      <span className="muted small">{f.kind}</span>
-                      <span className="muted small mono">{bytes(f.size)}</span>
-                      {f.supported ? (
-                        <button
-                          className="link"
-                          onClick={() => {
-                            onOpenFile(f.path);
-                            onClose();
-                          }}
-                        >
-                          Open
-                        </button>
-                      ) : (
-                        <span className="size-badge differs" title="Reading this kind of file is planned for a later version">
-                          later
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                <details className="settings-files">
+                  <summary>
+                    <ChevronRight size={14} className="settings-files-caret" />
+                    <Database size={14} />
+                    <b>Data files</b>
+                    <span className="settings-files-count">{client.dataFiles.length}</span>
+                    <span className="muted mono truncate">{client.elementDir}\data</span>
+                  </summary>
+                  <div className="settings-table">
+                    {client.dataFiles.map((f) => (
+                      <div className="settings-file" key={f.path}>
+                        <span className="mono truncate">{f.name}</span>
+                        <span className="muted small">{f.kind}</span>
+                        <span className="muted small mono">{bytes(f.size)}</span>
+                        {f.supported ? (
+                          <button
+                            className="link"
+                            onClick={() => {
+                              onOpenFile(f.path);
+                              onClose();
+                            }}
+                          >
+                            Open
+                          </button>
+                        ) : (
+                          <span className="size-badge differs" title="Reading this kind of file is planned for a later version">
+                            later
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </details>
 
-                <h5>
-                  <Package size={14} /> Packages <span className="muted">{client.elementDir}</span>
-                </h5>
-                <div className="settings-table">
-                  {client.packages.map((p) => (
-                    <div className="settings-file" key={p.path}>
-                      <span className="mono truncate">{p.name}</span>
-                      <span className="muted small">{p.parts > 1 ? `${p.parts} parts` : ""}</span>
-                      <span className="muted small mono">{bytes(p.size)}</span>
-                      <span />
-                    </div>
-                  ))}
-                </div>
+                <details className="settings-files">
+                  <summary>
+                    <ChevronRight size={14} className="settings-files-caret" />
+                    <Package size={14} />
+                    <b>Packages</b>
+                    <span className="settings-files-count">{client.packages.length}</span>
+                    <span className="muted mono truncate">{client.elementDir}</span>
+                  </summary>
+                  <div className="settings-table">
+                    {client.packages.map((p) => (
+                      <div className="settings-file" key={p.path}>
+                        <span className="mono truncate">{p.name}</span>
+                        <span className="muted small">{p.parts > 1 ? `${p.parts} parts` : ""}</span>
+                        <span className="muted small mono">{bytes(p.size)}</span>
+                        <span />
+                      </div>
+                    ))}
+                  </div>
+                </details>
               </>
             )}
           </section>

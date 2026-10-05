@@ -871,8 +871,11 @@ impl Document {
     }
 
     /// Field names of the file's lists, for search suggestions.
-    pub fn field_names(&self) -> Vec<search::FieldName> {
-        search::field_names((0..self.file.lists.len()).filter_map(|i| Some((self.def(i)?.1, self.file.lists[i].item_size))))
+    pub fn field_names(&self, list: Option<usize>) -> Vec<search::FieldName> {
+        match list {
+            Some(i) => search::field_names(self.file.lists.get(i).and_then(|list| Some((self.def(i)?.1, list.item_size))).into_iter()),
+            None => search::field_names((0..self.file.lists.len()).filter_map(|i| Some((self.def(i)?.1, self.file.lists[i].item_size)))),
+        }
     }
 
     /// Every NPC dialog, in file order.
@@ -1208,10 +1211,19 @@ mod tests {
         let name: String = row.name.chars().take(3).collect();
         let q = Query::Value { value: name.to_uppercase(), kind: ValueKind::Text, list: Some(3), include_unknown: false, case_sensitive: false };
         assert!(doc.search(&q).unwrap().hits.iter().any(|h| h.row == row.index));
+        // Automatic all-field search recognizes both text and numbers, and stays in the selected list.
+        let q = Query::Value { value: name.to_uppercase(), kind: ValueKind::Auto, list: Some(3), include_unknown: false, case_sensitive: false };
+        let r = doc.search(&q).unwrap();
+        assert_eq!(r.scanned_lists, 1);
+        assert!(r.hits.iter().all(|h| h.list == 3));
+        assert!(r.hits.iter().any(|h| h.row == row.index));
+        let q = Query::Value { value: row.id.to_string(), kind: ValueKind::Auto, list: Some(3), include_unknown: false, case_sensitive: false };
+        assert!(doc.search(&q).unwrap().hits.iter().any(|h| h.row == row.index && h.matches.iter().any(|m| m.field == "id")));
         // Bad values are reported.
         let q = Query::Conditions { conditions: vec![cond("require_level", Op::Lt, "abc")], match_all: true, list: None };
         assert!(doc.search(&q).is_err());
-        assert!(doc.field_names().iter().any(|f| f.name == "proc_type" && f.lists > 50));
+        assert!(doc.field_names(None).iter().any(|f| f.name == "proc_type" && f.lists > 50));
+        assert!(doc.field_names(Some(3)).iter().all(|f| f.lists == 1));
     }
 
     #[test]

@@ -48,7 +48,7 @@ export const listRecords = (list: number) => invoke<RecordRow[]>("list_records",
 export const findRecords = (query: string) => invoke<FindResult>("find_records", { query });
 
 export const searchRecords = (query: SearchQuery) => invoke<SearchReport>("search_records", { query });
-export const searchFieldNames = () => invoke<SearchFieldName[]>("search_field_names");
+export const searchFieldNames = (list: number | null) => invoke<SearchFieldName[]>("search_field_names", { list });
 
 /** Scans the whole file for problems (see the Problems panel). */
 export const listProblems = () => invoke<ProblemReport>("list_problems");

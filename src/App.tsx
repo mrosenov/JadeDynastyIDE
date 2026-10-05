@@ -27,6 +27,7 @@ import { SaveDialog } from "./components/SaveDialog";
 import { UnsavedDialog } from "./components/UnsavedDialog";
 import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
+import { applyTheme } from "./theme";
 import "./App.css";
 import logo from "./assets/logo.png";
 import {
@@ -268,6 +269,7 @@ export default function App() {
     started.current = true;
     getSettings()
       .then((view) => {
+        applyTheme(view.settings.theme);
         setSettingsView(view);
         const elements = view.client?.elementsPath;
         if (view.settings.openOnStart && elements) loadFile(elements);
@@ -277,6 +279,7 @@ export default function App() {
 
   // New client settings: reload rows and the record so icons and paths appear.
   const onSettingsSaved = (view: SettingsView) => {
+    applyTheme(view.settings.theme);
     setSettingsView(view);
     rowsCache.current.clear();
     setSummary((s) => (s ? { ...s } : s));

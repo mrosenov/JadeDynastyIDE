@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, ChevronRight, CircleAlert, Copy, Hash, Layers, ListFilter, Loader2, Plus, Search, Trash2, X } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, CircleAlert, Copy, Hash, Layers, ListFilter, Loader2, Plus, Search, Trash2, X } from "lucide-react";
 import { namedSet, searchFieldNames, searchRecords } from "../elements/api";
 import type { ListSummary, SearchCondition, SearchFieldName, SearchHit, SearchOp, SearchQuery, SearchReport } from "../elements/types";
 import { count } from "../elements/format";
@@ -20,7 +20,7 @@ interface Props {
 }
 
 type Mode = "conditions" | "value";
-type ValueKind = "int" | "float" | "text" | "hex";
+type ValueKind = "auto" | "int" | "float" | "text" | "hex";
 
 const OPS: { op: SearchOp; label: string; kinds: SearchFieldName["kind"][]; value: boolean }[] = [
   { op: "eq", label: "=", kinds: ["int", "float", "text", "bytes"], value: true },
@@ -41,6 +41,7 @@ const OPS: { op: SearchOp; label: string; kinds: SearchFieldName["kind"][]; valu
 ];
 
 const PLACEHOLDER: Record<ValueKind, string> = {
+  auto: "e.g. Sword, 1291 or 1.5",
   int: "e.g. 1291 or 0x50B",
   float: "e.g. 1.5",
   text: "e.g. Sword",
@@ -49,6 +50,116 @@ const PLACEHOLDER: Record<ValueKind, string> = {
 
 const newCondition = (): SearchCondition => ({ field: "", op: "eq", value: "" });
 
+interface FieldPickerProps {
+  value: string;
+  names: SearchFieldName[];
+  invalid: boolean;
+  autoFocus?: boolean;
+  onChange: (value: string) => void;
+}
+
+/** A compact searchable field menu. Native datalists behave inconsistently in WebView2. */
+function FieldPicker({ value, names, invalid, autoFocus, onChange }: FieldPickerProps) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const search = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocus) trigger.current?.focus();
+  }, [autoFocus]);
+
+  useEffect(() => {
+    if (!open) return;
+    search.current?.focus();
+    const outside = (event: PointerEvent) => {
+      if (!root.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", outside);
+    return () => document.removeEventListener("pointerdown", outside);
+  }, [open]);
+
+  const filtered = useMemo(() => {
+    const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    return names
+      .filter((name) => words.every((word) => name.name.includes(word) || name.kind.includes(word) || name.set?.toLowerCase().includes(word)))
+      .slice(0, 120);
+  }, [names, query]);
+
+  const choose = (name: string) => {
+    onChange(name);
+    setOpen(false);
+    setQuery("");
+    trigger.current?.focus();
+  };
+
+  return (
+    <div
+      className="sf-field-picker"
+      ref={root}
+      onKeyDown={(event) => {
+        if (open && event.key === "Escape") {
+          event.preventDefault();
+          event.stopPropagation();
+          setOpen(false);
+          trigger.current?.focus();
+        }
+      }}
+    >
+      <button
+        ref={trigger}
+        type="button"
+        className={"sf-control sf-field-trigger" + (invalid ? " invalid" : "")}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => {
+          setQuery("");
+          setOpen((shown) => !shown);
+        }}
+      >
+        <span className={value ? "mono" : "muted"}>{value || "Choose a field…"}</span>
+        <ChevronDown size={14} />
+      </button>
+      {open && (
+        <div className="sf-field-menu">
+          <label className="sf-field-search">
+            <Search size={13} />
+            <input
+              ref={search}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={(event) => {
+                event.stopPropagation();
+                if (event.key === "Enter" && filtered[0]) {
+                  event.preventDefault();
+                  choose(filtered[0].name);
+                }
+              }}
+              placeholder="Search fields…"
+              spellCheck={false}
+            />
+          </label>
+          <div className="sf-field-options" role="listbox" aria-label="Fields">
+            {filtered.map((name) => (
+              <button key={name.name} type="button" role="option" aria-selected={name.name === value} className={name.name === value ? "selected" : ""} onClick={() => choose(name.name)}>
+                <span className="mono truncate">{name.name}</span>
+                <span className="sf-field-option-meta">
+                  <span className={`sf-kind ${name.kind}`}>{name.kind}</span>
+                  {name.set && <span className="sf-set truncate">{name.set}</span>}
+                  <span className="muted">{name.lists} list{name.lists === 1 ? "" : "s"}</span>
+                </span>
+              </button>
+            ))}
+            {!filtered.length && <div className="sf-field-empty">No matching fields</div>}
+          </div>
+          {names.length > filtered.length && <div className="sf-field-menu-note">Showing {filtered.length} of {names.length} fields · type to narrow the list</div>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** Searches the whole file by conditions on fields, or by a value in any field. */
 export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose, onEdited }: Props) {
   const [mode, setMode] = useState<Mode>("conditions");
@@ -56,7 +167,7 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose, onEd
   const [conditions, setConditions] = useState<SearchCondition[]>([newCondition()]);
   const [matchAll, setMatchAll] = useState(true);
   const [value, setValue] = useState("");
-  const [kind, setKind] = useState<ValueKind>("int");
+  const [kind, setKind] = useState<ValueKind>("auto");
   const [includeUnknown, setIncludeUnknown] = useState(false);
   const [caseSensitive, setCaseSensitive] = useState(false);
   const [report, setReport] = useState<SearchReport | null>(null);
@@ -82,12 +193,20 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose, onEd
   const [collapsed, setCollapsed] = useState<Set<number>>(new Set());
   const [copied, setCopied] = useState(false);
   const [active, setActive] = useState<string | null>(null);
-  const firstField = useRef<HTMLInputElement>(null);
-
   useEffect(() => {
-    searchFieldNames().then(setNames).catch(() => setNames([]));
-    firstField.current?.focus();
-  }, []);
+    let current = true;
+    setNames([]);
+    searchFieldNames(scope)
+      .then((next) => {
+        if (current) setNames(next);
+      })
+      .catch(() => {
+        if (current) setNames([]);
+      });
+    return () => {
+      current = false;
+    };
+  }, [scope]);
 
   const byName = useMemo(() => new Map(names.map((n) => [n.name, n])), [names]);
   const fieldInfo = (field: string) => byName.get(field.trim().toLowerCase());
@@ -177,7 +296,7 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose, onEd
             <ListFilter size={14} /> Conditions on fields
           </button>
           <button role="tab" aria-selected={mode === "value"} className={mode === "value" ? "active" : ""} onClick={() => setMode("value")}>
-            <Hash size={14} /> Value in any field
+            <Hash size={14} /> All fields
           </button>
         </div>
 
@@ -188,7 +307,7 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose, onEd
             {currentList !== null && currentList >= 0 && <option value={currentList}>This list: {lists[currentList]?.name}</option>}
             <optgroup label="One list">
               {lists
-                .filter((l) => l.count > 0)
+                .filter((l) => l.count > 0 && l.index !== currentList)
                 .map((l) => (
                   <option key={l.index} value={l.index}>
                     {l.index} · {l.name}
@@ -200,14 +319,6 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose, onEd
 
         {mode === "conditions" ? (
           <div className="sf-conditions">
-            <datalist id="search-fields">
-              {names.slice(0, 2000).map((n) => (
-                <option key={n.name} value={n.name}>
-                  {n.kind}
-                  {n.set ? ` · ${n.set}` : ""} · {n.lists} list{n.lists === 1 ? "" : "s"}
-                </option>
-              ))}
-            </datalist>
             <div className="sf-cond-head">
               <span />
               <span className="sf-label">Field</span>
@@ -225,19 +336,17 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose, onEd
                 <div className="sf-cond" key={i}>
                   <span className={"sf-join" + (i === 0 ? " first" : "")}>{i === 0 ? "Where" : matchAll ? "And" : "Or"}</span>
                   <div className="sf-field-cell">
-                    <input
-                      ref={i === 0 ? firstField : undefined}
-                      className={"sf-control mono" + (unknownField ? " invalid" : "")}
-                      list="search-fields"
-                      placeholder="e.g. proc_type"
+                    <FieldPicker
                       value={c.field}
-                      onChange={(e) => {
-                        const next = fieldInfo(e.target.value);
+                      names={names}
+                      invalid={unknownField}
+                      autoFocus={i === 0}
+                      onChange={(field) => {
+                        const next = fieldInfo(field);
                         // Keep the operator if it suits the new field.
                         const fits = !next || OPS.find((o) => o.op === c.op)?.kinds.includes(next.kind);
-                        update(i, { field: e.target.value, ...(fits ? {} : { op: next!.kind === "text" ? "contains" : "eq" }) });
+                        update(i, { field, ...(fits ? {} : { op: next!.kind === "text" ? "contains" : "eq" }) });
                       }}
-                      spellCheck={false}
                     />
                     {info ? (
                       <span className="sf-hint" title={`${info.kind}${info.set ? ` · values named by ${info.set}` : ""} · in ${info.lists} list${info.lists === 1 ? "" : "s"}`}>
@@ -245,7 +354,7 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose, onEd
                         {info.set && <span className="sf-set truncate">{info.set}</span>}
                       </span>
                     ) : unknownField ? (
-                      <span className="sf-hint danger">No list of this file has this field</span>
+                      <span className="sf-hint danger">{scope === null ? "No list of this file has this field" : "The selected list does not have this field"}</span>
                     ) : null}
                   </div>
                   <select className="sf-control" value={c.op} onChange={(e) => update(i, { op: e.target.value as SearchOp })}>
@@ -318,10 +427,14 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose, onEd
           </div>
         ) : (
           <>
+            <div className="sf-all-fields-note">
+              <Search size={14} /> Search every decoded field in {scope === null ? "all lists" : `list ${scope} · ${lists[scope]?.name ?? "Unknown"}`}.
+            </div>
             <div className="sf-value">
               <label className="sf-field">
-                <span className="sf-label">Type</span>
+                <span className="sf-label">Treat value as</span>
                 <select className="sf-control" value={kind} onChange={(e) => setKind(e.target.value as ValueKind)}>
+                  <option value="auto">Text or number (automatic)</option>
                   <option value="int">Integer</option>
                   <option value="float">Float</option>
                   <option value="text">Text</option>
@@ -333,9 +446,9 @@ export function AdvancedSearch({ lists, currentList, icon, onOpen, onClose, onEd
                 <input className="sf-control" autoFocus placeholder={PLACEHOLDER[kind]} value={value} onChange={(e) => setValue(e.target.value)} spellCheck={false} />
               </label>
             </div>
-            {(kind === "text" || kind === "int" || kind === "float") && (
+            {(kind === "auto" || kind === "text" || kind === "int" || kind === "float") && (
               <div className="search-row">
-                {kind === "text" && (
+                {(kind === "auto" || kind === "text") && (
                   <label className="check">
                     <input type="checkbox" checked={caseSensitive} onChange={(e) => setCaseSensitive(e.target.checked)} /> Match case
                   </label>

@@ -4,6 +4,15 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Theme {
+    #[default]
+    System,
+    Light,
+    Dark,
+}
+
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct Settings {
@@ -11,6 +20,8 @@ pub struct Settings {
     pub client_dir: Option<String>,
     /// Open the client's elements.data when the app starts.
     pub open_on_start: bool,
+    /// Application colours: follow the operating system, or force light/dark.
+    pub theme: Theme,
 }
 
 impl Settings {
@@ -47,12 +58,12 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("jdide-settings-{}", std::process::id()));
         let path = dir.join("settings.json");
         assert_eq!(Settings::load(&path), Settings::default());
-        let s = Settings { client_dir: Some("E:/Games/ForsakenJD".into()), open_on_start: true };
+        let s = Settings { client_dir: Some("E:/Games/ForsakenJD".into()), open_on_start: true, theme: Theme::Dark };
         s.save(&path).unwrap();
         assert_eq!(Settings::load(&path), s);
         // Unknown or missing keys fall back to defaults.
         std::fs::write(&path, r#"{ "clientDir": "X", "futureOption": 1 }"#).unwrap();
-        assert_eq!(Settings::load(&path), Settings { client_dir: Some("X".into()), open_on_start: false });
+        assert_eq!(Settings::load(&path), Settings { client_dir: Some("X".into()), open_on_start: false, theme: Theme::System });
         let _ = std::fs::remove_dir_all(&dir);
     }
 }
