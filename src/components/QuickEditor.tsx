@@ -101,7 +101,7 @@ export function QuickEditor({ fields, onApply, onClear }: Props) {
       <div className="quick-editor-head">
         <strong>Quick edit</strong>
         <span className="muted small" title={fields.length ? fields.map(({ node }) => `${node.name} = ${node.value}`).join("\n") : undefined}>
-          {fields.length ? `${fields.length} number field${fields.length === 1 ? "" : "s"} selected` : "Select number fields using their checkboxes"}
+          {fields.length ? `${fields.length} number field${fields.length === 1 ? "" : "s"} selected` : "Click a number field, or use the checkboxes"}
         </span>
         <span className="spacer" />
         {fields.length > 0 && (

@@ -153,6 +153,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
     setSelected(path);
     setTextClosed(false);
     const node = nodeAt(detail.nodes, path);
+    setQuickSelected(node && isNumericField(node) ? new Set([path]) : new Set());
     setReadOffset(node && isUndefinedNode(node) ? node.off : null);
   };
 
