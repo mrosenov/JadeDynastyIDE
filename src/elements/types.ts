@@ -286,6 +286,50 @@ export interface SettingsView {
   iconGeneration: number;
 }
 
+// ---------------------------------------------------------------- path.data
+
+export interface PathDataRow {
+  id: number;
+  path: string;
+}
+
+export interface PathDataFile {
+  path: string;
+  size: number;
+  token: string;
+  rows: PathDataRow[];
+}
+
+export interface PathDataSaveRequest {
+  openedPath: string;
+  targetPath: string;
+  token: string;
+  rows: PathDataRow[];
+  backup: boolean;
+  replaceChanged: boolean;
+}
+
+export interface PathDataSaveReport {
+  path: string;
+  size: number;
+  rows: number;
+  token: string;
+  backup?: string;
+  siblingElements?: string;
+  clientReloaded: boolean;
+}
+
+export interface PathDataJsonReport {
+  path: string;
+  rows: number;
+}
+
+export interface PathDataJsonImport {
+  rows: PathDataRow[];
+  sourcePath?: string;
+  exportedAt?: string;
+}
+
 // ---------------------------------------------------------------- enums and masks
 
 export type SetKind = "enum" | "mask";

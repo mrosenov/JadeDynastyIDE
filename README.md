@@ -3,7 +3,8 @@
 Desktop editor for Jade Dynasty (Zhu Xian) data files, built with Tauri 2
 (Rust backend, React + TypeScript UI).
 
-Reads, edits and saves `elements.data` across versions.
+Reads, edits and saves `elements.data` across versions, with a separate editor for the
+client resource table in `path.data`.
 
 ## How a file is read
 
@@ -91,6 +92,34 @@ OpenAI-compatible `/chat/completions` endpoint. The key is sent only to that con
 continuation parts). `dds.rs` decodes DXT1/3/5 and uncompressed DDS, one icon's blocks at a
 time. Icons are served to the UI as PNGs through the `jdicon://` protocol. Path IDs only
 match when `elements.data` comes from the same client as `path.data`.
+
+## path.data editor
+
+The folder-tree icon in the activity bar opens `path.data` as a separate data workspace. If
+Settings has a game client folder, its `element\data\path.data` opens automatically. **Open…**
+can load a different client or server copy without changing the configured client.
+
+The table searches by ID or path and edits both values inline. **Add path** chooses one above
+the highest current ID; IDs may then be entered manually. Rows are paged 200 at a time, with
+first/last controls and a page-number box for direct jumps. Delete
+opens a confirmation dialog with the affected ID and path, and undo/redo covers field changes,
+additions and removals. Saving validates the
+whole table before writing: ID zero, duplicate IDs, duplicate paths, empty paths, characters
+GBK cannot store and paths over the client's safe 255-byte limit are rejected. Rows are written
+in ascending ID order like the official exporter. Save uses a temporary file, notices outside
+changes and can keep a timestamped backup.
+
+**Export JSON…** writes the complete table with its source path, JSON format version and export
+time. **Import JSON…** validates the complete input, previews how many rows will be added,
+changed or removed, then replaces the open table as one undoable edit. JD IDE exports and plain
+arrays of `{ "id": number, "path": string }` rows are accepted.
+
+The binary format is `u32 signature (0x504D4944)`, `u32 count`, then `count × { u32 id, u32 byte length,
+GBK path bytes }`. It has no version, timestamp, terminators or trailing section. Because the
+client includes the complete `path.data` in the `elements.data` checksum, save the matching
+`elements.data` again after changing a path table. The editor repeats this reminder after save
+when it finds `elements.data` beside the target. The binary file has no timestamp field; Windows
+updates its file-modified time on save. The time stored in a JSON export is metadata only.
 
 ## Referenced by
 
@@ -253,8 +282,8 @@ A tool panel takes the place of the list and record panes; the shortcuts toggle 
 the elements.data entry of the bar on the far left goes back to the lists. Tools keep their state
 (results, scans) while hidden. After a scan, the status bar shows the problem counts.
 
-The bar on the far left lists the game data files: elements.data now, others (tasks.data,
-gshop.data, …) later.
+The bar on the far left switches between the `elements.data` and `path.data` editors. Other
+files (tasks.data, gshop.data, …) can get their own workspace later.
 
 ## Compare files
 

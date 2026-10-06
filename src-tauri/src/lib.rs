@@ -1,5 +1,6 @@
 mod client;
 mod elements;
+mod path_data;
 mod settings;
 
 use std::path::PathBuf;
@@ -123,6 +124,33 @@ async fn open_elements(path: String, state: State<'_, AppState>) -> Result<FileS
     let summary = doc.summary();
     *state.document.lock().map_err(|_| "State lock poisoned")? = Some(doc);
     Ok(summary)
+}
+
+#[tauri::command]
+async fn open_path_data(path: String) -> Result<path_data::FileView, String> {
+    tauri::async_runtime::spawn_blocking(move || path_data::open(path)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn save_path_data(request: path_data::SaveRequest, state: State<'_, AppState>) -> Result<path_data::SaveReport, String> {
+    let client_path = state.resources().map(|resources| resources.path_data_file());
+    let mut report = tauri::async_runtime::spawn_blocking(move || path_data::save(request)).await.map_err(|error| error.to_string())??;
+    if client_path.as_deref().is_some_and(|path| path_data::same_path(path, std::path::Path::new(&report.path))) {
+        let settings = state.settings.lock().map_err(|_| "State lock poisoned")?.clone();
+        state.apply_client(&settings);
+        report.client_reloaded = true;
+    }
+    Ok(report)
+}
+
+#[tauri::command]
+async fn export_path_data_json(path: String, source_path: String, rows: Vec<path_data::Row>) -> Result<path_data::JsonReport, String> {
+    tauri::async_runtime::spawn_blocking(move || path_data::export_json(path, source_path, rows)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn import_path_data_json(path: String) -> Result<path_data::JsonImport, String> {
+    tauri::async_runtime::spawn_blocking(move || path_data::import_json(path)).await.map_err(|error| error.to_string())?
 }
 
 #[tauri::command]
@@ -720,6 +748,10 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             open_elements,
+            open_path_data,
+            save_path_data,
+            export_path_data_json,
+            import_path_data_json,
             list_records,
             get_record,
             referenced_by,

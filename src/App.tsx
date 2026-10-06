@@ -26,6 +26,7 @@ import { FindPalette } from "./components/FindPalette";
 import { DialogViewer } from "./components/DialogViewer";
 import { SaveDialog } from "./components/SaveDialog";
 import { UnsavedDialog } from "./components/UnsavedDialog";
+import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } from "./components/PathDataEditor";
 import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import { applyTheme } from "./theme";
@@ -40,6 +41,7 @@ import {
   Download,
   FileUp,
   FileStack,
+  FolderTree,
   FolderOpen,
   Gauge,
   Copy,
@@ -65,6 +67,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
+type DataWorkspace = "elements" | "paths";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -145,6 +148,13 @@ function parseLabel(summary: FileSummary): { text: string; tone: "ok" | "warn" |
 }
 
 export default function App() {
+  const [workspace, setWorkspace] = useState<DataWorkspace>("elements");
+  const workspaceRef = useRef(workspace);
+  workspaceRef.current = workspace;
+  const pathEditor = useRef<PathDataEditorHandle>(null);
+  const [pathEditorState, setPathEditorState] = useState<PathDataEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null });
+  const pathEditorStateRef = useRef(pathEditorState);
+  pathEditorStateRef.current = pathEditorState;
   const [summary, setSummary] = useState<FileSummary | null>(null);
   const [fileKey, setFileKey] = useState(0);
   const [loading, setLoading] = useState<string | null>(null);
@@ -258,6 +268,10 @@ export default function App() {
   useEffect(() => {
     const win = getCurrentWindow();
     const unlisten = win.onCloseRequested((event) => {
+      if (pathEditorStateRef.current.dirty && !window.confirm("path.data has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
       if (editCountOf(editsRef.current) === 0) return;
       event.preventDefault();
       setUnsaved({ action: "close JD IDE", proceed: () => void win.destroy() });
@@ -322,7 +336,10 @@ export default function App() {
     window.addEventListener("keydown", onKey);
     const unlisten = getCurrentWebview().onDragDropEvent((event) => {
       if (document.querySelector('.import-records-dialog')) return;
-      if (event.payload.type === "drop" && event.payload.paths.length) loadFile(event.payload.paths[0]);
+      if (event.payload.type === "drop" && event.payload.paths.length) {
+        if (workspaceRef.current === "paths") pathEditor.current?.openPath(event.payload.paths[0]);
+        else loadFile(event.payload.paths[0]);
+      }
     });
     return () => {
       window.removeEventListener("keydown", onKey);
@@ -663,7 +680,7 @@ export default function App() {
     ...(problemCounts?.warnings ? [{ text: String(problemCounts.warnings), tone: "warning" as const }] : []),
   ];
   const noFile = summary ? undefined : "Open a file first";
-  const menus: Menu[] = [
+  const elementMenus: Menu[] = [
     {
       label: "File",
       accessKey: "f",
@@ -757,6 +774,57 @@ export default function App() {
       ],
     },
   ];
+  const menus: Menu[] = workspace === "paths" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open path.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => pathEditor.current?.choose() },
+        { label: "Save", icon: Save, shortcut: "Ctrl+S", onSelect: () => pathEditor.current?.save(), disabled: !pathEditorState.loaded || !pathEditorState.dirty },
+        { label: "Save as…", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: () => pathEditor.current?.saveAs(), disabled: !pathEditorState.loaded },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => pathEditor.current?.undo(), disabled: !pathEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => pathEditor.current?.redo(), disabled: !pathEditorState.canRedo },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        { label: "Export JSON…", icon: Download, onSelect: () => pathEditor.current?.exportJson(), disabled: !pathEditorState.loaded },
+        { label: "Import JSON…", icon: FileUp, onSelect: () => pathEditor.current?.importJson(), disabled: !pathEditorState.loaded },
+      ],
+    },
+  ] : elementMenus;
+  const switchWorkspace = (next: DataWorkspace) => {
+    if (next === workspace) return;
+    if (workspace === "paths" && pathEditorState.dirty) {
+      if (!window.confirm("Leave the path.data editor and discard its unsaved changes?")) return;
+      setPathEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
+    }
+    setWorkspace(next);
+  };
+  const activityBar = (
+    <nav className="activity-bar" aria-label="Data files">
+      <button className={"activity" + (workspace === "elements" ? " active" : "")} onClick={() => workspace === "elements" ? setPanel("lists") : switchWorkspace("elements")} title="elements.data editor" aria-label="elements.data">
+        <Database size={19} />
+      </button>
+      <button className={"activity" + (workspace === "paths" ? " active" : "")} onClick={() => switchWorkspace("paths")} title="path.data editor" aria-label="path.data">
+        <FolderTree size={19} />
+        {pathEditorState.dirty && <span className="activity-dirty" />}
+      </button>
+      <span className="activity-soon" title="More game data files (tasks.data, gshop.data, …) will get their own entry here">
+        <FileStack size={17} />
+      </span>
+    </nav>
+  );
   const list = summary && listIndex !== null && listIndex >= 0 ? summary.lists[listIndex] : summary && showingDialogs ? dialogsList(summary) : null;
   const row = rows && recordIndex !== null ? (rows[recordIndex] ?? null) : null;
 
@@ -768,7 +836,7 @@ export default function App() {
           JD IDE
         </div>
         <MenuBar menus={menus} />
-        {summary && (
+        {workspace === "elements" && summary && (
           <div className="file-chip" title={summary.path}>
             <span className="truncate">{fileName(summary.path)}</span>
             {editCount > 0 && (
@@ -787,7 +855,7 @@ export default function App() {
             })()}
           </div>
         )}
-        {summary && (
+        {workspace === "elements" && summary && (
           <div className="find-bar">
             <button className="find-trigger" onClick={() => setFindOpen(true)} title="Find a record by ID or name in every list (Ctrl+G)">
               <Search size={14} />
@@ -816,14 +884,14 @@ export default function App() {
             <Save size={13} /> {savedNote}
           </span>
         )}
-        <button
+        {workspace === "elements" && <button
           className={"btn" + (editorOpen ? " active" : "")}
           onClick={() => (editorOpen ? closeEditor(listIndex ?? 0) : setEditorOpen(true))}
           disabled={!summary || !summary.lists.length}
           title={summary ? "Write your own schema for this file's lists" : "Open a file to edit its schema"}
         >
           <Braces size={15} /> Schema editor
-        </button>
+        </button>}
         <button
           className={"icon-btn topbar-settings" + (settingsOpen ? " active" : "")}
           onClick={() => setSettingsOpen(true)}
@@ -901,7 +969,10 @@ export default function App() {
         <SettingsDialog
           view={settingsView}
           onSaved={onSettingsSaved}
-          onOpenFile={loadFile}
+          onOpenFile={(path) => {
+            setWorkspace("elements");
+            void loadFile(path);
+          }}
           onClose={() => setSettingsOpen(false)}
         />
       )}
@@ -915,7 +986,18 @@ export default function App() {
         </div>
       )}
 
-      {summary && editorOpen ? (
+      {workspace === "paths" ? (
+        <main className="workspace path-data-workspace">
+          {activityBar}
+          <PathDataEditor
+            ref={pathEditor}
+            active
+            defaultPath={pathEditorState.path ?? (settingsView?.client?.hasPathData ? `${settingsView.client.elementDir}\\data\\path.data` : null)}
+            onStateChange={setPathEditorState}
+            onClientReloaded={() => getSettings().then(onSettingsSaved).catch((problem) => setError(String(problem)))}
+          />
+        </main>
+      ) : summary && editorOpen ? (
         <main className="editor-main">
           <SchemaEditor
             summary={summary}
@@ -931,19 +1013,7 @@ export default function App() {
         </main>
       ) : summary ? (
         <main className={"workspace" + (panel !== "lists" ? " searching" : "")}>
-          <nav className="activity-bar" aria-label="Data files">
-            <button
-              className={"activity" + (panel === "lists" ? " active" : " current")}
-              onClick={() => setPanel("lists")}
-              title={`elements.data: lists and records${panel !== "lists" ? " (back from the tool)" : ""}`}
-              aria-label="elements.data"
-            >
-              <Database size={19} />
-            </button>
-            <span className="activity-soon" title="More game data files (tasks.data, gshop.data, …) will get their own entry here">
-              <FileStack size={17} />
-            </span>
-          </nav>
+          {activityBar}
           {mounted.has("search") && (
           <div className="search-slot" hidden={panel !== "search"}>
             <AdvancedSearch
@@ -1092,8 +1162,9 @@ export default function App() {
           </div>
         </main>
       ) : (
-        <main className="welcome">
-          <div className="drop-card">
+        <main className="workspace welcome-workspace">
+          {activityBar}
+          <div className="welcome"><div className="drop-card">
             <img className="drop-logo" src={logo} alt="" draggable={false} />
             <h1>Open an elements.data file</h1>
             <p className="muted">
@@ -1125,12 +1196,20 @@ export default function App() {
                 <Settings size={13} /> Set your game client folder to open its files quickly and show item icons
               </button>
             )}
-          </div>
+          </div></div>
         </main>
       )}
 
       <footer className="statusbar">
-        {summary ? (
+        {workspace === "paths" ? (
+          <>
+            <span>path.data</span>
+            {pathEditorState.path && <span className="mono truncate" title={pathEditorState.path}>{pathEditorState.path}</span>}
+            {pathEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
+            <span className="spacer" />
+            <span>PMID resource path table</span>
+          </>
+        ) : summary ? (
           <>
             <span>{bytes(summary.fileSize)}</span>
             <span>{summary.lists.length} lists</span>

@@ -8,8 +8,9 @@ with every feature; this file is what you need to work on the code.
 **JD IDE** is a desktop editor for Jade Dynasty (Zhu Xian, a Perfect World game) data files,
 built with **Tauri 2** (Rust backend in `src-tauri/`, React 19 + TypeScript UI in `src/`).
 Today it handles `elements.data` (all game items, NPCs, monsters, configs) across file
-versions v66–v176: browse, search, check, compare, export, edit, and save. The left
-activity bar is reserved for more data files later (tasks.data, gshop.data, …).
+versions v66–v176: browse, search, check, compare, export, edit, and save. A separate
+activity-bar workspace edits the client's `path.data`; more data files can follow later
+(tasks.data, gshop.data, …).
 
 A previous Laravel/PHP version of the same idea lives in `C:/Users/mitko/Herd/jdide`. It is
 a reference for ideas only; JD IDE replaces it.
@@ -74,6 +75,7 @@ Environment quirks (Windows 11, Git Bash):
 | `client/pck.rs`, `client/dds.rs` | `.pck` 2.2/2.3 package reader, DDS decoding for icons. |
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
+| `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
 
 ### UI (`src/`)
 
@@ -83,7 +85,7 @@ Environment quirks (Windows 11, Git Bash):
   `generate_handler!` in `lib.rs`, to `api.ts`, and its types to `types.ts`.**
 - `components/` — one component per panel/dialog (`AdvancedSearch`, `ProblemsPanel`,
   `ComparePanel`, `HistoryPanel`, `SaveDialog`, `SchemaEditor`, `RecordInspector`,
-  `FieldTree`, `InlineEditor`, …).
+  `FieldTree`, `InlineEditor`, `PathDataEditor`, …).
 - `schema/model.ts` — schema editor draft model; `schema/fieldList.ts` — pasted
   sELedit/Jade Editor field lists → fields.
 - `elements/money.ts`, `time.ts`, `text.ts`, `talk.ts` — display helpers.

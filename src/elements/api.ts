@@ -43,9 +43,24 @@ import type {
   PickerRequest,
   PickerResult,
   TranslationReport,
+  PathDataFile,
+  PathDataRow,
+  PathDataSaveReport,
+  PathDataSaveRequest,
+  PathDataJsonImport,
+  PathDataJsonReport,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
+
+/** Strictly reads a standalone client path.data table. */
+export const openPathData = (path: string) => invoke<PathDataFile>("open_path_data", { path });
+/** Validates and atomically writes a complete path.data table. */
+export const savePathData = (request: PathDataSaveRequest) => invoke<PathDataSaveReport>("save_path_data", { request });
+/** Writes a complete, versioned JSON representation of a path table. */
+export const exportPathDataJson = (path: string, sourcePath: string, rows: PathDataRow[]) => invoke<PathDataJsonReport>("export_path_data_json", { path, sourcePath, rows });
+/** Reads and validates a versioned path export or a plain array of path rows. */
+export const importPathDataJson = (path: string) => invoke<PathDataJsonImport>("import_path_data_json", { path });
 
 export const listRecords = (list: number) => invoke<RecordRow[]>("list_records", { list });
 
