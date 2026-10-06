@@ -523,9 +523,12 @@ input {
 
 .inspector-body {
   display: grid;
-  grid-template-rows: auto minmax(0, 3fr) auto auto minmax(0, 2fr) auto;
+  grid-template-rows: auto minmax(0, 3fr) auto auto auto minmax(0, 2fr) auto;
   flex: 1;
   min-height: 0;
+}
+.inspector-body.bytes-collapsed {
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto auto;
 }
 
 .subhead {
@@ -547,6 +550,10 @@ input {
   gap: 12px;
   align-items: center;
   padding-right: 16px;
+}
+.field-grid.checkable {
+  grid-template-columns: 22px minmax(180px, 2fr) minmax(140px, 3fr) 110px 52px;
+  gap: 8px;
 }
 .fields .table-head {
   position: sticky;
@@ -571,6 +578,20 @@ input {
 }
 .field-row.active {
   background: var(--bg-active);
+}
+.field-row.quick-checked {
+  box-shadow: inset 3px 0 var(--accent);
+}
+.quick-check-head,
+.quick-check-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.quick-check-cell input {
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
 }
 .field-row.unknown .field-label {
   color: var(--text-dim);
@@ -619,6 +640,107 @@ input {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* ---------- inspector quick edit ---------- */
+
+.quick-editor {
+  padding: 7px 16px 8px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-pane);
+}
+.quick-editor-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-height: 22px;
+}
+.quick-editor-head strong {
+  font-size: 12px;
+}
+.quick-editor-controls {
+  display: grid;
+  grid-template-columns: 92px minmax(100px, 150px) auto minmax(0, 1fr);
+  align-items: start;
+  gap: 6px;
+}
+.quick-editor-controls > select,
+.quick-editor-controls > input {
+  width: 100%;
+  height: 27px;
+  padding: 0 7px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg);
+  color: var(--text);
+}
+.quick-editor-controls > input.invalid {
+  border-color: var(--danger);
+}
+.quick-apply {
+  height: 27px;
+}
+.quick-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+.quick-presets button {
+  min-width: 34px;
+  height: 27px;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text-dim);
+  font: 11px var(--mono);
+  cursor: pointer;
+}
+.quick-presets button:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.quick-presets button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.quick-editor-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  color: var(--danger);
+  font-size: 11px;
+}
+.bytes-subhead {
+  padding: 0;
+}
+.bytes-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 34px;
+  padding: 8px 16px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.bytes-toggle:hover {
+  background: var(--bg-hover);
+}
+
+@media (max-width: 1050px) {
+  .quick-editor-controls {
+    grid-template-columns: 86px minmax(100px, 1fr) auto;
+  }
+  .quick-presets {
+    grid-column: 1 / -1;
+  }
 }
 
 .badge-sub {
@@ -5614,33 +5736,8 @@ select.ie-control {
 .description-slot:empty {
   display: none;
 }
-.description-card {
-  margin: 8px 12px 10px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-.description-head {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  padding: 5px 10px;
-  border: 0;
-  background: var(--bg-hover);
-  color: var(--text-dim);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  text-align: left;
-  cursor: pointer;
-}
-.description-head .mono {
-  margin-left: auto;
-  text-transform: none;
-  letter-spacing: 0;
-  font-weight: 400;
+.description-subhead {
+  border-top: 1px solid var(--border);
 }
 /* As in the game's dark tooltips, whatever the theme. */
 .description-text {

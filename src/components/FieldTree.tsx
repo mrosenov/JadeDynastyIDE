@@ -6,7 +6,7 @@ import { type Path, flatten } from "../elements/fieldPaths";
 import { DIALOGS } from "../tabs";
 import { isTextNode, textLines } from "../elements/text";
 import { CalendarClock, ChevronRight, Clock, CornerDownLeft, GitBranch, Search, Timer } from "lucide-react";
-import { decodeValue, isChanged, isEditable } from "../elements/edit";
+import { decodeValue, isChanged, isEditable, isNumericField } from "../elements/edit";
 import { InlineEditor } from "./InlineEditor";
 import { coins, formatMoneyWords } from "../elements/money";
 import { formatProbability } from "../elements/probability";
@@ -287,13 +287,17 @@ interface Props {
   /** Opens the bounded value picker for a reference or client resource. */
   onPick?: (path: Path, node: FieldNode) => void;
   onCancelEdit?: () => void;
+  /** Numeric leaf fields picked for the inspector's quick editor. */
+  checked?: Set<Path>;
+  onCheck?: (path: Path, checked: boolean) => void;
   /** The record's bytes now and as the file was opened (marks changed fields). */
   bytes?: number[];
   original?: number[];
 }
 
-export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, image, onSet, editing, onStartEdit, onCommit, onPick, onCancelEdit, bytes, original }: Props) {
+export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, image, onSet, editing, onStartEdit, onCommit, onPick, onCancelEdit, checked, onCheck, bytes, original }: Props) {
   const rows = flatten(nodes, expanded);
+  const checkable = !!onCheck;
   const onKeyDown = (e: React.KeyboardEvent) => {
     if ((e.key === "Enter" || e.key === "F2") && selected && !editing && onStartEdit) {
       const row = rows.find((r) => r.path === selected);
@@ -305,7 +309,8 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
   };
   return (
     <div className="fields scroll" onMouseLeave={() => onHover(null)} tabIndex={0} onKeyDown={onKeyDown}>
-      <div className="table-head field-grid">
+      <div className={"table-head field-grid" + (checkable ? " checkable" : "")}>
+        {checkable && <span className="quick-check-head" title="Select number fields for Quick edit" />}
         <span>Field</span>
         <span>Value</span>
         <span>Type</span>
@@ -314,6 +319,8 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
       {rows.map(({ node, path, depth }) => {
         const open = expanded.has(path);
         const editable = !!onStartEdit && isEditable(node);
+        const quickEditable = checkable && isNumericField(node);
+        const isChecked = !!checked?.has(path);
         const changed = !!bytes && isChanged(node, bytes, original);
         const was = changed && !node.children ? decodeValue(node.ty, original!, node.off) : null;
         const structure = node.ty === "struct" || node.ty.startsWith("struct[");
@@ -324,7 +331,9 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
             key={path}
             className={
               "field-row field-grid" +
+              (checkable ? " checkable" : "") +
               (path === selected ? " active" : "") +
+              (isChecked ? " quick-checked" : "") +
               (node.unknown ? " unknown" : "") +
               (node.group ? " group" : "") +
               (structure ? " structure" : "") +
@@ -334,12 +343,32 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
               (editable ? " editable" : "")
             }
             style={headingColor ? ({ "--heading-color": headingColor } as React.CSSProperties) : undefined}
-            onClick={() => onSelect(path)}
+            onClick={(event) => {
+              if ((event.ctrlKey || event.metaKey) && quickEditable) {
+                onCheck!(path, !isChecked);
+                return;
+              }
+              onSelect(path);
+            }}
             onDoubleClick={() => (node.children ? onToggle(path) : editable && onStartEdit!(path, node))}
             onMouseEnter={() => onHover(path)}
             title={changed ? `Changed${was !== null ? ` · was: ${was === "" ? "(empty)" : was}` : ""}${node.comment ? `
 ${node.comment}` : ""}` : node.comment}
           >
+            {checkable && (
+              <span className="quick-check-cell">
+                {quickEditable && (
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={(event) => onCheck!(path, event.target.checked)}
+                    onClick={(event) => event.stopPropagation()}
+                    onDoubleClick={(event) => event.stopPropagation()}
+                    aria-label={`Select ${node.name} for Quick edit`}
+                  />
+                )}
+              </span>
+            )}
             <span className="field-name" style={{ paddingLeft: 8 + depth * 16 }}>
               {node.children ? (
                 <button

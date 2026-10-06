@@ -5,6 +5,12 @@ import type { FieldNode } from "./types";
 /** A value the inspector can edit in place: a leaf with a value. */
 export const isEditable = (node: FieldNode) => !node.children && !node.group && node.value !== undefined;
 
+export const INTEGER_TYPES = new Set(["int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64"]);
+export const FLOAT_TYPES = new Set(["float", "double"]);
+
+/** A number field that the inspector's multi-field quick editor can change. */
+export const isNumericField = (node: FieldNode) => isEditable(node) && (INTEGER_TYPES.has(node.ty) || FLOAT_TYPES.has(node.ty));
+
 /** Whether a field's bytes differ from the record as the file was opened. */
 export function isChanged(node: FieldNode, bytes: number[], original?: number[]): boolean {
   if (!original) return false;

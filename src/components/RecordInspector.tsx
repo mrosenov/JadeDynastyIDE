@@ -17,6 +17,10 @@ import { isUndefinedNode, undefinedSpan } from "../elements/readings";
 import type { FieldSpec } from "../schema/model";
 import type { FieldEdit } from "../elements/types";
 import { ValuePicker } from "./ValuePicker";
+import { QuickEditor, type QuickField } from "./QuickEditor";
+import { isNumericField } from "../elements/edit";
+
+const BYTES_OPEN_KEY = "jdide.inspector.bytes.open";
 
 interface Props {
   list: ListSummary;
@@ -65,9 +69,18 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
   // The field edited in place, and whether the selected text is being edited.
   const [editing, setEditing] = useState<Path | null>(null);
   const [textEditing, setTextEditing] = useState(false);
+  const [quickSelected, setQuickSelected] = useState<Set<Path>>(new Set());
+  const [bytesOpen, setBytesOpen] = useState(() => {
+    try {
+      return localStorage.getItem(BYTES_OPEN_KEY) !== "0";
+    } catch {
+      return true;
+    }
+  });
   useEffect(() => {
     setEditing(null);
     setTextEditing(false);
+    setQuickSelected(new Set());
   }, [detail?.list, detail?.index]);
   const [setPopover, setSetPopover] = useState<{ node: FieldNode; anchor: DOMRect } | null>(null);
   useEffect(() => setSetPopover(null), [detail]);
@@ -147,6 +160,9 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
 
   const active = nodeAt(detail.nodes, hovered ?? selected ?? "") ?? null;
   const focused = selected ? nodeAt(detail.nodes, selected) : null;
+  const quickFields: QuickField[] = [...quickSelected]
+    .map((path) => ({ path, node: nodeAt(detail.nodes, path) }))
+    .filter((field): field is QuickField => !!field.node && isNumericField(field.node));
   // Texts with line breaks, colours or more than a row shows get a preview
   // (any text being edited gets its editor).
   const textNode =
@@ -174,6 +190,16 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
     }
   };
   const unknownBytes = detail.nodes.filter((n) => n.unknown).reduce((sum, n) => sum + n.size, 0);
+  const toggleBytes = () => {
+    setBytesOpen((open) => {
+      try {
+        localStorage.setItem(BYTES_OPEN_KEY, open ? "0" : "1");
+      } catch {
+        // Remembering the section state is a convenience only.
+      }
+      return !open;
+    });
+  };
 
   return (
     <section className="pane inspector">
@@ -247,7 +273,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
         )}
       </div>
 
-      <div className="inspector-body">
+      <div className={"inspector-body" + (bytesOpen ? "" : " bytes-collapsed")}>
         <div className="subhead">
           <div className="insp-tabs" role="tablist">
             <button role="tab" aria-selected={view === "fields"} className={view === "fields" ? "active" : ""} onClick={() => setView("fields")}>
@@ -300,6 +326,15 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
             setValuePicker(node);
           }}
           onCancelEdit={() => setEditing(null)}
+          checked={quickSelected}
+          onCheck={(path, checked) =>
+            setQuickSelected((current) => {
+              const next = new Set(current);
+              if (checked) next.add(path);
+              else next.delete(path);
+              return next;
+            })
+          }
           bytes={detail.bytes}
           original={detail.original}
         />
@@ -341,22 +376,32 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
             )
           )}
         </div>
-        <div className="subhead">
-          <span className="pane-title">Bytes</span>
-          <span className="spacer" />
-          {active && (
-            <span className="muted mono">
-              {active.name} · {hex(active.off)}–{hex(active.off + active.size - 1)} · {active.size} B
-            </span>
-          )}
-        </div>
-        <HexView
-          bytes={detail.bytes}
-          fileOffset={detail.fileOffset}
-          highlight={active ? { off: active.off, size: active.size } : null}
-          focusKey={focused ? `${detail.index}:${selected}` : null}
-          onPick={pickOffset}
+        <QuickEditor
+          fields={quickFields}
+          onClear={() => setQuickSelected(new Set())}
+          onApply={(edits, label) => onEdit?.(detail.list, detail.index, edits, label) ?? Promise.resolve("Editing is not available")}
         />
+        <div className="subhead bytes-subhead">
+          <button className="bytes-toggle" onClick={toggleBytes} title={bytesOpen ? "Collapse bytes" : "Expand bytes"} aria-expanded={bytesOpen}>
+            <ChevronRight size={13} className={"caret-icon" + (bytesOpen ? " open" : "")} />
+            <span className="pane-title">Bytes</span>
+            <span className="spacer" />
+            {active && (
+              <span className="muted mono">
+                {active.name} · {hex(active.off)}–{hex(active.off + active.size - 1)} · {active.size} B
+              </span>
+            )}
+          </button>
+        </div>
+        {bytesOpen && (
+          <HexView
+            bytes={detail.bytes}
+            fileOffset={detail.fileOffset}
+            highlight={active ? { off: active.off, size: active.size } : null}
+            focusKey={focused ? `${detail.index}:${selected}` : null}
+            onPick={pickOffset}
+          />
+        )}
         {/* The client's description, under the bytes (an empty row when there is none). */}
         <div className="description-slot">{detail.gameText && <DescriptionCard text={detail.gameText.text} source={detail.gameText.source} />}</div>
       </div>
@@ -397,12 +442,15 @@ function DescriptionCard({ text, source }: { text: string; source: string }) {
     });
   };
   return (
-    <div className={"description-card" + (open ? " open" : "")}>
-      <button className="description-head" onClick={toggle} title={open ? "Hide the description" : "Show the description"}>
-        <ChevronRight size={13} className={"caret-icon" + (open ? " open" : "")} />
-        <span>Description</span>
-        <span className="muted small mono">{source}</span>
-      </button>
+    <div className="description-section">
+      <div className="subhead bytes-subhead description-subhead">
+        <button className="bytes-toggle" onClick={toggle} title={open ? "Collapse description" : "Expand description"} aria-expanded={open}>
+          <ChevronRight size={13} className={"caret-icon" + (open ? " open" : "")} />
+          <span className="pane-title">Description</span>
+          <span className="spacer" />
+          <span className="muted small mono">{source}</span>
+        </button>
+      </div>
       {open && <GameText text={text} className="description-text scroll" />}
     </div>
   );

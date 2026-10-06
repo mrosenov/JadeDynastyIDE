@@ -158,6 +158,12 @@ Values are edited in the inspector. Edits stay in memory until the file is saved
   inside the field's declared lists or inferred ID space; client resources use the folder from
   Settings and can preview their coloured description. Search is on demand and debounced; results
   are paged in groups of 80, so every match remains reachable without transferring whole lists to the UI.
+- **Quick edit**: tick one or more number fields in the inspector, or Ctrl+click their rows.
+  Choose set, add, subtract, multiply or divide, then enter a value or use a preset. Decimal presets appear when all selected
+  fields are floats. The fields change together as one undoable action; invalid or out-of-range
+  results leave the whole record unchanged.
+- **Bytes** and the client **Description** below it are collapsible inspector sections. Their
+  open states are remembered.
 - **Texts** open an editor with a live preview in the game's colours, a length counter
   (`wchar[n]` holds n UTF-16 units, `char[n]` n GBK bytes; a line break counts as two, as
   CR LF), colour swatches and a picker that insert `^RRGGBB`. Ctrl+Enter saves.
