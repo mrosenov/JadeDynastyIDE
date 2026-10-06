@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Check, CircleAlert, Loader2 } from "lucide-react";
+import { Check, CircleAlert, ClipboardPaste, Copy, Loader2 } from "lucide-react";
 import type { FieldEdit, FieldNode } from "../elements/types";
 import { FLOAT_TYPES, INTEGER_TYPES } from "../elements/edit";
 
@@ -14,6 +14,9 @@ interface Props {
   fields: QuickField[];
   onApply: (edits: FieldEdit[], label: string) => Promise<string | null>;
   onClear: () => void;
+  onCopy: () => string | null;
+  onPaste: () => void;
+  canPaste: boolean;
 }
 
 const INTEGER_PRESETS = ["0", "1", "2", "5", "10", "100", "500", "1000", "5000", "10000"];
@@ -71,17 +74,18 @@ function calculate(node: FieldNode, operation: Operation, operand: string): stri
   throw new Error(`${node.name} is not a number field.`);
 }
 
-export function QuickEditor({ fields, onApply, onClear }: Props) {
+export function QuickEditor({ fields, onApply, onClear, onCopy, onPaste, canPaste }: Props) {
   const [operation, setOperation] = useState<Operation>("set");
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const allNumeric = fields.length > 0 && fields.every(({ node }) => INTEGER_TYPES.has(node.ty) || FLOAT_TYPES.has(node.ty));
   const hasInteger = fields.some(({ node }) => INTEGER_TYPES.has(node.ty));
 
   useEffect(() => setError(null), [fields, operation, value]);
 
   const apply = async () => {
-    if (!fields.length || busy) return;
+    if (!allNumeric || busy) return;
     let edits: FieldEdit[];
     try {
       edits = fields.map(({ node }) => ({ off: node.off, value: calculate(node, operation, value) }));
@@ -101,9 +105,27 @@ export function QuickEditor({ fields, onApply, onClear }: Props) {
       <div className="quick-editor-head">
         <strong>Quick edit</strong>
         <span className="muted small" title={fields.length ? fields.map(({ node }) => `${node.name} = ${node.value}`).join("\n") : undefined}>
-          {fields.length ? `${fields.length} number field${fields.length === 1 ? "" : "s"} selected` : "Click a number field, or use the checkboxes"}
+          {fields.length
+            ? allNumeric
+              ? `${fields.length} number field${fields.length === 1 ? "" : "s"} selected`
+              : `${fields.length} field${fields.length === 1 ? "" : "s"} selected · Quick edit needs numbers only`
+            : "Click a field, or use the checkboxes"}
         </span>
         <span className="spacer" />
+        <button
+          className="link"
+          onClick={() => {
+            const problem = onCopy();
+            if (problem) setError(problem);
+          }}
+          disabled={!fields.length || busy}
+          title="Copy the selected fields from this record"
+        >
+          <Copy size={12} /> Copy fields
+        </button>
+        <button className="link" onClick={onPaste} disabled={!canPaste || busy} title="Preview fields copied from another record in this list">
+          <ClipboardPaste size={12} /> Paste fields
+        </button>
         {fields.length > 0 && (
           <button className="link" onClick={onClear} disabled={busy}>
             Clear selection
@@ -111,7 +133,7 @@ export function QuickEditor({ fields, onApply, onClear }: Props) {
         )}
       </div>
       <div className="quick-editor-controls">
-        <select value={operation} onChange={(event) => setOperation(event.target.value as Operation)} aria-label="Quick edit operation" disabled={!fields.length || busy}>
+        <select value={operation} onChange={(event) => setOperation(event.target.value as Operation)} aria-label="Quick edit operation" disabled={!allNumeric || busy}>
           <option value="set">= Set</option>
           <option value="add">+ Add</option>
           <option value="subtract">− Subtract</option>
@@ -131,14 +153,14 @@ export function QuickEditor({ fields, onApply, onClear }: Props) {
           placeholder={hasInteger ? "Whole number" : "Number"}
           aria-label="Quick edit value"
           spellCheck={false}
-          disabled={!fields.length || busy}
+          disabled={!allNumeric || busy}
         />
-        <button className="btn primary small quick-apply" onClick={apply} disabled={!fields.length || !value.trim() || busy}>
+        <button className="btn primary small quick-apply" onClick={apply} disabled={!allNumeric || !value.trim() || busy}>
           {busy ? <Loader2 size={13} className="spin" /> : <Check size={13} />} Apply
         </button>
         <div className="quick-presets" aria-label="Common values">
-          {!hasInteger && FLOAT_PRESETS.map((preset) => <button key={preset} onClick={() => setValue(preset)} disabled={!fields.length || busy}>{preset}</button>)}
-          {INTEGER_PRESETS.map((preset) => <button key={preset} onClick={() => setValue(preset)} disabled={!fields.length || busy}>{Number(preset).toLocaleString()}</button>)}
+          {!hasInteger && FLOAT_PRESETS.map((preset) => <button key={preset} onClick={() => setValue(preset)} disabled={!allNumeric || busy}>{preset}</button>)}
+          {INTEGER_PRESETS.map((preset) => <button key={preset} onClick={() => setValue(preset)} disabled={!allNumeric || busy}>{Number(preset).toLocaleString()}</button>)}
         </div>
       </div>
       {error && <div className="quick-editor-error" role="alert"><CircleAlert size={13} /> {error}</div>}

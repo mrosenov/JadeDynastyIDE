@@ -174,7 +174,7 @@ impl Document {
 }
 
 /// Pairs the lists of two files.
-fn pairs(a: &Document, b: &Document) -> Vec<(Option<usize>, Option<usize>)> {
+pub(super) fn pairs(a: &Document, b: &Document) -> Vec<(Option<usize>, Option<usize>)> {
     // Same list count and version: the files share a layout, pair by position.
     if a.file.lists.len() == b.file.lists.len() && a.file.raw_version == b.file.raw_version {
         return (0..a.file.lists.len()).map(|i| (Some(i), Some(i))).collect();

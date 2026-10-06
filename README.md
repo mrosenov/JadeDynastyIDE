@@ -162,6 +162,11 @@ Values are edited in the inspector. Edits stay in memory until the file is saved
   checkboxes or Ctrl+click. Choose set, add, subtract, multiply or divide, then enter a value or use a preset. Decimal presets appear when all selected
   fields are floats. The fields change together as one undoable action; invalid or out-of-range
   results leave the whole record unchanged.
+- **Copy fields / Paste fields** uses the same selection for every editable leaf type. Copy fields,
+  open another record of the same list, then preview and paste values matched by schema path and
+  exact runtime type. The record ID is never copied; incompatible, missing and unchanged fields
+  are identified before the selected values are applied as one undoable action. Quick edit is
+  disabled when the selection also contains non-number fields.
 - **Bytes** and the client **Description** below it are collapsible inspector sections. Their
   open states are remembered.
 - **Texts** open an editor with a live preview in the game's colours, a length counter
@@ -242,8 +247,8 @@ unsaved edits; clicking it saves.
 as…* (Ctrl+Shift+S), the tools *Advanced
 search* (Ctrl+Shift+F), *Problems* (Ctrl+Shift+M, with error and warning counts), *Compare with
 another file…*, *Layout coverage* and *Settings…*.
-**Tools** (Alt+T), beside File and Edit, holds *Export › Selected item… / Selected list…* and
-*Import JSON…*. Import and export use JSON only.
+**Tools** (Alt+T), beside File and Edit, holds *Export › Selected item… / Selected list…*,
+*Import JSON…* and *Translate from elements.data…*. Import and export use JSON only.
 A tool panel takes the place of the list and record panes; the shortcuts toggle it, and
 the elements.data entry of the bar on the far left goes back to the lists. Tools keep their state
 (results, scans) while hidden. After a scan, the status bar shows the problem counts.
@@ -329,6 +334,22 @@ Export again as JSON to add missing records.
 - The preview shows the first 200 additions, 200 field changes and 100 skipped rows, with full
   totals. Input row numbers start at 1 in the records array. If the import file, open data
   or schema changes after preview, **Refresh preview** is required before applying.
+
+## Translate from another elements.data
+
+**Tools › Translate from elements.data…** copies human-facing UTF-16 names and text from a
+supported translated file into the open file. The versions may differ: lists pair by stable
+structure identity, records by a unique ID inside that list, and fields by schema path. For
+example, equipment ID 55 in the open v165 list can receive `Iron Sword` from the corresponding
+record of a v160 or v165 English file.
+
+The preview shows every list containing compatible text, matched IDs, records and fields ready
+to change, missing source IDs and rejected values. Choose the lists to apply and inspect sample
+current → translated values first. Blank source strings are not copied. Duplicate IDs,
+incompatible fields and strings that do not fit the target field are skipped and reported.
+Numeric values, ordinary byte strings and complete record bytes are never transferred. Applying
+the selected lists is one undo/history action, and a stale preview cannot be applied after either
+file, the open data or the relevant schemas change.
 
 ## Layout coverage
 

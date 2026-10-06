@@ -42,6 +42,7 @@ import type {
   Saved,
   PickerRequest,
   PickerResult,
+  TranslationReport,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -67,6 +68,11 @@ export const exportRecords = (source: ExportSource, labels: boolean, path: strin
 
 /** Without a token, previews; with the preview token, applies that exact import. */
 export const importRecords = (path: string, token?: string) => invoke<ImportReport>("import_records", { path, token });
+
+/** Previews UTF-16 text matched by list, record ID and field path. */
+export const previewTranslation = (path: string) => invoke<TranslationReport>("preview_translation", { path });
+/** Applies selected lists from an unchanged translation preview. */
+export const applyTranslation = (path: string, token: string, lists: number[]) => invoke<EditState>("apply_translation", { path, token, lists });
 
 /** Opens a second file to compare the open one with ("this" vs "other"). */
 export const openCompare = (path: string) => invoke<CompareSummary>("open_compare", { path });

@@ -14,6 +14,7 @@ pub mod refs;
 pub mod save;
 pub mod search;
 pub mod talk;
+pub mod translation;
 
 use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, OnceLock};

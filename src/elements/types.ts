@@ -588,6 +588,51 @@ export interface ImportReport {
   state: EditState | null;
 }
 
+export interface TranslationChange {
+  list: number;
+  row: number;
+  id: number;
+  field: string;
+  old: string;
+  new: string;
+}
+
+export interface TranslationIssue {
+  list: number;
+  id?: number;
+  field?: string;
+  message: string;
+}
+
+export interface TranslationListReport {
+  list: number;
+  sourceList?: number;
+  name: string;
+  textFields: number;
+  matchedRecords: number;
+  changedRecords: number;
+  fieldChanges: number;
+  missingSource: number;
+  emptySource: number;
+  rejected: number;
+}
+
+export interface TranslationReport {
+  token: string;
+  sourcePath: string;
+  sourceVersion: number;
+  targetVersion: number;
+  lists: TranslationListReport[];
+  matchedRecords: number;
+  changedRecords: number;
+  fieldChanges: number;
+  missingSource: number;
+  emptySource: number;
+  rejected: number;
+  changes: TranslationChange[];
+  issues: TranslationIssue[];
+}
+
 export interface CompareFile {
   path: string;
   version: number;

@@ -183,6 +183,26 @@ async fn import_records(path: String, token: Option<String>, state: State<'_, Ap
     state.with_document_mut(|doc| doc.import_records(&input, token.as_deref()))
 }
 
+/// Previews UTF-16 text copied by list, record ID and field path from another supported file.
+#[tauri::command]
+async fn preview_translation(path: String, state: State<'_, AppState>) -> Result<elements::translation::Report, String> {
+    let catalog = state.catalog();
+    let source = tauri::async_runtime::spawn_blocking(move || Document::open(path, catalog))
+        .await
+        .map_err(|error| error.to_string())??;
+    state.with_document(|target| elements::translation::preview(target, &source))
+}
+
+/// Applies the selected lists from an unchanged translation preview.
+#[tauri::command]
+async fn apply_translation(path: String, token: String, lists: Vec<usize>, state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    let catalog = state.catalog();
+    let source = tauri::async_runtime::spawn_blocking(move || Document::open(path, catalog))
+        .await
+        .map_err(|error| error.to_string())??;
+    state.with_document_mut(|target| elements::translation::apply(target, &source, &token, &lists))
+}
+
 /// Opens a second file to compare the open one with.
 #[tauri::command]
 async fn open_compare(path: String, state: State<'_, AppState>) -> Result<elements::compare::Summary, String> {
@@ -734,6 +754,8 @@ pub fn run() {
             layout_coverage,
             export_records,
             import_records,
+            preview_translation,
+            apply_translation,
             open_compare,
             compare_summary,
             compare_list,

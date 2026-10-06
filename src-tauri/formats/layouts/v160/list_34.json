@@ -61,8 +61,7 @@
       "display": "image",
       "t": {
         "k": "i32"
-      },
-      "display": "path"
+      }
     },
     {
       "name": "Monster_Source",

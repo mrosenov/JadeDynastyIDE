@@ -16,6 +16,7 @@ import { HistoryPanel } from "./components/HistoryPanel";
 import { DeleteDialog } from "./components/DeleteDialog";
 import { ExportDialog } from "./components/ExportMenu";
 import { ImportRecordsDialog } from "./components/ImportRecordsDialog";
+import { TranslationDialog } from "./components/TranslationDialog";
 import { type Menu, MenuBar } from "./components/MenuBar";
 import { SchemaEditor } from "./components/SchemaEditor";
 import { TabBar, type TabLabel } from "./components/TabBar";
@@ -47,6 +48,7 @@ import {
   Trash2,
   History,
   ListFilter,
+  Languages,
   Redo2,
   RotateCcw,
   Save,
@@ -189,6 +191,7 @@ export default function App() {
   // Tools › Export: what to export, in a dialog.
   const [exporting, setExporting] = useState<{ source: ExportSource; name: string; title: string } | null>(null);
   const [importing, setImporting] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [focus, setFocus] = useState<FieldFocus | null>(null);
   const [lastFind, setLastFind] = useState<LastFind | null>(null);
   // Hits belong to one file.
@@ -750,6 +753,7 @@ export default function App() {
           ],
         },
         { label: "Import JSON…", icon: FileUp, onSelect: () => setImporting(true), disabled: !summary, title: noFile },
+        { label: "Translate from elements.data…", icon: Languages, onSelect: () => setTranslating(true), disabled: !summary, title: noFile },
       ],
     },
   ];
@@ -872,6 +876,7 @@ export default function App() {
 
       {exporting && <ExportDialog source={exporting.source} name={exporting.name} title={exporting.title} onClose={() => setExporting(null)} />}
       {importing && summary && <ImportRecordsDialog onApplied={afterEdits} onClose={() => setImporting(false)} />}
+      {translating && summary && <TranslationDialog onApplied={afterEdits} onClose={() => setTranslating(false)} />}
 
       {findOpen && summary && (
         <FindPalette

@@ -363,6 +363,11 @@ impl Document {
         self.apply_records(records, additions, "Copy from compared file")
     }
 
+    /// Applies text fields copied by the translation assistant.
+    pub(super) fn apply_translation(&mut self, records: Vec<(usize, usize, Vec<u8>)>, source: &str) -> Result<EditState, String> {
+        self.apply_records(records, Vec::new(), &format!("Translate from {source}"))
+    }
+
     /// The type of the field at `off` in this record: a layout field (its
     /// conditional type applied) or, for bytes no field describes, an int32.
     fn field_type(&self, list: usize, row: usize, off: usize) -> Result<Ty, String> {

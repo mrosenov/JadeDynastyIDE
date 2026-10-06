@@ -6,7 +6,7 @@ import { type Path, flatten } from "../elements/fieldPaths";
 import { DIALOGS } from "../tabs";
 import { isTextNode, textLines } from "../elements/text";
 import { CalendarClock, ChevronRight, Clock, CornerDownLeft, GitBranch, Search, Timer } from "lucide-react";
-import { decodeValue, isChanged, isEditable, isNumericField } from "../elements/edit";
+import { decodeValue, isChanged, isEditable } from "../elements/edit";
 import { InlineEditor } from "./InlineEditor";
 import { coins, formatMoneyWords } from "../elements/money";
 import { formatProbability } from "../elements/probability";
@@ -319,7 +319,7 @@ export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHov
       {rows.map(({ node, path, depth }) => {
         const open = expanded.has(path);
         const editable = !!onStartEdit && isEditable(node);
-        const quickEditable = checkable && isNumericField(node);
+        const quickEditable = checkable && isEditable(node);
         const isChecked = !!checked?.has(path);
         const changed = !!bytes && isChanged(node, bytes, original);
         const was = changed && !node.children ? decodeValue(node.ty, original!, node.off) : null;

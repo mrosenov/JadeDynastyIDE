@@ -18,7 +18,8 @@ import type { FieldSpec } from "../schema/model";
 import type { FieldEdit } from "../elements/types";
 import { ValuePicker } from "./ValuePicker";
 import { QuickEditor, type QuickField } from "./QuickEditor";
-import { isNumericField } from "../elements/edit";
+import { isEditable } from "../elements/edit";
+import { PasteRecordFieldsDialog, type FieldClipboard } from "./PasteRecordFieldsDialog";
 
 const BYTES_OPEN_KEY = "jdide.inspector.bytes.open";
 
@@ -70,6 +71,8 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
   const [editing, setEditing] = useState<Path | null>(null);
   const [textEditing, setTextEditing] = useState(false);
   const [quickSelected, setQuickSelected] = useState<Set<Path>>(new Set());
+  const [fieldClipboard, setFieldClipboard] = useState<FieldClipboard | null>(null);
+  const [pasteOpen, setPasteOpen] = useState(false);
   const [bytesOpen, setBytesOpen] = useState(() => {
     try {
       return localStorage.getItem(BYTES_OPEN_KEY) !== "0";
@@ -105,6 +108,8 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
   useEffect(() => {
     setExpanded(new Set());
     setReadOffset(null);
+    setFieldClipboard(null);
+    setPasteOpen(false);
   }, [list.index]);
   useEffect(() => setHovered(null), [detail]);
 
@@ -153,7 +158,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
     setSelected(path);
     setTextClosed(false);
     const node = nodeAt(detail.nodes, path);
-    setQuickSelected(node && isNumericField(node) ? new Set([path]) : new Set());
+    setQuickSelected(node && isEditable(node) ? new Set([path]) : new Set());
     setReadOffset(node && isUndefinedNode(node) ? node.off : null);
   };
 
@@ -163,7 +168,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
   const focused = selected ? nodeAt(detail.nodes, selected) : null;
   const quickFields: QuickField[] = [...quickSelected]
     .map((path) => ({ path, node: nodeAt(detail.nodes, path) }))
-    .filter((field): field is QuickField => !!field.node && isNumericField(field.node));
+    .filter((field): field is QuickField => !!field.node && isEditable(field.node));
   // Texts with line breaks, colours or more than a row shows get a preview
   // (any text being edited gets its editor).
   const textNode =
@@ -381,6 +386,20 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           fields={quickFields}
           onClear={() => setQuickSelected(new Set())}
           onApply={(edits, label) => onEdit?.(detail.list, detail.index, edits, label) ?? Promise.resolve("Editing is not available")}
+          onCopy={() => {
+            const safe = quickFields.filter(({ node }) => !(node.off === 0 && node.name.toLowerCase() === "id"));
+            if (!safe.length) return "The primary record ID is not copied. Select another field.";
+            setFieldClipboard({
+              list: detail.list,
+              listName: list.name,
+              sourceRow: detail.index,
+              sourceId: row.id,
+              fields: safe.map(({ path, node }) => ({ path, name: node.name, ty: node.ty, value: node.value! })),
+            });
+            return null;
+          }}
+          onPaste={() => setPasteOpen(true)}
+          canPaste={!!fieldClipboard && fieldClipboard.list === detail.list}
         />
         <div className="subhead bytes-subhead">
           <button className="bytes-toggle" onClick={toggleBytes} title={bytesOpen ? "Collapse bytes" : "Expand bytes"} aria-expanded={bytesOpen}>
@@ -415,6 +434,16 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           image={image}
           onApply={(value) => setField(valuePicker, value)}
           onClose={() => setValuePicker(null)}
+        />
+      )}
+      {pasteOpen && fieldClipboard && fieldClipboard.list === detail.list && (
+        <PasteRecordFieldsDialog
+          clipboard={fieldClipboard}
+          targetRow={detail.index}
+          targetId={row.id}
+          nodes={detail.nodes}
+          onApply={(edits, label) => onEdit?.(detail.list, detail.index, edits, label) ?? Promise.resolve("Editing is not available")}
+          onClose={() => setPasteOpen(false)}
         />
       )}
     </section>
