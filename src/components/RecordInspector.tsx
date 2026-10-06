@@ -29,6 +29,8 @@ interface Props {
   onDefine: (list: number, offset: number, spec: FieldSpec) => void;
   /** Item icon URL for a path ID (when the client's icons are available). */
   icon?: (pathId?: number | null) => string | undefined;
+  /** Standalone client image URL for a path ID. */
+  image?: (pathId?: number | null) => string | undefined;
   /** Open the enums & masks editor at a set. */
   onEditSet?: (key: string) => void;
   /** All lists of the file (for naming referring lists). */
@@ -51,7 +53,7 @@ export interface FieldFocus {
   nonce: number;
 }
 
-export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, onEditSet, lists, focus, onEdit, onClone, onDelete }: Props) {
+export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, image, onEditSet, lists, focus, onEdit, onClone, onDelete }: Props) {
   const [expanded, setExpanded] = useState<Set<Path>>(new Set());
   const [selected, setSelected] = useState<Path | null>(null);
   const [hovered, setHovered] = useState<Path | null>(null);
@@ -288,6 +290,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           onHover={setHovered}
           onFollow={onFollow}
           icon={icon}
+          image={image}
           onSet={(node, anchor) => setSetPopover({ node, anchor })}
           editing={editing}
           onStartEdit={onEdit ? startEdit : undefined}
@@ -363,6 +366,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           row={detail.index}
           node={valuePicker}
           icon={icon}
+          image={image}
           onApply={(value) => setField(valuePicker, value)}
           onClose={() => setValuePicker(null)}
         />

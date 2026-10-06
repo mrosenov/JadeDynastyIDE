@@ -135,6 +135,9 @@ export const inspectClient = (dir: string) => invoke<ClientInfo>("inspect_client
 /** URL of an item icon served by the app (by path.data ID). No slashes: convertFileSrc encodes them. */
 export const iconUrl = (generation: number, pathId: number) => convertFileSrc(`${generation}-${pathId}`, "jdicon");
 
+/** URL of a standalone client image served by the app (by path.data ID). */
+export const imageUrl = (generation: number, pathId: number) => convertFileSrc(`${generation}-${pathId}`, "jdimage");
+
 export const namedSets = () => invoke<SetSummary[]>("named_sets");
 
 export const namedSet = (key: string) => invoke<SetDetail>("named_set", { key });

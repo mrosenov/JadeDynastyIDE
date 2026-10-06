@@ -55,6 +55,9 @@ pub struct Node {
     /// Path ID of the item icon this value points at (client icons).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub icon: Option<u32>,
+    /// Path ID of a standalone image resource in a client package.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub image: Option<u32>,
     /// Key of the enum or mask naming this value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub set: Option<String>,
@@ -85,6 +88,7 @@ fn group_node(name: String, color: Option<String>, members: Vec<Node>) -> Node {
         color,
         cond: None,
         icon: None,
+        image: None,
         set: None,
         talk: None,
     }
@@ -196,6 +200,7 @@ pub struct Annotation {
     pub description: Option<String>,
     pub link: Option<(usize, usize)>,
     pub icon: Option<u32>,
+    pub image: Option<u32>,
     pub set: Option<String>,
     pub talk: Option<usize>,
 }
@@ -213,6 +218,7 @@ fn picker_kind(field: &Field, ty: &Ty, off: usize) -> Option<&'static str> {
             "title" => Some("title"),
             "path" => Some("path"),
             "icon" => Some("icon"),
+            "image" => Some("image"),
             _ => None,
         };
         if supported.is_some() {
@@ -257,6 +263,7 @@ impl Ctx<'_> {
             color: field.and_then(|f| f.color.clone()),
             cond: None,
             icon: None,
+            image: None,
             set: None,
             talk: None,
         };
@@ -290,6 +297,7 @@ impl Ctx<'_> {
                     node.description = a.description;
                     node.link = a.link;
                     node.icon = a.icon;
+                    node.image = a.image;
                     node.set = a.set;
                     node.talk = a.talk;
                 }
@@ -366,6 +374,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
                     color: None,
                     cond: None,
                     icon: None,
+                    image: None,
                     set: None,
                     talk: None,
                 }
@@ -391,6 +400,7 @@ pub fn gap_node(bytes: &[u8], off: usize, size: usize) -> Node {
         color: None,
         cond: None,
         icon: None,
+        image: None,
         set: None,
         talk: None,
     }

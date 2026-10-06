@@ -121,7 +121,7 @@ export function ProblemsPanel({ lists, icon, onOpen, onCounts, onClose }: Props)
         </div>
         <input className="sf-control" placeholder="Filter by name, ID, list or message…" value={query} onChange={(e) => setQuery(e.target.value)} spellCheck={false} />
         {report && !report.pathsChecked && (
-          <div className="muted small">Paths and icons were not checked: set the game client folder in Settings to check them against path.data.</div>
+          <div className="muted small">Paths, icons and images were not checked: set the game client folder in Settings to check them against path.data.</div>
         )}
         {error && (
           <div className="se-problems">

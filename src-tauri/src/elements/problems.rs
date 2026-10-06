@@ -103,7 +103,7 @@ impl Kind {
             Kind::BrokenRef => "A field declared to point at a list holds an ID that list does not have.",
             Kind::MissingDialog => "A record's id_dialog names an NPC dialog the file does not have.",
             Kind::DialogWindow => "An NPC dialog option opens a window the dialog does not have.",
-            Kind::MissingPath => "A path or icon field holds an ID the client's path.data does not know.",
+            Kind::MissingPath => "A path, icon or image field holds an ID the client's path.data does not know.",
             Kind::UnterminatedText => "A text fills its whole field with no terminating zero; the client may read past it.",
             Kind::UnknownEnum => "A field's value is not one of its enum's values (the enum may be incomplete).",
             Kind::UnnamedBits => "Bits are set that the field's mask does not name (the mask may be incomplete).",
@@ -280,7 +280,7 @@ impl Document {
             for slot in &slots {
                 let set = slot.set.as_deref().and_then(|k| self.catalog.enum_set(Some(layout), k));
                 let is_dialog = slot.path.eq_ignore_ascii_case("id_dialog");
-                let is_path = matches!(slot.display.as_deref(), Some("path" | "icon"));
+                let is_path = matches!(slot.display.as_deref(), Some("path" | "icon" | "image"));
                 let is_text = matches!(slot.ty(&[]), Ty::Wstr { .. });
                 if set.is_none() && !is_dialog && !is_path && !is_text {
                     continue;

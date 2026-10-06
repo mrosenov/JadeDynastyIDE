@@ -9,16 +9,18 @@ interface Props {
   row: number;
   node: FieldNode;
   icon?: (pathId?: number | null) => string | undefined;
+  image?: (pathId?: number | null) => string | undefined;
   onApply: (value: string) => Promise<string | null>;
   onClose: () => void;
 }
 
-export function ValuePicker({ list, row, node, icon, onApply, onClose }: Props) {
+export function ValuePicker({ list, row, node, icon, image, onApply, onClose }: Props) {
   const input = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
   const [result, setResult] = useState<PickerResult | null>(null);
   const [active, setActive] = useState(0);
+  const [hovered, setHovered] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +37,7 @@ export function ValuePicker({ list, row, node, icon, onApply, onClose }: Props) 
           setResult(resultPage);
           const current = resultPage.entries.findIndex((entry) => entry.value === resultPage.current);
           setActive(current >= 0 && !query.trim() ? current : 0);
+          setHovered(null);
         })
         .catch((reason) => !cancelled && setError(String(reason)))
         .finally(() => !cancelled && setLoading(false));
@@ -45,7 +48,8 @@ export function ValuePicker({ list, row, node, icon, onApply, onClose }: Props) 
     };
   }, [list, row, node.off, query, page]);
 
-  const choice = result?.entries[active];
+  const selectedChoice = result?.entries[active];
+  const previewChoice = result?.entries[hovered ?? active];
   const pageCount = result ? Math.max(1, Math.ceil(result.total / result.pageSize)) : 1;
   const apply = async (value: number) => {
     if (applying) return;
@@ -58,6 +62,7 @@ export function ValuePicker({ list, row, node, icon, onApply, onClose }: Props) 
   };
   const move = (amount: number) => {
     if (!result?.entries.length) return;
+    setHovered(null);
     setActive((index) => Math.max(0, Math.min(result.entries.length - 1, index + amount)));
   };
 
@@ -82,9 +87,9 @@ export function ValuePicker({ list, row, node, icon, onApply, onClose }: Props) 
           } else if (event.key === "PageUp") {
             event.preventDefault();
             move(-10);
-          } else if (event.key === "Enter" && choice) {
+          } else if (event.key === "Enter" && selectedChoice) {
             event.preventDefault();
-            void apply(choice.value);
+            void apply(selectedChoice.value);
           }
         }}
       >
@@ -114,14 +119,14 @@ export function ValuePicker({ list, row, node, icon, onApply, onClose }: Props) 
           <div className="value-picker-message error">{error}</div>
         ) : (
           <div className="value-picker-body">
-            <div className="value-picker-results scroll" role="listbox" aria-label="Available values">
+            <div className="value-picker-results scroll" role="listbox" aria-label="Available values" onMouseLeave={() => setHovered(null)}>
               {result?.entries.map((entry, index) => (
                 <button
                   key={`${entry.value}:${entry.list ?? "resource"}:${entry.row ?? index}`}
                   className={"value-picker-row" + (index === active ? " active" : "")}
                   role="option"
                   aria-selected={index === active}
-                  onMouseEnter={() => setActive(index)}
+                  onMouseEnter={() => setHovered(index)}
                   onClick={() => setActive(index)}
                   onDoubleClick={() => void apply(entry.value)}
                 >
@@ -137,14 +142,20 @@ export function ValuePicker({ list, row, node, icon, onApply, onClose }: Props) 
               {!loading && result?.entries.length === 0 && <div className="empty-note center">No matching values.</div>}
             </div>
             <div className="value-picker-preview">
-              {choice ? (
+              {previewChoice ? (
                 <>
                   <div className="value-picker-preview-head">
-                    <strong>{choice.name}</strong>
-                    <span className="mono">ID {choice.value}</span>
+                    <strong>{previewChoice.name}</strong>
+                    <span className="mono">ID {previewChoice.value}</span>
                   </div>
-                  {choice.detail && <div className="muted small">{choice.detail}</div>}
-                  {choice.description ? <GameText text={choice.description} /> : <div className="muted value-picker-no-description">No description is available.</div>}
+                  {previewChoice.detail && <div className="muted small">{previewChoice.detail}</div>}
+                  {result.kind === "image" && image?.(previewChoice.value) ? (
+                    <img className="value-picker-image" src={image(previewChoice.value)} alt={previewChoice.name} />
+                  ) : previewChoice.description ? (
+                    <GameText text={previewChoice.description} />
+                  ) : (
+                    <div className="muted value-picker-no-description">No description is available.</div>
+                  )}
                 </>
               ) : (
                 <div className="empty-note center">Select a value to preview it.</div>
@@ -170,7 +181,7 @@ export function ValuePicker({ list, row, node, icon, onApply, onClose }: Props) 
             </div>
           )}
           <button className="btn" onClick={onClose}>Cancel</button>
-          <button className="btn primary" disabled={!choice || applying} onClick={() => choice && void apply(choice.value)}>
+          <button className="btn primary" disabled={!selectedChoice || applying} onClick={() => selectedChoice && void apply(selectedChoice.value)}>
             {applying ? "Applying…" : "Use selected"}
           </button>
         </div>

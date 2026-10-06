@@ -95,7 +95,6 @@ export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta
       </div>
       <div className={"table-head " + grid}>
         {withIcons && <span />}
-        <span>#</span>
         <span>ID</span>
         <span>Name</span>
       </div>
@@ -121,7 +120,6 @@ export function RecordTable({ list, rows, selected, onSelect, onOpen, icon, meta
                   ) : (
                     <span />
                   ))}
-                <span className="muted mono">{row.index}</span>
                 <span className="mono">{row.id}</span>
                 <span
                   className={"truncate" + (row.name ? "" : " muted") + (row.color ? " item-name" : "")}

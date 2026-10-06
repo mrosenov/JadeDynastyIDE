@@ -537,6 +537,21 @@ fn icon_response(app: &tauri::AppHandle, uri_path: &str) -> tauri::http::Respons
     }
 }
 
+/// `jdimage://localhost/<generation>-<path id>` → a standalone client image.
+fn image_response(app: &tauri::AppHandle, uri_path: &str) -> tauri::http::Response<Vec<u8>> {
+    let not_found = || tauri::http::Response::builder().status(404).body(Vec::new()).unwrap();
+    let Some(id) = icon_id(uri_path) else { return not_found() };
+    let Some(res) = app.state::<AppState>().resources() else { return not_found() };
+    match res.image(id) {
+        Ok(image) => tauri::http::Response::builder()
+            .header("Content-Type", image.content_type)
+            .header("Cache-Control", "max-age=31536000, immutable")
+            .body(image.bytes.clone())
+            .unwrap(),
+        Err(_) => not_found(),
+    }
+}
+
 // ---------------------------------------------------------------- enums and masks
 
 #[derive(Serialize)]
@@ -677,6 +692,11 @@ pub fn run() {
             let app = ctx.app_handle().clone();
             let path = request.uri().path().to_string();
             std::thread::spawn(move || responder.respond(icon_response(&app, &path)));
+        })
+        .register_asynchronous_uri_scheme_protocol("jdimage", |ctx, request, responder| {
+            let app = ctx.app_handle().clone();
+            let path = request.uri().path().to_string();
+            std::thread::spawn(move || responder.respond(image_response(&app, &path)));
         })
         .invoke_handler(tauri::generate_handler![
             open_elements,

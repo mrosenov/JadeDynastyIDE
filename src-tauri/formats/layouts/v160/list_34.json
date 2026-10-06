@@ -58,6 +58,7 @@
     {
       "name": "profile_path_id",
       "off": 116,
+      "display": "image",
       "t": {
         "k": "i32"
       },

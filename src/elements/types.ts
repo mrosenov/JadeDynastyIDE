@@ -81,10 +81,12 @@ export interface FieldNode {
   cond?: string;
   /** Path ID of the item icon this value points at. */
   icon?: number;
+  /** Path ID of a standalone image in a client package. */
+  image?: number;
   /** Key of the enum or mask naming this value. */
   set?: string;
   /** On-demand source for choosing this integer value. */
-  picker?: "reference" | "skill" | "buff" | "title" | "path" | "icon" | "dialog";
+  picker?: "reference" | "skill" | "buff" | "title" | "path" | "icon" | "image" | "dialog";
 }
 
 export interface PickerEntry {

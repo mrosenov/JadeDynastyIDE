@@ -4,9 +4,10 @@
 pub mod dds;
 pub mod pck;
 pub mod strings;
+pub mod tga;
 pub mod titles;
 
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
 
@@ -55,6 +56,18 @@ pub struct ClientInfo {
 }
 
 const ITEM_ICONS: &str = "surfaces\\iconset\\iconlist_ivtr";
+const IMAGE_CACHE: usize = 32;
+
+fn image_content_type(path: &str) -> Option<&'static str> {
+    match path.rsplit('.').next()?.to_ascii_lowercase().as_str() {
+        "tga" | "dds" | "png" => Some("image/png"),
+        "jpg" | "jpeg" => Some("image/jpeg"),
+        "gif" => Some("image/gif"),
+        "webp" => Some("image/webp"),
+        "bmp" => Some("image/bmp"),
+        _ => None,
+    }
+}
 
 /// Kind of a client data file by name ("tasks.data12" → "tasks").
 fn data_kind(name: &str) -> String {
@@ -249,8 +262,15 @@ pub struct Resources {
     /// String tables of configs.pck by file name, read on first use.
     tables: Mutex<HashMap<&'static str, Arc<Result<strings::StringTable, String>>>>,
     item_colors: OnceLock<Option<strings::ItemColors>>,
+    /// Standalone image resources, converted or passed through on first use.
+    images: Mutex<VecDeque<(u32, Arc<ResourceImage>)>>,
     /// Title definitions from interfaces.pck, read on first use.
     titles: OnceLock<Result<titles::TitleTable, String>>,
+}
+
+pub struct ResourceImage {
+    pub bytes: Vec<u8>,
+    pub content_type: &'static str,
 }
 
 #[derive(Debug)]
@@ -280,6 +300,7 @@ impl Resources {
             packages: Mutex::new(HashMap::new()),
             tables: Mutex::new(HashMap::new()),
             item_colors: OnceLock::new(),
+            images: Mutex::new(VecDeque::new()),
             titles: OnceLock::new(),
         }
     }
@@ -463,8 +484,9 @@ impl Resources {
                 let name = strings::first_line(&title.name)?;
                 Some((rank(id, &name)?, id, name))
             }).collect(),
-            "path" | "icon" => self.paths()?.iter().filter_map(|(id, path)| {
+            "path" | "icon" | "image" => self.paths()?.iter().filter_map(|(id, path)| {
                 if id == 0 { return None; }
+                if role == "image" && !self.has_image(id) { return None; }
                 Some((rank(id, path)?, id, path.to_string()))
             }).collect(),
             _ => return Err(format!("{role} does not have a value picker")),
@@ -487,6 +509,46 @@ impl Resources {
     pub fn item_icon_png(&self, path_id: u32) -> Result<Arc<Vec<u8>>, String> {
         let cell = self.item_icon(path_id).ok_or_else(|| format!("no icon for path {path_id}"))?;
         self.item_icons()?.png(cell)
+    }
+
+    /// A standalone image named by path.data, read from the package named by
+    /// the path's first component. TGA and DDS are converted to PNG; formats
+    /// the webview understands are passed through unchanged.
+    pub fn image(&self, path_id: u32) -> Result<Arc<ResourceImage>, String> {
+        if let Some((_, hit)) = self.images.lock().map_err(|_| "image cache poisoned")?.iter().find(|(id, _)| *id == path_id) {
+            return Ok(hit.clone());
+        }
+        let path = self.path(path_id).ok_or_else(|| format!("path {path_id} is not in path.data"))?;
+        let content_type = image_content_type(path).ok_or_else(|| format!("{path} is not a supported image"))?;
+        let package_name = path.split(['\\', '/']).next().filter(|name| !name.is_empty()).ok_or("resource path has no package name")?;
+        let bytes = self.package(package_name)?.read_path(path)?;
+        let extension = path.rsplit('.').next().unwrap_or("").to_ascii_lowercase();
+        let image = match extension.as_str() {
+            "tga" => {
+                let (rgba, width, height) = tga::decode(&bytes)?;
+                ResourceImage { bytes: dds::png(&rgba, width, height)?, content_type: "image/png" }
+            }
+            "dds" => {
+                let image = Dds::parse(bytes)?;
+                let rgba = image.rect(0, 0, image.width, image.height);
+                ResourceImage { bytes: dds::png(&rgba, image.width, image.height)?, content_type: "image/png" }
+            }
+            _ => ResourceImage { bytes, content_type },
+        };
+        let image = Arc::new(image);
+        let mut cache = self.images.lock().map_err(|_| "image cache poisoned")?;
+        cache.retain(|(id, _)| *id != path_id);
+        cache.push_back((path_id, image.clone()));
+        while cache.len() > IMAGE_CACHE {
+            cache.pop_front();
+        }
+        Ok(image)
+    }
+
+    pub fn has_image(&self, path_id: u32) -> bool {
+        let Some(path) = self.path(path_id).filter(|path| image_content_type(path).is_some()) else { return false };
+        let Some(package_name) = path.split(['\\', '/']).next().filter(|name| !name.is_empty()) else { return false };
+        self.package(package_name).ok().is_some_and(|package| package.find(path).is_some())
     }
 }
 
@@ -529,6 +591,28 @@ mod tests {
         let decoder = png::Decoder::new(&png[..]);
         let reader = decoder.read_info().unwrap();
         assert_eq!((reader.info().width, reader.info().height), (36, 36));
+    }
+
+    #[test]
+    fn previews_hdn_npc_profile_tga() {
+        let dir = PathBuf::from("E:/Games/Elite Jade Dynasty - HDN");
+        if !dir.join("element/data/path.data").exists() || !dir.join("element/surfaces.pck").exists() {
+            return eprintln!("skipping: HDN client not found");
+        }
+        let resources = Resources::new(inspect(&dir).unwrap());
+        let path = resources.path(7318).expect("HDN path 7318");
+        assert!(path.to_lowercase().starts_with("surfaces\\npcimg\\"), "{path}");
+        assert!(path.to_lowercase().ends_with(".tga"), "{path}");
+        let image = resources.image(7318).unwrap();
+        assert_eq!(image.content_type, "image/png");
+        assert_eq!(&image.bytes[..8], b"\x89PNG\r\n\x1a\n");
+
+        let (choices, total) = resources.search_choices("image", "7318", None, 0, 10).unwrap();
+        assert_eq!(total, 1);
+        assert_eq!(choices[0].id, 7318);
+        // This path.data entry names a TGA that is not a standalone package entry.
+        let (_, missing) = resources.search_choices("image", "31344", None, 0, 10).unwrap();
+        assert_eq!(missing, 0);
     }
 
     #[test]

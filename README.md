@@ -50,6 +50,13 @@ theme. The discovered data-file and package lists stay collapsed until clicked. 
 - reads `path.data`, so path and icon fields show their resource path.
 - reads item icons from `surfaces.pck` (`surfaces\iconset\iconlist_ivtr.dds` + `.txt`).
   Icons show in the record table, the inspector, icon fields and tabs.
+- previews standalone client images for fields with the `image` role. The value is a
+  `path.data` ID such as NPC `Profile_Path_ID`; hovering the resolved path reads the image
+  from its package and shows it at a useful size. TGA and DDS are converted to PNG on demand;
+  PNG, JPEG, GIF, WebP and BMP are served directly. The image picker offers only paths that
+  are actual standalone package entries, excluding atlas names and stale `path.data` paths.
+  Hover changes the preview only; the row last clicked remains the value applied by **Use selected**.
+  Atlas cells keep using the `icon` role.
 - reads the string tables of `configs.pck` (on first use, each once):
   - `item_ext_desc.txt`: item descriptions, shown below the bytes in the inspector (with
     `monster_desc.txt` for monsters and `addon_str.txt` for addons).
@@ -134,7 +141,8 @@ Dialog tabs work like record tabs (Alt+← goes back to the service you came fro
 The records column starts with the list picker: the open list, and a dropdown (Ctrl+L) to search
 all lists by name, struct or number (↑ ↓ Enter), with **NPC Dialogs** first and *Hide empty*. The
 dot shows how the layout fits, italics a borrowed one, a pencil your own schema. Below it, the
-search filters the list's records by ID or name.
+search filters the list's records by ID or name. Record rows show the ID and name without the
+internal row index.
 
 ## Editing
 
@@ -436,7 +444,9 @@ editor). Most roles apply to integers; `probability` applies to floats:
 
 | Role | Value | Shown as |
 |---|---|---|
-| `path` / `icon` | path.data ID | the client path (and item icon) |
+| `path` | path.data ID | the client resource path |
+| `icon` | path.data ID | the client path and its item-atlas icon |
+| `image` | path.data ID | the client path; hover it to preview the standalone package image |
 | `skill` | skill ID | marked as a skill |
 | `time` | unix seconds | `2014-03-28 12:26:34` (local; UTC in the tooltip) |
 | `duration` | seconds | `1h 30m`, `7d`, `45s` |

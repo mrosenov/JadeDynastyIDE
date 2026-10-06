@@ -177,6 +177,73 @@ function ResourceHint({ kind, name, description }: { kind: "skill" | "buff" | "t
   );
 }
 
+/** A path.data name whose image is loaded from its client package on hover. */
+function ImageHint({ name, src }: { name: string; src: string }) {
+  const id = useId();
+  const trigger = useRef<HTMLSpanElement>(null);
+  const box = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<number | null>(null);
+  const [anchor, setAnchor] = useState<DOMRect | null>(null);
+  const [pos, setPos] = useState({ left: 0, top: 0 });
+  const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const cancelClose = () => {
+    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+    closeTimer.current = null;
+  };
+  const show = () => {
+    cancelClose();
+    const rect = trigger.current?.getBoundingClientRect();
+    if (rect) {
+      setAnchor(rect);
+      setPos({ left: rect.left, top: rect.bottom + 6 });
+    }
+  };
+  const hideSoon = () => {
+    cancelClose();
+    closeTimer.current = window.setTimeout(() => setAnchor(null), 80);
+  };
+
+  useLayoutEffect(() => {
+    if (!anchor || !box.current) return;
+    const { width, height } = box.current.getBoundingClientRect();
+    const left = Math.max(8, Math.min(anchor.left, window.innerWidth - width - 8));
+    const below = anchor.bottom + 6;
+    const top = below + height > window.innerHeight - 8 ? Math.max(8, anchor.top - height - 6) : below;
+    setPos({ left, top });
+  }, [anchor, failed, loaded]);
+
+  useEffect(() => () => cancelClose(), []);
+
+  return (
+    <>
+      <span
+        ref={trigger}
+        className="hint resource-hint"
+        tabIndex={0}
+        aria-describedby={anchor ? id : undefined}
+        onMouseEnter={show}
+        onMouseLeave={hideSoon}
+        onFocus={show}
+        onBlur={hideSoon}
+      >
+        {name}
+      </span>
+      {anchor &&
+        createPortal(
+          <div ref={box} id={id} className="resource-popover image-popover" role="tooltip" style={pos} onMouseEnter={cancelClose} onMouseLeave={hideSoon}>
+            <div className="resource-popover-head">
+              <strong>{name}</strong>
+              <span>image</span>
+            </div>
+            {failed ? <div className="image-preview-error">The image could not be found or decoded in the configured client.</div> : <img src={src} alt={name} onLoad={() => setLoaded(true)} onError={() => setFailed(true)} />}
+          </div>,
+          document.body,
+        )}
+    </>
+  );
+}
+
 /** Where a value leads: a record, or an NPC dialog. */
 const link = (node: FieldNode): [number, number] | undefined =>
   node.link ?? (node.talk !== undefined ? [DIALOGS, node.talk] : undefined);
@@ -207,6 +274,8 @@ interface Props {
   onFollow: (list: number, row: number, newTab?: boolean) => void;
   /** Item icon URL for a path ID (when the client's icons are available). */
   icon?: (pathId?: number | null) => string | undefined;
+  /** Standalone client image URL for a path ID. */
+  image?: (pathId?: number | null) => string | undefined;
   /** A value named by an enum or mask was clicked (shows all its values). */
   onSet?: (node: FieldNode, anchor: DOMRect) => void;
   /** The field being edited in place. */
@@ -223,7 +292,7 @@ interface Props {
   original?: number[];
 }
 
-export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, onSet, editing, onStartEdit, onCommit, onPick, onCancelEdit, bytes, original }: Props) {
+export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, image, onSet, editing, onStartEdit, onCommit, onPick, onCancelEdit, bytes, original }: Props) {
   const rows = flatten(nodes, expanded);
   const onKeyDown = (e: React.KeyboardEvent) => {
     if ((e.key === "Enter" || e.key === "F2") && selected && !editing && onStartEdit) {
@@ -316,7 +385,9 @@ ${node.comment}` : ""}` : node.comment}
                 </button>
               )}
               {node.hint &&
-                (node.description && (node.display === "skill" || node.display === "buff" || node.display === "title") ? (
+                (node.image !== undefined && image?.(node.image) ? (
+                  <ImageHint name={node.hint} src={image(node.image)!} />
+                ) : node.description && (node.display === "skill" || node.display === "buff" || node.display === "title") ? (
                   <ResourceHint kind={node.display} name={node.hint} description={node.description} />
                 ) : link(node) ? (
                   <button

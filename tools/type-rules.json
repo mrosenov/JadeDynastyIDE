@@ -179,6 +179,10 @@
   ],
   "roles": [
     {
+      "name": "^profile_path_id$",
+      "display": "image"
+    },
+    {
       "struct": "MEDICINE_ESSENCE",
       "name": "^cool_time$",
       "display": "duration_ms"

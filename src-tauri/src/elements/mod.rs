@@ -601,14 +601,16 @@ impl Document {
                 return a;
             }
         }
-        // Path and icon fields hold path.data IDs: show the client's path.
-        if let (Some(display @ ("path" | "icon")), Some(res)) = (field.display.as_deref(), &self.resources) {
+        // Path, atlas icon and standalone image fields hold path.data IDs.
+        if let (Some(display @ ("path" | "icon" | "image")), Some(res)) = (field.display.as_deref(), &self.resources) {
             if value > 0 && value <= u32::MAX as i64 {
                 let id = value as u32;
                 if let Some(path) = res.path(id) {
                     a.hint = Some(path.to_string());
                     if display == "icon" && res.item_icon(id).is_some() {
                         a.icon = Some(id);
+                    } else if display == "image" && res.has_image(id) {
+                        a.image = Some(id);
                     }
                 } else if res.paths().is_ok() {
                     a.hint = Some("not in path.data".into());
@@ -1789,6 +1791,21 @@ mod tests {
         assert!(icon.hint.as_deref().is_some_and(|p| p.to_lowercase().ends_with(".dds")), "{:?}", icon.hint);
         let png = doc.resources.as_ref().unwrap().item_icon_png(row.icon.unwrap()).unwrap();
         assert_eq!(&png[1..4], b"PNG");
+    }
+
+    #[test]
+    fn hdn_npc_profile_is_a_previewable_image() {
+        let client = std::path::Path::new("E:/Games/Elite Jade Dynasty - HDN");
+        let Some(mut doc) = open("Games/Elite Jade Dynasty - HDN/element/data/elements.data") else { return };
+        let Ok(info) = crate::client::inspect(client) else { return };
+        doc.resources = Some(Arc::new(crate::client::Resources::new(info)));
+        let row = doc.records(34).unwrap().into_iter().find(|row| row.id == 16).expect("NPC 16");
+        let detail = doc.record(34, row.index).unwrap();
+        let profile = detail.nodes.iter().find(|node| node.name.eq_ignore_ascii_case("profile_path_id")).expect("Profile_Path_ID");
+        assert_eq!(profile.value.as_deref(), Some("7318"));
+        assert_eq!(profile.display.as_deref(), Some("image"));
+        assert_eq!(profile.image, Some(7318));
+        assert!(profile.hint.as_deref().is_some_and(|path| path.to_lowercase().starts_with("surfaces\\npcimg\\") && path.to_lowercase().ends_with(".tga")), "{:?}", profile.hint);
     }
 
     #[test]

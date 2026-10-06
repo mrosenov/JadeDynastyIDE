@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { cloneRecord, deleteRecord, editRecord, editTalkText, fileSummary, getRecord, getSettings, getTalk, iconUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, revertTalk, saveElements, undoEdit } from "./elements/api";
+import { cloneRecord, deleteRecord, editRecord, editTalkText, fileSummary, getRecord, getSettings, getTalk, iconUrl, imageUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, revertTalk, saveElements, undoEdit } from "./elements/api";
 import type { EditState, Saved, SaveOptions, ExportSource, FieldEdit, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail, TalkTextEdit } from "./elements/types";
 import { bytes, count } from "./elements/format";
 import { ListPicker, type ListPickerHandle } from "./components/ListPicker";
@@ -195,6 +195,7 @@ export default function App() {
   useEffect(() => setLastFind(null), [fileKey]);
 
   const icon = (pathId?: number | null) => (iconGen !== null && pathId ? iconUrl(iconGen, pathId) : undefined);
+  const image = (pathId?: number | null) => (iconGen !== null && pathId ? imageUrl(iconGen, pathId) : undefined);
 
   // The active tab decides what the sidebar, the table and the inspector show.
   const activeTab = tabs.tabs.find((t) => t.id === tabs.active) ?? null;
@@ -1070,6 +1071,7 @@ export default function App() {
                   setEditorOpen(true);
                 }}
                 icon={icon}
+                image={image}
                 onEditSet={(key) => setSetsEditor({ key })}
                 lists={summary.lists}
                 focus={focus}

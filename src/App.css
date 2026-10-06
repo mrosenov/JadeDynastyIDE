@@ -424,7 +424,7 @@ input {
 
 .record-grid {
   display: grid;
-  grid-template-columns: 54px 78px minmax(0, 1fr);
+  grid-template-columns: 78px minmax(0, 1fr);
   gap: 10px;
   padding-left: 12px;
   padding-right: 12px;
@@ -731,6 +731,33 @@ input {
   font-size: 13px;
   line-height: 1.5;
   text-shadow: 0 1px 1px #000;
+}
+.image-popover {
+  width: auto;
+  max-width: min(560px, calc(100vw - 16px));
+  max-height: min(560px, calc(100vh - 16px));
+}
+.image-popover .resource-popover-head {
+  max-width: 540px;
+}
+.image-popover img {
+  display: block;
+  max-width: min(540px, calc(100vw - 36px));
+  max-height: min(500px, calc(100vh - 72px));
+  margin: auto;
+  object-fit: contain;
+  background-color: #172027;
+  background-image:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.06) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.06) 75%);
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  background-size: 16px 16px;
+}
+.image-preview-error {
+  padding: 18px;
+  color: #ffb2ad;
 }
 
 /* ---------- hex ---------- */
@@ -1937,9 +1964,12 @@ svg.lucide {
   background: transparent;
   cursor: pointer;
 }
-.value-picker-row:hover,
+.value-picker-row:hover {
+  background: var(--bg-hover);
+}
 .value-picker-row.active {
   background: var(--bg-active);
+  box-shadow: inset 3px 0 var(--accent);
 }
 .value-picker-row:focus-visible {
   outline: 2px solid var(--accent);
@@ -1994,6 +2024,13 @@ svg.lucide {
   margin-top: 16px;
   font-size: 14px;
   line-height: 1.45;
+}
+.value-picker-image {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100% - 44px);
+  margin: 16px auto 0;
+  object-fit: contain;
 }
 .value-picker-no-description {
   margin-top: 18px;
@@ -2466,7 +2503,7 @@ svg.lucide {
 /* ---------- item icons ---------- */
 
 .record-grid.with-icons {
-  grid-template-columns: 24px 48px 70px minmax(0, 1fr);
+  grid-template-columns: 24px 70px minmax(0, 1fr);
 }
 .row-icon {
   width: 22px;

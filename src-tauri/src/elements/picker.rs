@@ -106,7 +106,7 @@ impl Document {
         let current = slot.int(bytes).and_then(|value| u32::try_from(value).ok());
         let field = slot.name().to_string();
 
-        if let Some(role @ ("skill" | "buff" | "title" | "path" | "icon")) = slot.display.as_deref() {
+        if let Some(role @ ("skill" | "buff" | "title" | "path" | "icon" | "image")) = slot.display.as_deref() {
             return Ok(Spec {
                 source: Source::Resource(role.to_string()),
                 kind: role.to_string(),
@@ -116,6 +116,7 @@ impl Document {
                     "buff" => "Buffs from configs.pck",
                     "title" => "Titles from interfaces.pck",
                     "path" | "icon" => "Paths from path.data",
+                    "image" => "Standalone images found in client packages",
                     _ => unreachable!(),
                 }
                 .to_string(),

@@ -64,12 +64,13 @@ interface Props {
 
 const INTEGER_KINDS = new Set<Kind>(["i8", "u8", "bool", "i16", "u16", "i32", "u32", "i64", "u64"]);
 const FLOAT_KINDS = new Set<Kind>(["f32", "f64"]);
-const INTEGER_ROLES = ["path", "icon", "skill", "buff", "title", "money", "time", "duration", "duration_ms", "daytime"];
+const INTEGER_ROLES = ["path", "icon", "image", "skill", "buff", "title", "money", "time", "duration", "duration_ms", "daytime"];
 const ROLES = ["", ...INTEGER_ROLES, "probability"];
 const ROLE_LABEL: Record<string, string> = {
   "": "—",
   path: "path",
   icon: "icon",
+  image: "image (standalone file from a client package)",
   skill: "skill (name from skillstr.txt)",
   buff: "buff (name from buff_str.txt)",
   title: "title (name from title_def_u.lua)",
