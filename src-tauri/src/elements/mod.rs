@@ -713,6 +713,22 @@ impl Document {
         self.detail(list, index, def, r.fit)
     }
 
+    /// Resolves an ID exactly as the elements loader's shared Essence map:
+    /// lists are visited in load order and a later record replaces an earlier one.
+    pub fn resolve_essence_id(&self, id: u32) -> Option<(usize, usize, String)> {
+        for list in (0..self.lists.len()).rev() {
+            if self.space_of(list) != Some(refs::IdSpace::Essence) {
+                continue;
+            }
+            let Some(&row) = self.id_index(list).get(&id) else { continue };
+            let bytes = self.file.record(list, row)?;
+            let name = Self::record_name(bytes, Self::name_field(self.def(list).map(|(_, definition)| definition)));
+            let record = if name.is_empty() { "unnamed" } else { &name };
+            return Some((list, row, format!("{} › {record}", self.list_name(list))));
+        }
+        None
+    }
+
     // ------------------------------------------------------------ schema editing
 
     /// Id of the layout schema edits for this file are saved into: the file's

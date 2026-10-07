@@ -146,13 +146,30 @@ async fn open_tasks(path: String, state: State<'_, AppState>) -> Result<tasks::b
 
 #[tauri::command]
 async fn get_task(pack: usize, root: usize, path: Vec<usize>, state: State<'_, AppState>) -> Result<tasks::browser::TaskDetail, String> {
-    state
+    let mut detail = {
+        state
+            .tasks
+            .lock()
+            .map_err(|_| "State lock poisoned")?
+            .as_mut()
+            .ok_or("Open tasks.data first")?
+            .task(pack, root, &path)?
+    };
+    let resources = state.resources();
+    let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    detail.resolve_references(document.as_ref(), resources.as_deref());
+    Ok(detail)
+}
+
+#[tauri::command]
+async fn search_tasks(query: String, limit: usize, state: State<'_, AppState>) -> Result<tasks::browser::TaskSearchReport, String> {
+    Ok(state
         .tasks
         .lock()
         .map_err(|_| "State lock poisoned")?
-        .as_mut()
+        .as_ref()
         .ok_or("Open tasks.data first")?
-        .task(pack, root, &path)
+        .search(&query, limit.min(50_000)))
 }
 
 #[tauri::command]
@@ -776,6 +793,7 @@ pub fn run() {
             open_path_data,
             open_tasks,
             get_task,
+            search_tasks,
             save_path_data,
             export_path_data_json,
             import_path_data_json,

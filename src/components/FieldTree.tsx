@@ -100,7 +100,7 @@ function GameText({ text }: { text: string }) {
   return <>{parts}</>;
 }
 
-function ResourceHint({ kind, name, description }: { kind: "skill" | "buff" | "title"; name: string; description: string }) {
+export function ResourceHint({ kind, name, description }: { kind: "skill" | "buff" | "title"; name: string; description: string }) {
   const id = useId();
   const trigger = useRef<HTMLSpanElement>(null);
   const box = useRef<HTMLDivElement>(null);

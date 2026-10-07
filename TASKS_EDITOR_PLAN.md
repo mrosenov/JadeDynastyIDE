@@ -131,11 +131,12 @@ Completion gate for each version:
 
 ## Milestone 6: read-only task browser
 
-**Status: in progress (2026-10-07).** The first browser is wired into the activity bar. It auto-opens
-the configured client's task index or accepts another file, reports verified integrity and file
-statistics, searches and pages root tasks, expands the recursive hierarchy inline in that list,
-and lazily decodes one cached root into a collapsible typed inspector with offsets and raw-value interpretations. Full
-nested-task search, categorized field views and links to elements records remain for this milestone.
+**Status: complete (2026-10-07).** The browser is wired into the activity bar. It auto-opens the
+configured client's task index or accepts another file, reports verified integrity and file
+statistics, searches and pages root and nested tasks, expands the recursive hierarchy inline,
+and lazily decodes one cached root into a categorized, collapsible typed inspector with offsets,
+raw-value interpretations and links for task, elements and client-resource references. Root
+summaries remain fast and nested search indexing completes in background work.
 
 Add a Tasks activity-bar tool that loads the task set beside the selected client or lets the user choose another index.
 

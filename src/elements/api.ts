@@ -51,6 +51,7 @@ import type {
   PathDataJsonReport,
   TasksFileSummary,
   TaskDetail,
+  TaskSearchReport,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -68,6 +69,8 @@ export const importPathDataJson = (path: string) => invoke<PathDataJsonImport>("
 export const openTasks = (path: string) => invoke<TasksFileSummary>("open_tasks", { path });
 /** Decodes one root lazily, then selects a task in its recursive hierarchy. */
 export const getTask = (pack: number, root: number, path: number[]) => invoke<TaskDetail>("get_task", { pack, root, path });
+/** Searches root and nested quests through the background task index. */
+export const searchTasks = (query: string, limit = 50_000) => invoke<TaskSearchReport>("search_tasks", { query, limit });
 
 export const listRecords = (list: number) => invoke<RecordRow[]>("list_records", { list });
 

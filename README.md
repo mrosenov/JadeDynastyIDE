@@ -102,16 +102,20 @@ different task index. Versions 165, 172 and 184 are currently supported and read
 Opening verifies the index, every numbered pack (`tasks.data1`, `tasks.data2`, …), every root
 offset table and each pack's stored MD5 before showing any quests. It also reads each root's
 direct-subtask count with a lightweight parallel schema scan. The header shows the task version,
-root count, pack count, combined size and integrity result. Root quests can be searched by ID or
-name and are paged 200 at a time with a direct page-number box.
+root count, pack count, combined size and integrity result. Root and nested quests can be searched
+by ID or name and are paged 200 at a time with a direct page-number box. Nested names and IDs are
+indexed in the background, while root results remain available immediately.
 
 Roots containing subtasks show a small **+** as soon as the file opens. Expanding or selecting a
 root decodes only that complete quest tree; nested subtasks use the same tree controls. Selecting any task
-shows its typed fields, source offsets and byte sizes. Structures
+shows its typed fields, source offsets and byte sizes, organized into General, Availability,
+Prerequisites, Objectives, Failure, Rewards, Text and dialogs, and Hierarchy sections. Structures
 and arrays are collapsible. Fields whose purpose is not known keep their fixed raw bytes; short
-raw values also show unsigned, signed and floating-point interpretations on hover. One decoded
-root is cached, so moving among its subtasks does not reread or decode the pack. Editing and
-saving remain disabled until the in-memory edit journal and multi-file atomic save are complete.
+raw values also show unsigned, signed and floating-point interpretations on hover. Known task IDs
+link to the matching quest, item and monster IDs link to the open `elements.data`, and known skill,
+buff and title values use the configured client's names and descriptions. One decoded root is
+cached, so moving among its subtasks does not reread or decode the pack. Editing and saving remain
+disabled until the in-memory edit journal and multi-file atomic save are complete.
 
 ## path.data editor
 

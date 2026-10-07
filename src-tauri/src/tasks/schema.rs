@@ -507,7 +507,7 @@ pub fn probe_root_integer(schema: &Schema, bytes: &[u8], version: u32, field_nam
 pub(crate) fn probe_root_integer_validated(schema: &Schema, bytes: &[u8], version: u32, field_name: &str) -> Result<i128, String> {
     let definition = schema.structs.get(&schema.root)
         .ok_or_else(|| format!("unknown root structure {:?}", schema.root))?;
-    let mut decoder = ProbeDecoder { schema, bytes, version, limits: Limits::default(), position: 0 };
+    let mut decoder = ProbeDecoder { schema, bytes, version, limits: Limits::default(), position: 0, tasks: None, task_path: Vec::new() };
     let mut scope = HashMap::<String, i128>::new();
     for field in &definition.fields {
         let path = format!("{}.{}", schema.root, field.name);
@@ -524,6 +524,32 @@ pub(crate) fn probe_root_integer_validated(schema: &Schema, bytes: &[u8], versio
         collect_probe_numeric(&field.name, numeric, &mut scope);
     }
     Err(format!("root structure {:?} has no field {field_name:?}", schema.root))
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ProbedTask {
+    pub id: u32,
+    pub name: String,
+    pub path: Vec<usize>,
+    pub child_count: usize,
+}
+
+pub(crate) fn probe_task_index_validated(schema: &Schema, bytes: &[u8], version: u32) -> Result<Vec<ProbedTask>, String> {
+    let root = schema.root.clone();
+    let mut decoder = ProbeDecoder {
+        schema,
+        bytes,
+        version,
+        limits: Limits::default(),
+        position: 0,
+        tasks: Some(Vec::new()),
+        task_path: Vec::new(),
+    };
+    decoder.named(&root, &root, 0)?;
+    if decoder.position != bytes.len() {
+        return Err(format!("task record has {} trailing bytes after byte {}", bytes.len() - decoder.position, decoder.position));
+    }
+    Ok(decoder.tasks.unwrap_or_default())
 }
 
 enum ProbeNumeric {
@@ -552,6 +578,8 @@ struct ProbeDecoder<'a> {
     version: u32,
     limits: Limits,
     position: usize,
+    tasks: Option<Vec<ProbedTask>>,
+    task_path: Vec<usize>,
 }
 
 impl ProbeDecoder<'_> {
@@ -559,6 +587,25 @@ impl ProbeDecoder<'_> {
         self.check_depth(depth, path)?;
         let definition = self.schema.structs.get(structure)
             .ok_or_else(|| format!("{path}: unknown structure {structure:?}"))?;
+        let task_index = if self.tasks.is_some() && structure == self.schema.root {
+            let heading = self.bytes.get(self.position..self.position.saturating_add(64))
+                .ok_or_else(|| format!("{path}: task heading is truncated at byte {}", self.position))?;
+            let units = heading[4..].chunks_exact(2)
+                .map(|pair| u16::from_le_bytes([pair[0], pair[1]]))
+                .collect::<Vec<_>>();
+            let end = units.iter().position(|unit| *unit == 0).unwrap_or(units.len());
+            let task = ProbedTask {
+                id: u32::from_le_bytes(heading[0..4].try_into().unwrap()),
+                name: String::from_utf16_lossy(&units[..end]),
+                path: self.task_path.clone(),
+                child_count: 0,
+            };
+            let tasks = self.tasks.as_mut().unwrap();
+            tasks.push(task);
+            Some(tasks.len() - 1)
+        } else {
+            None
+        };
         let mut scope = HashMap::<String, i128>::new();
         for field in &definition.fields {
             if !conditions_match(&field.when, self.version, &scope, path)? {
@@ -567,6 +614,11 @@ impl ProbeDecoder<'_> {
             let child_path = format!("{path}.{}", field.name);
             let numeric = self.value(&field.ty, &child_path, &scope, depth + 1)?;
             collect_probe_numeric(&field.name, numeric, &mut scope);
+        }
+        if let Some(index) = task_index {
+            let count = scope.get("subtask_count").copied().unwrap_or(0);
+            let child_count = usize::try_from(count).map_err(|_| format!("{path}: invalid subtask count {count}"))?;
+            self.tasks.as_mut().unwrap()[index].child_count = child_count;
         }
         Ok(scope)
     }
@@ -593,7 +645,15 @@ impl ProbeDecoder<'_> {
             FieldType::RecursiveArray { count_field, target } => {
                 let count = array_count(scope, count_field, path, self.limits.max_array_items)?;
                 for index in 0..count {
-                    self.named(target, &format!("{path}[{index}]"), depth + 1)?;
+                    let tracks_task = self.tasks.is_some() && target == &self.schema.root;
+                    if tracks_task {
+                        self.task_path.push(index);
+                    }
+                    let result = self.named(target, &format!("{path}[{index}]"), depth + 1);
+                    if tracks_task {
+                        self.task_path.pop();
+                    }
+                    result?;
                 }
                 Ok(ProbeNumeric::None)
             }

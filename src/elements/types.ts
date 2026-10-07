@@ -355,6 +355,22 @@ export interface TasksFileSummary {
   roots: TaskRootSummary[];
 }
 
+export interface TaskSearchEntry {
+  pack: number;
+  root: number;
+  path: number[];
+  id: number;
+  name: string;
+  childCount: number;
+}
+
+export interface TaskSearchReport {
+  indexed: boolean;
+  error?: string;
+  total: number;
+  matches: TaskSearchEntry[];
+}
+
 export interface TaskTreeNode {
   id: number;
   name: string;
@@ -372,6 +388,19 @@ export interface TaskFieldView {
   interpretation?: string;
   children?: TaskFieldView[];
   raw: boolean;
+  reference?: TaskFieldReference;
+}
+
+export interface TaskFieldReference {
+  kind: "task" | "element" | "skill" | "buff" | "title";
+  id: number;
+  label: string;
+  description?: string;
+  list?: number;
+  row?: number;
+  pack?: number;
+  root?: number;
+  path?: number[];
 }
 
 export interface TaskDetail {

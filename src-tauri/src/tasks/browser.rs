@@ -1,12 +1,16 @@
 //! Read-only view models for the tasks.data browser.
 
+use std::collections::HashMap;
 use std::path::Path;
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::{Arc, RwLock};
 
 use serde::Serialize;
 
+use crate::{client::Resources, elements::Document};
+
 use super::container::{Pack, TaskContainer};
-use super::schema::{decode_exact, probe_root_integer_validated, FieldType, Node, Schema, Value};
+use super::schema::{decode_exact, probe_root_integer_validated, probe_task_index_validated, FieldType, Node, Schema, Value};
 use super::schema_for_version;
 
 const ROOT_HEADING_BYTES: usize = 64;
@@ -37,6 +41,35 @@ pub struct FileSummary {
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
+pub struct TaskSearchEntry {
+    pub pack: usize,
+    pub root: usize,
+    pub path: Vec<usize>,
+    pub id: u32,
+    pub name: String,
+    pub child_count: usize,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TaskSearchReport {
+    pub indexed: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
+    pub total: usize,
+    pub matches: Vec<TaskSearchEntry>,
+}
+
+#[derive(Default)]
+struct TaskSearchIndex {
+    indexed: bool,
+    error: Option<String>,
+    entries: Vec<TaskSearchEntry>,
+    by_id: HashMap<u32, TaskSearchEntry>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TreeNode {
     pub id: u32,
     pub name: String,
@@ -58,6 +91,28 @@ pub struct FieldView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub children: Vec<FieldView>,
     pub raw: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<FieldReference>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FieldReference {
+    pub kind: String,
+    pub id: u32,
+    pub label: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub list: Option<usize>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub row: Option<usize>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pack: Option<usize>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub root: Option<usize>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub path: Vec<usize>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -75,10 +130,48 @@ pub struct TaskDetail {
     pub fields: Vec<FieldView>,
 }
 
+impl TaskDetail {
+    pub fn resolve_references(&mut self, document: Option<&Document>, resources: Option<&Resources>) {
+        fn walk(fields: &mut [FieldView], document: Option<&Document>, resources: Option<&Resources>) {
+            for field in fields {
+                if let Some(reference) = field.reference.as_mut() {
+                    match reference.kind.as_str() {
+                        "element" => {
+                            if let Some((list, row, label)) = document.and_then(|doc| doc.resolve_essence_id(reference.id)) {
+                                reference.list = Some(list);
+                                reference.row = Some(row);
+                                reference.label = label;
+                            } else {
+                                reference.label = "Element record not found".into();
+                            }
+                        }
+                        "skill" => {
+                            reference.label = resources.and_then(|value| value.skill_name(reference.id)).unwrap_or_else(|| "Skill not found".into());
+                            reference.description = resources.and_then(|value| value.skill_description(reference.id));
+                        }
+                        "buff" => {
+                            reference.label = resources.and_then(|value| value.buff_name(reference.id)).unwrap_or_else(|| "Buff not found".into());
+                            reference.description = resources.and_then(|value| value.buff_description(reference.id));
+                        }
+                        "title" => {
+                            reference.label = resources.and_then(|value| value.title_name(reference.id)).unwrap_or_else(|| "Title not found".into());
+                            reference.description = resources.and_then(|value| value.title_description(reference.id));
+                        }
+                        _ => {}
+                    }
+                }
+                walk(&mut field.children, document, resources);
+            }
+        }
+        walk(&mut self.fields, document, resources);
+    }
+}
+
 pub struct TaskDocument {
     container: TaskContainer,
     schema: Schema,
     summary: FileSummary,
+    search: Arc<RwLock<TaskSearchIndex>>,
     cache: Option<CachedRoot>,
 }
 
@@ -94,6 +187,16 @@ impl TaskDocument {
         let container = TaskContainer::open(path)?;
         let schema = schema_for_version(container.header.version)?;
         let roots = read_root_summaries(&container, &schema)?;
+        let entries = roots.iter().map(|root| TaskSearchEntry {
+                pack: root.pack,
+                root: root.root,
+                path: Vec::new(),
+                id: root.id,
+                name: root.name.clone(),
+                child_count: root.child_count,
+            }).collect::<Vec<_>>();
+        let by_id = entries.iter().map(|task| (task.id, task.clone())).collect();
+        let search = Arc::new(RwLock::new(TaskSearchIndex { entries, by_id, ..TaskSearchIndex::default() }));
         let summary = FileSummary {
             path: container.index_path().display().to_string(),
             version: container.header.version,
@@ -104,11 +207,47 @@ impl TaskDocument {
                 + container.total_pack_bytes(),
             roots,
         };
-        Ok(Self { container, schema, summary, cache: None })
+        let background_search = search.clone();
+        let background_container = container.clone();
+        let background_schema = schema.clone();
+        std::thread::spawn(move || {
+            let result = read_nested_index(&background_container, &background_schema);
+            let Ok(mut index) = background_search.write() else { return };
+            match result {
+                Ok(subtasks) => {
+                    for task in subtasks {
+                        index.by_id.insert(task.id, task.clone());
+                        index.entries.push(task);
+                    }
+                    index.indexed = true;
+                }
+                Err(error) => index.error = Some(error),
+            }
+        });
+        Ok(Self { container, schema, summary, search, cache: None })
     }
 
     pub fn summary(&self) -> FileSummary {
         self.summary.clone()
+    }
+
+    pub fn search(&self, query: &str, limit: usize) -> TaskSearchReport {
+        let Ok(index) = self.search.read() else {
+            return TaskSearchReport { indexed: false, error: Some("Task search index lock poisoned".into()), total: 0, matches: Vec::new() };
+        };
+        let query = query.trim().to_lowercase();
+        let numeric = query.parse::<u32>().ok();
+        let mut matches = index.entries.iter().filter(|task| {
+            if let Some(id) = numeric {
+                task.id == id
+            } else {
+                task.name.to_lowercase().contains(&query) || task.id.to_string().contains(&query)
+            }
+        }).cloned().collect::<Vec<_>>();
+        matches.sort_by_key(|task| (numeric != Some(task.id), !task.name.to_lowercase().starts_with(&query), task.path.len(), task.id));
+        let total = matches.len();
+        matches.truncate(limit);
+        TaskSearchReport { indexed: index.indexed, error: index.error.clone(), total, matches }
     }
 
     pub fn task(&mut self, pack: usize, root: usize, path: &[usize]) -> Result<TaskDetail, String> {
@@ -126,7 +265,7 @@ impl TaskDocument {
             .children()
             .iter()
             .filter(|field| field.name != "subtasks")
-            .map(field_view)
+            .map(|field| self.field_view(field, &field.name))
             .collect();
         Ok(TaskDetail {
             pack,
@@ -139,6 +278,74 @@ impl TaskDocument {
             task_size: selected.byte_len,
             tree,
             fields,
+        })
+    }
+
+    fn field_view(&self, node: &Node, semantic: &str) -> FieldView {
+        let children = node.children().iter().map(|child| {
+            let child_semantic = if child.name.starts_with('[') { semantic } else { &child.name };
+            self.field_view(child, child_semantic)
+        }).collect::<Vec<_>>();
+        let raw = matches!(node.ty, FieldType::Raw { .. });
+        let (value, interpretation) = display_value(node);
+        FieldView {
+            name: node.name.clone(),
+            offset: node.offset,
+            size: node.byte_len,
+            ty: type_name(&node.ty),
+            value,
+            interpretation,
+            children,
+            raw,
+            reference: self.field_reference(semantic, node),
+        }
+    }
+
+    fn field_reference(&self, semantic: &str, node: &Node) -> Option<FieldReference> {
+        let id = match node.value {
+            Value::U64(value) => u32::try_from(value).ok()?,
+            Value::I64(value) => u32::try_from(value).ok()?,
+            _ => return None,
+        };
+        if id == 0 {
+            return None;
+        }
+        let semantic = semantic.to_ascii_lowercase();
+        if matches!(semantic.as_str(), "task_id" | "new_task_id" | "terminate_task_ids") {
+            let target = self.search.read().ok().and_then(|index| index.by_id.get(&id).cloned());
+            return Some(FieldReference {
+                kind: "task".into(),
+                id,
+                label: target.as_ref().map(|task| task.name.clone()).unwrap_or_else(|| "Task not found".into()),
+                description: None,
+                list: None,
+                row: None,
+                pack: target.as_ref().map(|task| task.pack),
+                root: target.as_ref().map(|task| task.root),
+                path: target.map(|task| task.path).unwrap_or_default(),
+            });
+        }
+        let kind = if matches!(semantic.as_str(), "item_id" | "drop_item_id" | "travel_item_id" | "replacement_item_id" | "monster_id" | "object_id") {
+            "element"
+        } else if semantic == "skill_id" {
+            "skill"
+        } else if semantic == "buff_id" {
+            "buff"
+        } else if semantic == "title_id" {
+            "title"
+        } else {
+            return None;
+        };
+        Some(FieldReference {
+            kind: kind.into(),
+            id,
+            label: format!("{kind} {id}"),
+            description: None,
+            list: None,
+            row: None,
+            pack: None,
+            root: None,
+            path: Vec::new(),
         })
     }
 }
@@ -212,6 +419,59 @@ fn read_pack_summaries(pack: &Pack, pack_index: usize, first_index: usize, schem
     Ok(result)
 }
 
+fn read_nested_index(container: &TaskContainer, schema: &Schema) -> Result<Vec<TaskSearchEntry>, String> {
+    let next_pack = AtomicUsize::new(0);
+    let workers = std::thread::available_parallelism().map(usize::from).unwrap_or(1).min(container.packs.len());
+    let mut by_pack = std::thread::scope(|scope| -> Result<Vec<Option<Vec<TaskSearchEntry>>>, String> {
+        let mut handles = Vec::with_capacity(workers);
+        for _ in 0..workers {
+            handles.push(scope.spawn(|| {
+                let mut scanned = Vec::new();
+                loop {
+                    let pack_index = next_pack.fetch_add(1, Ordering::Relaxed);
+                    let Some(pack) = container.packs.get(pack_index) else { break };
+                    scanned.push((pack_index, read_pack_nested_index(pack, pack_index, schema, container.header.version)));
+                }
+                scanned
+            }));
+        }
+        let mut by_pack = vec![None; container.packs.len()];
+        for handle in handles {
+            for (pack_index, entries) in handle.join().map_err(|_| "Task search worker panicked")? {
+                by_pack[pack_index] = Some(entries?);
+            }
+        }
+        Ok(by_pack)
+    })?;
+    let mut result = Vec::new();
+    for (pack_index, entries) in by_pack.iter_mut().enumerate() {
+        result.append(entries.as_mut().ok_or_else(|| format!("Task pack {} was not indexed", pack_index + 1))?);
+    }
+    Ok(result)
+}
+
+fn read_pack_nested_index(pack: &Pack, pack_index: usize, schema: &Schema, version: u32) -> Result<Vec<TaskSearchEntry>, String> {
+    let data = std::fs::read(pack.path()).map_err(|error| format!("{}: {error}", pack.path().display()))?;
+    let mut result = Vec::new();
+    for root in 0..pack.root_count() {
+        let range = pack.root_range(root)?;
+        let start = usize::try_from(range.start).map_err(|_| format!("{}: root {} offset is too large", pack.path().display(), root + 1))?;
+        let end = usize::try_from(range.end).map_err(|_| format!("{}: root {} end is too large", pack.path().display(), root + 1))?;
+        let bytes = data.get(start..end).ok_or_else(|| format!("{}: root {} range is outside the pack", pack.path().display(), root + 1))?;
+        let mut tasks = probe_task_index_validated(schema, bytes, version)
+            .map_err(|error| format!("{}: root {}: {error}", pack.path().display(), root + 1))?;
+        result.extend(tasks.drain(1..).map(|task| TaskSearchEntry {
+            pack: pack_index,
+            root,
+            path: task.path,
+            id: task.id,
+            name: task.name,
+            child_count: task.child_count,
+        }));
+    }
+    Ok(result)
+}
+
 fn fixed_utf16(bytes: &[u8]) -> String {
     let units: Vec<u16> = bytes.chunks_exact(2).map(|pair| u16::from_le_bytes([pair[0], pair[1]])).collect();
     let end = units.iter().position(|unit| *unit == 0).unwrap_or(units.len());
@@ -263,10 +523,8 @@ fn tree_view(task: &Node, path: Vec<usize>) -> Result<TreeNode, String> {
     Ok(TreeNode { id, name, path, children })
 }
 
-fn field_view(node: &Node) -> FieldView {
-    let children = node.children().iter().map(field_view).collect::<Vec<_>>();
-    let raw = matches!(node.ty, FieldType::Raw { .. });
-    let (value, interpretation) = match &node.value {
+fn display_value(node: &Node) -> (Option<String>, Option<String>) {
+    match &node.value {
         Value::I64(value) => (Some(value.to_string()), None),
         Value::U64(value) => (Some(value.to_string()), None),
         Value::F32(value) => (Some(format_float(*value as f64)), None),
@@ -276,16 +534,6 @@ fn field_view(node: &Node) -> FieldView {
         Value::Bytes(bytes) => (Some(hex_preview(bytes)), raw_interpretation(bytes)),
         Value::Struct(values) => (Some(format!("{} fields", values.len())), None),
         Value::Array(values) => (Some(format!("{} items", values.len())), None),
-    };
-    FieldView {
-        name: node.name.clone(),
-        offset: node.offset,
-        size: node.byte_len,
-        ty: type_name(&node.ty),
-        value,
-        interpretation,
-        children,
-        raw,
     }
 }
 
@@ -390,6 +638,19 @@ mod tests {
                 .expect("real task set should contain a root with subtasks");
             let parent_detail = document.task(parent.pack, parent.root, &[]).unwrap();
             assert_eq!(parent_detail.tree.children.len(), parent.child_count);
+
+            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+            let report = loop {
+                let report = document.search("__no_such_task__", 1);
+                assert!(report.error.is_none(), "{:?}", report.error);
+                if report.indexed {
+                    break document.search("", 50_000);
+                }
+                assert!(std::time::Instant::now() < deadline, "background task index timed out");
+                std::thread::sleep(std::time::Duration::from_millis(50));
+            };
+            assert!(report.total > document.summary().root_count);
+            assert!(report.matches.iter().any(|task| !task.path.is_empty()));
         }
     }
 }

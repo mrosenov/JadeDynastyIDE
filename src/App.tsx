@@ -1013,6 +1013,10 @@ export default function App() {
             active
             defaultPath={tasksEditorState.path ?? settingsView?.client?.dataFiles.find((file) => file.name.toLowerCase() === "tasks.data")?.path ?? null}
             onStateChange={setTasksEditorState}
+            onOpenElement={(list, row) => {
+              setWorkspace("elements");
+              openLocation({ list, row }, { pin: true });
+            }}
           />
         </main>
       ) : workspace === "paths" ? (
