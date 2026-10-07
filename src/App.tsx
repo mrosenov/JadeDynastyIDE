@@ -27,6 +27,7 @@ import { DialogViewer } from "./components/DialogViewer";
 import { SaveDialog } from "./components/SaveDialog";
 import { UnsavedDialog } from "./components/UnsavedDialog";
 import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } from "./components/PathDataEditor";
+import { TasksEditor, type TasksEditorHandle, type TasksEditorState } from "./components/TasksEditor";
 import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import { applyTheme } from "./theme";
@@ -67,7 +68,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths";
+type DataWorkspace = "elements" | "paths" | "tasks";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -155,6 +156,8 @@ export default function App() {
   const [pathEditorState, setPathEditorState] = useState<PathDataEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null });
   const pathEditorStateRef = useRef(pathEditorState);
   pathEditorStateRef.current = pathEditorState;
+  const tasksEditor = useRef<TasksEditorHandle>(null);
+  const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null });
   const [summary, setSummary] = useState<FileSummary | null>(null);
   const [fileKey, setFileKey] = useState(0);
   const [loading, setLoading] = useState<string | null>(null);
@@ -338,6 +341,7 @@ export default function App() {
       if (document.querySelector('.import-records-dialog')) return;
       if (event.payload.type === "drop" && event.payload.paths.length) {
         if (workspaceRef.current === "paths") pathEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "tasks") tasksEditor.current?.openPath(event.payload.paths[0]);
         else loadFile(event.payload.paths[0]);
       }
     });
@@ -802,6 +806,16 @@ export default function App() {
         { label: "Import JSON…", icon: FileUp, onSelect: () => pathEditor.current?.importJson(), disabled: !pathEditorState.loaded },
       ],
     },
+  ] : workspace === "tasks" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open tasks.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => tasksEditor.current?.choose() },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
   ] : elementMenus;
   const switchWorkspace = (next: DataWorkspace) => {
     if (next === workspace) return;
@@ -820,9 +834,9 @@ export default function App() {
         <FolderTree size={19} />
         {pathEditorState.dirty && <span className="activity-dirty" />}
       </button>
-      <span className="activity-soon" title="More game data files (tasks.data, gshop.data, …) will get their own entry here">
-        <FileStack size={17} />
-      </span>
+      <button className={"activity" + (workspace === "tasks" ? " active" : "")} onClick={() => switchWorkspace("tasks")} title="tasks.data browser" aria-label="tasks.data">
+        <FileStack size={19} />
+      </button>
     </nav>
   );
   const list = summary && listIndex !== null && listIndex >= 0 ? summary.lists[listIndex] : summary && showingDialogs ? dialogsList(summary) : null;
@@ -969,9 +983,14 @@ export default function App() {
         <SettingsDialog
           view={settingsView}
           onSaved={onSettingsSaved}
-          onOpenFile={(path) => {
-            setWorkspace("elements");
-            void loadFile(path);
+          onOpenFile={(file) => {
+            if (file.kind === "tasks" && file.name.toLowerCase() === "tasks.data") {
+              setWorkspace("tasks");
+              tasksEditor.current?.openPath(file.path);
+            } else {
+              setWorkspace("elements");
+              void loadFile(file.path);
+            }
           }}
           onClose={() => setSettingsOpen(false)}
         />
@@ -986,7 +1005,17 @@ export default function App() {
         </div>
       )}
 
-      {workspace === "paths" ? (
+      {workspace === "tasks" ? (
+        <main className="workspace tasks-data-workspace">
+          {activityBar}
+          <TasksEditor
+            ref={tasksEditor}
+            active
+            defaultPath={tasksEditorState.path ?? settingsView?.client?.dataFiles.find((file) => file.name.toLowerCase() === "tasks.data")?.path ?? null}
+            onStateChange={setTasksEditorState}
+          />
+        </main>
+      ) : workspace === "paths" ? (
         <main className="workspace path-data-workspace">
           {activityBar}
           <PathDataEditor
@@ -1201,7 +1230,18 @@ export default function App() {
       )}
 
       <footer className="statusbar">
-        {workspace === "paths" ? (
+        {workspace === "tasks" ? (
+          <>
+            <span>tasks.data</span>
+            {tasksEditorState.path && <span className="mono truncate" title={tasksEditorState.path}>{tasksEditorState.path}</span>}
+            <span className="spacer" />
+            {tasksEditorState.summary && <>
+              <span>v{tasksEditorState.summary.version}</span>
+              <span>{count(tasksEditorState.summary.rootCount)} roots</span>
+              <span>{tasksEditorState.summary.packCount} verified packs</span>
+            </>}
+          </>
+        ) : workspace === "paths" ? (
           <>
             <span>path.data</span>
             {pathEditorState.path && <span className="mono truncate" title={pathEditorState.path}>{pathEditorState.path}</span>}

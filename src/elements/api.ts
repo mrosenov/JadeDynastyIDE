@@ -49,6 +49,8 @@ import type {
   PathDataSaveRequest,
   PathDataJsonImport,
   PathDataJsonReport,
+  TasksFileSummary,
+  TaskDetail,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -61,6 +63,11 @@ export const savePathData = (request: PathDataSaveRequest) => invoke<PathDataSav
 export const exportPathDataJson = (path: string, sourcePath: string, rows: PathDataRow[]) => invoke<PathDataJsonReport>("export_path_data_json", { path, sourcePath, rows });
 /** Reads and validates a versioned path export or a plain array of path rows. */
 export const importPathDataJson = (path: string) => invoke<PathDataJsonImport>("import_path_data_json", { path });
+
+/** Opens and verifies a static tasks.data index and every numbered pack. */
+export const openTasks = (path: string) => invoke<TasksFileSummary>("open_tasks", { path });
+/** Decodes one root lazily, then selects a task in its recursive hierarchy. */
+export const getTask = (pack: number, root: number, path: number[]) => invoke<TaskDetail>("get_task", { pack, root, path });
 
 export const listRecords = (list: number) => invoke<RecordRow[]>("list_records", { list });
 

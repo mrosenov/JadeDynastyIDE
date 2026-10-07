@@ -3,8 +3,8 @@
 Desktop editor for Jade Dynasty (Zhu Xian) data files, built with Tauri 2
 (Rust backend, React + TypeScript UI).
 
-Reads, edits and saves `elements.data` across versions, with a separate editor for the
-client resource table in `path.data`.
+Reads, edits and saves `elements.data` across versions, with separate tools for the
+client resource table in `path.data` and static quests in `tasks.data`.
 
 ## How a file is read
 
@@ -45,8 +45,8 @@ Settings (gear icon, top right) take the game client folder: the client root or 
 folder. The Appearance setting follows the Windows theme by default or forces the light or dark
 theme. The discovered data-file and package lists stay collapsed until clicked. JD IDE then:
 
-- lists the client's data files (`element\data\*.data`) and opens `elements.data` from there.
-  Other kinds (tasks, gshop, npcgen, …) are listed for later versions. It can also open
+- lists the client's data files (`element\data\*.data`) and opens supported `elements.data`
+  and `tasks.data` files from there. Other kinds (gshop, npcgen, …) are listed for later versions. It can also open
   the client's `elements.data` on start.
 - reads `path.data`, so path and icon fields show their resource path.
 - reads item icons from `surfaces.pck` (`surfaces\iconset\iconlist_ivtr.dds` + `.txt`).
@@ -92,6 +92,26 @@ OpenAI-compatible `/chat/completions` endpoint. The key is sent only to that con
 continuation parts). `dds.rs` decodes DXT1/3/5 and uncompressed DDS, one icon's blocks at a
 time. Icons are served to the UI as PNGs through the `jdicon://` protocol. Path IDs only
 match when `elements.data` comes from the same client as `path.data`.
+
+## tasks.data browser
+
+The stacked-file icon in the activity bar opens the static task browser. If Settings has a
+game client folder, its `element\data\tasks.data` opens automatically. **Open…** can select a
+different task index. Versions 165, 172 and 184 are currently supported and read-only.
+
+Opening verifies the index, every numbered pack (`tasks.data1`, `tasks.data2`, …), every root
+offset table and each pack's stored MD5 before showing any quests. It also reads each root's
+direct-subtask count with a lightweight parallel schema scan. The header shows the task version,
+root count, pack count, combined size and integrity result. Root quests can be searched by ID or
+name and are paged 200 at a time with a direct page-number box.
+
+Roots containing subtasks show a small **+** as soon as the file opens. Expanding or selecting a
+root decodes only that complete quest tree; nested subtasks use the same tree controls. Selecting any task
+shows its typed fields, source offsets and byte sizes. Structures
+and arrays are collapsible. Fields whose purpose is not known keep their fixed raw bytes; short
+raw values also show unsigned, signed and floating-point interpretations on hover. One decoded
+root is cached, so moving among its subtasks does not reread or decode the pack. Editing and
+saving remain disabled until the in-memory edit journal and multi-file atomic save are complete.
 
 ## path.data editor
 

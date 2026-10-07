@@ -109,7 +109,7 @@ pub fn inspect(picked: &Path) -> Result<ClientInfo, String> {
             name.to_lowercase().contains(".data").then(|| {
                 let kind = data_kind(&name);
                 DataFile {
-                    supported: kind == "elements",
+                    supported: kind == "elements" || (kind == "tasks" && name.eq_ignore_ascii_case("tasks.data")),
                     path: e.path().display().to_string(),
                     size: e.metadata().map(|m| m.len()).unwrap_or(0),
                     name,

@@ -330,6 +330,63 @@ export interface PathDataJsonImport {
   exportedAt?: string;
 }
 
+// ---------------------------------------------------------------- tasks.data
+
+export interface TaskRootSummary {
+  index: number;
+  /** Zero-based numbered pack position (`tasks.data${pack + 1}`). */
+  pack: number;
+  /** Zero-based root position inside the pack. */
+  root: number;
+  id: number;
+  name: string;
+  childCount: number;
+  byteSize: number;
+}
+
+export interface TasksFileSummary {
+  path: string;
+  version: number;
+  exportVersion: number;
+  rootCount: number;
+  packCount: number;
+  /** Index and numbered packs together. */
+  size: number;
+  roots: TaskRootSummary[];
+}
+
+export interface TaskTreeNode {
+  id: number;
+  name: string;
+  /** Child indexes from the selected root. Empty means the root task. */
+  path: number[];
+  children: TaskTreeNode[];
+}
+
+export interface TaskFieldView {
+  name: string;
+  offset: number;
+  size: number;
+  ty: string;
+  value?: string;
+  interpretation?: string;
+  children?: TaskFieldView[];
+  raw: boolean;
+}
+
+export interface TaskDetail {
+  pack: number;
+  root: number;
+  path: number[];
+  id: number;
+  name: string;
+  rootBytes: number;
+  taskOffset: number;
+  taskSize: number;
+  tree: TaskTreeNode;
+  fields: TaskFieldView[];
+}
+
 // ---------------------------------------------------------------- enums and masks
 
 export type SetKind = "enum" | "mask";

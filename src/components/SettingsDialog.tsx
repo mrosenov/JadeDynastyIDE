@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { ChevronRight, CircleAlert, CircleCheck, Database, Eye, EyeOff, FolderSearch, KeyRound, Loader2, Monitor, Moon, Package, Settings as SettingsIcon, Sparkles, Sun, X } from "lucide-react";
 import { inspectClient, saveSettings } from "../elements/api";
-import type { ClientInfo, SettingsView, Theme } from "../elements/types";
+import type { ClientInfo, DataFile, SettingsView, Theme } from "../elements/types";
 import { bytes } from "../elements/format";
 import { applyTheme } from "../theme";
 
 interface Props {
   view: SettingsView;
   onSaved: (view: SettingsView) => void;
-  onOpenFile: (path: string) => void;
+  onOpenFile: (file: DataFile) => void;
   onClose: () => void;
 }
 
@@ -252,7 +252,7 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
                           <button
                             className="link"
                             onClick={() => {
-                              onOpenFile(f.path);
+                              onOpenFile(f);
                               onClose();
                             }}
                           >

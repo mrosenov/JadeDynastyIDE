@@ -2,6 +2,7 @@ mod client;
 mod elements;
 mod path_data;
 mod settings;
+pub mod tasks;
 
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicU32, Ordering};
@@ -20,6 +21,8 @@ use tauri::{Manager, State};
 
 struct AppState {
     document: Mutex<Option<Document>>,
+    /// The separately opened static task set. Root records are decoded lazily.
+    tasks: Mutex<Option<tasks::browser::TaskDocument>>,
     /// A second file compared with the open one (locked after `document`).
     compared: Mutex<Option<Document>>,
     catalog: RwLock<Arc<Catalog>>,
@@ -129,6 +132,27 @@ async fn open_elements(path: String, state: State<'_, AppState>) -> Result<FileS
 #[tauri::command]
 async fn open_path_data(path: String) -> Result<path_data::FileView, String> {
     tauri::async_runtime::spawn_blocking(move || path_data::open(path)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn open_tasks(path: String, state: State<'_, AppState>) -> Result<tasks::browser::FileSummary, String> {
+    let document = tauri::async_runtime::spawn_blocking(move || tasks::browser::TaskDocument::open(path))
+        .await
+        .map_err(|error| error.to_string())??;
+    let summary = document.summary();
+    *state.tasks.lock().map_err(|_| "State lock poisoned")? = Some(document);
+    Ok(summary)
+}
+
+#[tauri::command]
+async fn get_task(pack: usize, root: usize, path: Vec<usize>, state: State<'_, AppState>) -> Result<tasks::browser::TaskDetail, String> {
+    state
+        .tasks
+        .lock()
+        .map_err(|_| "State lock poisoned")?
+        .as_mut()
+        .ok_or("Open tasks.data first")?
+        .task(pack, root, &path)
 }
 
 #[tauri::command]
@@ -721,6 +745,7 @@ pub fn run() {
             let settings = Settings::load(&settings_path);
             let state = AppState {
                 document: Mutex::new(None),
+                tasks: Mutex::new(None),
                 compared: Mutex::new(None),
                 catalog: RwLock::new(catalog),
                 user_dir,
@@ -749,6 +774,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             open_elements,
             open_path_data,
+            open_tasks,
+            get_task,
             save_path_data,
             export_path_data_json,
             import_path_data_json,
