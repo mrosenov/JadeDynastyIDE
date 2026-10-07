@@ -277,7 +277,7 @@ export default function App() {
         event.preventDefault();
         return;
       }
-      if (tasksEditorStateRef.current.dirty && !window.confirm("tasks.data has in-memory changes. Close JD IDE and discard them?")) {
+      if (tasksEditorStateRef.current.dirty && !window.confirm("tasks.data has unsaved changes. Close JD IDE and discard them?")) {
         event.preventDefault();
         return;
       }
@@ -818,6 +818,7 @@ export default function App() {
       accessKey: "f",
       items: [
         { label: "Open tasks.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => tasksEditor.current?.choose() },
+        { label: "Save tasks.data…", icon: Save, shortcut: "Ctrl+S", onSelect: () => tasksEditor.current?.save(), disabled: !tasksEditorState.loaded },
         "separator",
         { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
       ],
@@ -1005,7 +1006,7 @@ export default function App() {
               if (workspace === "tasks") {
                 tasksEditor.current?.openPath(file.path);
               } else {
-                if (tasksEditorStateRef.current.dirty && !window.confirm("Open another tasks.data file and discard the current in-memory changes?")) return;
+                if (tasksEditorStateRef.current.dirty && !window.confirm("Open another tasks.data file and discard the current unsaved changes?")) return;
                 setTasksEditorState({ loaded: false, path: file.path, summary: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
                 setWorkspace("tasks");
               }

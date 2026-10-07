@@ -203,6 +203,16 @@ async fn revert_task_edits(state: State<'_, AppState>) -> Result<tasks::edit::Ed
 }
 
 #[tauri::command]
+async fn task_save_plan(options: tasks::save::SaveOptions, state: State<'_, AppState>) -> Result<tasks::save::SavePlan, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.save_plan(&options)
+}
+
+#[tauri::command]
+async fn save_tasks(options: tasks::save::SaveOptions, state: State<'_, AppState>) -> Result<tasks::save::SaveReport, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.save(&options)
+}
+
+#[tauri::command]
 async fn save_path_data(request: path_data::SaveRequest, state: State<'_, AppState>) -> Result<path_data::SaveReport, String> {
     let client_path = state.resources().map(|resources| resources.path_data_file());
     let mut report = tauri::async_runtime::spawn_blocking(move || path_data::save(request)).await.map_err(|error| error.to_string())??;
@@ -830,6 +840,8 @@ pub fn run() {
             undo_task_edit,
             redo_task_edit,
             revert_task_edits,
+            task_save_plan,
+            save_tasks,
             save_path_data,
             export_path_data_json,
             import_path_data_json,

@@ -183,26 +183,28 @@ impl TaskDetail {
 }
 
 pub struct TaskDocument {
-    container: TaskContainer,
-    schema: Schema,
-    summary: FileSummary,
+    pub(crate) container: TaskContainer,
+    pub(crate) schema: Schema,
+    pub(crate) summary: FileSummary,
     search: Arc<RwLock<TaskSearchIndex>>,
-    cache: Option<CachedRoot>,
-    modified: HashMap<(usize, usize), ModifiedRoot>,
+    pub(crate) cache: Option<CachedRoot>,
+    pub(crate) modified: HashMap<(usize, usize), ModifiedRoot>,
     journal: Journal,
+    pub(crate) disk: HashMap<std::path::PathBuf, super::save::DiskStamp>,
+    pub(crate) backed_up: HashSet<std::path::PathBuf>,
 }
 
-struct CachedRoot {
+pub(crate) struct CachedRoot {
     pack: usize,
     root: usize,
     bytes: usize,
-    node: Node,
-    original: Node,
+    pub(crate) node: Node,
+    pub(crate) original: Node,
 }
 
-struct ModifiedRoot {
-    original: Vec<u8>,
-    current: Vec<u8>,
+pub(crate) struct ModifiedRoot {
+    pub(crate) original: Vec<u8>,
+    pub(crate) current: Vec<u8>,
 }
 
 impl TaskDocument {
@@ -250,7 +252,8 @@ impl TaskDocument {
                 Err(error) => index.error = Some(error),
             }
         });
-        Ok(Self { container, schema, summary, search, cache: None, modified: HashMap::new(), journal: Journal::default() })
+        let disk = super::save::stamps(&container);
+        Ok(Self { container, schema, summary, search, cache: None, modified: HashMap::new(), journal: Journal::default(), disk, backed_up: HashSet::new() })
     }
 
     pub fn summary(&self) -> FileSummary {
@@ -522,7 +525,7 @@ impl TaskDocument {
         Ok(self.edit_state())
     }
 
-    fn current_root(&self, pack: usize, root: usize) -> Result<Vec<u8>, String> {
+    pub(crate) fn current_root(&self, pack: usize, root: usize) -> Result<Vec<u8>, String> {
         match self.modified.get(&(pack, root)) {
             Some(value) => Ok(value.current.clone()),
             None => self.container.root(pack, root),

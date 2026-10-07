@@ -178,6 +178,8 @@ Completion gate:
 
 ## Milestone 8: safe saving
 
+**Implementation complete (October 2026); matching client/server load confirmation pending.**
+
 Initially save existing-task edits without changing root ordering or pack membership.
 
 - Rewrite only changed packs when possible.

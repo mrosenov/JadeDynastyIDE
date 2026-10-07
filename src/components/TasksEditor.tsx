@@ -1,10 +1,11 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { Check, FileCheck2, FolderOpen, History, Link2, ListTree, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Undo2, X } from "lucide-react";
-import { editTaskField, getTask, getTaskEditHistory, openTasks, redoTaskEdit, revertTaskEdits, searchTasks, undoTaskEdit } from "../elements/api";
+import { editTaskField, getTask, getTaskEditHistory, getTaskEditState, openTasks, redoTaskEdit, revertTaskEdits, searchTasks, undoTaskEdit } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import type { TaskDetail, TaskEditState, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskRootSummary, TaskSearchReport, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
+import { TaskSaveDialog } from "./TaskSaveDialog";
 
 export interface TasksEditorState {
   loaded: boolean;
@@ -23,6 +24,7 @@ export interface TasksEditorHandle {
   undo: () => void;
   redo: () => void;
   revertAll: () => void;
+  save: () => void;
 }
 
 interface Props {
@@ -189,6 +191,8 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const [editState, setEditState] = useState<TaskEditState>(initialState?.edits ?? { changedRoots: [] });
   const [history, setHistory] = useState<TaskHistoryEntry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [savedNote, setSavedNote] = useState<string | null>(null);
   const autoOpened = useRef<string | null>(initialFile?.path ?? null);
   const restoring = useRef(!!initialFile);
   const request = useRef(0);
@@ -265,7 +269,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [editState.changedRoots.length, runEditAction]);
 
   const load = useCallback(async (path: string) => {
-    if (file && editState.changedRoots.length && !window.confirm("Open another tasks.data file and discard the current in-memory changes?")) return;
+    if (file && editState.changedRoots.length && !window.confirm("Open another tasks.data file and discard the current unsaved changes?")) return;
     const current = ++request.current;
     setBusy(true);
     setTaskBusy(false);
@@ -305,7 +309,8 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     if (typeof picked === "string") void load(picked);
   }, [defaultPath, file?.path, load]);
 
-  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll }), [choose, load, redo, revertAll, undo]);
+  const openSave = useCallback(() => file && !busy && !taskBusy && setSaving(true), [busy, file, taskBusy]);
+  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave }), [choose, load, openSave, redo, revertAll, undo]);
 
   useEffect(() => {
     if (!active) return;
@@ -318,12 +323,13 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       event.preventDefault();
       event.stopImmediatePropagation();
       if (key === "o") void choose();
+      if (key === "s") openSave();
       if (key === "z") undo();
       if (key === "y") redo();
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [active, choose, redo, undo]);
+  }, [active, choose, openSave, redo, undo]);
 
   useEffect(() => {
     if (!active || !defaultPath || file || autoOpened.current === defaultPath) return;
@@ -452,6 +458,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       <span className="tasks-integrity" title="The index, pack headers, offsets and every stored pack MD5 were verified"><ShieldCheck size={14} /> Integrity verified</span>
       {!!editState.changedRoots.length && <span className="status-edits"><span className="changed-dot" /> {editState.changedRoots.length} changed root{editState.changedRoots.length === 1 ? "" : "s"}</span>}
       <button className="btn" onClick={choose} disabled={busy}><FolderOpen size={14} /> Open…</button>
+      <button className="btn primary" onClick={openSave} disabled={busy || taskBusy}><FileCheck2 size={14} /> Save…</button>
     </header>
     {error && <div className="path-data-message error">{error}</div>}
     <div className="tasks-body">
@@ -530,5 +537,13 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
         </> : <div className="empty-note center">Select a task to inspect its fields.</div>}
       </section>
     </div>
+    {savedNote && <div className="path-data-message ok">{savedNote}</div>}
+    {saving && <TaskSaveDialog path={file.path} onCancel={() => setSaving(false)} onSaved={(report) => {
+      setSaving(false);
+      setFile((current) => current ? { ...current, path: report.path, size: report.size } : current);
+      getTaskEditState().then(setEditState).catch((problem) => setError(String(problem)));
+      setSavedNote(`Saved ${report.changedRoots} changed root${report.changedRoots === 1 ? "" : "s"} across ${report.changedPacks} pack${report.changedPacks === 1 ? "" : "s"}.`);
+      window.setTimeout(() => setSavedNote(null), 5000);
+    }} />}
   </section>;
 });

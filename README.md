@@ -125,10 +125,18 @@ every edited root is decoded and byte-round-tripped before the change is accepte
 
 Changed fields and roots are marked in green. **Edit** and the inspector toolbar provide undo,
 redo, edit history and revert all; undo restores the complete original root bytes, including all
-offsets after variable-length text. Changes stay in memory in this milestone. Switching tools
+offsets after variable-length text. Switching tools
 preserves the selected task, changed roots, history and undo/redo journal; JD IDE asks before
-closing or opening another task set. Writing `tasks.data` and its numbered packs
-remains disabled until the atomic multi-file saver in the next milestone is complete.
+closing or opening another task set.
+
+**Save…** or Ctrl+S writes the task index and its numbered packs. JD IDE rebuilds only packs with
+edited roots when saving over the open task set, recalculates every affected root offset and pack
+MD5, and preserves unchanged packs byte-for-byte. Save As writes a complete task set. Before any
+replacement, the complete staged set is reopened, every pack checksum is checked, and every root
+must decode and encode back to identical bytes. An optional timestamped `.bak` folder keeps the
+complete replaced set. A changed-on-disk guard stops saving if the index or any source pack was
+altered by another program; read-only destination files are made writable. Undo and redo remain
+available after a successful save.
 
 ## path.data editor
 

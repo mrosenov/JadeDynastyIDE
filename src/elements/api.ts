@@ -55,6 +55,9 @@ import type {
   TaskFieldEdit,
   TaskEditState,
   TaskHistoryEntry,
+  TaskSaveOptions,
+  TaskSavePlan,
+  TaskSaveReport,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -81,6 +84,8 @@ export const getTaskEditHistory = () => invoke<TaskHistoryEntry[]>("task_edit_hi
 export const undoTaskEdit = () => invoke<TaskEditState>("undo_task_edit");
 export const redoTaskEdit = () => invoke<TaskEditState>("redo_task_edit");
 export const revertTaskEdits = () => invoke<TaskEditState>("revert_task_edits");
+export const taskSavePlan = (options: TaskSaveOptions) => invoke<TaskSavePlan>("task_save_plan", { options });
+export const saveTasks = (options: TaskSaveOptions) => invoke<TaskSaveReport>("save_tasks", { options });
 
 export const listRecords = (list: number) => invoke<RecordRow[]>("list_records", { list });
 

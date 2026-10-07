@@ -426,6 +426,32 @@ export interface TaskHistoryEntry {
   undone: boolean;
 }
 
+export interface TaskSaveOptions {
+  path: string;
+  backup: boolean;
+}
+
+export interface TaskSavePlan {
+  path: string;
+  replaces: boolean;
+  sameFile: boolean;
+  changedOnDisk: boolean;
+  readOnly: boolean;
+  changedRoots: number;
+  changedPacks: number;
+  packCount: number;
+  size: number;
+  backup?: string;
+}
+
+export interface TaskSaveReport {
+  path: string;
+  size: number;
+  changedRoots: number;
+  changedPacks: number;
+  backup?: string;
+}
+
 export interface TaskFieldReference {
   kind: "task" | "element" | "skill" | "buff" | "title";
   id: number;
