@@ -371,6 +371,57 @@ export interface TaskSearchReport {
   matches: TaskSearchEntry[];
 }
 
+export interface TaskSourceInfo {
+  path: string;
+  version: number;
+  exportVersion: number;
+  rootCount: number;
+  packCount: number;
+  size: number;
+  supported: boolean;
+  closestVersion: number;
+  supportedVersions: number[];
+}
+
+export interface TaskSourceVersion {
+  version: number;
+  supported: boolean;
+}
+
+export interface TaskPackCoverage {
+  pack: number;
+  roots: number;
+  exactRoots: number;
+  trailingRoots: number;
+  failedRoots: number;
+  bytes: number;
+  decodedBytes: number;
+}
+
+export interface TaskAnalysisIssue {
+  pack: number;
+  root: number;
+  rootBytes: number;
+  offset: number;
+  kind: "failed" | "trailing" | "round_trip";
+  message: string;
+}
+
+export interface TaskAnalysisReport {
+  source: TaskSourceInfo;
+  baselineVersion: number;
+  exactRoots: number;
+  trailingRoots: number;
+  failedRoots: number;
+  totalBytes: number;
+  decodedBytes: number;
+  rootCoverage: number;
+  byteCoverage: number;
+  exactRoundTrip: boolean;
+  firstIssue?: TaskAnalysisIssue;
+  packs: TaskPackCoverage[];
+}
+
 export interface TaskTreeNode {
   id: number;
   name: string;

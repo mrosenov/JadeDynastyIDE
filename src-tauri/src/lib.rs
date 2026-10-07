@@ -145,6 +145,21 @@ async fn open_tasks(path: String, state: State<'_, AppState>) -> Result<tasks::b
 }
 
 #[tauri::command]
+async fn inspect_tasks(path: String) -> Result<tasks::analyze::SourceInfo, String> {
+    tauri::async_runtime::spawn_blocking(move || tasks::analyze::inspect(path)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn task_source_version(path: String) -> Result<tasks::analyze::SourceVersion, String> {
+    tauri::async_runtime::spawn_blocking(move || tasks::analyze::source_version(path)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn analyze_tasks(path: String, baseline_version: u32) -> Result<tasks::analyze::AnalysisReport, String> {
+    tauri::async_runtime::spawn_blocking(move || tasks::analyze::analyze(path, baseline_version)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
 async fn get_task(pack: usize, root: usize, path: Vec<usize>, state: State<'_, AppState>) -> Result<tasks::browser::TaskDetail, String> {
     let mut detail = {
         state
@@ -832,6 +847,9 @@ pub fn run() {
             open_elements,
             open_path_data,
             open_tasks,
+            task_source_version,
+            inspect_tasks,
+            analyze_tasks,
             get_task,
             search_tasks,
             edit_task_field,

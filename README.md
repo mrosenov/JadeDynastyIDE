@@ -138,6 +138,14 @@ complete replaced set. A changed-on-disk guard stops saving if the index or any 
 altered by another program; read-only destination files are made writable. Undo and redo remain
 available after a successful save.
 
+If a task version has no verified layout, JD IDE opens a read-only **Task layout analyzer**
+instead of treating the file as editable. The outer index, numbered packs, offsets and MD5 values
+are still verified first. Choose v165, v172 or v184 as an older baseline and run **Analyze layout**
+to test every root. The report separates byte-exact roots, roots where the baseline ends with
+trailing bytes, and structural failures; it shows root and byte coverage, the first stopping
+field and offset, and coverage for each pack. Analysis never changes the file, and saving remains
+disabled even when an older schema happens to round-trip every root.
+
 ## path.data editor
 
 The folder-tree icon in the activity bar opens `path.data` as a separate data workspace. If

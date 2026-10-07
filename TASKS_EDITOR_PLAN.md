@@ -197,6 +197,10 @@ Completion gate:
 
 ## Milestone 9: unsupported-version analyzer and schema editor
 
+**In progress (October 2026).** Unsupported files now open in a read-only analyzer with selectable
+v165/v172/v184 baselines, parallel whole-file root and byte coverage, first-failure offsets and
+per-pack results. Candidate-field scoring, schema patch editing and patch import/export remain.
+
 Build the workflow for future task versions after the known parsers and saver are trusted.
 
 - Start from the closest supported schema.

@@ -58,6 +58,9 @@ import type {
   TaskSaveOptions,
   TaskSavePlan,
   TaskSaveReport,
+  TaskSourceInfo,
+  TaskSourceVersion,
+  TaskAnalysisReport,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -73,6 +76,9 @@ export const importPathDataJson = (path: string) => invoke<PathDataJsonImport>("
 
 /** Opens and verifies a static tasks.data index and every numbered pack. */
 export const openTasks = (path: string) => invoke<TasksFileSummary>("open_tasks", { path });
+export const taskSourceVersion = (path: string) => invoke<TaskSourceVersion>("task_source_version", { path });
+export const inspectTasks = (path: string) => invoke<TaskSourceInfo>("inspect_tasks", { path });
+export const analyzeTasks = (path: string, baselineVersion: number) => invoke<TaskAnalysisReport>("analyze_tasks", { path, baselineVersion });
 /** Decodes one root lazily, then selects a task in its recursive hierarchy. */
 export const getTask = (pack: number, root: number, path: number[]) => invoke<TaskDetail>("get_task", { pack, root, path });
 /** Searches root and nested quests through the background task index. */

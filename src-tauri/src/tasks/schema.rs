@@ -483,6 +483,26 @@ pub fn decode_prefix(schema: &Schema, bytes: &[u8], version: u32) -> Result<(Nod
     decode_prefix_with_limits(schema, bytes, version, Limits::default())
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DecodeFailure {
+    /// The byte position reached before the baseline schema could not continue.
+    pub offset: usize,
+    pub message: String,
+}
+
+/// Decodes as far as possible while retaining the byte position of a failure.
+/// The unsupported-version analyzer uses this to distinguish a complete root,
+/// trailing bytes, and a structural failure without changing the normal parser.
+pub fn decode_prefix_diagnostic(schema: &Schema, bytes: &[u8], version: u32) -> Result<(Node, usize), DecodeFailure> {
+    schema.validate().map_err(|message| DecodeFailure { offset: 0, message })?;
+    let root = schema.root.clone();
+    let mut decoder = Decoder { schema, bytes, version, limits: Limits::default(), position: 0, nodes: 0 };
+    match decoder.named(&root, &root, &root, 0) {
+        Ok(node) => Ok((node, decoder.position)),
+        Err(message) => Err(DecodeFailure { offset: decoder.position, message }),
+    }
+}
+
 pub fn decode_prefix_with_limits(
     schema: &Schema,
     bytes: &[u8],

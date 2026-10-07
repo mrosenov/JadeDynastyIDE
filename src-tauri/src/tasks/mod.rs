@@ -1,5 +1,6 @@
 //! Static task templates stored in `tasks.data` and its numbered packs.
 
+pub mod analyze;
 pub mod browser;
 pub mod container;
 pub mod edit;
@@ -11,6 +12,16 @@ pub mod v172;
 pub mod v184;
 
 use schema::Schema;
+
+pub const SUPPORTED_VERSIONS: [u32; 3] = [v165::VERSION, v172::VERSION, v184::VERSION];
+
+pub fn supported_versions() -> &'static [u32] {
+    &SUPPORTED_VERSIONS
+}
+
+pub fn closest_schema_version(version: u32) -> u32 {
+    *SUPPORTED_VERSIONS.iter().min_by_key(|candidate| (candidate.abs_diff(version), **candidate)).unwrap()
+}
 
 /// Returns a schema only after that task version has passed a complete,
 /// byte-exact real-file round trip.

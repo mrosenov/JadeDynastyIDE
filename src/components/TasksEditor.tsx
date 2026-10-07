@@ -1,9 +1,9 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { Check, FileCheck2, FolderOpen, History, Link2, ListTree, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Undo2, X } from "lucide-react";
-import { editTaskField, getTask, getTaskEditHistory, getTaskEditState, openTasks, redoTaskEdit, revertTaskEdits, searchTasks, undoTaskEdit } from "../elements/api";
+import { AlertTriangle, BarChart3, Check, FileCheck2, FlaskConical, FolderOpen, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Undo2, X } from "lucide-react";
+import { analyzeTasks, editTaskField, getTask, getTaskEditHistory, getTaskEditState, inspectTasks, openTasks, redoTaskEdit, revertTaskEdits, searchTasks, taskSourceVersion, undoTaskEdit } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskDetail, TaskEditState, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskRootSummary, TaskSearchReport, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskAnalysisReport, TaskDetail, TaskEditState, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskRootSummary, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 import { TaskSaveDialog } from "./TaskSaveDialog";
 
@@ -11,6 +11,8 @@ export interface TasksEditorState {
   loaded: boolean;
   path: string | null;
   summary: TasksFileSummary | null;
+  unsupported: TaskSourceInfo | null;
+  analysis: TaskAnalysisReport | null;
   dirty: boolean;
   canUndo: boolean;
   canRedo: boolean;
@@ -172,10 +174,15 @@ function FieldRow({ field, depth = 0, onReference, onEdit }: { field: TaskFieldV
 
 export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEditor({ active, defaultPath, initialState, onStateChange, onOpenElement }, ref) {
   const initialFile = initialState?.loaded ? initialState.summary : null;
+  const initialUnsupported = initialState?.loaded ? initialState.unsupported : null;
   const initialRoot = initialFile && initialState?.selection
     ? initialFile.roots.find((root) => root.pack === initialState.selection!.pack && root.root === initialState.selection!.root) ?? null
     : null;
   const [file, setFile] = useState<TasksFileSummary | null>(initialFile);
+  const [unsupported, setUnsupported] = useState<TaskSourceInfo | null>(initialUnsupported);
+  const [analysis, setAnalysis] = useState<TaskAnalysisReport | null>(initialState?.analysis ?? null);
+  const [baseline, setBaseline] = useState(initialUnsupported?.closestVersion ?? 184);
+  const [analysisBusy, setAnalysisBusy] = useState(false);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase());
   const [page, setPage] = useState(0);
@@ -193,7 +200,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedNote, setSavedNote] = useState<string | null>(null);
-  const autoOpened = useRef<string | null>(initialFile?.path ?? null);
+  const autoOpened = useRef<string | null>(initialFile?.path ?? initialUnsupported?.path ?? null);
   const restoring = useRef(!!initialFile);
   const request = useRef(0);
 
@@ -275,6 +282,8 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setTaskBusy(false);
     setError(null);
     setFile(null);
+    setUnsupported(null);
+    setAnalysis(null);
     setDetail(null);
     setSelectedRoot(null);
     setSelectedPath([]);
@@ -284,15 +293,35 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setEditState({ changedRoots: [] });
     setHistory(null);
     try {
+      const sourceVersion = await taskSourceVersion(path);
+      if (!sourceVersion.supported) {
+        const source = await inspectTasks(path);
+        if (request.current !== current) return;
+        setUnsupported(source);
+        setBaseline(source.closestVersion);
+        setQuery("");
+        setPage(0);
+        return;
+      }
       const opened = await openTasks(path);
       if (request.current !== current) return;
       setFile(opened);
+      setUnsupported(null);
       setQuery("");
       setPage(0);
       setBusy(false);
       if (opened.roots[0]) void selectTask(opened.roots[0], []);
     } catch (problem) {
-      if (request.current === current) setError(String(problem).replace(/^Error: /, ""));
+      try {
+        const source = await inspectTasks(path);
+        if (request.current === current) {
+          setUnsupported(source);
+          setBaseline(source.closestVersion);
+          setError(null);
+        }
+      } catch {
+        if (request.current === current) setError(String(problem).replace(/^Error: /, ""));
+      }
     } finally {
       if (request.current === current) setBusy(false);
     }
@@ -302,12 +331,12 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     const picked = await open({
       multiple: false,
       directory: false,
-      defaultPath: file?.path || defaultPath || undefined,
+      defaultPath: file?.path || unsupported?.path || defaultPath || undefined,
       title: "Open tasks.data",
       filters: [{ name: "tasks.data", extensions: ["data"] }],
     });
     if (typeof picked === "string") void load(picked);
-  }, [defaultPath, file?.path, load]);
+  }, [defaultPath, file?.path, load, unsupported?.path]);
 
   const openSave = useCallback(() => file && !busy && !taskBusy && setSaving(true), [busy, file, taskBusy]);
   useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave }), [choose, load, openSave, redo, revertAll, undo]);
@@ -332,10 +361,10 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [active, choose, openSave, redo, undo]);
 
   useEffect(() => {
-    if (!active || !defaultPath || file || autoOpened.current === defaultPath) return;
+    if (!active || !defaultPath || file || unsupported || autoOpened.current === defaultPath) return;
     autoOpened.current = defaultPath;
     void load(defaultPath);
-  }, [active, defaultPath, file, load]);
+  }, [active, defaultPath, file, load, unsupported]);
 
   useEffect(() => {
     if (!active || !file || !restoring.current) return;
@@ -346,16 +375,31 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
 
   useEffect(() => {
     onStateChange({
-      loaded: !!file,
-      path: file?.path ?? null,
+      loaded: !!file || !!unsupported,
+      path: file?.path ?? unsupported?.path ?? null,
       summary: file,
+      unsupported,
+      analysis,
       dirty: editState.changedRoots.length > 0,
       canUndo: !!editState.undo,
       canRedo: !!editState.redo,
       edits: editState,
       selection: selectedRoot ? { pack: selectedRoot.pack, root: selectedRoot.root, path: selectedPath } : null,
     });
-  }, [editState, file, onStateChange, selectedPath, selectedRoot]);
+  }, [analysis, editState, file, onStateChange, selectedPath, selectedRoot, unsupported]);
+
+  const runAnalysis = useCallback(async () => {
+    if (!unsupported || analysisBusy) return;
+    setAnalysisBusy(true);
+    setError(null);
+    try {
+      setAnalysis(await analyzeTasks(unsupported.path, baseline));
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setAnalysisBusy(false);
+    }
+  }, [analysisBusy, baseline, unsupported]);
 
   useEffect(() => {
     if (!file || !deferredQuery) {
@@ -431,6 +475,38 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [file, onOpenElement, selectTask]);
 
   if (!file) {
+    if (unsupported) {
+      const issue = analysis?.firstIssue;
+      return <section className="tasks-pane task-analyzer-pane" aria-busy={busy || analysisBusy}>
+        <header className="tasks-head">
+          <div><h2>Task layout analyzer <span className="tag warn">unverified layout</span></h2><div className="tasks-file-line"><span className="mono truncate" title={unsupported.path}>{unsupported.path}</span><span className="path-data-badge"><b>Version:</b> v{unsupported.version}</span><span className="path-data-badge"><b>Roots:</b> {count(unsupported.rootCount)}</span><span className="path-data-badge"><b>Packs:</b> {unsupported.packCount}</span><span className="path-data-badge"><b>Size:</b> {bytes(unsupported.size)}</span></div></div>
+          <span className="tasks-integrity" title="The index, pack headers, root offsets and stored MD5 values are valid"><ShieldCheck size={14}/> Container verified</span>
+          <button className="btn" onClick={choose} disabled={busy || analysisBusy}><FolderOpen size={14}/> Open…</button>
+        </header>
+        <div className="task-analyzer-scroll">
+          <section className="task-analyzer-intro">
+            <AlertTriangle size={22}/><div><h3>{unsupported.supported ? `The v${unsupported.version} schema could not decode this task set` : `tasks.data v${unsupported.version} has no verified layout`}</h3><p>Analysis is read-only. It applies an older known schema to every root and reports exactly where that baseline stops matching. Saving stays disabled.</p></div>
+          </section>
+          <section className="task-analyzer-controls">
+            <label>Older schema <select value={baseline} onChange={(event) => { setBaseline(Number(event.target.value)); setAnalysis(null); }} disabled={analysisBusy}>{unsupported.supportedVersions.map((version) => <option value={version} key={version}>v{version}{version === unsupported.closestVersion ? " · closest" : ""}</option>)}</select></label>
+            <button className="btn primary" onClick={() => void runAnalysis()} disabled={analysisBusy}>{analysisBusy ? <Loader2 size={14} className="spin"/> : <FlaskConical size={14}/>} {analysisBusy ? "Analyzing every root…" : "Analyze layout"}</button>
+            <span className="muted small">No data is changed.</span>
+          </section>
+          {error && <div className="path-data-message error">{error}</div>}
+          {analysis && <>
+            <section className="task-analysis-metrics">
+              <div><span>Exact roots</span><b>{count(analysis.exactRoots)} / {count(analysis.source.rootCount)}</b><small>{analysis.rootCoverage.toFixed(2)}%</small></div>
+              <div><span>Decoded bytes</span><b>{bytes(analysis.decodedBytes)} / {bytes(analysis.totalBytes)}</b><small>{analysis.byteCoverage.toFixed(2)}%</small></div>
+              <div><span>Trailing roots</span><b>{count(analysis.trailingRoots)}</b><small>baseline ends early</small></div>
+              <div><span>Failed roots</span><b>{count(analysis.failedRoots)}</b><small>structural failure</small></div>
+            </section>
+            {analysis.exactRoundTrip ? <div className="task-analysis-result exact"><ShieldCheck size={17}/><div><b>Every root matches the v{analysis.baselineVersion} layout byte-for-byte.</b><span>The container version is still unverified, so editing and saving remain locked until a user layout is created and accepted.</span></div></div>
+              : issue && <div className="task-analysis-result issue"><BarChart3 size={17}/><div><b>First stopping point: pack {issue.pack + 1}, root {issue.root + 1}, offset 0x{issue.offset.toString(16).toUpperCase()}</b><span className="mono">{issue.message}</span><span>{bytes(issue.offset)} of this {bytes(issue.rootBytes)} root was reached before the failure.</span></div></div>}
+            <section className="task-pack-coverage"><header><b>Coverage by pack</b><span>Baseline v{analysis.baselineVersion}</span></header><div className="task-pack-coverage-head"><span>Pack</span><span>Exact roots</span><span>Trailing</span><span>Failed</span><span>Decoded bytes</span><span>Coverage</span></div>{analysis.packs.map((pack) => <div className={pack.failedRoots || pack.trailingRoots ? "has-issue" : ""} key={pack.pack}><span className="mono">tasks.data{pack.pack + 1}</span><span>{pack.exactRoots} / {pack.roots}</span><span>{pack.trailingRoots}</span><span>{pack.failedRoots}</span><span>{bytes(pack.decodedBytes)} / {bytes(pack.bytes)}</span><span>{(pack.bytes ? pack.decodedBytes * 100 / pack.bytes : 100).toFixed(2)}%</span></div>)}</section>
+          </>}
+        </div>
+      </section>;
+    }
     return <section className="tasks-pane empty">
       <div className="drop-card tasks-empty">
         <ListTree size={34} />
@@ -446,7 +522,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   return <section className="tasks-pane" aria-busy={busy || taskBusy}>
     <header className="tasks-head">
       <div>
-        <h2>Tasks editor <span className="tag" title="Task changes stay in memory until safe saving is added in Milestone 8">in-memory edits</span></h2>
+        <h2>Tasks editor</h2>
         <div className="tasks-file-line">
           <span className="mono truncate" title={file.path}>{file.path}</span>
           <span className="path-data-badge"><b>Version:</b> v{file.version}</span>
