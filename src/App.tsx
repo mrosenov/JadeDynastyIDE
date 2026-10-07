@@ -157,7 +157,9 @@ export default function App() {
   const pathEditorStateRef = useRef(pathEditorState);
   pathEditorStateRef.current = pathEditorState;
   const tasksEditor = useRef<TasksEditorHandle>(null);
-  const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null });
+  const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
+  const tasksEditorStateRef = useRef(tasksEditorState);
+  tasksEditorStateRef.current = tasksEditorState;
   const [summary, setSummary] = useState<FileSummary | null>(null);
   const [fileKey, setFileKey] = useState(0);
   const [loading, setLoading] = useState<string | null>(null);
@@ -272,6 +274,10 @@ export default function App() {
     const win = getCurrentWindow();
     const unlisten = win.onCloseRequested((event) => {
       if (pathEditorStateRef.current.dirty && !window.confirm("path.data has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
+      if (tasksEditorStateRef.current.dirty && !window.confirm("tasks.data has in-memory changes. Close JD IDE and discard them?")) {
         event.preventDefault();
         return;
       }
@@ -816,6 +822,16 @@ export default function App() {
         { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
       ],
     },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => tasksEditor.current?.undo(), disabled: !tasksEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => tasksEditor.current?.redo(), disabled: !tasksEditorState.canRedo },
+        "separator",
+        { label: "Revert all changes", icon: RotateCcw, onSelect: () => tasksEditor.current?.revertAll(), disabled: !tasksEditorState.dirty },
+      ],
+    },
   ] : elementMenus;
   const switchWorkspace = (next: DataWorkspace) => {
     if (next === workspace) return;
@@ -836,6 +852,7 @@ export default function App() {
       </button>
       <button className={"activity" + (workspace === "tasks" ? " active" : "")} onClick={() => switchWorkspace("tasks")} title="tasks.data browser" aria-label="tasks.data">
         <FileStack size={19} />
+        {tasksEditorState.dirty && <span className="activity-dirty" />}
       </button>
     </nav>
   );
@@ -985,8 +1002,13 @@ export default function App() {
           onSaved={onSettingsSaved}
           onOpenFile={(file) => {
             if (file.kind === "tasks" && file.name.toLowerCase() === "tasks.data") {
-              setWorkspace("tasks");
-              tasksEditor.current?.openPath(file.path);
+              if (workspace === "tasks") {
+                tasksEditor.current?.openPath(file.path);
+              } else {
+                if (tasksEditorStateRef.current.dirty && !window.confirm("Open another tasks.data file and discard the current in-memory changes?")) return;
+                setTasksEditorState({ loaded: false, path: file.path, summary: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
+                setWorkspace("tasks");
+              }
             } else {
               setWorkspace("elements");
               void loadFile(file.path);
@@ -1012,6 +1034,7 @@ export default function App() {
             ref={tasksEditor}
             active
             defaultPath={tasksEditorState.path ?? settingsView?.client?.dataFiles.find((file) => file.name.toLowerCase() === "tasks.data")?.path ?? null}
+            initialState={tasksEditorState}
             onStateChange={setTasksEditorState}
             onOpenElement={(list, row) => {
               setWorkspace("elements");

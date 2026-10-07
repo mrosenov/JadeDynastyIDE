@@ -1,25 +1,34 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { FileCheck2, FolderOpen, Link2, ListTree, Minus, Plus, Search, ShieldCheck } from "lucide-react";
-import { getTask, openTasks, searchTasks } from "../elements/api";
+import { Check, FileCheck2, FolderOpen, History, Link2, ListTree, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Undo2, X } from "lucide-react";
+import { editTaskField, getTask, getTaskEditHistory, openTasks, redoTaskEdit, revertTaskEdits, searchTasks, undoTaskEdit } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskDetail, TaskFieldReference, TaskFieldView, TaskRootSummary, TaskSearchReport, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskDetail, TaskEditState, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskRootSummary, TaskSearchReport, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 
 export interface TasksEditorState {
   loaded: boolean;
   path: string | null;
   summary: TasksFileSummary | null;
+  dirty: boolean;
+  canUndo: boolean;
+  canRedo: boolean;
+  edits: TaskEditState;
+  selection: { pack: number; root: number; path: number[] } | null;
 }
 
 export interface TasksEditorHandle {
   choose: () => void;
   openPath: (path: string) => void;
+  undo: () => void;
+  redo: () => void;
+  revertAll: () => void;
 }
 
 interface Props {
   active: boolean;
   defaultPath?: string | null;
+  initialState?: TasksEditorState;
   onStateChange: (state: TasksEditorState) => void;
   onOpenElement?: (list: number, row: number) => void;
 }
@@ -105,7 +114,26 @@ function TaskReferenceView({ reference, onOpen }: { reference: TaskFieldReferenc
   return <span className="task-field-reference static" title={reference.description}>{reference.label}</span>;
 }
 
-function FieldRow({ field, depth = 0, onReference }: { field: TaskFieldView; depth?: number; onReference: (reference: TaskFieldReference) => void }) {
+function FieldRow({ field, depth = 0, onReference, onEdit }: { field: TaskFieldView; depth?: number; onReference: (reference: TaskFieldReference) => void; onEdit: (field: TaskFieldView, value: string) => Promise<void> }) {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(field.value ?? "");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    if (!editing) setValue(field.value ?? "");
+  }, [editing, field.value]);
+  const commit = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      await onEdit(field, value);
+      setEditing(false);
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setSaving(false);
+    }
+  };
   const hasChildren = !!field.children?.length;
   if (hasChildren) {
     return <details className={"task-field-group" + (field.raw ? " raw" : "")} open={depth === 0 && field.name === "fixed"}>
@@ -115,14 +143,24 @@ function FieldRow({ field, depth = 0, onReference }: { field: TaskFieldView; dep
         <span className="task-field-type mono">{field.ty}</span>
         <span className="task-field-offset mono">0x{field.offset.toString(16).toUpperCase().padStart(4, "0")}</span>
       </summary>
-      {field.children!.map((child, index) => <FieldRow key={`${child.name}:${child.offset}:${index}`} field={child} depth={depth + 1} onReference={onReference} />)}
+      {field.children!.map((child, index) => <FieldRow key={`${child.name}:${child.offset}:${index}`} field={child} depth={depth + 1} onReference={onReference} onEdit={onEdit} />)}
     </details>;
   }
-  return <div className={"task-field-row leaf" + (field.raw ? " raw" : "")} style={{ paddingLeft: 28 + depth * 16 }} title={field.interpretation}>
-    <span className="task-field-name">{label(field.name)}</span>
+  const multiline = field.ty.includes("wstring") && ((field.value?.includes("\n") ?? false) || (field.value?.length ?? 0) > 80);
+  return <div className={"task-field-row leaf" + (field.raw ? " raw" : "") + (field.changed ? " changed" : "") + (field.editable ? " editable" : "")} style={{ paddingLeft: 28 + depth * 16 }} title={field.editable ? "Click the value to edit" : field.interpretation}>
+    <span className="task-field-name">{field.changed && <span className="changed-dot" />} {label(field.name)}</span>
     <span className="task-field-value-wrap">
-      <span className={"task-field-value" + (field.ty.includes("wstring") ? " text" : " mono")}>{field.value ?? ""}</span>
-      {field.reference && <TaskReferenceView reference={field.reference} onOpen={onReference} />}
+      {editing ? <span className="task-field-editor">
+        {field.ty === "bool8" ? <select value={value} onChange={(event) => setValue(event.target.value)} autoFocus><option value="true">true</option><option value="false">false</option></select>
+          : multiline ? <textarea value={value} onChange={(event) => setValue(event.target.value)} autoFocus rows={4} />
+          : <input value={value} onChange={(event) => setValue(event.target.value)} autoFocus onKeyDown={(event) => { if (event.key === "Enter") void commit(); if (event.key === "Escape") setEditing(false); }} spellCheck={field.ty.includes("wstring")} />}
+        <button className="icon-btn small" onClick={() => void commit()} disabled={saving} title="Apply edit"><Check size={13} /></button>
+        <button className="icon-btn small" onClick={() => { setEditing(false); setError(null); }} disabled={saving} title="Cancel"><X size={13} /></button>
+        {error && <span className="task-field-edit-error">{error}</span>}
+      </span> : <>
+        <button className={"task-field-value edit-value" + (field.ty.includes("wstring") ? " text" : " mono")} disabled={!field.editable} onClick={() => field.editable && setEditing(true)}>{field.value ?? ""}{field.editable && <Pencil size={11} />}</button>
+        {field.reference && <TaskReferenceView reference={field.reference} onOpen={onReference} />}
+      </>}
     </span>
     <span className="task-field-type mono">{field.ty}</span>
     <span className="task-field-offset mono">0x{field.offset.toString(16).toUpperCase().padStart(4, "0")}</span>
@@ -130,22 +168,29 @@ function FieldRow({ field, depth = 0, onReference }: { field: TaskFieldView; dep
   </div>;
 }
 
-export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEditor({ active, defaultPath, onStateChange, onOpenElement }, ref) {
-  const [file, setFile] = useState<TasksFileSummary | null>(null);
+export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEditor({ active, defaultPath, initialState, onStateChange, onOpenElement }, ref) {
+  const initialFile = initialState?.loaded ? initialState.summary : null;
+  const initialRoot = initialFile && initialState?.selection
+    ? initialFile.roots.find((root) => root.pack === initialState.selection!.pack && root.root === initialState.selection!.root) ?? null
+    : null;
+  const [file, setFile] = useState<TasksFileSummary | null>(initialFile);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase());
   const [page, setPage] = useState(0);
   const [pageInput, setPageInput] = useState("1");
-  const [selectedRoot, setSelectedRoot] = useState<TaskRootSummary | null>(null);
-  const [selectedPath, setSelectedPath] = useState<number[]>([]);
+  const [selectedRoot, setSelectedRoot] = useState<TaskRootSummary | null>(initialRoot);
+  const [selectedPath, setSelectedPath] = useState<number[]>(initialState?.selection?.path ?? []);
   const [detail, setDetail] = useState<TaskDetail | null>(null);
   const [trees, setTrees] = useState<Map<string, TaskTreeNode>>(new Map());
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
   const [taskBusy, setTaskBusy] = useState(false);
   const [searchReport, setSearchReport] = useState<TaskSearchReport | null>(null);
+  const [editState, setEditState] = useState<TaskEditState>(initialState?.edits ?? { changedRoots: [] });
+  const [history, setHistory] = useState<TaskHistoryEntry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const autoOpened = useRef<string | null>(null);
+  const autoOpened = useRef<string | null>(initialFile?.path ?? null);
+  const restoring = useRef(!!initialFile);
   const request = useRef(0);
 
   const selectTask = useCallback(async (root: TaskRootSummary, taskPath: number[], expandAfter = false) => {
@@ -170,7 +215,57 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     }
   }, []);
 
+  const refreshSelected = useCallback(async () => {
+    if (!selectedRoot) return;
+    const next = await getTask(selectedRoot.pack, selectedRoot.root, selectedPath);
+    setDetail(next);
+    setTrees((currentTrees) => new Map(currentTrees).set(rootKey(selectedRoot), next.tree));
+    setFile((currentFile) => currentFile ? {
+      ...currentFile,
+      roots: currentFile.roots.map((root) => root.pack === selectedRoot.pack && root.root === selectedRoot.root ? {
+        ...root,
+        id: next.tree.id,
+        name: next.tree.name,
+        childCount: next.tree.children.length,
+        byteSize: next.rootBytes,
+      } : root),
+    } : currentFile);
+  }, [selectedPath, selectedRoot]);
+
+  const refreshHistory = useCallback(async () => {
+    if (history !== null) setHistory(await getTaskEditHistory());
+  }, [history]);
+
+  const runEditAction = useCallback(async (action: () => Promise<TaskEditState>) => {
+    setTaskBusy(true);
+    setError(null);
+    try {
+      const state = await action();
+      setEditState(state);
+      await refreshSelected();
+      await refreshHistory();
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+      throw problem;
+    } finally {
+      setTaskBusy(false);
+    }
+  }, [refreshHistory, refreshSelected]);
+
+  const editField = useCallback(async (field: TaskFieldView, value: string) => {
+    if (!selectedRoot) return;
+    await runEditAction(() => editTaskField({ pack: selectedRoot.pack, root: selectedRoot.root, taskPath: selectedPath, fieldPath: field.path, value }));
+  }, [runEditAction, selectedPath, selectedRoot]);
+
+  const undo = useCallback(() => void runEditAction(undoTaskEdit).catch(() => {}), [runEditAction]);
+  const redo = useCallback(() => void runEditAction(redoTaskEdit).catch(() => {}), [runEditAction]);
+  const revertAll = useCallback(() => {
+    if (!editState.changedRoots.length || !window.confirm(`Put ${editState.changedRoots.length} changed task root(s) back as they were opened? Undo can bring the edits back.`)) return;
+    void runEditAction(revertTaskEdits).catch(() => {});
+  }, [editState.changedRoots.length, runEditAction]);
+
   const load = useCallback(async (path: string) => {
+    if (file && editState.changedRoots.length && !window.confirm("Open another tasks.data file and discard the current in-memory changes?")) return;
     const current = ++request.current;
     setBusy(true);
     setTaskBusy(false);
@@ -182,6 +277,8 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setTrees(new Map());
     setExpanded(new Set());
     setSearchReport(null);
+    setEditState({ changedRoots: [] });
+    setHistory(null);
     try {
       const opened = await openTasks(path);
       if (request.current !== current) return;
@@ -195,7 +292,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     } finally {
       if (request.current === current) setBusy(false);
     }
-  }, [selectTask]);
+  }, [editState.changedRoots.length, file, selectTask]);
 
   const choose = useCallback(async () => {
     const picked = await open({
@@ -208,21 +305,25 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     if (typeof picked === "string") void load(picked);
   }, [defaultPath, file?.path, load]);
 
-  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path) }), [choose, load]);
+  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll }), [choose, load, redo, revertAll, undo]);
 
   useEffect(() => {
     if (!active) return;
     const onKey = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey)) return;
       const key = event.key.toLowerCase();
-      if (key !== "o" && key !== "s") return;
+      if (key !== "o" && key !== "s" && key !== "z" && key !== "y") return;
+      const typing = event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement;
+      if (typing && (key === "z" || key === "y")) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       if (key === "o") void choose();
+      if (key === "z") undo();
+      if (key === "y") redo();
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [active, choose]);
+  }, [active, choose, redo, undo]);
 
   useEffect(() => {
     if (!active || !defaultPath || file || autoOpened.current === defaultPath) return;
@@ -231,8 +332,24 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [active, defaultPath, file, load]);
 
   useEffect(() => {
-    onStateChange({ loaded: !!file, path: file?.path ?? null, summary: file });
-  }, [file, onStateChange]);
+    if (!active || !file || !restoring.current) return;
+    restoring.current = false;
+    const root = selectedRoot ?? file.roots[0];
+    if (root) void selectTask(root, selectedRoot ? selectedPath : []);
+  }, [active, file, selectTask, selectedPath, selectedRoot]);
+
+  useEffect(() => {
+    onStateChange({
+      loaded: !!file,
+      path: file?.path ?? null,
+      summary: file,
+      dirty: editState.changedRoots.length > 0,
+      canUndo: !!editState.undo,
+      canRedo: !!editState.redo,
+      edits: editState,
+      selection: selectedRoot ? { pack: selectedRoot.pack, root: selectedRoot.root, path: selectedPath } : null,
+    });
+  }, [editState, file, onStateChange, selectedPath, selectedRoot]);
 
   useEffect(() => {
     if (!file || !deferredQuery) {
@@ -296,6 +413,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   };
 
   const selectedBranch = selectedRoot ? branchKey(selectedRoot, selectedPath) : null;
+  const changedRoots = useMemo(() => new Set(editState.changedRoots.map((root) => `${root.pack}:${root.root}`)), [editState.changedRoots]);
   const categories = useMemo(() => categorize(detail?.fields ?? []), [detail]);
   const followReference = useCallback((reference: TaskFieldReference) => {
     if (reference.kind === "task" && reference.pack !== undefined && reference.root !== undefined && file) {
@@ -322,7 +440,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   return <section className="tasks-pane" aria-busy={busy || taskBusy}>
     <header className="tasks-head">
       <div>
-        <h2>Tasks editor <span className="tag">read-only</span></h2>
+        <h2>Tasks editor <span className="tag" title="Task changes stay in memory until safe saving is added in Milestone 8">in-memory edits</span></h2>
         <div className="tasks-file-line">
           <span className="mono truncate" title={file.path}>{file.path}</span>
           <span className="path-data-badge"><b>Version:</b> v{file.version}</span>
@@ -332,6 +450,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
         </div>
       </div>
       <span className="tasks-integrity" title="The index, pack headers, offsets and every stored pack MD5 were verified"><ShieldCheck size={14} /> Integrity verified</span>
+      {!!editState.changedRoots.length && <span className="status-edits"><span className="changed-dot" /> {editState.changedRoots.length} changed root{editState.changedRoots.length === 1 ? "" : "s"}</span>}
       <button className="btn" onClick={choose} disabled={busy}><FolderOpen size={14} /> Open…</button>
     </header>
     {error && <div className="path-data-message error">{error}</div>}
@@ -362,7 +481,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
                 {root.childCount ? <button className="task-disclosure" onClick={() => tree ? toggleBranch(root, []) : void selectTask(root, [], true)} title={open ? `Collapse ${root.childCount} subtasks` : `Expand ${root.childCount} subtasks`} aria-label={open ? `Collapse ${root.name}` : `Expand ${root.name}`}>{open ? <Minus size={11} /> : <Plus size={11} />}</button> : <span className="task-disclosure-spacer" />}
                 <button className="task-list-select" onClick={() => void selectTask(root, [])} title={`Root task ${root.index + 1} · ID ${root.id}`}>
                   <span className="mono task-tree-id">{root.id}</span>
-                  <span className="truncate">{root.name || "(unnamed task)"}</span>
+                  <span className="truncate">{changedRoots.has(rootKey(root)) && <span className="changed-dot" />} {root.name || "(unnamed task)"}</span>
                   <span className="muted mono">{bytes(root.byteSize)}</span>
                 </button>
               </div>
@@ -386,11 +505,27 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
             <div className="task-title-icon"><FileCheck2 size={18} /></div>
             <div className="truncate"><h2 className="truncate">{detail.name || "(unnamed task)"}</h2><span className="muted mono">ID {detail.id} · root {selectedRoot ? selectedRoot.index + 1 : "?"} · offset 0x{detail.taskOffset.toString(16).toUpperCase()} · {bytes(detail.taskSize)}</span></div>
             {taskBusy && <span className="muted">Reading…</span>}
+            <div className="task-edit-actions">
+              <button className="icon-btn" onClick={undo} disabled={!editState.undo || taskBusy} title={editState.undo ? `Undo ${editState.undo}` : "Nothing to undo"}><Undo2 size={14} /></button>
+              <button className="icon-btn" onClick={redo} disabled={!editState.redo || taskBusy} title={editState.redo ? `Redo ${editState.redo}` : "Nothing to redo"}><Redo2 size={14} /></button>
+              <button className={"icon-btn" + (history !== null ? " active" : "")} onClick={() => history === null ? void getTaskEditHistory().then(setHistory).catch((problem) => setError(String(problem))) : setHistory(null)} title="Edit history"><History size={14} /></button>
+              <button className="icon-btn" onClick={revertAll} disabled={!editState.changedRoots.length || taskBusy} title="Revert all task edits"><RotateCcw size={14} /></button>
+            </div>
           </header>
+          {history !== null && <section className="task-history">
+            <header><b>Edit history</b><span>{history.length} operation{history.length === 1 ? "" : "s"}</span><button className="icon-btn small" onClick={() => setHistory(null)} title="Close history"><X size={13} /></button></header>
+            <div>{history.length ? history.slice().reverse().map((entry) => <div className={"task-history-entry" + (entry.undone ? " undone" : "")} key={entry.id}>
+              <span className="mono">{new Date(entry.time).toLocaleTimeString()}</span>
+              <b>{entry.label}</b>
+              <span className="truncate">{entry.taskId ? `${entry.taskId} · ${entry.taskName}` : entry.taskName}</span>
+              <span className="truncate" title={`${entry.old} → ${entry.new}`}>{entry.old} → {entry.new}</span>
+              {entry.undone && <span className="tag">undone</span>}
+            </div>) : <div className="empty-note">No task edits yet.</div>}</div>
+          </section>}
           <div className="task-fields-head"><span>Field</span><span>Value</span><span>Type</span><span>Offset</span></div>
           <div className="task-fields">{categories.map((category) => <details className="task-category" key={category.key} open>
             <summary><span>{category.label}</span><span>{category.fields.length} fields</span></summary>
-            {category.fields.map((field, index) => <FieldRow key={`${field.name}:${field.offset}:${index}`} field={field} onReference={followReference} />)}
+            {category.fields.map((field, index) => <FieldRow key={`${field.name}:${field.offset}:${index}`} field={field} onReference={followReference} onEdit={editField} />)}
           </details>)}</div>
         </> : <div className="empty-note center">Select a task to inspect its fields.</div>}
       </section>

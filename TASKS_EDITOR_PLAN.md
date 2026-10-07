@@ -155,6 +155,12 @@ Completion gate:
 
 ## Milestone 7: editing model
 
+**Status: complete (2026-10-07).** Safe leaf edits now stay in memory as complete replacement
+root bytes. Scalars, fixed and variable text, existing array/dialog leaves and exact-width raw
+values are editable; structure-driving counts, condition fields and task IDs remain locked.
+Variable text keeps its count synchronized, and every result must decode and re-encode exactly.
+Changed roots/fields, task-specific history, undo/redo and revert-all are wired into the UI.
+
 Add changes in memory before implementing disk saving.
 
 - Edit known scalar values, names and text.

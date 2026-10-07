@@ -173,6 +173,36 @@ async fn search_tasks(query: String, limit: usize, state: State<'_, AppState>) -
 }
 
 #[tauri::command]
+async fn edit_task_field(edit: tasks::browser::FieldEdit, state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.edit_field(edit)
+}
+
+#[tauri::command]
+async fn task_edit_state(state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
+    Ok(state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.edit_state())
+}
+
+#[tauri::command]
+async fn task_edit_history(state: State<'_, AppState>) -> Result<Vec<tasks::edit::HistoryEntry>, String> {
+    Ok(state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.history())
+}
+
+#[tauri::command]
+async fn undo_task_edit(state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.undo()
+}
+
+#[tauri::command]
+async fn redo_task_edit(state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.redo()
+}
+
+#[tauri::command]
+async fn revert_task_edits(state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.revert_all()
+}
+
+#[tauri::command]
 async fn save_path_data(request: path_data::SaveRequest, state: State<'_, AppState>) -> Result<path_data::SaveReport, String> {
     let client_path = state.resources().map(|resources| resources.path_data_file());
     let mut report = tauri::async_runtime::spawn_blocking(move || path_data::save(request)).await.map_err(|error| error.to_string())??;
@@ -794,6 +824,12 @@ pub fn run() {
             open_tasks,
             get_task,
             search_tasks,
+            edit_task_field,
+            task_edit_state,
+            task_edit_history,
+            undo_task_edit,
+            redo_task_edit,
+            revert_task_edits,
             save_path_data,
             export_path_data_json,
             import_path_data_json,

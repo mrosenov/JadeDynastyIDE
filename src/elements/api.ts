@@ -52,6 +52,9 @@ import type {
   TasksFileSummary,
   TaskDetail,
   TaskSearchReport,
+  TaskFieldEdit,
+  TaskEditState,
+  TaskHistoryEntry,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -71,6 +74,13 @@ export const openTasks = (path: string) => invoke<TasksFileSummary>("open_tasks"
 export const getTask = (pack: number, root: number, path: number[]) => invoke<TaskDetail>("get_task", { pack, root, path });
 /** Searches root and nested quests through the background task index. */
 export const searchTasks = (query: string, limit = 50_000) => invoke<TaskSearchReport>("search_tasks", { query, limit });
+/** Changes one safe leaf inside a task root in memory. */
+export const editTaskField = (edit: TaskFieldEdit) => invoke<TaskEditState>("edit_task_field", { edit });
+export const getTaskEditState = () => invoke<TaskEditState>("task_edit_state");
+export const getTaskEditHistory = () => invoke<TaskHistoryEntry[]>("task_edit_history");
+export const undoTaskEdit = () => invoke<TaskEditState>("undo_task_edit");
+export const redoTaskEdit = () => invoke<TaskEditState>("redo_task_edit");
+export const revertTaskEdits = () => invoke<TaskEditState>("revert_task_edits");
 
 export const listRecords = (list: number) => invoke<RecordRow[]>("list_records", { list });
 

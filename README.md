@@ -97,7 +97,7 @@ match when `elements.data` comes from the same client as `path.data`.
 
 The stacked-file icon in the activity bar opens the static task browser. If Settings has a
 game client folder, its `element\data\tasks.data` opens automatically. **Open…** can select a
-different task index. Versions 165, 172 and 184 are currently supported and read-only.
+different task index. Versions 165, 172 and 184 are currently supported.
 
 Opening verifies the index, every numbered pack (`tasks.data1`, `tasks.data2`, …), every root
 offset table and each pack's stored MD5 before showing any quests. It also reads each root's
@@ -114,8 +114,21 @@ and arrays are collapsible. Fields whose purpose is not known keep their fixed r
 raw values also show unsigned, signed and floating-point interpretations on hover. Known task IDs
 link to the matching quest, item and monster IDs link to the open `elements.data`, and known skill,
 buff and title values use the configured client's names and descriptions. One decoded root is
-cached, so moving among its subtasks does not reread or decode the pack. Editing and saving remain
-disabled until the in-memory edit journal and multi-file atomic save are complete.
+cached, so moving among its subtasks does not reread or decode the pack.
+
+Click an editable value in the inspector to change it in memory. Known integers, floats, booleans,
+names, quest text, existing array entries and dialog text are supported. Unknown fixed-width fields
+accept exact hexadecimal bytes and retain their declared width. Fields that control counts,
+conditions or task IDs stay locked so an ordinary value edit cannot change the record's binary
+shape or invalidate task links. Variable-length text updates its stored count automatically, and
+every edited root is decoded and byte-round-tripped before the change is accepted.
+
+Changed fields and roots are marked in green. **Edit** and the inspector toolbar provide undo,
+redo, edit history and revert all; undo restores the complete original root bytes, including all
+offsets after variable-length text. Changes stay in memory in this milestone. Switching tools
+preserves the selected task, changed roots, history and undo/redo journal; JD IDE asks before
+closing or opening another task set. Writing `tasks.data` and its numbered packs
+remains disabled until the atomic multi-file saver in the next milestone is complete.
 
 ## path.data editor
 
@@ -306,8 +319,8 @@ A tool panel takes the place of the list and record panes; the shortcuts toggle 
 the elements.data entry of the bar on the far left goes back to the lists. Tools keep their state
 (results, scans) while hidden. After a scan, the status bar shows the problem counts.
 
-The bar on the far left switches between the `elements.data` and `path.data` editors. Other
-files (tasks.data, gshop.data, …) can get their own workspace later.
+The bar on the far left switches between the `elements.data`, `path.data` and `tasks.data` tools.
+Other files such as `gshop.data` can get their own workspace later.
 
 ## Compare files
 

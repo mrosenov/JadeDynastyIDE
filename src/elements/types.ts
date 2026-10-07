@@ -388,7 +388,42 @@ export interface TaskFieldView {
   interpretation?: string;
   children?: TaskFieldView[];
   raw: boolean;
+  /** Stable names from the selected task to this field. */
+  path: string[];
+  editable: boolean;
+  changed: boolean;
   reference?: TaskFieldReference;
+}
+
+export interface TaskFieldEdit {
+  pack: number;
+  root: number;
+  taskPath: number[];
+  fieldPath: string[];
+  value: string;
+}
+
+export interface TaskChangedRoot {
+  pack: number;
+  root: number;
+}
+
+export interface TaskEditState {
+  undo?: string;
+  redo?: string;
+  changedRoots: TaskChangedRoot[];
+}
+
+export interface TaskHistoryEntry {
+  id: number;
+  label: string;
+  time: number;
+  taskId: number;
+  taskName: string;
+  field: string;
+  old: string;
+  new: string;
+  undone: boolean;
 }
 
 export interface TaskFieldReference {
