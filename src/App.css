@@ -5295,6 +5295,136 @@ select.sf-control {
 .task-pack-coverage > div.has-issue {
   box-shadow: inset 3px 0 0 var(--warn);
 }
+.task-id-comparison {
+  max-width: 1100px;
+  margin: 14px auto 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-pane);
+}
+.task-id-comparison > header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 58px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.task-id-comparison > header > div {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+  min-width: 0;
+}
+.task-id-comparison > header span,
+.task-compare-path {
+  color: var(--text-dim);
+  font-size: 10.5px;
+}
+.task-compare-path {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+.task-compare-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
+  gap: 8px;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.task-compare-summary > div {
+  display: grid;
+  gap: 3px;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+}
+.task-compare-summary span,
+.task-compare-summary small {
+  color: var(--text-dim);
+  font-size: 10px;
+}
+.task-compare-summary b {
+  font-size: 14px;
+}
+.task-compare-columns {
+  display: grid;
+  grid-template-columns: minmax(420px, 1fr) minmax(420px, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+.task-size-patterns,
+.task-id-differences {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 10.5px;
+}
+.task-size-patterns > header,
+.task-id-differences > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 35px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.task-size-patterns > header span,
+.task-id-differences > header span {
+  color: var(--text-dim);
+}
+.task-size-patterns > div {
+  display: grid;
+  grid-template-columns: 70px 70px 70px 55px minmax(90px, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-height: 29px;
+  padding: 4px 9px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+}
+.task-size-patterns > div.changed {
+  box-shadow: inset 3px 0 0 var(--warn);
+}
+.task-size-patterns .positive {
+  color: var(--warn);
+}
+.task-size-patterns .negative {
+  color: var(--danger);
+}
+.task-id-differences > div:not(.empty-note) {
+  display: grid;
+  grid-template-columns: 62px 90px minmax(100px, 1fr) minmax(100px, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-height: 29px;
+  padding: 4px 9px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+}
+.task-size-patterns > div:nth-child(odd),
+.task-id-differences > div:nth-child(odd) {
+  background: var(--bg-subtle);
+}
+.task-size-patterns > footer,
+.task-id-differences > footer {
+  padding: 7px 9px;
+  color: var(--text-dim);
+  font-size: 10px;
+}
+.task-id-differences .tag {
+  justify-self: start;
+  white-space: nowrap;
+}
+.task-id-differences .tag.target_only {
+  color: var(--accent);
+}
+.task-id-differences .tag.reference_only,
+.task-id-differences .tag.duplicate {
+  color: var(--warn);
+}
 .tasks-body {
   display: grid;
   grid-template-columns: minmax(330px, 430px) minmax(0, 1fr);
@@ -5758,6 +5888,8 @@ button.task-field-reference:hover {
 
 @media (max-width: 1100px) {
   .task-analysis-metrics { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
+  .task-compare-summary { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
+  .task-compare-columns { grid-template-columns: minmax(0, 1fr); }
   .tasks-body { grid-template-columns: minmax(270px, 320px) minmax(0, 1fr); }
   .task-fields-head,
   .task-field-row { grid-template-columns: minmax(120px, 0.8fr) minmax(130px, 1.3fr) 86px 62px; }

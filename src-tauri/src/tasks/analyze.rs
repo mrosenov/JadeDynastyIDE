@@ -1,5 +1,6 @@
 //! Coverage analysis for task versions that do not yet have a verified schema.
 
+use std::collections::HashMap;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::path::Path;
 
@@ -71,10 +72,65 @@ pub struct AnalysisReport {
     pub packs: Vec<PackCoverage>,
 }
 
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SizePattern {
+    pub reference_bytes: u64,
+    pub target_bytes: u64,
+    pub delta: i64,
+    pub count: usize,
+    pub example_ids: Vec<u32>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IdDifference {
+    pub id: u32,
+    pub kind: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub target_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub target_bytes: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference_bytes: Option<u64>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IdComparisonReport {
+    pub target: SourceInfo,
+    pub reference: SourceInfo,
+    pub target_roots: usize,
+    pub reference_roots: usize,
+    pub matched_ids: usize,
+    pub same_size: usize,
+    pub grown: usize,
+    pub shrunk: usize,
+    pub renamed: usize,
+    pub target_only: usize,
+    pub reference_only: usize,
+    pub duplicate_ids: usize,
+    pub difference_count: usize,
+    pub differences_truncated: bool,
+    pub pattern_count: usize,
+    pub patterns_truncated: bool,
+    pub size_patterns: Vec<SizePattern>,
+    pub differences: Vec<IdDifference>,
+}
+
 #[derive(Debug)]
 struct PackResult {
     coverage: PackCoverage,
     first_issue: Option<AnalysisIssue>,
+}
+
+#[derive(Debug, Clone)]
+struct RootIdentity {
+    id: u32,
+    name: String,
+    bytes: u64,
 }
 
 pub fn inspect(path: impl AsRef<Path>) -> Result<SourceInfo, String> {
@@ -162,6 +218,106 @@ pub fn analyze(path: impl AsRef<Path>, baseline_version: u32) -> Result<Analysis
     })
 }
 
+/// Matches top-level task trees by their stable task ID. Root sizes include
+/// every nested task, so recurring deltas are useful evidence for fields added
+/// to the task structure even when names are still unknown.
+pub fn compare_ids(target: impl AsRef<Path>, reference: impl AsRef<Path>) -> Result<IdComparisonReport, String> {
+    const MAX_DIFFERENCES: usize = 500;
+    const MAX_PATTERNS: usize = 200;
+    let target = TaskContainer::open(target)?;
+    let reference = TaskContainer::open(reference)?;
+    if !supported_versions().contains(&reference.header.version) {
+        return Err(format!("The reference task set is v{}, but the reference must use a verified layout ({})", reference.header.version, supported_versions().iter().map(|version| format!("v{version}")).collect::<Vec<_>>().join(", ")));
+    }
+    let target_roots = root_identities(&target)?;
+    let reference_roots = root_identities(&reference)?;
+    let mut target_by_id = HashMap::<u32, Vec<&RootIdentity>>::new();
+    let mut reference_by_id = HashMap::<u32, Vec<&RootIdentity>>::new();
+    for root in &target_roots { target_by_id.entry(root.id).or_default().push(root); }
+    for root in &reference_roots { reference_by_id.entry(root.id).or_default().push(root); }
+
+    let mut ids = target_by_id.keys().chain(reference_by_id.keys()).copied().collect::<Vec<_>>();
+    ids.sort_unstable();
+    ids.dedup();
+    let mut patterns = HashMap::<(u64, u64), SizePattern>::new();
+    let mut matched_ids = 0;
+    let mut same_size = 0;
+    let mut grown = 0;
+    let mut shrunk = 0;
+    let mut renamed = 0;
+    let mut target_only = 0;
+    let mut reference_only = 0;
+    let mut duplicate_ids = 0;
+    let mut all_differences = Vec::new();
+    for id in ids {
+        let target_matches = target_by_id.get(&id).map(Vec::as_slice).unwrap_or_default();
+        let reference_matches = reference_by_id.get(&id).map(Vec::as_slice).unwrap_or_default();
+        if target_matches.len() > 1 || reference_matches.len() > 1 {
+            duplicate_ids += 1;
+            all_differences.push(IdDifference { id, kind: "duplicate".into(), target_name: target_matches.first().map(|root| root.name.clone()), reference_name: reference_matches.first().map(|root| root.name.clone()), target_bytes: target_matches.first().map(|root| root.bytes), reference_bytes: reference_matches.first().map(|root| root.bytes) });
+            continue;
+        }
+        match (target_matches.first(), reference_matches.first()) {
+            (Some(target), Some(reference)) => {
+                matched_ids += 1;
+                let delta = target.bytes as i128 - reference.bytes as i128;
+                if delta == 0 { same_size += 1; }
+                else if delta > 0 { grown += 1; }
+                else { shrunk += 1; }
+                let pattern = patterns.entry((reference.bytes, target.bytes)).or_insert_with(|| SizePattern {
+                    reference_bytes: reference.bytes,
+                    target_bytes: target.bytes,
+                    delta: i64::try_from(delta).unwrap_or(if delta < 0 { i64::MIN } else { i64::MAX }),
+                    count: 0,
+                    example_ids: Vec::new(),
+                });
+                pattern.count += 1;
+                if pattern.example_ids.len() < 5 { pattern.example_ids.push(id); }
+                if target.name != reference.name {
+                    renamed += 1;
+                    all_differences.push(IdDifference { id, kind: "renamed".into(), target_name: Some(target.name.clone()), reference_name: Some(reference.name.clone()), target_bytes: Some(target.bytes), reference_bytes: Some(reference.bytes) });
+                }
+            }
+            (Some(target), None) => {
+                target_only += 1;
+                all_differences.push(IdDifference { id, kind: "target_only".into(), target_name: Some(target.name.clone()), reference_name: None, target_bytes: Some(target.bytes), reference_bytes: None });
+            }
+            (None, Some(reference)) => {
+                reference_only += 1;
+                all_differences.push(IdDifference { id, kind: "reference_only".into(), target_name: None, reference_name: Some(reference.name.clone()), target_bytes: None, reference_bytes: Some(reference.bytes) });
+            }
+            (None, None) => unreachable!(),
+        }
+    }
+    let difference_count = all_differences.len();
+    all_differences.sort_by_key(|row| (match row.kind.as_str() { "duplicate" => 0, "target_only" => 1, "reference_only" => 2, _ => 3 }, row.id));
+    all_differences.truncate(MAX_DIFFERENCES);
+    let mut size_patterns = patterns.into_values().collect::<Vec<_>>();
+    size_patterns.sort_by_key(|pattern| (std::cmp::Reverse(pattern.count), pattern.delta.abs(), pattern.reference_bytes));
+    let pattern_count = size_patterns.len();
+    size_patterns.truncate(MAX_PATTERNS);
+    Ok(IdComparisonReport {
+        target: source_info(&target),
+        reference: source_info(&reference),
+        target_roots: target_roots.len(),
+        reference_roots: reference_roots.len(),
+        matched_ids,
+        same_size,
+        grown,
+        shrunk,
+        renamed,
+        target_only,
+        reference_only,
+        duplicate_ids,
+        difference_count,
+        differences_truncated: difference_count > MAX_DIFFERENCES,
+        pattern_count,
+        patterns_truncated: pattern_count > MAX_PATTERNS,
+        size_patterns,
+        differences: all_differences,
+    })
+}
+
 fn source_info(container: &TaskContainer) -> SourceInfo {
     SourceInfo {
         path: container.index_path().display().to_string(),
@@ -174,6 +330,35 @@ fn source_info(container: &TaskContainer) -> SourceInfo {
         closest_version: closest_schema_version(container.header.version),
         supported_versions: supported_versions().to_vec(),
     }
+}
+
+fn root_identities(container: &TaskContainer) -> Result<Vec<RootIdentity>, String> {
+    const HEADING_BYTES: usize = 64;
+    let mut roots = Vec::with_capacity(container.header.root_count as usize);
+    for pack in &container.packs {
+        let data = std::fs::read(pack.path()).map_err(|error| format!("{}: {error}", pack.path().display()))?;
+        for root in 0..pack.root_count() {
+            let range = pack.root_range(root)?;
+            let start = usize::try_from(range.start).map_err(|_| format!("{}: root {} offset is too large", pack.path().display(), root + 1))?;
+            let end = usize::try_from(range.end).map_err(|_| format!("{}: root {} end is too large", pack.path().display(), root + 1))?;
+            let bytes = data.get(start..end).ok_or_else(|| format!("{}: root {} range is outside the pack", pack.path().display(), root + 1))?;
+            if bytes.len() < HEADING_BYTES {
+                return Err(format!("{}: root {} is too short to contain its stable ID and name", pack.path().display(), root + 1));
+            }
+            roots.push(RootIdentity {
+                id: u32::from_le_bytes(bytes[0..4].try_into().unwrap()),
+                name: fixed_utf16(&bytes[4..HEADING_BYTES]),
+                bytes: bytes.len() as u64,
+            });
+        }
+    }
+    Ok(roots)
+}
+
+fn fixed_utf16(bytes: &[u8]) -> String {
+    let units = bytes.chunks_exact(2).map(|pair| u16::from_le_bytes(pair.try_into().unwrap())).collect::<Vec<_>>();
+    let end = units.iter().position(|unit| *unit == 0).unwrap_or(units.len());
+    String::from_utf16_lossy(&units[..end])
 }
 
 fn analyze_pack(pack: &Pack, pack_index: usize, schema: &super::schema::Schema, version: u32) -> Result<PackResult, String> {
@@ -274,6 +459,12 @@ mod tests {
         assert!(report.exact_round_trip);
         assert_eq!(report.exact_roots, 1);
         assert!(report.first_issue.is_none());
+        let comparison = compare_ids(&index, source_path).unwrap();
+        assert_eq!(comparison.matched_ids, 1);
+        assert_eq!(comparison.same_size, 1);
+        assert_eq!(comparison.target_only, 0);
+        assert_eq!(comparison.reference_only, source.header.root_count as usize - 1);
+        assert!(comparison.size_patterns.iter().any(|pattern| pattern.delta == 0 && pattern.count == 1));
         std::fs::remove_dir_all(folder).unwrap();
     }
 

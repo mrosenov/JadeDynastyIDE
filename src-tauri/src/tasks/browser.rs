@@ -1144,7 +1144,9 @@ mod tests {
             let parent_detail = document.task(parent.pack, parent.root, &[]).unwrap();
             assert_eq!(parent_detail.tree.children.len(), parent.child_count);
 
-            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+            // Full real-file tests scan four large task sets in parallel. Give
+            // the background index enough room when the same disk is saturated.
+            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
             let report = loop {
                 let report = document.search("__no_such_task__", 1);
                 assert!(report.error.is_none(), "{:?}", report.error);

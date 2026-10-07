@@ -422,6 +422,44 @@ export interface TaskAnalysisReport {
   packs: TaskPackCoverage[];
 }
 
+export interface TaskSizePattern {
+  referenceBytes: number;
+  targetBytes: number;
+  delta: number;
+  count: number;
+  exampleIds: number[];
+}
+
+export interface TaskIdDifference {
+  id: number;
+  kind: "duplicate" | "target_only" | "reference_only" | "renamed";
+  targetName?: string;
+  referenceName?: string;
+  targetBytes?: number;
+  referenceBytes?: number;
+}
+
+export interface TaskIdComparisonReport {
+  target: TaskSourceInfo;
+  reference: TaskSourceInfo;
+  targetRoots: number;
+  referenceRoots: number;
+  matchedIds: number;
+  sameSize: number;
+  grown: number;
+  shrunk: number;
+  renamed: number;
+  targetOnly: number;
+  referenceOnly: number;
+  duplicateIds: number;
+  differenceCount: number;
+  differencesTruncated: boolean;
+  patternCount: number;
+  patternsTruncated: boolean;
+  sizePatterns: TaskSizePattern[];
+  differences: TaskIdDifference[];
+}
+
 export interface TaskTreeNode {
   id: number;
   name: string;

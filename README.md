@@ -146,6 +146,13 @@ trailing bytes, and structural failures; it shows root and byte coverage, the fi
 field and offset, and coverage for each pack. Analysis never changes the file, and saving remains
 disabled even when an older schema happens to round-trip every root.
 
+The analyzer can also compare the newer file with an older supported `tasks.data`. Root tasks are
+matched by ID rather than file order. The comparison counts matching, added, removed, renamed and
+duplicate IDs, then groups matching roots by their old and new byte sizes. A repeated pattern such
+as `8,468 B → 8,472 B` across thousands of IDs is strong evidence that a four-byte field was added
+to the task structure. The report keeps a few example IDs for each size pattern and bounded examples
+of ID/name differences, so large task sets do not create an oversized interface.
+
 ## path.data editor
 
 The folder-tree icon in the activity bar opens `path.data` as a separate data workspace. If

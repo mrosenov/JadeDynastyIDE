@@ -160,6 +160,11 @@ async fn analyze_tasks(path: String, baseline_version: u32) -> Result<tasks::ana
 }
 
 #[tauri::command]
+async fn compare_task_ids(path: String, reference_path: String) -> Result<tasks::analyze::IdComparisonReport, String> {
+    tauri::async_runtime::spawn_blocking(move || tasks::analyze::compare_ids(path, reference_path)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
 async fn get_task(pack: usize, root: usize, path: Vec<usize>, state: State<'_, AppState>) -> Result<tasks::browser::TaskDetail, String> {
     let mut detail = {
         state
@@ -850,6 +855,7 @@ pub fn run() {
             task_source_version,
             inspect_tasks,
             analyze_tasks,
+            compare_task_ids,
             get_task,
             search_tasks,
             edit_task_field,

@@ -1,9 +1,9 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { AlertTriangle, BarChart3, Check, FileCheck2, FlaskConical, FolderOpen, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Undo2, X } from "lucide-react";
-import { analyzeTasks, editTaskField, getTask, getTaskEditHistory, getTaskEditState, inspectTasks, openTasks, redoTaskEdit, revertTaskEdits, searchTasks, taskSourceVersion, undoTaskEdit } from "../elements/api";
+import { analyzeTasks, compareTaskIds, editTaskField, getTask, getTaskEditHistory, getTaskEditState, inspectTasks, openTasks, redoTaskEdit, revertTaskEdits, searchTasks, taskSourceVersion, undoTaskEdit } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskAnalysisReport, TaskDetail, TaskEditState, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskRootSummary, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskAnalysisReport, TaskDetail, TaskEditState, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskIdComparisonReport, TaskRootSummary, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 import { TaskSaveDialog } from "./TaskSaveDialog";
 
@@ -13,6 +13,8 @@ export interface TasksEditorState {
   summary: TasksFileSummary | null;
   unsupported: TaskSourceInfo | null;
   analysis: TaskAnalysisReport | null;
+  comparison: TaskIdComparisonReport | null;
+  referencePath: string | null;
   dirty: boolean;
   canUndo: boolean;
   canRedo: boolean;
@@ -181,8 +183,11 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const [file, setFile] = useState<TasksFileSummary | null>(initialFile);
   const [unsupported, setUnsupported] = useState<TaskSourceInfo | null>(initialUnsupported);
   const [analysis, setAnalysis] = useState<TaskAnalysisReport | null>(initialState?.analysis ?? null);
+  const [comparison, setComparison] = useState<TaskIdComparisonReport | null>(initialState?.comparison ?? null);
+  const [referencePath, setReferencePath] = useState<string | null>(initialState?.referencePath ?? null);
   const [baseline, setBaseline] = useState(initialUnsupported?.closestVersion ?? 184);
   const [analysisBusy, setAnalysisBusy] = useState(false);
+  const [comparisonBusy, setComparisonBusy] = useState(false);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase());
   const [page, setPage] = useState(0);
@@ -284,6 +289,8 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setFile(null);
     setUnsupported(null);
     setAnalysis(null);
+    setComparison(null);
+    setReferencePath(null);
     setDetail(null);
     setSelectedRoot(null);
     setSelectedPath([]);
@@ -380,13 +387,15 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       summary: file,
       unsupported,
       analysis,
+      comparison,
+      referencePath,
       dirty: editState.changedRoots.length > 0,
       canUndo: !!editState.undo,
       canRedo: !!editState.redo,
       edits: editState,
       selection: selectedRoot ? { pack: selectedRoot.pack, root: selectedRoot.root, path: selectedPath } : null,
     });
-  }, [analysis, editState, file, onStateChange, selectedPath, selectedRoot, unsupported]);
+  }, [analysis, comparison, editState, file, onStateChange, referencePath, selectedPath, selectedRoot, unsupported]);
 
   const runAnalysis = useCallback(async () => {
     if (!unsupported || analysisBusy) return;
@@ -400,6 +409,29 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       setAnalysisBusy(false);
     }
   }, [analysisBusy, baseline, unsupported]);
+
+  const chooseComparison = useCallback(async () => {
+    if (!unsupported || comparisonBusy) return;
+    const picked = await open({
+      multiple: false,
+      directory: false,
+      defaultPath: referencePath ?? unsupported.path,
+      title: "Choose an older supported tasks.data",
+      filters: [{ name: "tasks.data", extensions: ["data"] }],
+    });
+    if (typeof picked !== "string") return;
+    setReferencePath(picked);
+    setComparison(null);
+    setComparisonBusy(true);
+    setError(null);
+    try {
+      setComparison(await compareTaskIds(unsupported.path, picked));
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setComparisonBusy(false);
+    }
+  }, [comparisonBusy, referencePath, unsupported]);
 
   useEffect(() => {
     if (!file || !deferredQuery) {
@@ -477,11 +509,11 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   if (!file) {
     if (unsupported) {
       const issue = analysis?.firstIssue;
-      return <section className="tasks-pane task-analyzer-pane" aria-busy={busy || analysisBusy}>
+      return <section className="tasks-pane task-analyzer-pane" aria-busy={busy || analysisBusy || comparisonBusy}>
         <header className="tasks-head">
           <div><h2>Task layout analyzer <span className="tag warn">unverified layout</span></h2><div className="tasks-file-line"><span className="mono truncate" title={unsupported.path}>{unsupported.path}</span><span className="path-data-badge"><b>Version:</b> v{unsupported.version}</span><span className="path-data-badge"><b>Roots:</b> {count(unsupported.rootCount)}</span><span className="path-data-badge"><b>Packs:</b> {unsupported.packCount}</span><span className="path-data-badge"><b>Size:</b> {bytes(unsupported.size)}</span></div></div>
           <span className="tasks-integrity" title="The index, pack headers, root offsets and stored MD5 values are valid"><ShieldCheck size={14}/> Container verified</span>
-          <button className="btn" onClick={choose} disabled={busy || analysisBusy}><FolderOpen size={14}/> Open…</button>
+          <button className="btn" onClick={choose} disabled={busy || analysisBusy || comparisonBusy}><FolderOpen size={14}/> Open…</button>
         </header>
         <div className="task-analyzer-scroll">
           <section className="task-analyzer-intro">
@@ -504,6 +536,17 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
               : issue && <div className="task-analysis-result issue"><BarChart3 size={17}/><div><b>First stopping point: pack {issue.pack + 1}, root {issue.root + 1}, offset 0x{issue.offset.toString(16).toUpperCase()}</b><span className="mono">{issue.message}</span><span>{bytes(issue.offset)} of this {bytes(issue.rootBytes)} root was reached before the failure.</span></div></div>}
             <section className="task-pack-coverage"><header><b>Coverage by pack</b><span>Baseline v{analysis.baselineVersion}</span></header><div className="task-pack-coverage-head"><span>Pack</span><span>Exact roots</span><span>Trailing</span><span>Failed</span><span>Decoded bytes</span><span>Coverage</span></div>{analysis.packs.map((pack) => <div className={pack.failedRoots || pack.trailingRoots ? "has-issue" : ""} key={pack.pack}><span className="mono">tasks.data{pack.pack + 1}</span><span>{pack.exactRoots} / {pack.roots}</span><span>{pack.trailingRoots}</span><span>{pack.failedRoots}</span><span>{bytes(pack.decodedBytes)} / {bytes(pack.bytes)}</span><span>{(pack.bytes ? pack.decodedBytes * 100 / pack.bytes : 100).toFixed(2)}%</span></div>)}</section>
           </>}
+          <section className="task-id-comparison">
+            <header><div><b>Compare matching root-task IDs</b><span>Choose an older supported task set. Repeated record-size deltas are evidence of fields added to the newer task structure.</span></div><button className="btn" onClick={() => void chooseComparison()} disabled={comparisonBusy}>{comparisonBusy ? <Loader2 size={14} className="spin"/> : <FolderOpen size={14}/>} {comparisonBusy ? "Comparing task sets…" : comparison ? "Choose another…" : "Choose older tasks.data…"}</button></header>
+            {referencePath && <div className="task-compare-path mono truncate" title={referencePath}>{referencePath}</div>}
+            {comparison && <>
+              <div className="task-compare-summary"><div><span>Matching IDs</span><b>{count(comparison.matchedIds)}</b><small>{(comparison.targetRoots ? comparison.matchedIds * 100 / comparison.targetRoots : 100).toFixed(2)}% of newer roots</small></div><div><span>Same size</span><b>{count(comparison.sameSize)}</b><small>complete root bytes</small></div><div><span>Larger / smaller</span><b>{count(comparison.grown)} / {count(comparison.shrunk)}</b><small>newer root records</small></div><div><span>Only in newer / older</span><b>{count(comparison.targetOnly)} / {count(comparison.referenceOnly)}</b><small>{comparison.duplicateIds ? `${count(comparison.duplicateIds)} duplicate IDs excluded` : "unique IDs"}</small></div></div>
+              <div className="task-compare-columns">
+                <section className="task-size-patterns"><header><b>Root-size patterns</b><span>{comparison.patternCount} pattern{comparison.patternCount === 1 ? "" : "s"}</span></header><div className="task-size-patterns-head"><span>Older</span><span>Newer</span><span>Delta</span><span>IDs</span><span>Examples</span></div>{comparison.sizePatterns.map((pattern) => <div className={pattern.delta ? "changed" : ""} key={`${pattern.referenceBytes}:${pattern.targetBytes}`}><span>{bytes(pattern.referenceBytes)}</span><span>{bytes(pattern.targetBytes)}</span><span className={pattern.delta > 0 ? "positive" : pattern.delta < 0 ? "negative" : ""}>{pattern.delta > 0 ? "+" : ""}{pattern.delta.toLocaleString()} B</span><b>{count(pattern.count)}</b><span className="mono truncate" title={pattern.exampleIds.join(", ")}>{pattern.exampleIds.join(", ")}</span></div>)}{comparison.patternsTruncated && <footer>Showing the {comparison.sizePatterns.length} most common of {comparison.patternCount} patterns.</footer>}</section>
+                <section className="task-id-differences"><header><b>ID and name differences</b><span>{count(comparison.differenceCount)}</span></header>{comparison.differences.length ? <><div className="task-id-differences-head"><span>ID</span><span>Kind</span><span>Newer</span><span>Older</span></div>{comparison.differences.map((row, index) => <div key={`${row.kind}:${row.id}:${index}`}><span className="mono">{row.id}</span><span className={`tag ${row.kind}`}>{row.kind.replaceAll("_", " ")}</span><span className="truncate" title={row.targetName}>{row.targetName ?? "—"}</span><span className="truncate" title={row.referenceName}>{row.referenceName ?? "—"}</span></div>)}{comparison.differencesTruncated && <footer>Showing {comparison.differences.length} of {comparison.differenceCount} differences.</footer>}</> : <div className="empty-note">Every unique root ID and name exists in both files.</div>}</section>
+              </div>
+            </>}
+          </section>
         </div>
       </section>;
     }

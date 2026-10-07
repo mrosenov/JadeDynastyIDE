@@ -199,7 +199,9 @@ Completion gate:
 
 **In progress (October 2026).** Unsupported files now open in a read-only analyzer with selectable
 v165/v172/v184 baselines, parallel whole-file root and byte coverage, first-failure offsets and
-per-pack results. Candidate-field scoring, schema patch editing and patch import/export remain.
+per-pack results. A second supported task set can be compared by root ID, with added/removed/renamed
+IDs and recurring root-size deltas summarized as structural evidence. Candidate-field scoring,
+schema patch editing and patch import/export remain.
 
 Build the workflow for future task versions after the known parsers and saver are trusted.
 

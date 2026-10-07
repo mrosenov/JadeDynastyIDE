@@ -157,7 +157,7 @@ export default function App() {
   const pathEditorStateRef = useRef(pathEditorState);
   pathEditorStateRef.current = pathEditorState;
   const tasksEditor = useRef<TasksEditorHandle>(null);
-  const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null, unsupported: null, analysis: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
+  const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null, unsupported: null, analysis: null, comparison: null, referencePath: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
   const tasksEditorStateRef = useRef(tasksEditorState);
   tasksEditorStateRef.current = tasksEditorState;
   const [summary, setSummary] = useState<FileSummary | null>(null);
@@ -1007,7 +1007,7 @@ export default function App() {
                 tasksEditor.current?.openPath(file.path);
               } else {
                 if (tasksEditorStateRef.current.dirty && !window.confirm("Open another tasks.data file and discard the current unsaved changes?")) return;
-                setTasksEditorState({ loaded: false, path: file.path, summary: null, unsupported: null, analysis: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
+                setTasksEditorState({ loaded: false, path: file.path, summary: null, unsupported: null, analysis: null, comparison: null, referencePath: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
                 setWorkspace("tasks");
               }
             } else {
