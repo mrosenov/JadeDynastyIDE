@@ -832,7 +832,9 @@ export default function App() {
         { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => tasksEditor.current?.undo(), disabled: !tasksEditorState.canUndo },
         { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => tasksEditor.current?.redo(), disabled: !tasksEditorState.canRedo },
         "separator",
-        { label: "Revert all changes", icon: RotateCcw, onSelect: () => tasksEditor.current?.revertAll(), disabled: !tasksEditorState.dirty },
+        { label: "Revert all changes…", icon: RotateCcw, onSelect: () => tasksEditor.current?.revertAll(), disabled: !tasksEditorState.dirty },
+        "separator",
+        { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => tasksEditor.current?.toggleHistory(), disabled: !tasksEditorState.summary, checked: !!tasksEditorState.historyOpen },
       ],
     },
   ] : elementMenus;
@@ -1264,6 +1266,7 @@ export default function App() {
           <>
             <span>tasks.data</span>
             {tasksEditorState.path && <span className="mono truncate" title={tasksEditorState.path}>{tasksEditorState.path}</span>}
+            {tasksEditorState.dirty && <button className="status-edits" onClick={() => tasksEditor.current?.showHistory()} title="Show the edit history (Ctrl+H). Edits are kept in memory until saved."><span className="changed-dot" /> {tasksEditorState.edits.changedRoots.length} changed task root{tasksEditorState.edits.changedRoots.length === 1 ? "" : "s"}</button>}
             <span className="spacer" />
             {tasksEditorState.summary && <>
               <span>v{tasksEditorState.summary.version}</span>

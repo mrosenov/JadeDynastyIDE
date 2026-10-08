@@ -22,6 +22,9 @@ struct Entry {
     old: String,
     new: String,
     changes: Vec<RootChange>,
+    /// The entry this one reverted from the history. Such entries are not
+    /// listed; the reverted entry shows as reverted instead.
+    reverts: Option<u64>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -29,6 +32,8 @@ pub struct Journal {
     done: Vec<Entry>,
     undone: Vec<Entry>,
     next_id: u64,
+    /// The last listed entry included in the saved file, and when (unix ms).
+    saved: Option<(Option<u64>, u64)>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -43,6 +48,15 @@ pub struct HistoryEntry {
     pub old: String,
     pub new: String,
     pub undone: bool,
+    /// When a later revert from the history took this entry back (unix ms).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reverted_at: Option<u64>,
+    /// The task set was last saved after this entry (unix ms).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub saved_at: Option<u64>,
+    /// Why this entry cannot be reverted on its own right now.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revert_blocked: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -60,6 +74,9 @@ pub struct EditState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redo: Option<String>,
     pub changed_roots: Vec<ChangedRoot>,
+    /// When the task set was last saved in this session (unix ms).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_saved: Option<u64>,
 }
 
 pub struct EntryDetails {
@@ -81,7 +98,42 @@ impl Journal {
         self.undone.clear();
     }
 
+    /// The task set was saved: the history shows a Saved line after the
+    /// latest listed entry.
+    pub fn mark_saved(&mut self) {
+        let last = self.done.iter().rev().find(|entry| entry.reverts.is_none()).map(|entry| entry.id);
+        self.saved = Some((last, now_ms()));
+    }
+
     pub fn record(&mut self, details: EntryDetails, changes: Vec<RootChange>) {
+        self.push(details, changes, None);
+    }
+
+    /// Records the revert of entry `reverts` from the history.
+    pub fn record_revert(&mut self, details: EntryDetails, changes: Vec<RootChange>, reverts: u64) {
+        self.push(details, changes, Some(reverts));
+    }
+
+    /// An applied entry that a revert has not taken back yet: its label and changes.
+    pub fn revertable(&self, id: u64) -> Option<(String, Vec<RootChange>)> {
+        if self.done.iter().any(|entry| entry.reverts == Some(id)) {
+            return None;
+        }
+        self.done.iter().find(|entry| entry.id == id).map(|entry| (entry.label.clone(), entry.changes.clone()))
+    }
+
+    pub fn is_reverted(&self, id: u64) -> bool {
+        self.done.iter().any(|entry| entry.reverts == Some(id))
+    }
+
+    /// The latest applied entry after `id` that changed the given root.
+    pub fn later_change(&self, id: u64, pack: usize, root: usize) -> Option<String> {
+        self.done.iter().rev().take_while(|entry| entry.id != id)
+            .find(|entry| entry.changes.iter().any(|change| change.pack == pack && change.root == root))
+            .map(|entry| entry.label.clone())
+    }
+
+    fn push(&mut self, details: EntryDetails, changes: Vec<RootChange>, reverts: Option<u64>) {
         self.next_id += 1;
         self.done.push(Entry {
             id: self.next_id,
@@ -93,6 +145,7 @@ impl Journal {
             old: details.old,
             new: details.new,
             changes,
+            reverts,
         });
         self.undone.clear();
     }
@@ -103,12 +156,18 @@ impl Journal {
             undo: self.done.last().map(|entry| entry.label.clone()),
             redo: self.undone.last().map(|entry| entry.label.clone()),
             changed_roots,
+            last_saved: self.saved.map(|(_, time)| time),
         }
     }
 
+    /// Every listed entry, newest first: entries Redo would apply again, then
+    /// applied ones. Reverts from the history are not listed; the entry they
+    /// took back shows as reverted, so reverting never goes back and forth.
     pub fn history(&self) -> Vec<HistoryEntry> {
-        self.done.iter().map(|entry| history(entry, false))
-            .chain(self.undone.iter().rev().map(|entry| history(entry, true)))
+        let reverted_at = self.done.iter().filter_map(|entry| Some((entry.reverts?, entry.time))).collect::<std::collections::HashMap<_, _>>();
+        let saved_at = |entry: &Entry| self.saved.and_then(|(last, time)| (last == Some(entry.id)).then_some(time));
+        self.undone.iter().filter(|entry| entry.reverts.is_none()).map(|entry| history(entry, true, None, saved_at(entry)))
+            .chain(self.done.iter().rev().filter(|entry| entry.reverts.is_none()).map(|entry| history(entry, false, reverted_at.get(&entry.id).copied(), saved_at(entry))))
             .collect()
     }
 
@@ -141,7 +200,7 @@ impl Journal {
     }
 }
 
-fn history(entry: &Entry, undone: bool) -> HistoryEntry {
+fn history(entry: &Entry, undone: bool, reverted_at: Option<u64>, saved_at: Option<u64>) -> HistoryEntry {
     HistoryEntry {
         id: entry.id,
         label: entry.label.clone(),
@@ -152,5 +211,8 @@ fn history(entry: &Entry, undone: bool) -> HistoryEntry {
         old: entry.old.clone(),
         new: entry.new.clone(),
         undone,
+        reverted_at,
+        saved_at,
+        revert_blocked: None,
     }
 }

@@ -131,9 +131,20 @@ conditions or task IDs stay locked so an ordinary value edit cannot change the r
 shape or invalidate task links. Variable-length text updates its stored count automatically, and
 every edited root is decoded and byte-round-tripped before the change is accepted.
 
-Changed fields and roots are marked in green. **Edit** and the inspector toolbar provide undo,
-redo, edit history and revert all; undo restores the complete original root bytes, including all
-offsets after variable-length text. After undo, redo or revert all, the root list and tree follow
+Changed fields and roots are marked in green. Undo, redo and the edit history sit beside **Save…**
+in the task editor's top bar and in the **Edit** menu (Ctrl+Z, Ctrl+Y or Ctrl+Shift+Z, Ctrl+H);
+the inspector toolbar keeps only actions on the selected quest. Undo restores the complete original
+root bytes, including all offsets after variable-length text.
+
+**Edit › History** (Ctrl+H), the history button or the *changed roots* count opens the task edit
+history in place of the quest list and inspector, like the elements.data history. It lists every
+edit newest first with its time, quest and old → new value, can be filtered by edit, quest name,
+task ID or field, and shows a *Saved* line where the task set was saved. Clicking an entry selects
+its quest, wherever it is now. **Revert** takes back one edit without undoing later ones; the entry
+then shows *reverted* (with the time) instead of adding an entry of its own, and Ctrl+Z takes the
+revert back. Because edits store complete task roots, Revert is offered only while no later edit
+changed the same root; otherwise the button is disabled and its tooltip names the later edit.
+Revert all is in the history header and the Edit menu. After undo, redo or revert all, the root list and tree follow
 the restored structure and the same quest stays selected, wherever it is now. Switching tools
 preserves the selected task, changed roots, history and undo/redo journal; JD IDE asks before
 closing or opening another task set. The elements.data shortcuts (Ctrl+D, Ctrl+G, Ctrl+W, …) do

@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (142 at last run, ~3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (143 at last run, ~2–3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -274,6 +274,11 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   clicks (`userSelect`) and undo/redo wait while one runs or a task dialog is open. After clone,
   move, delete, undo, redo and revert all, `resync` reloads the root list (`task_summary`), drops
   trees and nested expansion of changed roots, and reselects the focused quest by ID.
+- Task history (`TaskHistoryPanel.tsx`) replaces the list and inspector like the elements history.
+  `revert_entry` applies the inverse of an entry only while every root it changed still holds its
+  result (root-level snapshots cannot merge); otherwise `revert_blocked` names the later edit. A
+  revert is recorded with `reverts: Some(id)`, is not listed, and marks the original as reverted;
+  reverting it again does nothing. `Journal::mark_saved` drives the Saved line.
 - The next planned feature is the task problems scanner and reference graph. Reuse the completed
   background search/reference index rather than decoding every root again. Inconsistent hierarchy
   links (see above) are a natural check.

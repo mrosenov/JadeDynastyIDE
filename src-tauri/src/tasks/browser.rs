@@ -500,7 +500,64 @@ impl TaskDocument {
     }
 
     pub fn history(&self) -> Vec<HistoryEntry> {
-        self.journal.history()
+        let mut entries = self.journal.history();
+        for entry in entries.iter_mut().filter(|entry| !entry.undone && entry.reverted_at.is_none()) {
+            if let Some((_, changes)) = self.journal.revertable(entry.id) {
+                entry.revert_blocked = self.revert_blocked(entry.id, &changes);
+            }
+        }
+        entries
+    }
+
+    /// Takes back one applied entry of the history without undoing later ones.
+    /// Allowed only while every task root it changed still holds its result;
+    /// the entry then shows as reverted and Undo takes the revert back.
+    pub fn revert_entry(&mut self, id: u64) -> Result<EditState, String> {
+        if self.journal.is_reverted(id) {
+            return Ok(self.edit_state());
+        }
+        let (label, changes) = self.journal.revertable(id).ok_or("That edit is not applied (undone, or no longer in the history)")?;
+        if let Some(reason) = self.revert_blocked(id, &changes) {
+            return Err(reason);
+        }
+        let inverse = changes.iter().rev().map(|change| RootChange {
+            pack: change.pack,
+            root: change.root,
+            before: change.after.clone(),
+            after: change.before.clone(),
+        }).collect::<Vec<_>>();
+        self.apply_changes(&inverse)?;
+        self.journal.record_revert(EntryDetails {
+            label: format!("Revert “{label}”"),
+            task_id: 0,
+            task_name: String::new(),
+            field: String::new(),
+            old: String::new(),
+            new: String::new(),
+        }, inverse, id);
+        Ok(self.edit_state())
+    }
+
+    /// Why entry `id` cannot be reverted on its own, if it cannot.
+    fn revert_blocked(&self, id: u64, changes: &[RootChange]) -> Option<String> {
+        for change in changes {
+            let current = self.current_root_optional(change.pack, change.root).ok().flatten();
+            let unchanged = if change.after.is_empty() { current.is_none() } else { current.as_deref() == Some(change.after.as_slice()) };
+            if !unchanged {
+                return Some(match self.journal.later_change(id, change.pack, change.root) {
+                    Some(label) => format!("“{label}” changed the same task root later. Undo or revert it first."),
+                    None => "The task root changed after this edit.".into(),
+                });
+            }
+            // A cloned top-level task can only be removed while it is the last appended one.
+            if change.before.is_empty() && !change.after.is_empty() {
+                let last = self.root_count(change.pack).ok()?.checked_sub(1);
+                if last != Some(change.root) {
+                    return Some("A top-level task cloned later into the same pack must be removed first.".into());
+                }
+            }
+        }
+        None
     }
 
     pub fn edit_field(&mut self, edit: FieldEdit) -> Result<EditState, String> {
@@ -1792,6 +1849,49 @@ mod tests {
         assert_eq!(document.current_root(root.pack, root.root).unwrap(), before);
         document.undo().unwrap();
         assert_eq!(document.current_root(root.pack, root.root).unwrap(), after);
+    }
+
+    #[test]
+    fn history_reverts_one_entry_without_undoing_later_ones() {
+        let path = r"E:/Games/XtremeJade/element/data/tasks.data";
+        if !Path::new(path).is_file() {
+            return;
+        }
+        let mut document = TaskDocument::open(path).unwrap();
+        let roots = document.summary().roots;
+        let (first, second) = (roots[0].clone(), roots[1].clone());
+        let rename = |document: &mut TaskDocument, root: &RootSummary, name: &str| {
+            document.edit_field(FieldEdit { pack: root.pack, root: root.root, task_path: Vec::new(), field_path: vec!["fixed".into(), "name".into()], value: name.into() }).unwrap();
+        };
+        let first_before = document.current_root(first.pack, first.root).unwrap();
+        rename(&mut document, &first, "JD IDE revert A");
+        rename(&mut document, &second, "JD IDE revert B");
+        let second_after = document.current_root(second.pack, second.root).unwrap();
+        let history = document.history();
+        assert_eq!(history.len(), 2);
+        let (newest, oldest) = (history[0].id, history[1].id);
+        assert!(history.iter().all(|entry| entry.revert_blocked.is_none()));
+
+        // The older edit goes back on its own; the later one stays.
+        document.revert_entry(oldest).unwrap();
+        assert_eq!(document.current_root(first.pack, first.root).unwrap(), first_before);
+        assert_eq!(document.current_root(second.pack, second.root).unwrap(), second_after);
+        let history = document.history();
+        assert_eq!(history.len(), 2, "a revert is not listed as an entry of its own");
+        assert!(history.iter().find(|entry| entry.id == oldest).unwrap().reverted_at.is_some());
+        // Reverting a reverted entry does nothing, so there is no back-and-forth.
+        document.revert_entry(oldest).unwrap();
+        assert_eq!(document.current_root(first.pack, first.root).unwrap(), first_before);
+        // Undo takes the revert back.
+        document.undo().unwrap();
+        assert_ne!(document.current_root(first.pack, first.root).unwrap(), first_before);
+        assert!(document.history().iter().all(|entry| entry.reverted_at.is_none()));
+
+        // A later edit of the same root blocks reverting the earlier one.
+        rename(&mut document, &second, "JD IDE revert C");
+        let blocked = document.history().into_iter().find(|entry| entry.id == newest).unwrap().revert_blocked;
+        assert!(blocked.is_some_and(|reason| reason.contains("JD IDE") || reason.contains("Edit")), "the reason names the later edit");
+        assert!(document.revert_entry(newest).is_err());
     }
 
     #[test]

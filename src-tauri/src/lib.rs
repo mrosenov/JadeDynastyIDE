@@ -497,6 +497,11 @@ async fn task_edit_history(state: State<'_, AppState>) -> Result<Vec<tasks::edit
 }
 
 #[tauri::command]
+async fn revert_task_entry(id: u64, state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.revert_entry(id)
+}
+
+#[tauri::command]
 async fn undo_task_edit(state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
     state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.undo()
 }
@@ -1166,6 +1171,7 @@ pub fn run() {
             clone_task_subtree,
             clone_task_root,
             task_summary,
+            revert_task_entry,
             move_task_subtree,
             preview_delete_task_subtree,
             delete_task_subtree,

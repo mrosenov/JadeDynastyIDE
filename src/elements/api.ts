@@ -152,6 +152,8 @@ export const deleteTaskSubtree = (preview: TaskDeletePreview) => invoke<TaskDele
 export const getTaskEditState = () => invoke<TaskEditState>("task_edit_state");
 export const getTaskEditHistory = () => invoke<TaskHistoryEntry[]>("task_edit_history");
 export const undoTaskEdit = () => invoke<TaskEditState>("undo_task_edit");
+/** Takes back one applied task edit from the history without undoing later ones. */
+export const revertTaskEntry = (id: number) => invoke<TaskEditState>("revert_task_entry", { id });
 export const redoTaskEdit = () => invoke<TaskEditState>("redo_task_edit");
 export const revertTaskEdits = () => invoke<TaskEditState>("revert_task_edits");
 export const taskSavePlan = (options: TaskSaveOptions) => invoke<TaskSavePlan>("task_save_plan", { options });

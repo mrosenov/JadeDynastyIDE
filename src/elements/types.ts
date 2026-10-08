@@ -591,6 +591,8 @@ export interface TaskEditState {
   undo?: string;
   redo?: string;
   changedRoots: TaskChangedRoot[];
+  /** When the task set was last saved in this session (unix ms). */
+  lastSaved?: number;
 }
 
 export interface TaskCloneReport {
@@ -658,6 +660,12 @@ export interface TaskHistoryEntry {
   old: string;
   new: string;
   undone: boolean;
+  /** When a revert from the history took this entry back (unix ms). */
+  revertedAt?: number;
+  /** The task set was last saved after this entry (unix ms). */
+  savedAt?: number;
+  /** Why this entry cannot be reverted on its own right now. */
+  revertBlocked?: string;
 }
 
 export interface TaskSaveOptions {

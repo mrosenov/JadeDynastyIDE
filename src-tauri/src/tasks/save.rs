@@ -188,6 +188,7 @@ impl TaskDocument {
         if had_structural_roots {
             self.journal.clear();
         }
+        self.journal.mark_saved();
         if let Some(cache) = self.cache.as_mut() {
             cache.original = cache.node.clone();
         }
