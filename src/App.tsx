@@ -822,6 +822,8 @@ export default function App() {
         { label: "Open tasks.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => tasksEditor.current?.choose() },
         { label: "Save tasks.data…", icon: Save, shortcut: "Ctrl+S", onSelect: () => tasksEditor.current?.save(), disabled: !tasksEditorState.summary },
         "separator",
+        { label: "Problems", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => tasksEditor.current?.toggleProblems(), disabled: !tasksEditorState.summary, checked: tasksEditorState.panel === "problems" },
+        "separator",
         { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
       ],
     },
@@ -834,7 +836,7 @@ export default function App() {
         "separator",
         { label: "Revert all changes…", icon: RotateCcw, onSelect: () => tasksEditor.current?.revertAll(), disabled: !tasksEditorState.dirty },
         "separator",
-        { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => tasksEditor.current?.toggleHistory(), disabled: !tasksEditorState.summary, checked: !!tasksEditorState.historyOpen },
+        { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => tasksEditor.current?.toggleHistory(), disabled: !tasksEditorState.summary, checked: tasksEditorState.panel === "history" },
       ],
     },
   ] : elementMenus;

@@ -254,11 +254,15 @@ round trip and is explicitly accepted.
 - Compare and transfer compatible fields between task files.
 - Translation workflow for names, descriptions and dialog text by task ID.
 - JSON import/export.
-- Task problems scanner and reference graph. This is the next planned feature.
+- ~~Task problems scanner and reference graph.~~ Done (October 2026): Problems panel from the
+  background index (duplicate and skipped IDs, broken and self references, stale hierarchy links,
+  missing elements.data items/monsters, full packs) and the inspector's Referenced by section.
+  Premise and mutex task lists are now named fields in every supported layout.
 - Separate editors for `dyn_tasks.data` and `task_npc.data`.
 - Optional developer-only loader tracing for versions that cannot be resolved by schema comparison.
 
 ## Recommended implementation order
 
-Milestones 1–9 are complete. Continue with the task problems scanner and reference graph, using
-the existing background task index and reference metadata before adding more structural operations.
+Milestones 1–9 and the problems scanner are complete. Next come the JSON, compare and translation
+workflows; JSON export/import first, since compare and translation can reuse its field matching by
+task ID.

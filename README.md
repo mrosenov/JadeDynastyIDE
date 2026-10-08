@@ -118,6 +118,31 @@ buff and title values use the configured client's names and descriptions. Until 
 index is complete, links to subquests show *Indexing quests…*; the open task refreshes once it is.
 One decoded root is cached, so moving among its subtasks does not reread or decode the pack.
 
+**Problems** (File › Problems or Ctrl+Shift+M) scans the task set once every subquest is indexed and
+shows its results in place of the quest list, beside the inspector. Clicking a problem selects the
+task. The header button shows the error and warning counts, and every edit rescans at once because
+the scan reads the background index instead of decoding the packs again.
+
+| Severity | Check |
+|---|---|
+| Error | **Top-level tasks the game skips**: a top-level ID an earlier top-level task already uses. The loader keeps the first in pack order and skips the later task entirely ("Dup Task Found"). |
+| Error | **Duplicate task IDs** among all tasks, subquests included. The game's map of all tasks keeps only the one loaded last. |
+| Error | **Broken task references**: a prerequisite, exclusion, award (`new task id`, terminated tasks) or finish-count field naming a task ID no task has. |
+| Warning | **Tasks that name themselves** in a prerequisite or exclusion list. |
+| Warning | **Stale hierarchy links**: stored parent, sibling or first-child IDs that differ from the tree. |
+| Warning | **Items and monsters missing from elements.data** (item, monster and object IDs), checked only while an elements.data is open. |
+| Info | **Full task packs** holding 300 top-level tasks. |
+
+The inspector's **Referenced by** section, below the fields, lists the tasks whose prerequisite,
+exclusion, award or finish-count fields name the selected task. Click one to select it.
+
+The prerequisite (`premise tasks`, `premise finish tasks`, `premise global task`, `premise cotask`)
+and exclusion (`mutex tasks`) fields are named in the v165, v172 and v184 layouts from
+`ATaskTemplFixedData`. Their offsets were checked on every task of the three client fixtures: counts
+never exceed 5 and unused slots are zero. They link to their tasks, are validated when edited, are
+remapped inside clones and are followed by delete previews, Problems and Referenced by. The four
+hierarchy link fields are shown but locked, because clone, move and delete maintain them.
+
 **Task schema** opens the effective binary layout for the current task version. It lists every
 structure, field type and condition and can search across all four. Verified v165, v172 and v184
 layouts are read-only. For an unsupported version, the same window shows the selected older

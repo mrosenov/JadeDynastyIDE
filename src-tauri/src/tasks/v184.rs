@@ -16,7 +16,7 @@ const TIMETABLE: &str = "TASK_TIMETABLE_V184";
 pub fn schema() -> Schema {
     let mut fixed = v165::fixed_definition();
     resize_raw(&mut fixed, "unknown_0102_0484", 384);
-    resize_raw(&mut fixed, "unknown_0806_1317", 576);
+    v165::set_friendship_count(&mut fixed, 48);
     resize_raw(&mut fixed, "unknown_1786_1944", 171);
     insert_after(
         &mut fixed,

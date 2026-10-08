@@ -1,9 +1,9 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, ArrowRight, BarChart3, Braces, Check, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
-import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
+import { AlertTriangle, ArrowRight, BarChart3, Braces, Check, CircleAlert, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
+import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskReferencedBy, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskAnalysisReport, TaskDeletePreview, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskAnalysisReport, TaskDeletePreview, TaskDeleteReference, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 import { TaskSaveDialog } from "./TaskSaveDialog";
 import { TaskSchemaDialog } from "./TaskSchemaDialog";
@@ -12,6 +12,7 @@ import { TaskBaselineFieldDialog, type TaskBaselineFieldDraft } from "./TaskBase
 import { TaskDeleteDialog } from "./TaskDeleteDialog";
 import { TaskMoveDialog } from "./TaskMoveDialog";
 import { TaskHistoryPanel } from "./TaskHistoryPanel";
+import { TaskProblemsPanel } from "./TaskProblemsPanel";
 
 export interface TasksEditorState {
   loaded: boolean;
@@ -28,9 +29,11 @@ export interface TasksEditorState {
   canRedo: boolean;
   edits: TaskEditState;
   selection: { pack: number; root: number; path: number[] } | null;
-  /** The edit history panel is shown in place of the task list and inspector. */
-  historyOpen?: boolean;
+  /** The tool panel shown: the edit history (in place of the task list and inspector) or problems (in place of the list). */
+  panel?: TaskPanel;
 }
+
+export type TaskPanel = "history" | "problems" | null;
 
 export interface TasksEditorHandle {
   choose: () => void;
@@ -41,6 +44,7 @@ export interface TasksEditorHandle {
   save: () => void;
   toggleHistory: () => void;
   showHistory: () => void;
+  toggleProblems: () => void;
 }
 
 interface Props {
@@ -122,12 +126,12 @@ type TaskCategory = keyof typeof CATEGORY_LABELS;
 
 function categoryOf(name: string): TaskCategory {
   const value = name.toLocaleLowerCase();
-  if (value.includes("subtask")) return "hierarchy";
+  if (value.includes("subtask") || value.startsWith("hierarchy_")) return "hierarchy";
   if (value === "texts" || value === "dialogs") return "dialogs";
   if (value.includes("award") || value === "given_items") return "rewards";
   if (value.includes("fail")) return "failure";
   if (value.includes("monster_wanted") || value.includes("item_wanted") || value.includes("interaction_object") || value.startsWith("finish_compare") || value === "summoned_monsters") return "objectives";
-  if (value.startsWith("premise") || value.startsWith("team") || value.includes("teammate") || value.includes("member_distance") || value.startsWith("captain_") || value === "all_success" || value === "success_distance") return "prerequisites";
+  if (value.startsWith("premise") || value.startsWith("mutex") || value.startsWith("cotask") || value.startsWith("team") || value.includes("teammate") || value.includes("member_distance") || value.startsWith("captain_") || value === "all_success" || value === "success_distance") return "prerequisites";
   if (value.includes("timetable") || value === "time_limit" || value === "absolute_time" || value.startsWith("show_by_") || value.startsWith("receive_") || value.startsWith("shared_")) return "availability";
   return "general";
 }
@@ -276,7 +280,12 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const [moveBusy, setMoveBusy] = useState(false);
   const [moveError, setMoveError] = useState<string | null>(null);
   const [editState, setEditState] = useState<TaskEditState>(initialState?.edits ?? { changedRoots: [] });
-  const [historyOpen, setHistoryOpen] = useState(initialState?.historyOpen ?? false);
+  const [panel, setPanel] = useState<TaskPanel>(initialState?.panel ?? null);
+  const historyOpen = panel === "history";
+  const togglePanel = useCallback((next: Exclude<TaskPanel, null>) => setPanel((current) => current === next ? null : next), []);
+  const [problemCounts, setProblemCounts] = useState<{ errors: number; warnings: number } | null>(null);
+  const onProblemCounts = useCallback((errors: number, warnings: number) => setProblemCounts({ errors, warnings }), []);
+  const [referrers, setReferrers] = useState<TaskDeleteReference[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedNote, setSavedNote] = useState<string | null>(null);
@@ -535,6 +544,25 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [editState.changedRoots.length, runHistoryAction]);
   const revertEntry = useCallback((id: number) => runHistoryAction(() => revertTaskEntry(id)), [runHistoryAction]);
 
+  /** Selects the task at a position, revealing it in the list. */
+  const openTaskAt = useCallback(async (pack: number, rootIndex: number, taskPath: number[]) => {
+    const root = file?.roots.find((candidate) => candidate.pack === pack && candidate.root === rootIndex);
+    if (!root || operation.current) return;
+    expandTo(root, taskPath);
+    if (!queryRef.current) setPage(Math.floor(root.index / PAGE_SIZE));
+    await selectTask(root, taskPath);
+  }, [expandTo, file, selectTask]);
+  const openProblem = useCallback((problem: TaskProblem) => problem.root !== undefined && openTaskAt(problem.pack, problem.root, problem.path), [openTaskAt]);
+
+  // Referenced by follows the selected task and every edit.
+  useEffect(() => {
+    setReferrers(null);
+    if (!detail || !taskIndexReady) return;
+    let cancelled = false;
+    getTaskReferencedBy(detail.id).then((next) => !cancelled && setReferrers(next)).catch((problem) => !cancelled && setError(problemText(problem)));
+    return () => { cancelled = true; };
+  }, [detail, editState, taskIndexReady]);
+
   /** Selects a quest from the history by ID; it may have moved since the edit. */
   const openHistoryTask = useCallback(async (taskId: number) => {
     if (!file || operation.current) return;
@@ -545,7 +573,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
         setError(`Task ${taskId} is no longer in the task set.`);
         return;
       }
-      setHistoryOpen(false);
+      setPanel(null);
       setQuery("");
       expandTo(root, hit.path);
       setPage(Math.floor(root.index / PAGE_SIZE));
@@ -589,7 +617,8 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setMoveBusy(false);
     setMoveError(null);
     setEditState({ changedRoots: [] });
-    setHistoryOpen(false);
+    setPanel(null);
+    setProblemCounts(null);
     try {
       const sourceVersion = await taskSourceVersion(path);
       if (!sourceVersion.supported) {
@@ -651,14 +680,14 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [defaultPath, file?.path, load, unsupported?.path]);
 
   const openSave = useCallback(() => file && !busy && !taskBusy && setSaving(true), [busy, file, taskBusy]);
-  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave, toggleHistory: () => setHistoryOpen((open) => !open), showHistory: () => setHistoryOpen(true) }), [choose, load, openSave, redo, revertAll, undo]);
+  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave, toggleHistory: () => togglePanel("history"), showHistory: () => setPanel("history"), toggleProblems: () => togglePanel("problems") }), [choose, load, openSave, redo, revertAll, togglePanel, undo]);
 
   useEffect(() => {
     if (!active) return;
     const onKey = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey)) return;
       const key = event.key.toLowerCase();
-      if (key !== "o" && key !== "s" && key !== "z" && key !== "y" && key !== "h") return;
+      if (key !== "o" && key !== "s" && key !== "z" && key !== "y" && key !== "h" && !(key === "m" && event.shiftKey)) return;
       const typing = event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement;
       if (typing && (key === "z" || key === "y")) return;
       event.preventDefault();
@@ -667,11 +696,12 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       if (key === "s") openSave();
       if (key === "z") (event.shiftKey ? redo : undo)();
       if (key === "y") redo();
-      if (key === "h" && file) setHistoryOpen((open) => !open);
+      if (key === "h" && file) togglePanel("history");
+      if (key === "m" && file) togglePanel("problems");
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [active, choose, file, openSave, redo, undo]);
+  }, [active, choose, file, openSave, redo, togglePanel, undo]);
 
   useEffect(() => {
     if (!active || !defaultPath || file || unsupported || autoOpened.current === defaultPath) return;
@@ -702,9 +732,9 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       canRedo: !!editState.redo,
       edits: editState,
       selection: selectedRoot ? { pack: selectedRoot.pack, root: selectedRoot.root, path: selectedPath } : null,
-      historyOpen,
+      panel,
     });
-  }, [historyOpen, analysis, comparison, editState, fieldCandidates, file, layoutPatch, onStateChange, referencePath, selectedPath, selectedRoot, unsupported]);
+  }, [panel, analysis, comparison, editState, fieldCandidates, file, layoutPatch, onStateChange, referencePath, selectedPath, selectedRoot, unsupported]);
 
   const runAnalysis = useCallback(async () => {
     if (!unsupported || analysisBusy) return;
@@ -1185,21 +1215,23 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       </div>
       <span className="tasks-integrity" title="The index, pack headers, offsets and every stored pack MD5 were verified"><ShieldCheck size={14} /> Integrity verified</span>
       {file.userLayout && <span className="tag ok" title="This user layout decoded and re-encoded every root byte-for-byte">Accepted user layout</span>}
-      {!!editState.changedRoots.length && <button className="status-edits" onClick={() => setHistoryOpen(true)} title="Show the edit history (Ctrl+H). Edits are kept in memory until saved."><span className="changed-dot" /> {editState.changedRoots.length} changed root{editState.changedRoots.length === 1 ? "" : "s"}</button>}
+      {!!editState.changedRoots.length && <button className="status-edits" onClick={() => setPanel("history")} title="Show the edit history (Ctrl+H). Edits are kept in memory until saved."><span className="changed-dot" /> {editState.changedRoots.length} changed root{editState.changedRoots.length === 1 ? "" : "s"}</button>}
+      <button className={"btn" + (panel === "problems" ? " active" : "")} onClick={() => togglePanel("problems")} title="Duplicate IDs, broken references and stale links (Ctrl+Shift+M)" aria-pressed={panel === "problems"}><CircleAlert size={14}/> Problems{problemCounts && (problemCounts.errors + problemCounts.warnings > 0) && <span className="task-problem-counts">{problemCounts.errors > 0 && <span className="sev-count error">{count(problemCounts.errors)}</span>}{problemCounts.warnings > 0 && <span className="sev-count warning">{count(problemCounts.warnings)}</span>}</span>}</button>
       <button className="btn" onClick={() => setSchemaOpen(true)} disabled={busy || taskBusy}><Braces size={14}/> Task schema</button>
       {file.userLayout && <button className="btn" onClick={() => void reopenLayoutAnalyzer()} disabled={busy || taskBusy || layoutBusy}><Pencil size={14}/> Edit layout</button>}
       <button className="btn" onClick={choose} disabled={busy}><FolderOpen size={14} /> Open…</button>
       <span className="tasks-history-actions">
         <button className="icon-btn" onClick={undo} disabled={!editState.undo || taskBusy} title={editState.undo ? `Undo ${editState.undo} (Ctrl+Z)` : "Nothing to undo"} aria-label="Undo"><Undo2 size={15} /></button>
         <button className="icon-btn" onClick={redo} disabled={!editState.redo || taskBusy} title={editState.redo ? `Redo ${editState.redo} (Ctrl+Y)` : "Nothing to redo"} aria-label="Redo"><Redo2 size={15} /></button>
-        <button className={"icon-btn" + (historyOpen ? " active" : "")} onClick={() => setHistoryOpen((open) => !open)} title="Edit history (Ctrl+H)" aria-label="Edit history" aria-pressed={historyOpen}><History size={15} /></button>
+        <button className={"icon-btn" + (historyOpen ? " active" : "")} onClick={() => togglePanel("history")} title="Edit history (Ctrl+H)" aria-label="Edit history" aria-pressed={historyOpen}><History size={15} /></button>
       </span>
       <button className="btn primary" onClick={openSave} disabled={busy || taskBusy}><FileCheck2 size={14} /> Save…</button>
     </header>
     {error && <div className="path-data-message error">{error}</div>}
-    {historyOpen && <div className="tasks-body tasks-history-body"><TaskHistoryPanel edits={editState} busy={taskBusy} onUndo={undo} onRedo={redo} onRevertAll={revertAll} onRevert={revertEntry} onOpen={(taskId) => void openHistoryTask(taskId)} onClose={() => setHistoryOpen(false)} /></div>}
-    <div className="tasks-body" hidden={historyOpen}>
-      <aside className="tasks-roots">
+    {historyOpen && <div className="tasks-body tasks-history-body"><TaskHistoryPanel edits={editState} busy={taskBusy} onUndo={undo} onRedo={redo} onRevertAll={revertAll} onRevert={revertEntry} onOpen={(taskId) => void openHistoryTask(taskId)} onClose={() => setPanel(null)} /></div>}
+    <div className={"tasks-body" + (panel === "problems" ? " problems-open" : "")} hidden={historyOpen}>
+      {panel === "problems" && <TaskProblemsPanel edits={editState} indexReady={taskIndexReady} onOpen={(problem) => void openProblem(problem)} onCounts={onProblemCounts} onClose={() => setPanel(null)} />}
+      <aside className="tasks-roots" hidden={panel === "problems"}>
         <div className="tasks-search"><Search size={14} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search all quests by ID or name…" autoComplete="off" /></div>
         <div className="tasks-root-list">
           {shown.map((match) => {
@@ -1260,7 +1292,16 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
           <div className="task-fields" key={`${detail.pack}:${detail.root}:${pathKey(detail.path)}`}>{categories.map((category) => <details className="task-category" key={category.key} open>
             <summary><span>{category.label}</span><span>{category.fields.length} fields</span></summary>
             {category.fields.map((field, index) => <FieldRow key={`${field.name}:${field.offset}:${index}`} field={field} onReference={followReference} onEdit={editField} />)}
-          </details>)}</div>
+          </details>)}
+            <details className="task-category task-referrers" open>
+              <summary><span>Referenced by</span><span>{referrers === null ? (taskIndexReady ? "…" : "indexing") : `${referrers.length === 500 ? "500+" : referrers.length} task${referrers.length === 1 ? "" : "s"}`}</span></summary>
+              {referrers?.map((referrer, index) => <button className="task-referrer" key={`${referrer.pack}:${referrer.root}:${pathKey(referrer.path)}:${referrer.field}:${index}`} onClick={() => void openTaskAt(referrer.pack, referrer.root, referrer.path)} title="Select this task">
+                <span className="mono">{referrer.sourceId}</span><span className="truncate">{referrer.sourceName || "(unnamed task)"}</span><span className="mono muted truncate">{referrer.field}</span>
+              </button>)}
+              {referrers?.length === 0 && <div className="empty-note">No task names this task in a prerequisite, exclusion, award or finish-count field.</div>}
+              {!taskIndexReady && <div className="empty-note">Shown when every subquest is indexed.</div>}
+            </details>
+          </div>
         </> : <div className="empty-note center">Select a task to inspect its fields.</div>}
       </section>
     </div>

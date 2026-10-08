@@ -668,6 +668,40 @@ export interface TaskHistoryEntry {
   revertBlocked?: string;
 }
 
+export type TaskProblemKind = "duplicate_root" | "duplicate_id" | "broken_reference" | "self_reference" | "hierarchy_links" | "missing_element" | "full_pack";
+
+export interface TaskProblem {
+  kind: TaskProblemKind;
+  pack: number;
+  /** None for pack-level problems. */
+  root?: number;
+  path: number[];
+  id: number;
+  name: string;
+  /** The field, as "fixed › premise tasks[0]". */
+  field?: string;
+  target?: number;
+  message: string;
+}
+
+export interface TaskProblemKindSummary {
+  kind: TaskProblemKind;
+  severity: ProblemSeverity;
+  title: string;
+  description: string;
+  count: number;
+}
+
+export interface TaskProblemReport {
+  kinds: TaskProblemKindSummary[];
+  problems: TaskProblem[];
+  truncated: boolean;
+  /** Item and monster IDs are checked only while an elements.data is open. */
+  elementsChecked: boolean;
+  tasks: number;
+  elapsedMs: number;
+}
+
 export interface TaskSaveOptions {
   path: string;
   backup: boolean;

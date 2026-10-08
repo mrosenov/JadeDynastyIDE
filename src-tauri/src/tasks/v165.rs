@@ -12,7 +12,7 @@ use super::{
     schema::{Condition, FieldDef, FieldType, Predicate, Schema, StructDef, VersionedSchema},
     structures::{
         self, AWARD_COUNT_SCALE, AWARD_DATA, AWARD_ITEM_SCALE, AWARD_RATIO_SCALE,
-        COMPARE_EXPRESSION, INTERACTION_OBJECT_WANTED, ITEM_WANTED, MONSTER_SUMMONED,
+        COMPARE_EXPRESSION, FINISH_TASK_COUNT, INTERACTION_OBJECT_WANTED, ITEM_WANTED, MONSTER_SUMMONED,
         MONSTER_WANTED, TASK_DIALOGS, TASK_TEXTS, TASK_TIME, TEAM_MEMBER_WANTED,
     },
 };
@@ -32,6 +32,45 @@ fn named(name: &str) -> FieldType {
 
 fn raw(len: usize) -> FieldType {
     FieldType::Raw { len }
+}
+
+fn fixed_array(len: usize, item: FieldType) -> FieldType {
+    FieldType::FixedArray { len, item: Box::new(item) }
+}
+
+/// Zone-friendship premises per task: 32 in v165, 48 from v172.
+const FRIENDSHIP_V165: usize = 32;
+
+/// The premise block from `m_ulPremise_Deposit` to `m_bPremise_GM` (TaskTempl.h).
+/// The task-ID lists are named so references can be followed, checked and
+/// remapped; the remaining ranges stay raw. Offsets in comments are v165's.
+/// Verified on every task of the v165, v172 and v184 fixtures: counts are at
+/// most 5, unused slots are zero, and the IDs name existing tasks.
+fn premise_fields() -> Vec<FieldDef> {
+    vec![
+        field("unknown_0806_0844", raw(39)),                                       // 0806 deposit, reputation, contribution, family and battle scores
+        field("premise_friendship", fixed_array(FRIENDSHIP_V165, FieldType::I32)),  // 0845
+        field("friendship_deposit", FieldType::Bool8),                              // 0973
+        field("premise_task_count", FieldType::U32),                                // 0974
+        field("premise_tasks", fixed_array(5, FieldType::U32)),                     // 0978 tasks finished first
+        field("show_by_premise_task", FieldType::Bool8),                            // 0998
+        field("premise_finish_task_count", FieldType::U32),                         // 0999
+        field("premise_finish_tasks", fixed_array(5, named(FINISH_TASK_COUNT))),    // 1003 tasks finished N times
+        field("premise_global_count", FieldType::U32),                              // 1033
+        field("premise_global_task", FieldType::U32),                               // 1037 global finish count of this task
+        field("unknown_1041_1243", raw(203)),                                       // 1041 period, faction, gender, occupations, spouse
+        field("premise_cotask", FieldType::U32),                                    // 1244
+        field("cotask_condition", FieldType::U32),                                  // 1248
+        field("mutex_task_count", FieldType::U32),                                  // 1252
+        field("mutex_tasks", fixed_array(5, FieldType::U32)),                       // 1256 tasks that exclude this one
+        field("unknown_1276_1317", raw(42)),                                        // 1276 skills, pets, dynamic type, special award, PK, GM
+    ]
+}
+
+/// v172 and later store 48 zone-friendship premises instead of 32.
+pub(crate) fn set_friendship_count(definition: &mut StructDef, count: usize) {
+    let field = definition.fields.iter_mut().find(|field| field.name == "premise_friendship").expect("fixed definition has premise_friendship");
+    field.ty = fixed_array(count, FieldType::I32);
 }
 
 fn array(count_field: &str, item: FieldType) -> FieldType {
@@ -57,7 +96,7 @@ fn conditional(name: &str, ty: FieldType, condition: &str) -> FieldDef {
 }
 
 pub(crate) fn fixed_definition() -> StructDef {
-    StructDef {
+    let mut definition = StructDef {
         fields: vec![
             field("id", FieldType::U32),                            // 0000
             field("name", FieldType::FixedUtf16 { units: 30 }),     // 0004
@@ -94,7 +133,7 @@ pub(crate) fn fixed_definition() -> StructDef {
             field("given_item_pointer", raw(4)),                    // 0794
             field("premise_title_pointer", raw(4)),                 // 0798
             field("premise_title_count", FieldType::U32),           // 0802
-            field("unknown_0806_1317", raw(512)),                   // 0806
+            field("premise_block", raw(512)),                       // 0806 replaced by premise_fields()
             field("teamwork", FieldType::Bool8),                    // 1318
             field("receive_by_team", FieldType::Bool8),             // 1319
             field("shared_task", FieldType::Bool8),                 // 1320
@@ -134,9 +173,18 @@ pub(crate) fn fixed_definition() -> StructDef {
             field("finish_compare_join", FieldType::I32),           // 2278
             field("finish_compare_1", named(COMPARE_EXPRESSION)),   // 2282
             field("finish_compare_2", named(COMPARE_EXPRESSION)),   // 2350
-            field("unknown_2418_2489", raw(72)),                    // 2418
+            field("unknown_2418_2473", raw(56)),                    // 2418
+            // Hierarchy links (m_ulParent … m_ulFirstChild), refreshed by
+            // ATaskTempl::SynchID before official saves; see LINK_FIELDS.
+            field("hierarchy_parent", FieldType::U32),              // 2474
+            field("hierarchy_previous_sibling", FieldType::U32),    // 2478
+            field("hierarchy_next_sibling", FieldType::U32),        // 2482
+            field("hierarchy_first_child", FieldType::U32),         // 2486
         ],
-    }
+    };
+    let at = definition.fields.iter().position(|field| field.name == "premise_block").unwrap();
+    definition.fields.splice(at..=at, premise_fields());
+    definition
 }
 
 fn dynamic_bytes(name: &str, count: &str, condition: &str) -> FieldDef {

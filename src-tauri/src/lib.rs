@@ -497,6 +497,22 @@ async fn task_edit_history(state: State<'_, AppState>) -> Result<Vec<tasks::edit
 }
 
 #[tauri::command]
+async fn task_problems(state: State<'_, AppState>) -> Result<tasks::problems::Report, String> {
+    // Element IDs are checked without holding both locks (document, then tasks elsewhere).
+    let wanted = state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.element_reference_ids()?;
+    let missing = {
+        let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+        document.as_ref().map(|document| wanted.into_iter().filter(|id| document.resolve_essence_id(*id).is_none()).collect::<std::collections::HashSet<_>>())
+    };
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.problems(missing.as_ref())
+}
+
+#[tauri::command]
+async fn task_referenced_by(id: u32, state: State<'_, AppState>) -> Result<Vec<tasks::browser::TaskDeleteReference>, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.referenced_by(id)
+}
+
+#[tauri::command]
 async fn revert_task_entry(id: u64, state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
     state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.revert_entry(id)
 }
@@ -1172,6 +1188,8 @@ pub fn run() {
             clone_task_root,
             task_summary,
             revert_task_entry,
+            task_problems,
+            task_referenced_by,
             move_task_subtree,
             preview_delete_task_subtree,
             delete_task_subtree,

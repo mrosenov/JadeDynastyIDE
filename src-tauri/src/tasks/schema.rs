@@ -487,6 +487,25 @@ impl Default for Limits {
     }
 }
 
+/// Field names (or array names) whose values are task IDs: award and
+/// prerequisite links between tasks. Zero means "none".
+pub fn is_task_reference(semantic: &str) -> bool {
+    matches!(
+        semantic,
+        "task_id" | "new_task_id" | "terminate_task_ids" | "premise_tasks" | "mutex_tasks" | "premise_global_task" | "premise_cotask"
+    )
+}
+
+/// Field names whose values are elements.data essence IDs (items, monsters,
+/// interaction objects).
+pub fn is_element_reference(semantic: &str) -> bool {
+    matches!(semantic, "item_id" | "drop_item_id" | "travel_item_id" | "replacement_item_id" | "monster_id" | "object_id")
+}
+
+/// The four hierarchy link fields at the end of every task's fixed block, in
+/// order: parent, previous sibling, next sibling, first child.
+pub const LINK_FIELDS: [&str; 4] = ["hierarchy_parent", "hierarchy_previous_sibling", "hierarchy_next_sibling", "hierarchy_first_child"];
+
 pub fn decode_exact(schema: &Schema, bytes: &[u8], version: u32) -> Result<Node, String> {
     let (node, used) = decode_prefix_with_limits(schema, bytes, version, Limits::default())?;
     if used != bytes.len() {
@@ -569,12 +588,17 @@ pub(crate) struct ProbedTask {
     pub path: Vec<usize>,
     pub child_count: usize,
     pub references: Vec<ProbedTaskReference>,
+    /// The stored hierarchy links (see `LINK_FIELDS`), when the layout names them.
+    pub links: Option<[u32; 4]>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct ProbedTaskReference {
+    /// Dotted path from the task, such as `fixed.premise_tasks[0]`.
     pub field: String,
     pub target_id: u32,
+    /// An elements.data essence ID rather than a task ID.
+    pub element: bool,
 }
 
 pub(crate) fn probe_task_index_validated(schema: &Schema, bytes: &[u8], version: u32) -> Result<Vec<ProbedTask>, String> {
@@ -647,6 +671,7 @@ impl ProbeDecoder<'_> {
                 path: self.task_path.clone(),
                 child_count: 0,
                 references: Vec::new(),
+                links: None,
             };
             let tasks = self.tasks.as_mut().unwrap();
             tasks.push(task);
@@ -790,11 +815,18 @@ impl ProbeDecoder<'_> {
         };
         if let Some(value) = numeric {
             let semantic = path.rsplit('.').next().unwrap_or(path).split('[').next().unwrap_or("");
-            if matches!(semantic, "task_id" | "new_task_id" | "terminate_task_ids") {
+            let element = is_element_reference(semantic);
+            let link = LINK_FIELDS.iter().position(|name| *name == semantic);
+            if is_task_reference(semantic) || element || link.is_some() {
                 if let (Some(index), Ok(target_id)) = (self.task_stack.last().copied(), u32::try_from(value)) {
                     let base = self.task_bases.last().map(String::as_str).unwrap_or("");
                     let field = path.strip_prefix(base).unwrap_or(path).trim_start_matches('.').to_string();
-                    self.tasks.as_mut().unwrap()[index].references.push(ProbedTaskReference { field, target_id });
+                    let task = &mut self.tasks.as_mut().unwrap()[index];
+                    match link {
+                        Some(slot) if field == format!("fixed.{semantic}") => task.links.get_or_insert([0; 4])[slot] = target_id,
+                        Some(_) => {}
+                        None => task.references.push(ProbedTaskReference { field, target_id, element }),
+                    }
                 }
             }
             Ok(ProbeNumeric::Integer(value))
@@ -1355,8 +1387,8 @@ mod tests {
 
         let tasks = probe_task_index_validated(&layout, &bytes, 165).unwrap();
         assert_eq!(tasks.len(), 2);
-        assert_eq!(tasks[0].references, vec![ProbedTaskReference { field: "task_id".into(), target_id: 99 }]);
-        assert_eq!(tasks[1].references, vec![ProbedTaskReference { field: "task_id".into(), target_id: 1 }]);
+        assert_eq!(tasks[0].references, vec![ProbedTaskReference { field: "task_id".into(), target_id: 99, element: false }]);
+        assert_eq!(tasks[1].references, vec![ProbedTaskReference { field: "task_id".into(), target_id: 1, element: false }]);
     }
 
     #[test]

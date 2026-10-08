@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (143 at last run, ~2–3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (145 at last run, ~3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -279,9 +279,18 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   result (root-level snapshots cannot merge); otherwise `revert_blocked` names the later edit. A
   revert is recorded with `reverts: Some(id)`, is not listed, and marks the original as reverted;
   reverting it again does nothing. `Journal::mark_saved` drives the Saved line.
-- The next planned feature is the task problems scanner and reference graph. Reuse the completed
-  background search/reference index rather than decoding every root again. Inconsistent hierarchy
-  links (see above) are a natural check.
+- **Premise/mutex fields** (`v165::premise_fields`) split the former `unknown_0806_1317` block using
+  `TaskTempl.h` offsets anchored on `premise_title_count` (802) and `teamwork` (1318); v172/v184 only
+  grow `premise_friendship` from 32 to 48 (`set_friendship_count`). `schema::is_task_reference`
+  is the one list of task-ID field names (index, inspector links, edit validation, clone remapping);
+  `is_element_reference` lists item/monster/object fields. The link fields are `LINK_FIELDS`.
+- The background index (byte probe in `schema.rs` and `collect_search_entries` for edited roots)
+  records task and element references with dotted paths (`fixed.premise_tasks[0]`) and each task's
+  stored links. `tasks/problems.rs` scans only that index; `task_problems` collects element IDs,
+  checks them against the open elements.data, then scans, never holding both locks at once.
+  `referenced_by` serves the inspector's Referenced by section.
+- XtremeJade v165 scan (official data): 15 duplicate IDs, 32 broken references (e.g. four "Join …"
+  quests awarding missing task 2608), 1 self-reference, 0 stale links, 44 full packs.
 
 ## Sample files (for tests and repros)
 
@@ -342,7 +351,7 @@ count as a minimum. Never write into these folders from tests. Tests save into `
   match. Legacy arrays remain update-only. IDs are preserved, additions check ID-space
   conflicts, invalid rows are skipped entirely, and preview tokens cover input, data and schemas.
 - Pick-aware export (export only the picked search results).
-- Task problems scanner and reference graph, then compare/translation/JSON workflows described in
+- Task compare/translation/JSON workflows described in
   `TASKS_EDITOR_PLAN.md`.
 - More data files in the activity bar (`gshop.data`, `dyn_tasks.data`, `task_npc.data`, …).
 - v165: the 8 bytes before list 296 that layouts mark as a checksum slot look like an empty

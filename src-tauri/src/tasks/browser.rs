@@ -12,7 +12,7 @@ use crate::{client::Resources, elements::Document};
 
 use super::container::{Pack, TaskContainer, ROOTS_PER_PACK};
 use super::edit::{ChangedRoot, EditState, EntryDetails, HistoryEntry, Journal, RootChange};
-use super::schema::{decode_exact, probe_root_integer_validated, probe_task_index_validated, FieldType, Node, ProbedTaskReference, Schema, Value};
+use super::schema::{decode_exact, is_element_reference, is_task_reference, LINK_FIELDS, probe_root_integer_validated, probe_task_index_validated, FieldType, Node, ProbedTaskReference, Schema, Value};
 use super::schema_for_version;
 
 const ROOT_HEADING_BYTES: usize = 64;
@@ -53,6 +53,9 @@ pub struct TaskSearchEntry {
     pub child_count: usize,
     #[serde(skip)]
     pub(crate) references: Vec<ProbedTaskReference>,
+    /// Stored hierarchy links (see `LINK_FIELDS`), when the layout names them.
+    #[serde(skip)]
+    pub(crate) links: Option<[u32; 4]>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -66,11 +69,11 @@ pub struct TaskSearchReport {
 }
 
 #[derive(Default)]
-struct TaskSearchIndex {
-    indexed: bool,
-    error: Option<String>,
-    entries: Vec<TaskSearchEntry>,
-    by_id: HashMap<u32, TaskSearchEntry>,
+pub(crate) struct TaskSearchIndex {
+    pub(crate) indexed: bool,
+    pub(crate) error: Option<String>,
+    pub(crate) entries: Vec<TaskSearchEntry>,
+    pub(crate) by_id: HashMap<u32, TaskSearchEntry>,
     edited_roots: HashSet<(usize, usize)>,
 }
 
@@ -253,7 +256,7 @@ pub struct TaskDocument {
     pub(crate) container: TaskContainer,
     pub(crate) schema: Schema,
     pub(crate) summary: FileSummary,
-    search: Arc<RwLock<TaskSearchIndex>>,
+    pub(crate) search: Arc<RwLock<TaskSearchIndex>>,
     pub(crate) cache: Option<CachedRoot>,
     pub(crate) modified: HashMap<(usize, usize), ModifiedRoot>,
     pub(crate) added_roots: HashMap<usize, Vec<Vec<u8>>>,
@@ -301,6 +304,7 @@ impl TaskDocument {
                 name: root.name.clone(),
                 child_count: root.child_count,
                 references: Vec::new(),
+                links: None,
             }).collect::<Vec<_>>();
         let by_id = entries.iter().map(|task| (task.id, task.clone())).collect();
         let search = Arc::new(RwLock::new(TaskSearchIndex { entries, by_id, ..TaskSearchIndex::default() }));
@@ -423,7 +427,7 @@ impl TaskDocument {
         let (value, interpretation) = display_value(node);
         let editable = children.is_empty()
             && !locked.contains(&path)
-            && !(path.len() == 2 && path[0] == "fixed" && path[1] == "id")
+            && !(path.len() == 2 && path[0] == "fixed" && (path[1] == "id" || LINK_FIELDS.contains(&path[1].as_str())))
             && matches!(node.ty,
                 FieldType::I8 | FieldType::U8 | FieldType::Bool8 | FieldType::I16 | FieldType::U16 |
                 FieldType::I32 | FieldType::U32 | FieldType::I64 | FieldType::U64 | FieldType::F32 |
@@ -457,7 +461,7 @@ impl TaskDocument {
             return None;
         }
         let semantic = semantic.to_ascii_lowercase();
-        if matches!(semantic.as_str(), "task_id" | "new_task_id" | "terminate_task_ids") {
+        if is_task_reference(&semantic) {
             let (target, indexed) = self.search.read().ok().map_or((None, false), |index| (index.by_id.get(&id).cloned(), index.indexed));
             return Some(FieldReference {
                 kind: "task".into(),
@@ -471,7 +475,7 @@ impl TaskDocument {
                 path: target.map(|task| task.path).unwrap_or_default(),
             });
         }
-        let kind = if matches!(semantic.as_str(), "item_id" | "drop_item_id" | "travel_item_id" | "replacement_item_id" | "monster_id" | "object_id") {
+        let kind = if is_element_reference(&semantic) {
             "element"
         } else if semantic == "skill_id" {
             "skill"
@@ -571,6 +575,9 @@ impl TaskDocument {
         if edit.field_path.len() == 2 && edit.field_path[0] == "fixed" && edit.field_path[1] == "id" {
             return Err("Task IDs are locked until task-reference rewriting is implemented".into());
         }
+        if edit.field_path.len() == 2 && edit.field_path[0] == "fixed" && LINK_FIELDS.contains(&edit.field_path[1].as_str()) {
+            return Err("Hierarchy links follow the task tree and are updated by clone, move and delete".into());
+        }
         let target = node_at(selected, &edit.field_path)?;
         if !target.children().is_empty() {
             return Err(format!("{} is a group; edit one of its values", target.name));
@@ -597,7 +604,7 @@ impl TaskDocument {
             _ => None,
         };
         let semantic = edit.field_path.iter().rev().find(|part| !part.starts_with('[')).map(String::as_str).unwrap_or_default();
-        if matches!(semantic, "task_id" | "new_task_id" | "terminate_task_ids") {
+        if is_task_reference(semantic) {
             let id = match &value {
                 Value::U64(value) => u32::try_from(*value).ok(),
                 Value::I64(value) => u32::try_from(*value).ok(),
@@ -840,7 +847,7 @@ impl TaskDocument {
             if task.pack == pack && task.root == root && task.path.starts_with(path) {
                 continue;
             }
-            for reference in task.references.iter().filter(|reference| deleted_ids.contains(&reference.target_id)) {
+            for reference in task.references.iter().filter(|reference| !reference.element && deleted_ids.contains(&reference.target_id)) {
                 reference_count += 1;
                 if references.len() < 100 {
                     references.push(TaskDeleteReference {
@@ -1446,7 +1453,7 @@ fn replace_own_task_ids(task: &mut Node, replacements: &HashMap<u32, u32>) -> Re
 
 fn rewrite_internal_task_references(node: &mut Node, semantic: &str, replacements: &HashMap<u32, u32>) -> Result<(), String> {
     if node.children().is_empty() {
-        if matches!(semantic, "task_id" | "new_task_id" | "terminate_task_ids") {
+        if is_task_reference(semantic) {
             let old = match node.value {
                 Value::U64(value) => u32::try_from(value).ok(),
                 Value::I64(value) => u32::try_from(value).ok(),
@@ -1479,38 +1486,35 @@ fn delete_token(root: &[u8], path: &[usize]) -> String {
     format!("{:x}", digest.finalize())
 }
 
-fn collect_task_reference_fields(
-    node: &Node,
-    semantic: &str,
-    path: Vec<String>,
-    mut found: impl FnMut(u32, String),
-) -> Result<(), String> {
-    fn walk(node: &Node, semantic: &str, path: Vec<String>, found: &mut dyn FnMut(u32, String)) -> Result<(), String> {
-        if node.children().is_empty() {
-            if matches!(semantic, "task_id" | "new_task_id" | "terminate_task_ids") {
-                let target = match node.value {
-                    Value::U64(value) => u32::try_from(value).ok(),
-                    Value::I64(value) => u32::try_from(value).ok(),
-                    _ => None,
-                };
-                if let Some(target) = target {
-                    found(target, path.iter().map(|part| label_path_part(part)).collect::<Vec<_>>().join(" › "));
-                }
+/// Visits every task-reference, element-reference and hierarchy-link value
+/// below `node` with its dotted path (`fixed.premise_tasks[0]`, as the byte
+/// probe writes it) and its field name.
+fn collect_index_fields(node: &Node, semantic: &str, path: String, found: &mut dyn FnMut(u32, String, &str)) -> Result<(), String> {
+    if node.children().is_empty() {
+        if is_task_reference(semantic) || is_element_reference(semantic) || LINK_FIELDS.contains(&semantic) {
+            let target = match node.value {
+                Value::U64(value) => u32::try_from(value).ok(),
+                Value::I64(value) => u32::try_from(value).ok(),
+                _ => None,
+            };
+            if let Some(target) = target {
+                found(target, path, semantic);
             }
-            return Ok(());
         }
-        for child in node.children() {
-            let child_semantic = if child.name.starts_with('[') { semantic.to_string() } else { child.name.to_ascii_lowercase() };
-            let mut child_path = path.clone();
-            child_path.push(child.name.clone());
-            walk(child, &child_semantic, child_path, found)?;
-        }
-        Ok(())
+        return Ok(());
     }
-    walk(node, semantic, path, &mut found)
+    for child in node.children() {
+        let (child_semantic, child_path) = if child.name.starts_with('[') {
+            (semantic.to_string(), format!("{path}{}", child.name))
+        } else {
+            (child.name.to_ascii_lowercase(), format!("{path}.{}", child.name))
+        };
+        collect_index_fields(child, &child_semantic, child_path, found)?;
+    }
+    Ok(())
 }
 
-fn label_path_part(part: &str) -> String {
+pub(crate) fn label_path_part(part: &str) -> String {
     if part.starts_with('[') { part.into() } else { part.replace('_', " ") }
 }
 
@@ -1518,12 +1522,17 @@ fn collect_search_entries(task: &Node, pack: usize, root: usize, path: Vec<usize
     let (id, name) = task_heading(task)?;
     let children = task.child("subtasks").map(Node::children).unwrap_or_default();
     let mut references = Vec::new();
+    let mut links = None;
     for field in task.children().iter().filter(|field| field.name != "subtasks") {
-        collect_task_reference_fields(field, &field.name.to_ascii_lowercase(), vec![field.name.clone()], |target_id, field| {
-            references.push(ProbedTaskReference { field, target_id });
+        collect_index_fields(field, &field.name.to_ascii_lowercase(), field.name.clone(), &mut |target_id, field_path, semantic| {
+            match LINK_FIELDS.iter().position(|name| *name == semantic) {
+                Some(slot) if field_path == format!("fixed.{semantic}") => links.get_or_insert([0; 4])[slot] = target_id,
+                Some(_) => {}
+                None => references.push(ProbedTaskReference { field: field_path, target_id, element: is_element_reference(semantic) }),
+            }
         })?;
     }
-    output.push(TaskSearchEntry { pack, root, path: path.clone(), id, name, child_count: children.len(), references });
+    output.push(TaskSearchEntry { pack, root, path: path.clone(), id, name, child_count: children.len(), references, links });
     for (index, child) in children.iter().enumerate() {
         let mut child_path = path.clone();
         child_path.push(index);
@@ -1650,6 +1659,7 @@ fn read_pack_nested_index(pack: &Pack, pack_index: usize, schema: &Schema, versi
             name: task.name,
             child_count: task.child_count,
             references: task.references,
+            links: task.links,
         }));
     }
     Ok(result)
@@ -2068,5 +2078,6 @@ mod tests {
         }
     }
 }
+
 
 

@@ -72,6 +72,8 @@ import type {
   TaskLayoutExportReport,
   TaskLayoutCondition,
   TaskSchemaView,
+  TaskProblemReport,
+  TaskDeleteReference,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -152,6 +154,10 @@ export const deleteTaskSubtree = (preview: TaskDeletePreview) => invoke<TaskDele
 export const getTaskEditState = () => invoke<TaskEditState>("task_edit_state");
 export const getTaskEditHistory = () => invoke<TaskHistoryEntry[]>("task_edit_history");
 export const undoTaskEdit = () => invoke<TaskEditState>("undo_task_edit");
+/** Scans the complete task index for duplicate IDs, broken references, stale links and full packs. */
+export const getTaskProblems = () => invoke<TaskProblemReport>("task_problems");
+/** Tasks whose fields name the given task ID. */
+export const getTaskReferencedBy = (id: number) => invoke<TaskDeleteReference[]>("task_referenced_by", { id });
 /** Takes back one applied task edit from the history without undoing later ones. */
 export const revertTaskEntry = (id: number) => invoke<TaskEditState>("revert_task_entry", { id });
 export const redoTaskEdit = () => invoke<TaskEditState>("redo_task_edit");
