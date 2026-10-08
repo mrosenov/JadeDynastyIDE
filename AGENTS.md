@@ -9,8 +9,9 @@ with every feature; this file is what you need to work on the code.
 built with **Tauri 2** (Rust backend in `src-tauri/`, React 19 + TypeScript UI in `src/`).
 Today it handles `elements.data` (all game items, NPCs, monsters, configs) across file
 versions v66–v176: browse, search, check, compare, export, edit, and save. A separate
-activity-bar workspace edits the client's `path.data`; more data files can follow later
-(tasks.data, gshop.data, …).
+activity-bar workspace edits the client's `path.data`. The `tasks.data` workspace supports
+verified v165, v172 and v184 task sets, including browsing, schema analysis, safe editing,
+hierarchy operations and saving. More data files can follow later (`gshop.data`, …).
 
 A previous Laravel/PHP version of the same idea lives in `C:/Users/mitko/Herd/jdide`. It is
 a reference for ideas only; JD IDE replaces it.
@@ -35,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (68 at last run), ~6 s
+cd src-tauri && cargo test --lib   # Rust tests (142 at last run; real fixtures can take longer)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -76,6 +77,12 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
+| `tasks/container.rs` | Strict `tasks.data` index and numbered-pack reader: offsets, pack limits and MD5 validation. |
+| `tasks/schema.rs`, `structures.rs`, `v165.rs`, `v172.rs`, `v184.rs` | Byte-preserving task schema engine and verified version layouts. |
+| `tasks/browser.rs` | Lazy tree loading, background search/reference index, field inspection and hierarchy summaries. |
+| `tasks/edit.rs` | In-memory task value edits, history, undo/redo, clone, delete and move/reparent operations. |
+| `tasks/save.rs` | Task-set staging, pack rebuilding, MD5/index updates, verification, backups and atomic replacement. |
+| `tasks/analyze.rs`, `layout.rs` | Unsupported-version analysis and validated user task-layout patches. |
 
 ### UI (`src/`)
 
@@ -85,7 +92,7 @@ Environment quirks (Windows 11, Git Bash):
   `generate_handler!` in `lib.rs`, to `api.ts`, and its types to `types.ts`.**
 - `components/` — one component per panel/dialog (`AdvancedSearch`, `ProblemsPanel`,
   `ComparePanel`, `HistoryPanel`, `SaveDialog`, `SchemaEditor`, `RecordInspector`,
-  `FieldTree`, `InlineEditor`, `PathDataEditor`, …).
+  `FieldTree`, `InlineEditor`, `PathDataEditor`, `TasksEditor`, task hierarchy dialogs, …).
 - `schema/model.ts` — schema editor draft model; `schema/fieldList.ts` — pasted
   sELedit/Jade Editor field lists → fields.
 - `elements/money.ts`, `time.ts`, `text.ts`, `talk.ts` — display helpers.
@@ -228,6 +235,33 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
     88 bytes; the Jade Editor configs are in `E:/Game Dev/JD/Tools/Jade Editor/assets/elem_cfg/`.
 - Schema edits never change data bytes, only how they are read.
 
+## tasks.data editor
+
+- Supported task formats are v165, v172 and v184. The index, every numbered pack, root offset
+  tables and stored pack MD5 values are checked before tasks are shown.
+- The browser loads roots lazily, builds nested-task search and reference data in the background,
+  and exposes a searchable read-only schema browser for supported versions.
+- Unsupported versions open in the task layout analyzer. It compares against a supported baseline,
+  scores fixed-width insertions, supports guarded schema patches, and permits promotion only after
+  every root decodes and re-encodes byte-for-byte.
+- Ordinary edits cover fixed-width values and variable task text while shape-changing controller
+  fields remain locked. All changes are journaled with undo/redo and history.
+- **Clone task** copies a complete top-level tree with fresh IDs for its root and descendants and
+  remaps internal task references. It appends to the source pack when it has capacity, otherwise to
+  another existing pack below the 300-root limit. Creating a new numbered pack is not implemented.
+- **Clone subtree**, **Delete subtree** and **Move subtree** operate below an existing root. Delete
+  previews references that would become unresolved; move supports destinations in other roots and
+  packs while preserving IDs. Top-level deletion is not implemented.
+- Saving a top-level clone rebuilds its destination pack's offset table and MD5 and increments the
+  index root count. Because the saved clone becomes a base root and root removal is unavailable,
+  a successful structural save starts a new task undo history.
+- `cloned_top_level_task_rebuilds_the_pack_table_and_index_count` covers the structural save/reopen
+  path. The full Rust library suite, TypeScript check and Vite build passed after this feature.
+- On October 8, 2026 the user cloned and saved a real v165 top-level task, then confirmed that both
+  the matching server and client started successfully without a crash.
+- The next planned feature is the task problems scanner and reference graph. Reuse the completed
+  background search/reference index rather than decoding every root again.
+
 ## Sample files (for tests and repros)
 
 | Path | Version | Notes |
@@ -239,6 +273,9 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 | `E:/Game Dev/JD/1792/gamed/config/elements.data` | v165 | server; valid checksum with its path.data |
 | `E:/Games/Elite Jade Dynasty - HDN/element/` | v165 | client |
 | `C:/Users/mitko/Desktop/elements-v112.data`, `elements-v156.data` | v112/v156 | loose copies |
+
+Task fixtures are documented in `TASKS_EDITOR_PLAN.md`: XtremeJade v165, ForsakenJD v172,
+Elite Jade Dynasty - HDN v184 client, and the 1792 v184 server set. Treat every fixture as read-only.
 
 Never write into these folders from tests. Tests save into `std::env::temp_dir()`.
 
@@ -270,6 +307,10 @@ Never write into these folders from tests. Tests save into `std::env::temp_dir()
   the same.
 - Async Tauri commands lock `AppState.document` (a `Mutex`); keep work under the lock short
   and never lock `document` after `compared` (lock order: document, then compared).
+- A task pack may contain at most 300 top-level roots. Root cloning searches existing packs for
+  capacity; do not silently create a new numbered pack until that workflow is designed and verified.
+- Saving a newly cloned top-level task intentionally clears task undo history after the staged set
+  passes full reopen validation. Undoing that saved structural change would require root removal.
 
 ## Open ideas / next steps
 
@@ -279,7 +320,9 @@ Never write into these folders from tests. Tests save into `std::env::temp_dir()
   match. Legacy arrays remain update-only. IDs are preserved, additions check ID-space
   conflicts, invalid rows are skipped entirely, and preview tokens cover input, data and schemas.
 - Pick-aware export (export only the picked search results).
-- More data files in the activity bar (tasks.data, gshop.data, …).
+- Task problems scanner and reference graph, then compare/translation/JSON workflows described in
+  `TASKS_EDITOR_PLAN.md`.
+- More data files in the activity bar (`gshop.data`, `dyn_tasks.data`, `task_npc.data`, …).
 - v165: the 8 bytes before list 296 that layouts mark as a checksum slot look like an empty
   list header (record size 1468, count 0). Check whether the layout should treat them as a list.
 

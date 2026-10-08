@@ -450,6 +450,11 @@ async fn clone_task_subtree(pack: usize, root: usize, path: Vec<usize>, state: S
 }
 
 #[tauri::command]
+async fn clone_task_root(pack: usize, root: usize, state: State<'_, AppState>) -> Result<tasks::browser::TaskCloneReport, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.clone_root_task(pack, root)
+}
+
+#[tauri::command]
 async fn move_task_subtree(source_pack: usize, source_root: usize, source_path: Vec<usize>, destination_pack: usize, destination_root: usize, destination_path: Vec<usize>, state: State<'_, AppState>) -> Result<tasks::browser::TaskMoveReport, String> {
     state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.move_subtask(
         source_pack,
@@ -1149,6 +1154,7 @@ pub fn run() {
             search_tasks,
             edit_task_field,
             clone_task_subtree,
+            clone_task_root,
             move_task_subtree,
             preview_delete_task_subtree,
             delete_task_subtree,

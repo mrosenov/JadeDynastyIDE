@@ -76,6 +76,11 @@ fn now_ms() -> u64 {
 }
 
 impl Journal {
+    pub fn clear(&mut self) {
+        self.done.clear();
+        self.undone.clear();
+    }
+
     pub fn record(&mut self, details: EntryDetails, changes: Vec<RootChange>) {
         self.next_id += 1;
         self.done.push(Entry {

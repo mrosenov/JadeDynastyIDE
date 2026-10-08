@@ -123,6 +123,8 @@ export const searchTasks = (query: string, limit = 50_000) => invoke<TaskSearchR
 export const editTaskField = (edit: TaskFieldEdit) => invoke<TaskEditState>("edit_task_field", { edit });
 /** Clones a selected subquest and its descendants beside the source with fresh task IDs. */
 export const cloneTaskSubtree = (pack: number, root: number, path: number[]) => invoke<TaskCloneReport>("clone_task_subtree", { pack, root, path });
+/** Clones a complete top-level task tree into the same task pack with fresh task IDs. */
+export const cloneTaskRoot = (pack: number, root: number) => invoke<TaskCloneReport>("clone_task_root", { pack, root });
 /** Moves a selected subquest tree below another existing quest without changing task IDs. */
 export const moveTaskSubtree = (source: { pack: number; root: number; path: number[] }, destination: { pack: number; root: number; path: number[] }) =>
   invoke<TaskMoveReport>("move_task_subtree", {

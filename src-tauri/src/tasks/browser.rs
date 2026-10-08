@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{client::Resources, elements::Document};
 
-use super::container::{Pack, TaskContainer};
+use super::container::{Pack, TaskContainer, ROOTS_PER_PACK};
 use super::edit::{ChangedRoot, EditState, EntryDetails, HistoryEntry, Journal, RootChange};
 use super::schema::{decode_exact, probe_root_integer_validated, probe_task_index_validated, FieldType, Node, ProbedTaskReference, Schema, Value};
 use super::schema_for_version;
@@ -256,7 +256,8 @@ pub struct TaskDocument {
     search: Arc<RwLock<TaskSearchIndex>>,
     pub(crate) cache: Option<CachedRoot>,
     pub(crate) modified: HashMap<(usize, usize), ModifiedRoot>,
-    journal: Journal,
+    pub(crate) added_roots: HashMap<usize, Vec<Vec<u8>>>,
+    pub(crate) journal: Journal,
     pub(crate) disk: HashMap<std::path::PathBuf, super::save::DiskStamp>,
     pub(crate) backed_up: HashSet<std::path::PathBuf>,
 }
@@ -336,7 +337,7 @@ impl TaskDocument {
             }
         });
         let disk = super::save::stamps(&container);
-        Ok(Self { container, schema, summary, search, cache: None, modified: HashMap::new(), journal: Journal::default(), disk, backed_up: HashSet::new() })
+        Ok(Self { container, schema, summary, search, cache: None, modified: HashMap::new(), added_roots: HashMap::new(), journal: Journal::default(), disk, backed_up: HashSet::new() })
     }
 
     pub fn summary(&self) -> FileSummary {
@@ -367,7 +368,11 @@ impl TaskDocument {
         if reload {
             let bytes = self.current_root(pack, root)?;
             let node = decode_exact(&self.schema, &bytes, self.container.header.version)?;
-            let original_bytes = self.modified.get(&(pack, root)).map(|root| root.original.clone()).unwrap_or_else(|| bytes.clone());
+            let original_bytes = if self.is_added_root(pack, root)? {
+                bytes.clone()
+            } else {
+                self.modified.get(&(pack, root)).map(|root| root.original.clone()).unwrap_or_else(|| bytes.clone())
+            };
             let original = decode_exact(&self.schema, &original_bytes, self.container.header.version)?;
             self.cache = Some(CachedRoot { pack, root, bytes: bytes.len(), node, original });
         }
@@ -486,7 +491,7 @@ impl TaskDocument {
     }
 
     pub fn edit_state(&self) -> EditState {
-        self.journal.state(self.modified.keys().map(|&(pack, root)| ChangedRoot { pack, root }).collect())
+        self.journal.state(self.changed_root_keys().into_iter().map(|(pack, root)| ChangedRoot { pack, root }).collect())
     }
 
     pub fn history(&self) -> Vec<HistoryEntry> {
@@ -641,6 +646,56 @@ impl TaskDocument {
             new: format!("{id} · {name}"),
         }, vec![change]);
         Ok(TaskCloneReport { state: self.edit_state(), pack, root, path: cloned_path, id, name, tasks })
+    }
+
+    pub fn clone_root_task(&mut self, pack: usize, root: usize) -> Result<TaskCloneReport, String> {
+        let source = self.current_root(pack, root)?;
+        let decoded = decode_exact(&self.schema, &source, self.container.header.version)?;
+        let (source_id, source_name) = task_heading(&decoded)?;
+        let mut source_ids = Vec::new();
+        collect_task_ids(&decoded, &mut source_ids)?;
+        let unique = source_ids.iter().copied().collect::<HashSet<_>>();
+        if unique.len() != source_ids.len() {
+            return Err("The selected task contains duplicate task IDs and cannot be cloned safely".into());
+        }
+        let first = {
+            let index = self.search.read().map_err(|_| "Task search index lock poisoned")?;
+            if !index.indexed {
+                return Err("Task IDs are still being indexed. Try cloning again in a moment".into());
+            }
+            u64::from(index.entries.iter().map(|task| task.id).max().unwrap_or(0)) + 1
+        };
+        let last = first.checked_add(source_ids.len().saturating_sub(1) as u64).ok_or("Task ID range overflow")?;
+        if last > u64::from(u32::MAX) {
+            return Err("There are no free task IDs after the current maximum".into());
+        }
+        let target_pack = if self.root_count(pack)? < ROOTS_PER_PACK {
+            pack
+        } else {
+            (0..self.container.packs.len())
+                .find(|candidate| self.root_count(*candidate).is_ok_and(|count| count < ROOTS_PER_PACK))
+                .ok_or_else(|| format!("Every task pack already contains {ROOTS_PER_PACK} top-level tasks; creating another pack is not available yet"))?
+        };
+        let target_root = self.root_count(target_pack)?;
+        let replacements = source_ids.into_iter().enumerate().map(|(index, old)| (old, (first + index as u64) as u32)).collect::<HashMap<_, _>>();
+        let mut cloned = decoded;
+        replace_own_task_ids(&mut cloned, &replacements)?;
+        rewrite_internal_task_references(&mut cloned, "", &replacements)?;
+        let (id, name) = task_heading(&cloned)?;
+        let after = cloned.encode()?;
+        verify_task_root(&self.schema, &after, self.container.header.version, "The cloned task would be invalid")?;
+        let change = RootChange { pack: target_pack, root: target_root, before: Vec::new(), after };
+        self.apply_changes(std::slice::from_ref(&change))?;
+        let tasks = replacements.len();
+        self.journal.record(EntryDetails {
+            label: if tasks == 1 { "Clone task".into() } else { format!("Clone task tree ({tasks} quests)") },
+            task_id: id,
+            task_name: name.clone(),
+            field: "Task hierarchy".into(),
+            old: format!("{source_id} · {source_name}"),
+            new: format!("{id} · {name}"),
+        }, vec![change]);
+        Ok(TaskCloneReport { state: self.edit_state(), pack: target_pack, root: target_root, path: Vec::new(), id, name, tasks })
     }
 
     pub fn move_subtask(
@@ -829,15 +884,21 @@ impl TaskDocument {
     }
 
     pub fn revert_all(&mut self) -> Result<EditState, String> {
-        if self.modified.is_empty() {
+        if self.modified.is_empty() && self.added_roots.is_empty() {
             return Ok(self.edit_state());
         }
-        let changes = self.modified.iter().map(|(&(pack, root), value)| RootChange {
+        let mut changes = self.modified.iter().map(|(&(pack, root), value)| RootChange {
             pack,
             root,
             before: value.current.clone(),
             after: value.original.clone(),
         }).collect::<Vec<_>>();
+        for (&pack, roots) in &self.added_roots {
+            let base = self.base_root_count(pack)?;
+            for (index, bytes) in roots.iter().enumerate().rev() {
+                changes.push(RootChange { pack, root: base + index, before: bytes.clone(), after: Vec::new() });
+            }
+        }
         self.apply_changes(&changes)?;
         self.journal.record(EntryDetails {
             label: "Revert all task edits".into(),
@@ -851,18 +912,47 @@ impl TaskDocument {
     }
 
     pub(crate) fn current_root(&self, pack: usize, root: usize) -> Result<Vec<u8>, String> {
-        match self.modified.get(&(pack, root)) {
-            Some(value) => Ok(value.current.clone()),
-            None => self.container.root(pack, root),
+        self.current_root_optional(pack, root)?.ok_or_else(|| format!("Task root {}:{} does not exist", pack + 1, root + 1))
+    }
+
+    pub(crate) fn root_count(&self, pack: usize) -> Result<usize, String> {
+        Ok(self.base_root_count(pack)? + self.added_roots.get(&pack).map_or(0, Vec::len))
+    }
+
+    fn base_root_count(&self, pack: usize) -> Result<usize, String> {
+        self.container.packs.get(pack).map(Pack::root_count).ok_or_else(|| format!("Task pack {} does not exist", pack + 1))
+    }
+
+    fn is_added_root(&self, pack: usize, root: usize) -> Result<bool, String> {
+        Ok(root >= self.base_root_count(pack)? && self.current_root_optional(pack, root)?.is_some())
+    }
+
+    fn current_root_optional(&self, pack: usize, root: usize) -> Result<Option<Vec<u8>>, String> {
+        let base = self.base_root_count(pack)?;
+        if root < base {
+            return Ok(Some(self.modified.get(&(pack, root)).map(|value| value.current.clone()).unwrap_or(self.container.root(pack, root)?)));
         }
+        Ok(self.added_roots.get(&pack).and_then(|roots| roots.get(root - base)).cloned())
+    }
+
+    pub(crate) fn changed_root_keys(&self) -> Vec<(usize, usize)> {
+        let mut keys = self.modified.keys().copied().collect::<HashSet<_>>();
+        for (&pack, roots) in &self.added_roots {
+            let base = self.container.packs.get(pack).map(Pack::root_count).unwrap_or(0);
+            keys.extend((0..roots.len()).map(|index| (pack, base + index)));
+        }
+        keys.into_iter().collect()
     }
 
     fn apply_changes(&mut self, changes: &[RootChange]) -> Result<(), String> {
         for change in changes {
-            if self.current_root(change.pack, change.root)? != change.before {
+            let current = self.current_root_optional(change.pack, change.root)?;
+            if (change.before.is_empty() && current.is_some()) || (!change.before.is_empty() && current.as_deref() != Some(change.before.as_slice())) {
                 return Err(format!("Task root {}:{} changed since this edit was prepared", change.pack + 1, change.root + 1));
             }
-            decode_exact(&self.schema, &change.after, self.container.header.version)?;
+            if !change.after.is_empty() {
+                decode_exact(&self.schema, &change.after, self.container.header.version)?;
+            }
         }
         for change in changes {
             self.apply_root(change.pack, change.root, change.after.clone())?;
@@ -871,6 +961,46 @@ impl TaskDocument {
     }
 
     fn apply_root(&mut self, pack: usize, root: usize, bytes: Vec<u8>) -> Result<(), String> {
+        let base = self.base_root_count(pack)?;
+        if root >= base {
+            let slot = root - base;
+            if bytes.is_empty() {
+                let remove = self.added_roots.get_mut(&pack).ok_or("The appended task no longer exists")?;
+                if slot + 1 != remove.len() {
+                    return Err("Only the last appended top-level task can be removed".into());
+                }
+                remove.pop();
+                if remove.is_empty() {
+                    self.added_roots.remove(&pack);
+                }
+                self.remove_root_summary(pack, root);
+                self.remove_root_from_index(pack, root)?;
+                self.cache = None;
+                return Ok(());
+            }
+            let node = decode_exact(&self.schema, &bytes, self.container.header.version)?;
+            let appended = {
+                let roots = self.added_roots.entry(pack).or_default();
+                if slot > roots.len() {
+                    return Err("A top-level task can only be appended after the current last task".into());
+                }
+                if slot == roots.len() {
+                    roots.push(bytes.clone());
+                    true
+                } else {
+                    roots[slot] = bytes.clone();
+                    false
+                }
+            };
+            if appended {
+                self.insert_root_summary(pack, root, &node, bytes.len())?;
+            }
+            self.cache = Some(CachedRoot { pack, root, bytes: bytes.len(), node: node.clone(), original: node.clone() });
+            return self.refresh_root(pack, root, &node, bytes.len());
+        }
+        if bytes.is_empty() {
+            return Err("Removing an existing top-level task is not available yet".into());
+        }
         let original = match self.modified.get(&(pack, root)) {
             Some(value) => value.original.clone(),
             None => self.container.root(pack, root)?,
@@ -884,6 +1014,40 @@ impl TaskDocument {
         let original_node = decode_exact(&self.schema, &original, self.container.header.version)?;
         self.cache = Some(CachedRoot { pack, root, bytes: bytes.len(), node: node.clone(), original: original_node });
         self.refresh_root(pack, root, &node, bytes.len())
+    }
+
+    fn insert_root_summary(&mut self, pack: usize, root: usize, node: &Node, byte_size: usize) -> Result<(), String> {
+        let (id, name) = task_heading(node)?;
+        let child_count = node.child("subtasks").map(|children| children.children().len()).unwrap_or(0);
+        let at = self.summary.roots.iter().rposition(|candidate| candidate.pack == pack).map_or_else(
+            || self.summary.roots.iter().position(|candidate| candidate.pack > pack).unwrap_or(self.summary.roots.len()),
+            |index| index + 1,
+        );
+        self.summary.roots.insert(at, RootSummary { index: 0, pack, root, id, name, child_count, byte_size: byte_size as u64 });
+        self.summary.root_count += 1;
+        for (index, summary) in self.summary.roots.iter_mut().enumerate() {
+            summary.index = index;
+        }
+        Ok(())
+    }
+
+    fn remove_root_summary(&mut self, pack: usize, root: usize) {
+        self.summary.roots.retain(|candidate| candidate.pack != pack || candidate.root != root);
+        self.summary.root_count = self.summary.roots.len();
+        for (index, summary) in self.summary.roots.iter_mut().enumerate() {
+            summary.index = index;
+        }
+    }
+
+    fn remove_root_from_index(&mut self, pack: usize, root: usize) -> Result<(), String> {
+        let mut index = self.search.write().map_err(|_| "Task search index lock poisoned")?;
+        index.edited_roots.remove(&(pack, root));
+        index.entries.retain(|entry| entry.pack != pack || entry.root != root);
+        index.by_id.clear();
+        for entry in index.entries.clone() {
+            index.by_id.insert(entry.id, entry);
+        }
+        Ok(())
     }
 
     fn refresh_root(&mut self, pack: usize, root: usize, node: &Node, byte_size: usize) -> Result<(), String> {
@@ -1647,6 +1811,25 @@ mod tests {
             assert!(report.total > document.summary().root_count);
             assert!(report.matches.iter().any(|task| !task.path.is_empty()));
             if version == 165 {
+                let roots_before_clone = document.summary().root_count;
+                let clone_pack = if document.container.packs[parent.pack].root_count() < ROOTS_PER_PACK {
+                    parent.pack
+                } else {
+                    document.container.packs.iter().position(|pack| pack.root_count() < ROOTS_PER_PACK).expect("real task set should have a pack with room for one clone")
+                };
+                let clone_root_index = document.container.packs[clone_pack].root_count();
+                let clone_root = document.clone_root_task(parent.pack, parent.root).unwrap();
+                assert_eq!(clone_root.pack, clone_pack);
+                assert_eq!(clone_root.root, clone_root_index);
+                assert_eq!(clone_root.path, Vec::<usize>::new());
+                assert_eq!(document.summary().root_count, roots_before_clone + 1);
+                let cloned_root_bytes = document.current_root(clone_root.pack, clone_root.root).unwrap();
+                assert_eq!(decode_exact(&document.schema, &cloned_root_bytes, version).unwrap().encode().unwrap(), cloned_root_bytes);
+                assert_eq!(document.task(clone_root.pack, clone_root.root, &[]).unwrap().id, clone_root.id);
+                document.undo().unwrap();
+                assert_eq!(document.summary().root_count, roots_before_clone);
+                assert!(document.current_root(clone_root.pack, clone_root.root).is_err());
+
                 let source_before_move = document.current_root(parent.pack, parent.root).unwrap();
                 let moved_within_root = document.move_subtask(parent.pack, parent.root, &[0], parent.pack, parent.root, &[]).unwrap();
                 assert_eq!(moved_within_root.path, vec![parent.child_count - 1]);

@@ -135,14 +135,21 @@ offsets after variable-length text. Switching tools
 preserves the selected task, changed roots, history and undo/redo journal; JD IDE asks before
 closing or opening another task set.
 
-Selecting a subquest also provides **Clone subtree**. It copies that subquest beside the original,
-including every descendant, gives every copied quest a fresh ID above the current task-set maximum,
-and rewrites references between quests inside the copy. External task references remain unchanged.
+Selecting a top-level task provides **Clone task**. It creates a complete new top-level task with
+fresh IDs for the root and every descendant, remapping references inside the copy. It uses the same
+pack when it has room, otherwise another existing pack with room. Selecting a subquest instead
+provides **Clone subtree**, which copies it beside the original with the same fresh-ID and internal
+reference handling. External task references remain unchanged.
+
 **Delete subtree** first checks the completed background quest index and shows every surviving task
 reference that would become unresolved. The user must explicitly confirm deletion when references
 exist. Cloning and deletion are each one undoable root edit and must pass an exact decode/encode
-check before being accepted. Top-level root cloning and deletion remain unavailable until pack-level
-insertion and removal are implemented.
+check before being accepted. Top-level root deletion remains unavailable until pack-level removal is
+implemented. Saving a top-level clone rebuilds the changed pack and begins a new task
+undo history.
+
+Top-level cloning and saving were validated on a real v165 task set on October 8, 2026: the
+saved files started successfully in both the matching server and client without a crash.
 
 **Move subtree** opens a searchable destination picker. It appends the selected subquest and every
 descendant below the chosen existing quest, including across roots or packs, while keeping task IDs

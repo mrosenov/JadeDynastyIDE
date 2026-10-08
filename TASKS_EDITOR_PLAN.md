@@ -37,7 +37,9 @@ The XtremeJade v165 index is 740 bytes (`20 + 45 * 16`), all 45 packs are presen
 4. Unknown fixed-width values default to raw types such as `raw8`, `raw16`, `raw32` or `bytes[N]`.
 5. A no-edit save must reproduce every original pack byte-for-byte.
 6. Saving writes a complete temporary file set, verifies it by reopening it, then replaces the target files.
-7. The first release edits existing tasks only. Clone, delete, reparent and reorder remain disabled until pack rebuilding is proven separately.
+7. Structural operations stay narrow and independently verified. Top-level and subtree cloning,
+   subtree deletion, and subtree reparenting are implemented; top-level deletion and explicit
+   sibling reordering remain disabled.
 
 ## Milestone 1: container reader
 
@@ -178,9 +180,10 @@ Completion gate:
 
 ## Milestone 8: safe saving
 
-**Implementation complete (October 2026); matching client/server load confirmation pending.**
+**Implementation complete and validated (October 2026).**
 
-Initially save existing-task edits without changing root ordering or pack membership.
+The saver began with existing-task edits and now also supports appending cloned top-level roots to
+an existing pack with capacity.
 
 - Rewrite only changed packs when possible.
 - Recalculate root offsets inside every changed pack.
@@ -194,6 +197,9 @@ Completion gate:
 - No-edit save is byte-identical.
 - Controlled edits change only the expected root, its pack offsets when necessary, and that pack's MD5 entry.
 - The user confirms a saved copy loads in the matching client/server.
+
+The final gate passed on October 8, 2026: a real v165 top-level task was cloned and saved, and
+both the matching server and client started successfully without a crash.
 
 ## Milestone 9: unsupported-version analyzer and schema editor
 
@@ -239,18 +245,20 @@ round trip and is explicitly accepted.
 
 ## Later work
 
-- Clone, delete, move and reparent tasks. Subquest subtree cloning, deletion and moving are now
-  available as undoable operations. Clones receive fresh IDs and internal-reference remapping;
-  deletion previews surviving references and requires explicit confirmation if any become unresolved;
-  moving preserves IDs and updates both parent counts, including across roots and packs. Top-level
-  roots and explicit sibling ordering remain later work.
+- Clone, delete, move and reparent tasks. Top-level task cloning plus subquest subtree cloning,
+  deletion and moving are now available as undoable operations. Clones receive fresh IDs and
+  internal-reference remapping; a top-level clone appends to an existing pack with capacity and
+  rebuilds its index data when saved. Deletion previews surviving references and requires explicit
+  confirmation if any become unresolved; moving preserves IDs and updates both parent counts,
+  including across roots and packs. Top-level deletion and explicit sibling ordering remain later work.
 - Compare and transfer compatible fields between task files.
 - Translation workflow for names, descriptions and dialog text by task ID.
 - JSON import/export.
-- Task problems scanner and reference graph.
+- Task problems scanner and reference graph. This is the next planned feature.
 - Separate editors for `dyn_tasks.data` and `task_npc.data`.
 - Optional developer-only loader tracing for versions that cannot be resolved by schema comparison.
 
 ## Recommended implementation order
 
-Complete milestones 1–5 in the Rust backend before building the main UI. Then deliver the read-only browser, followed by in-memory editing and finally saving. The unsupported-version schema editor comes after known-version saving because its validation depends on a proven parser and serializer.
+Milestones 1–9 are complete. Continue with the task problems scanner and reference graph, using
+the existing background task index and reference metadata before adding more structural operations.

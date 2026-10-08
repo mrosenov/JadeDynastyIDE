@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { AlertTriangle, ArrowRight, BarChart3, Braces, Check, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
-import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditHistory, getTaskEditState, getTaskLayoutPatch, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
+import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditHistory, getTaskEditState, getTaskLayoutPatch, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import type { TaskAnalysisReport, TaskDeletePreview, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
@@ -360,6 +360,35 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       setTaskBusy(false);
     }
   }, [refreshHistory, selectedPath, selectedRoot, taskBusy]);
+
+  const cloneSelectedRoot = useCallback(async () => {
+    if (!selectedRoot || selectedPath.length || taskBusy || !taskIndexReady) return;
+    setTaskBusy(true);
+    setError(null);
+    try {
+      const report = await cloneTaskRoot(selectedRoot.pack, selectedRoot.root);
+      const next = await getTask(report.pack, report.root, []);
+      const roots = file?.roots ?? [];
+      const at = roots.reduce((last, root, index) => root.pack === report.pack ? index + 1 : last, 0);
+      const clonedRoot: TaskRootSummary = { ...selectedRoot, index: at, pack: report.pack, root: report.root, id: next.tree.id, name: next.tree.name, childCount: next.tree.children.length, byteSize: next.rootBytes };
+      setFile((currentFile) => currentFile ? {
+        ...currentFile,
+        rootCount: currentFile.rootCount + 1,
+        roots: [...currentFile.roots.slice(0, at), clonedRoot, ...currentFile.roots.slice(at)].map((root, index) => ({ ...root, index })),
+      } : currentFile);
+      setSelectedRoot(clonedRoot);
+      setSelectedPath([]);
+      setDetail(next);
+      setTrees((currentTrees) => new Map(currentTrees).set(rootKey(clonedRoot), next.tree));
+      await refreshHistory();
+      setSavedNote(report.tasks === 1 ? `Cloned task as ID ${report.id}.` : `Cloned task tree with ${report.tasks} fresh IDs; new root ID ${report.id}.`);
+      window.setTimeout(() => setSavedNote(null), 5000);
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setTaskBusy(false);
+    }
+  }, [file?.roots, refreshHistory, selectedPath.length, selectedRoot, taskBusy, taskIndexReady]);
 
   const openMoveSelected = useCallback(() => {
     if (!selectedRoot || !detail || !selectedPath.length || taskBusy) return;
@@ -1158,6 +1187,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
             <div className="truncate"><h2 className="truncate">{detail.name || "(unnamed task)"}</h2><span className="muted mono">ID {detail.id} · root {selectedRoot ? selectedRoot.index + 1 : "?"} · offset 0x{detail.taskOffset.toString(16).toUpperCase()} · {bytes(detail.taskSize)}</span></div>
             {taskBusy && <span className="muted">Reading…</span>}
             <div className="task-edit-actions">
+              {selectedPath.length === 0 && <button className="btn small" onClick={() => void cloneSelectedRoot()} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Clone this complete top-level task with fresh task IDs" : "Task IDs are still being indexed"}><Copy size={13}/> {taskIndexReady ? "Clone task" : "Indexing IDs…"}</button>}
               {selectedPath.length > 0 && <button className="btn small" onClick={() => void cloneSelectedSubtree()} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Clone this subquest and all of its descendants beside the source" : "Task IDs are still being indexed"}><Copy size={13}/> {taskIndexReady ? "Clone subtree" : "Indexing IDs…"}</button>}
               {selectedPath.length > 0 && <button className="btn small" onClick={openMoveSelected} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Choose a new parent for this subquest tree" : "Task destinations are still being indexed"}><ArrowRight size={13}/> Move subtree</button>}
               {selectedPath.length > 0 && <button className="btn small danger-outline" onClick={() => void inspectDeleteSelected()} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Review references and delete this subquest with all descendants" : "Task references are still being indexed"}><Trash2 size={13}/> Delete subtree</button>}

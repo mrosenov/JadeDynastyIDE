@@ -131,7 +131,7 @@ impl TaskDocument {
         if target.is_file() && !same_file {
             TaskContainer::open(&target).map_err(|error| format!("The existing destination is not a valid task set: {error}"))?;
         }
-        let changed_packs = self.modified.keys().map(|(pack, _)| *pack).collect::<HashSet<_>>().len();
+        let changed_packs = self.changed_root_keys().into_iter().map(|(pack, _)| pack).collect::<HashSet<_>>().len();
         let read_only = std::iter::once(target.clone()).chain((1..=self.container.packs.len()).map(|number| numbered(&target, number)))
             .any(|path| std::fs::metadata(path).is_ok_and(|metadata| metadata.permissions().readonly()));
         Ok(SavePlan {
@@ -140,7 +140,7 @@ impl TaskDocument {
             same_file,
             changed_on_disk: self.changed_on_disk(),
             read_only,
-            changed_roots: self.modified.len(),
+            changed_roots: self.changed_root_keys().len(),
             changed_packs,
             pack_count: self.container.packs.len(),
             size: self.summary.size,
@@ -162,8 +162,9 @@ impl TaskDocument {
         }
         std::fs::create_dir(&stage).map_err(|error| format!("Could not create {}: {error}", stage.display()))?;
         let staged_index = stage.join(target.file_name().ok_or("The target has no file name")?);
-        let changed_packs = self.modified.keys().map(|(pack, _)| *pack).collect::<HashSet<_>>();
-        let changed_roots = self.modified.len();
+        let changed_packs = self.changed_root_keys().into_iter().map(|(pack, _)| pack).collect::<HashSet<_>>();
+        let changed_roots = self.changed_root_keys().len();
+        let had_structural_roots = !self.added_roots.is_empty();
         let replaces = target.is_file();
         let result = self.stage(&staged_index, &changed_packs)
             .and_then(|_| self.validate_staged(&staged_index))
@@ -178,6 +179,10 @@ impl TaskDocument {
         self.summary.size = size;
         self.disk = stamps(&self.container);
         self.modified.clear();
+        self.added_roots.clear();
+        if had_structural_roots {
+            self.journal.clear();
+        }
         if let Some(cache) = self.cache.as_mut() {
             cache.original = cache.node.clone();
         }
@@ -195,10 +200,12 @@ impl TaskDocument {
 
     fn stage(&self, target: &Path, changed_packs: &HashSet<usize>) -> Result<(), String> {
         let mut index = std::fs::read(self.container.index_path()).map_err(|error| format!("Could not read task index: {error}"))?;
+        let root_count = u32::try_from(self.summary.root_count).map_err(|_| "Task root count exceeds the 32-bit limit")?;
+        index[12..16].copy_from_slice(&root_count.to_le_bytes());
         for (pack_index, pack) in self.container.packs.iter().enumerate() {
             let staged = numbered(target, pack_index + 1);
             if changed_packs.contains(&pack_index) {
-                let count = pack.root_count();
+                let count = self.root_count(pack_index)?;
                 let header_size = PACK_HEADER.checked_add(count.checked_mul(4).ok_or("Task pack header overflow")?).ok_or("Task pack header overflow")?;
                 let mut output = Vec::with_capacity(pack.size as usize);
                 output.extend_from_slice(&0x0693_4554u32.to_le_bytes());
@@ -340,6 +347,29 @@ mod tests {
         assert!(document.edit_state().changed_roots.is_empty());
         assert_eq!(document.undo().unwrap().changed_roots.len(), 1);
         assert!(document.redo().unwrap().changed_roots.is_empty());
+        std::fs::remove_dir_all(folder).unwrap();
+    }
+
+    #[test]
+    fn cloned_top_level_task_rebuilds_the_pack_table_and_index_count() {
+        let Some((folder, index)) = fixture() else { return };
+        let mut document = TaskDocument::open(&index).unwrap();
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(30);
+        while !document.search("", 0).indexed {
+            assert!(std::time::Instant::now() < deadline, "background task index timed out");
+            std::thread::sleep(std::time::Duration::from_millis(25));
+        }
+        let source = document.summary().roots[0].clone();
+        let clone = document.clone_root_task(source.pack, source.root).unwrap();
+        let clone_bytes = document.current_root(clone.pack, clone.root).unwrap();
+        assert_eq!(document.summary().root_count, 3);
+        document.save(&SaveOptions { path: index.display().to_string(), backup: false }).unwrap();
+
+        let reopened = TaskContainer::open(&index).unwrap();
+        assert_eq!(reopened.header.root_count, 3);
+        assert_eq!(reopened.packs[clone.pack].root_count(), 3);
+        assert_eq!(reopened.root(clone.pack, clone.root).unwrap(), clone_bytes);
+        assert!(document.edit_state().undo.is_none(), "saving a structural task clone starts a new undo history");
         std::fs::remove_dir_all(folder).unwrap();
     }
 
