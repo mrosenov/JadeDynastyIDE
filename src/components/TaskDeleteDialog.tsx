@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { AlertTriangle, Check, Loader2, Trash2, X } from "lucide-react";
 import type { TaskDeletePreview } from "../elements/types";
 
@@ -11,9 +12,19 @@ interface Props {
 
 export function TaskDeleteDialog({ preview, busy, error, onConfirm, onClose }: Props) {
   const referenced = preview.referenceCount > 0;
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || busy) return;
+      event.stopImmediatePropagation();
+      onClose();
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [busy, onClose]);
   return <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && !busy && onClose()}>
     <div className="modal task-delete-dialog" role="alertdialog" aria-labelledby="task-delete-title">
-      <header className="modal-head"><Trash2 size={18} className="danger-icon"/><div><h3 id="task-delete-title">Delete subquest subtree?</h3><p className="muted small">This edit can be undone until the task set is closed.</p></div><span className="spacer"/><button className="icon-btn" onClick={onClose} disabled={busy} aria-label="Close"><X size={18}/></button></header>
+      <header className="modal-head"><Trash2 size={18} className="danger-icon"/><div><h3 id="task-delete-title">Delete subquest subtree?</h3><p className="muted small">Undo can bring the subtree back.</p></div><span className="spacer"/><button className="icon-btn" onClick={onClose} disabled={busy} aria-label="Close"><X size={18}/></button></header>
       <div className="task-delete-summary">
         <div><span>Selected quest</span><b>{preview.id} · {preview.name || "(unnamed task)"}</b></div>
         <div><span>Will remove</span><b>{preview.tasks} quest{preview.tasks === 1 ? "" : "s"}</b></div>

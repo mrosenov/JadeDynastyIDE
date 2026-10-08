@@ -126,15 +126,19 @@ export const cloneTaskSubtree = (pack: number, root: number, path: number[]) => 
 /** Clones a complete top-level task tree into the same task pack with fresh task IDs. */
 export const cloneTaskRoot = (pack: number, root: number) => invoke<TaskCloneReport>("clone_task_root", { pack, root });
 /** Moves a selected subquest tree below another existing quest without changing task IDs. */
-export const moveTaskSubtree = (source: { pack: number; root: number; path: number[] }, destination: { pack: number; root: number; path: number[] }) =>
+export const moveTaskSubtree = (source: { pack: number; root: number; path: number[]; id: number }, destination: { pack: number; root: number; path: number[]; id: number }) =>
   invoke<TaskMoveReport>("move_task_subtree", {
     sourcePack: source.pack,
     sourceRoot: source.root,
     sourcePath: source.path,
+    sourceId: source.id,
     destinationPack: destination.pack,
     destinationRoot: destination.root,
     destinationPath: destination.path,
+    destinationId: destination.id,
   });
+/** The current root list and counts, including appended or removed top-level tasks. */
+export const getTaskSummary = () => invoke<TasksFileSummary>("task_summary");
 /** Finds surviving task references before removing a selected subquest tree. */
 export const previewDeleteTaskSubtree = (pack: number, root: number, path: number[]) => invoke<TaskDeletePreview>("preview_delete_task_subtree", { pack, root, path });
 /** Removes a previously previewed subquest tree as one undoable root edit. */

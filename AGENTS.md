@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (142 at last run; real fixtures can take longer)
+cd src-tauri && cargo test --lib   # Rust tests (142 at last run, ~3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -259,8 +259,24 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   path. The full Rust library suite, TypeScript check and Vite build passed after this feature.
 - On October 8, 2026 the user cloned and saved a real v165 top-level task, then confirmed that both
   the matching server and client started successfully without a crash.
+- **Hierarchy links** (verified against `TaskTempl.h` and all three client fixtures, 100% of tasks):
+  the last 16 bytes of every task's fixed block hold its parent, previous sibling, next sibling and
+  first child IDs (top-level tasks: zeros), refreshed by `ATaskTempl::SynchID` before official saves.
+  The game recomputes them after loading. Structural operations call `sync_hierarchy_links`, which
+  rewrites them for the whole root only when the source root was already consistent.
+- Fresh clone IDs come from `fresh_task_ids`: above the index maximum and `id_floor`, the highest
+  ID cloned or deleted this session, so freed IDs are never reused.
+- Undo/redo apply the journal's changes first and only then move the entry (`commit_undo`/
+  `commit_redo`), so a failed apply leaves history and data in step.
+- `move_task_subtree` takes the expected source and destination task IDs (`check_task_id`) so a
+  move prepared before an undo cannot act on other quests.
+- UI (`TasksEditor.tsx`): every operation runs through `beginOperation`/`endOperation`; list
+  clicks (`userSelect`) and undo/redo wait while one runs or a task dialog is open. After clone,
+  move, delete, undo, redo and revert all, `resync` reloads the root list (`task_summary`), drops
+  trees and nested expansion of changed roots, and reselects the focused quest by ID.
 - The next planned feature is the task problems scanner and reference graph. Reuse the completed
-  background search/reference index rather than decoding every root again.
+  background search/reference index rather than decoding every root again. Inconsistent hierarchy
+  links (see above) are a natural check.
 
 ## Sample files (for tests and repros)
 
@@ -277,7 +293,8 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 Task fixtures are documented in `TASKS_EDITOR_PLAN.md`: XtremeJade v165, ForsakenJD v172,
 Elite Jade Dynasty - HDN v184 client, and the 1792 v184 server set. Treat every fixture as read-only.
 
-Never write into these folders from tests. Tests save into `std::env::temp_dir()`.
+The user also edits ForsakenJD's task set in the app, so fixture tests treat its original root
+count as a minimum. Never write into these folders from tests. Tests save into `std::env::temp_dir()`.
 
 ## How to verify changes
 

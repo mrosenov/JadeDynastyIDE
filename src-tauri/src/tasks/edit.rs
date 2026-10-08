@@ -112,23 +112,32 @@ impl Journal {
             .collect()
     }
 
-    pub fn undo(&mut self) -> Option<Vec<RootChange>> {
-        let entry = self.done.pop()?;
-        let changes = entry.changes.iter().rev().map(|change| RootChange {
+    /// The changes that undo the latest entry. The entry moves to the redo
+    /// stack only through `commit_undo`, after the changes were applied.
+    pub fn undo_changes(&self) -> Option<Vec<RootChange>> {
+        let entry = self.done.last()?;
+        Some(entry.changes.iter().rev().map(|change| RootChange {
             pack: change.pack,
             root: change.root,
             before: change.after.clone(),
             after: change.before.clone(),
-        }).collect();
-        self.undone.push(entry);
-        Some(changes)
+        }).collect())
     }
 
-    pub fn redo(&mut self) -> Option<Vec<RootChange>> {
-        let entry = self.undone.pop()?;
-        let changes = entry.changes.clone();
-        self.done.push(entry);
-        Some(changes)
+    pub fn commit_undo(&mut self) {
+        if let Some(entry) = self.done.pop() {
+            self.undone.push(entry);
+        }
+    }
+
+    pub fn redo_changes(&self) -> Option<Vec<RootChange>> {
+        Some(self.undone.last()?.changes.clone())
+    }
+
+    pub fn commit_redo(&mut self) {
+        if let Some(entry) = self.undone.pop() {
+            self.done.push(entry);
+        }
     }
 }
 

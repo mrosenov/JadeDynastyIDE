@@ -455,8 +455,18 @@ async fn clone_task_root(pack: usize, root: usize, state: State<'_, AppState>) -
 }
 
 #[tauri::command]
-async fn move_task_subtree(source_pack: usize, source_root: usize, source_path: Vec<usize>, destination_pack: usize, destination_root: usize, destination_path: Vec<usize>, state: State<'_, AppState>) -> Result<tasks::browser::TaskMoveReport, String> {
-    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.move_subtask(
+async fn task_summary(state: State<'_, AppState>) -> Result<tasks::browser::FileSummary, String> {
+    Ok(state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.summary())
+}
+
+#[tauri::command]
+#[allow(clippy::too_many_arguments)]
+async fn move_task_subtree(source_pack: usize, source_root: usize, source_path: Vec<usize>, source_id: u32, destination_pack: usize, destination_root: usize, destination_path: Vec<usize>, destination_id: u32, state: State<'_, AppState>) -> Result<tasks::browser::TaskMoveReport, String> {
+    let mut tasks = state.tasks.lock().map_err(|_| "State lock poisoned")?;
+    let document = tasks.as_mut().ok_or("Open tasks.data first")?;
+    document.check_task_id(source_pack, source_root, &source_path, source_id)?;
+    document.check_task_id(destination_pack, destination_root, &destination_path, destination_id)?;
+    document.move_subtask(
         source_pack,
         source_root,
         &source_path,
@@ -1155,6 +1165,7 @@ pub fn run() {
             edit_task_field,
             clone_task_subtree,
             clone_task_root,
+            task_summary,
             move_task_subtree,
             preview_delete_task_subtree,
             delete_task_subtree,

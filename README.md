@@ -103,7 +103,8 @@ Opening verifies the index, every numbered pack (`tasks.data1`, `tasks.data2`, �
 offset table and each pack's stored MD5 before showing any quests. It also reads each root's
 direct-subtask count with a lightweight parallel schema scan. The header shows the task version,
 root count, pack count, combined size and integrity result. Root and nested quests can be searched
-by ID or name and are paged 200 at a time with a direct page-number box. Nested names and IDs are
+by ID or name and are paged 200 at a time with a direct page-number box. A number lists the exact ID
+first, then IDs starting with it and names containing it. Nested names and IDs are
 indexed in the background, while root results remain available immediately.
 
 Roots containing subtasks show a small **+** as soon as the file opens. Expanding or selecting a
@@ -113,8 +114,9 @@ Prerequisites, Objectives, Failure, Rewards, Text and dialogs, and Hierarchy sec
 and arrays are collapsible. Fields whose purpose is not known keep their fixed raw bytes; short
 raw values also show unsigned, signed and floating-point interpretations on hover. Known task IDs
 link to the matching quest, item and monster IDs link to the open `elements.data`, and known skill,
-buff and title values use the configured client's names and descriptions. One decoded root is
-cached, so moving among its subtasks does not reread or decode the pack.
+buff and title values use the configured client's names and descriptions. Until the background
+index is complete, links to subquests show *Indexing quests…*; the open task refreshes once it is.
+One decoded root is cached, so moving among its subtasks does not reread or decode the pack.
 
 **Task schema** opens the effective binary layout for the current task version. It lists every
 structure, field type and condition and can search across all four. Verified v165, v172 and v184
@@ -131,15 +133,25 @@ every edited root is decoded and byte-round-tripped before the change is accepte
 
 Changed fields and roots are marked in green. **Edit** and the inspector toolbar provide undo,
 redo, edit history and revert all; undo restores the complete original root bytes, including all
-offsets after variable-length text. Switching tools
+offsets after variable-length text. After undo, redo or revert all, the root list and tree follow
+the restored structure and the same quest stays selected, wherever it is now. Switching tools
 preserves the selected task, changed roots, history and undo/redo journal; JD IDE asks before
-closing or opening another task set.
+closing or opening another task set. The elements.data shortcuts (Ctrl+D, Ctrl+G, Ctrl+W, …) do
+not act while the tasks.data workspace is shown.
 
 Selecting a top-level task provides **Clone task**. It creates a complete new top-level task with
 fresh IDs for the root and every descendant, remapping references inside the copy. It uses the same
 pack when it has room, otherwise another existing pack with room. Selecting a subquest instead
 provides **Clone subtree**, which copies it beside the original with the same fresh-ID and internal
-reference handling. External task references remain unchanged.
+reference handling. External task references remain unchanged. Fresh IDs start above every ID in
+the task set and every ID cloned or deleted earlier in the session, so a deleted quest's ID is never
+given to a different quest while references to it may remain.
+
+Every quest stores the IDs of its parent, previous sibling, next sibling and first child in the last
+16 bytes of its fixed block. The official editor refreshes them before saving and every quest in the
+v165, v172 and v184 fixtures has them exact; the game recomputes them after loading. Clone, delete
+and move rewrite these links for the whole affected root, so the saved tree matches what the
+official editor would write. Roots whose links were already inconsistent are left as they are.
 
 **Delete subtree** first checks the completed background quest index and shows every surviving task
 reference that would become unresolved. The user must explicitly confirm deletion when references
@@ -154,7 +166,9 @@ saved files started successfully in both the matching server and client without 
 **Move subtree** opens a searchable destination picker. It appends the selected subquest and every
 descendant below the chosen existing quest, including across roots or packs, while keeping task IDs
 and references unchanged. The old and new parent counts are rebuilt, moving into the selected
-subtree is rejected, and the complete move is one undoable operation.
+subtree is rejected, and the complete move is one undoable operation. If undo or another edit moved
+either quest while the picker was open, the move is refused instead of acting on whatever quest now
+sits at the old position.
 
 **Save…** or Ctrl+S writes the task index and its numbered packs. JD IDE rebuilds only packs with
 edited roots when saving over the open task set, recalculates every affected root offset and pack
@@ -163,7 +177,8 @@ replacement, the complete staged set is reopened, every pack checksum is checked
 must decode and encode back to identical bytes. An optional timestamped `.bak` folder keeps the
 complete replaced set. A changed-on-disk guard stops saving if the index or any source pack was
 altered by another program; read-only destination files are made writable. Undo and redo remain
-available after a successful save.
+available after a successful save, except when the save adds new top-level tasks: those become part of
+the saved set, so the save dialog warns that undo history starts again from the saved state.
 
 If a task version has no verified layout, JD IDE opens a read-only **Task layout analyzer**
 instead of treating the file as editable. The outer index, numbered packs, offsets and MD5 values

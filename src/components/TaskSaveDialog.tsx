@@ -12,6 +12,7 @@ interface Props {
 }
 
 const BACKUP_KEY = "jdide.tasks.save.backup";
+const message = (problem: unknown) => String(problem).replace(/^Error: /, "").replace(/^CHANGED_ON_DISK: /, "");
 const fileName = (path: string) => path.split(/[\\/]/).pop() ?? path;
 
 function readBackup() {
@@ -34,18 +35,18 @@ export function TaskSaveDialog({ path: initialPath, onCancel, onSaved }: Props) 
   useEffect(() => {
     setPlan(null);
     setError(null);
-    taskSavePlan({ path, backup }).then(setPlan).catch((problem) => setError(String(problem).replace(/^Error: /, "")));
+    taskSavePlan({ path, backup }).then(setPlan).catch((problem) => setError(message(problem)));
   }, [backup, path]);
 
   const run = useCallback(async () => {
-    if (!plan || saving) return;
+    if (!plan || plan.changedOnDisk || saving) return;
     setSaving(true);
     setError(null);
     const options: TaskSaveOptions = { path, backup };
     try {
       onSaved(await saveTasks(options));
     } catch (problem) {
-      setError(String(problem).replace(/^Error: /, ""));
+      setError(message(problem));
       setSaving(false);
     }
   }, [backup, onSaved, path, plan, saving]);
@@ -74,15 +75,16 @@ export function TaskSaveDialog({ path: initialPath, onCancel, onSaved }: Props) 
         <div className="save-target"><div className="save-target-path mono truncate" title={path}>{path}</div><button className="btn small" onClick={pick} disabled={saving}><FolderOpen size={13}/> Save as…</button></div>
         {!plan && !error && <div className="muted small"><Loader2 size={13} className="spin"/> Inspecting the task set…</div>}
         {plan && <>
-          <div className="save-facts"><span className={"tag" + (plan.replaces ? " warn" : "")}>{plan.replaces ? (plan.sameFile ? "Replaces the open task set" : "Replaces an existing task set") : "New task set"}</span><span className="muted small">{bytes(plan.size)}</span><span className="spacer"/><span className="small">{plan.changedRoots} changed roots · {plan.changedPacks} changed packs · {plan.packCount} packs total</span></div>
+          <div className="save-facts"><span className={"tag" + (plan.replaces ? " warn" : "")}>{plan.replaces ? (plan.sameFile ? "Replaces the open task set" : "Replaces an existing task set") : "New task set"}</span><span className="muted small">{bytes(plan.size)}</span><span className="spacer"/><span className="small">{plan.changedRoots} changed root{plan.changedRoots === 1 ? "" : "s"} · {plan.changedPacks} changed pack{plan.changedPacks === 1 ? "" : "s"} · {plan.packCount} pack{plan.packCount === 1 ? "" : "s"} total</span></div>
           {plan.changedOnDisk && <div className="save-note danger"><FileWarning size={15}/><div><b>The task set changed on disk.</b> Reopen it before saving so unchanged packs cannot be mixed with outside changes.</div></div>}
+          {plan.clearsHistory && <div className="save-note warn"><TriangleAlert size={15}/><div><b>This save starts a new undo history.</b> New top-level tasks become part of the saved task set, and removing top-level tasks is not available, so earlier edits can no longer be undone afterwards.</div></div>}
           {plan.readOnly && <div className="save-note warn"><TriangleAlert size={15}/><div>One or more destination files are read-only. Saving clears that flag.</div></div>}
           <div className="save-note ok"><ShieldCheck size={15}/><div>JD IDE stages the complete index and pack set, verifies every MD5, parses every root, and checks an exact byte round trip before replacing anything.</div></div>
           <label className={"save-backup" + (plan.replaces ? "" : " off")}><input type="checkbox" checked={backup} disabled={saving || !plan.replaces} onChange={(event) => { setBackup(event.target.checked); writeBackup(event.target.checked); }}/><Archive size={14}/><span>Keep a backup of the complete replaced task set<span className="muted small save-backup-name">{plan.backup ? ` · ${fileName(plan.backup)}` : ""}</span></span></label>
         </>}
         {error && <div className="se-problems">{error}</div>}
       </div>
-      <footer className="modal-foot"><span className="muted small">Undo remains available after saving.</span><span className="spacer"/><button className="btn" onClick={onCancel} disabled={saving}>Cancel</button><button className="btn primary" onClick={() => void run()} disabled={!plan || plan.changedOnDisk || saving}>{saving ? <Loader2 size={14} className="spin"/> : <Save size={14}/>} {saving ? "Validating and saving…" : "Save"}</button></footer>
+      <footer className="modal-foot"><span className="muted small">{plan?.clearsHistory ? "Undo history is cleared after saving." : "Undo remains available after saving."}</span><span className="spacer"/><button className="btn" onClick={onCancel} disabled={saving}>Cancel</button><button className="btn primary" onClick={() => void run()} disabled={!plan || plan.changedOnDisk || saving}>{saving ? <Loader2 size={14} className="spin"/> : <Save size={14}/>} {saving ? "Validating and saving…" : "Save"}</button></footer>
     </div>
   </div>;
 }

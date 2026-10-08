@@ -49,6 +49,9 @@ pub struct SavePlan {
     pub changed_packs: usize,
     pub pack_count: usize,
     pub size: u64,
+    /// Saving appended top-level tasks makes them part of the base file, which
+    /// cannot be undone because top-level removal is unavailable.
+    pub clears_history: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backup: Option<String>,
 }
@@ -60,6 +63,7 @@ pub struct SaveReport {
     pub size: u64,
     pub changed_roots: usize,
     pub changed_packs: usize,
+    pub history_cleared: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub backup: Option<String>,
 }
@@ -144,6 +148,7 @@ impl TaskDocument {
             changed_packs,
             pack_count: self.container.packs.len(),
             size: self.summary.size,
+            clears_history: !self.added_roots.is_empty(),
             backup: (options.backup && target.is_file() && !self.backed_up.contains(&target)).then(|| backup_path(&target).display().to_string()),
         })
     }
@@ -194,6 +199,7 @@ impl TaskDocument {
             size,
             changed_roots,
             changed_packs: changed_packs.len(),
+            history_cleared: had_structural_roots,
             backup: backup.map(|path| path.display().to_string()),
         })
     }

@@ -599,6 +599,8 @@ export default function App() {
   useEffect(() => {
     if (!summary || editorOpen) return;
     const onKey = (e: KeyboardEvent) => {
+      // These act on elements.data; the path.data and tasks.data workspaces have their own keys.
+      if (workspaceRef.current !== "elements") return;
       if (document.querySelector('.import-records-dialog')) return;
       const mod = e.ctrlKey || e.metaKey;
       const typing = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement;
@@ -851,7 +853,7 @@ export default function App() {
         <FolderTree size={19} />
         {pathEditorState.dirty && <span className="activity-dirty" />}
       </button>
-      <button className={"activity" + (workspace === "tasks" ? " active" : "")} onClick={() => switchWorkspace("tasks")} title="tasks.data browser" aria-label="tasks.data">
+      <button className={"activity" + (workspace === "tasks" ? " active" : "")} onClick={() => switchWorkspace("tasks")} title="tasks.data editor" aria-label="tasks.data">
         <FileStack size={19} />
         {tasksEditorState.dirty && <span className="activity-dirty" />}
       </button>

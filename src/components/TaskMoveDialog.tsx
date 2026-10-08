@@ -27,6 +27,16 @@ export function TaskMoveDialog({ source, busy, error, onConfirm, onClose }: Prop
   const [selected, setSelected] = useState<TaskSearchEntry | null>(null);
 
   useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || busy) return;
+      event.stopImmediatePropagation();
+      onClose();
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [busy, onClose]);
+
+  useEffect(() => {
     let cancelled = false;
     setLoading(true);
     setMessage(null);
@@ -68,7 +78,7 @@ export function TaskMoveDialog({ source, busy, error, onConfirm, onClose }: Prop
             : matches.length ? matches.map((candidate) => {
               const active = selected?.pack === candidate.pack && selected.root === candidate.root && selected.path.join(".") === candidate.path.join(".");
               return <button className={"task-move-result" + (active ? " selected" : "")} key={`${candidate.pack}:${candidate.root}:${candidate.path.join(".")}`} onClick={() => setSelected(candidate)}>
-                <span className="mono">{candidate.id}</span><span className="truncate">{candidate.name || "(unnamed task)"}</span><span className="muted">root {candidate.root + 1}{candidate.path.length ? ` · subquest ${candidate.path.map((part) => part + 1).join(".")}` : ""}</span>
+                <span className="mono">{candidate.id}</span><span className="truncate">{candidate.name || "(unnamed task)"}</span><span className="muted">pack {candidate.pack + 1} · root {candidate.root + 1}{candidate.path.length ? ` · subquest ${candidate.path.map((part) => part + 1).join(".")}` : ""}</span>
               </button>;
             }) : <div className="empty-note center">No eligible destination quest matches this search.</div>}
       </div>

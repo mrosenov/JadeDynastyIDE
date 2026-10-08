@@ -675,6 +675,8 @@ export interface TaskSavePlan {
   changedPacks: number;
   packCount: number;
   size: number;
+  /** Saving appended top-level tasks starts a new undo history. */
+  clearsHistory: boolean;
   backup?: string;
 }
 
@@ -683,6 +685,7 @@ export interface TaskSaveReport {
   size: number;
   changedRoots: number;
   changedPacks: number;
+  historyCleared: boolean;
   backup?: string;
 }
 

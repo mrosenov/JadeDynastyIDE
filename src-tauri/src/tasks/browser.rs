@@ -260,6 +260,10 @@ pub struct TaskDocument {
     pub(crate) journal: Journal,
     pub(crate) disk: HashMap<std::path::PathBuf, super::save::DiskStamp>,
     pub(crate) backed_up: HashSet<std::path::PathBuf>,
+    /// The highest task ID handed out or deleted in this session. Fresh IDs
+    /// start above it, so an ID freed by a delete or an undone clone is never
+    /// given to a different quest while references to it may survive.
+    id_floor: u32,
 }
 
 pub(crate) struct CachedRoot {
@@ -337,7 +341,7 @@ impl TaskDocument {
             }
         });
         let disk = super::save::stamps(&container);
-        Ok(Self { container, schema, summary, search, cache: None, modified: HashMap::new(), added_roots: HashMap::new(), journal: Journal::default(), disk, backed_up: HashSet::new() })
+        Ok(Self { container, schema, summary, search, cache: None, modified: HashMap::new(), added_roots: HashMap::new(), journal: Journal::default(), disk, backed_up: HashSet::new(), id_floor: 0 })
     }
 
     pub fn summary(&self) -> FileSummary {
@@ -352,7 +356,8 @@ impl TaskDocument {
         let numeric = query.parse::<u32>().ok();
         let mut matches = index.entries.iter().filter(|task| {
             if let Some(id) = numeric {
-                task.id == id
+                // Exact IDs sort first; ID prefixes and names such as "Level 30" follow.
+                task.id == id || task.id.to_string().starts_with(&query) || task.name.to_lowercase().contains(&query)
             } else {
                 task.name.to_lowercase().contains(&query) || task.id.to_string().contains(&query)
             }
@@ -453,11 +458,11 @@ impl TaskDocument {
         }
         let semantic = semantic.to_ascii_lowercase();
         if matches!(semantic.as_str(), "task_id" | "new_task_id" | "terminate_task_ids") {
-            let target = self.search.read().ok().and_then(|index| index.by_id.get(&id).cloned());
+            let (target, indexed) = self.search.read().ok().map_or((None, false), |index| (index.by_id.get(&id).cloned(), index.indexed));
             return Some(FieldReference {
                 kind: "task".into(),
                 id,
-                label: target.as_ref().map(|task| task.name.clone()).unwrap_or_else(|| "Task not found".into()),
+                label: target.as_ref().map(|task| task.name.clone()).unwrap_or_else(|| if indexed { "Task not found" } else { "Indexing quests…" }.into()),
                 description: None,
                 list: None,
                 row: None,
@@ -592,17 +597,7 @@ impl TaskDocument {
         if unique.len() != source_ids.len() {
             return Err("The selected subtree contains duplicate task IDs and cannot be cloned safely".into());
         }
-        let first = {
-            let index = self.search.read().map_err(|_| "Task search index lock poisoned")?;
-            if !index.indexed {
-                return Err("Task IDs are still being indexed. Try cloning again in a moment".into());
-            }
-            u64::from(index.entries.iter().map(|task| task.id).max().unwrap_or(0)) + 1
-        };
-        let last = first.checked_add(source_ids.len().saturating_sub(1) as u64).ok_or("Task ID range overflow")?;
-        if last > u64::from(u32::MAX) {
-            return Err("There are no free task IDs after the current maximum".into());
-        }
+        let (first, last) = self.fresh_task_ids(source_ids.len())?;
         let replacements = source_ids.into_iter().enumerate().map(|(index, old)| (old, (first + index as u64) as u32)).collect::<HashMap<_, _>>();
         let mut cloned = source;
         replace_own_task_ids(&mut cloned, &replacements)?;
@@ -626,7 +621,7 @@ impl TaskDocument {
         };
         set_count(parent, &count_field, count)?;
 
-        let after = decoded.encode()?;
+        let after = sync_hierarchy_links(&self.schema, self.container.header.version, &[&before], decoded.encode()?)?;
         let verified = decode_exact(&self.schema, &after, self.container.header.version)
             .map_err(|error| format!("The cloned subtree would make this task invalid: {error}"))?;
         if verified.encode()? != after {
@@ -645,6 +640,7 @@ impl TaskDocument {
             old: format!("{source_id} · {source_name}"),
             new: format!("{id} · {name}"),
         }, vec![change]);
+        self.id_floor = self.id_floor.max(last as u32);
         Ok(TaskCloneReport { state: self.edit_state(), pack, root, path: cloned_path, id, name, tasks })
     }
 
@@ -658,17 +654,7 @@ impl TaskDocument {
         if unique.len() != source_ids.len() {
             return Err("The selected task contains duplicate task IDs and cannot be cloned safely".into());
         }
-        let first = {
-            let index = self.search.read().map_err(|_| "Task search index lock poisoned")?;
-            if !index.indexed {
-                return Err("Task IDs are still being indexed. Try cloning again in a moment".into());
-            }
-            u64::from(index.entries.iter().map(|task| task.id).max().unwrap_or(0)) + 1
-        };
-        let last = first.checked_add(source_ids.len().saturating_sub(1) as u64).ok_or("Task ID range overflow")?;
-        if last > u64::from(u32::MAX) {
-            return Err("There are no free task IDs after the current maximum".into());
-        }
+        let (first, last) = self.fresh_task_ids(source_ids.len())?;
         let target_pack = if self.root_count(pack)? < ROOTS_PER_PACK {
             pack
         } else {
@@ -682,7 +668,7 @@ impl TaskDocument {
         replace_own_task_ids(&mut cloned, &replacements)?;
         rewrite_internal_task_references(&mut cloned, "", &replacements)?;
         let (id, name) = task_heading(&cloned)?;
-        let after = cloned.encode()?;
+        let after = sync_hierarchy_links(&self.schema, self.container.header.version, &[&source], cloned.encode()?)?;
         verify_task_root(&self.schema, &after, self.container.header.version, "The cloned task would be invalid")?;
         let change = RootChange { pack: target_pack, root: target_root, before: Vec::new(), after };
         self.apply_changes(std::slice::from_ref(&change))?;
@@ -695,6 +681,7 @@ impl TaskDocument {
             old: format!("{source_id} · {source_name}"),
             new: format!("{id} · {name}"),
         }, vec![change]);
+        self.id_floor = self.id_floor.max(last as u32);
         Ok(TaskCloneReport { state: self.edit_state(), pack: target_pack, root: target_root, path: Vec::new(), id, name, tasks })
     }
 
@@ -736,19 +723,19 @@ impl TaskDocument {
             let adjusted_destination = task_path_after_removal(destination_path, source_path);
             let moved = remove_subtask(&mut source_decoded, source_path)?;
             let insertion = append_subtask(task_at_mut(&mut source_decoded, &adjusted_destination)?, moved)?;
-            let after = source_decoded.encode()?;
+            let after = sync_hierarchy_links(&self.schema, self.container.header.version, &[&source_before], source_decoded.encode()?)?;
             verify_task_root(&self.schema, &after, self.container.header.version, "Moving this subtree would make the task invalid")?;
             let mut path = adjusted_destination;
             path.push(insertion);
             (vec![RootChange { pack: source_pack, root: source_root, before: source_before, after }], path)
         } else {
             let moved = remove_subtask(&mut source_decoded, source_path)?;
-            let source_after = source_decoded.encode()?;
+            let source_after = sync_hierarchy_links(&self.schema, self.container.header.version, &[&source_before], source_decoded.encode()?)?;
             verify_task_root(&self.schema, &source_after, self.container.header.version, "Moving this subtree would make the source task invalid")?;
 
             let mut destination_decoded = decode_exact(&self.schema, &destination_before, self.container.header.version)?;
             let insertion = append_subtask(task_at_mut(&mut destination_decoded, destination_path)?, moved)?;
-            let destination_after = destination_decoded.encode()?;
+            let destination_after = sync_hierarchy_links(&self.schema, self.container.header.version, &[&source_before, &destination_before], destination_decoded.encode()?)?;
             verify_task_root(&self.schema, &destination_after, self.container.header.version, "Moving this subtree would make the destination task invalid")?;
             let mut path = destination_path.to_vec();
             path.push(insertion);
@@ -837,6 +824,7 @@ impl TaskDocument {
         let (&source_index, parent_path) = path.split_last().ok_or("Root-task deletion is not available yet")?;
         let before = self.current_root(pack, root)?;
         let mut decoded = decode_exact(&self.schema, &before, self.container.header.version)?;
+        let decoded_before = decoded.clone();
         let parent = task_at_mut(&mut decoded, parent_path)?;
         let subtasks = parent.child_mut("subtasks").ok_or("The parent task has no subtask array")?;
         let count_field = match &subtasks.ty {
@@ -852,14 +840,17 @@ impl TaskDocument {
             children.len()
         };
         set_count(parent, &count_field, count)?;
-        let after = decoded.encode()?;
+        let after = sync_hierarchy_links(&self.schema, self.container.header.version, &[&before], decoded.encode()?)?;
         let verified = decode_exact(&self.schema, &after, self.container.header.version)
             .map_err(|error| format!("Deleting this subtree would make the parent task invalid: {error}"))?;
         if verified.encode()? != after {
             return Err("The task root did not pass an exact byte round trip after deletion".into());
         }
+        let mut deleted_ids = Vec::new();
+        collect_task_ids(task_at(&decoded_before, path)?, &mut deleted_ids)?;
         let change = RootChange { pack, root, before: before.clone(), after: after.clone() };
         self.apply_changes(std::slice::from_ref(&change))?;
+        self.id_floor = self.id_floor.max(deleted_ids.into_iter().max().unwrap_or(0));
         self.journal.record(EntryDetails {
             label: if preview.tasks == 1 { "Delete subquest".into() } else { format!("Delete subtree ({} quests)", preview.tasks) },
             task_id: preview.id,
@@ -872,15 +863,29 @@ impl TaskDocument {
     }
 
     pub fn undo(&mut self) -> Result<EditState, String> {
-        let Some(changes) = self.journal.undo() else { return Ok(self.edit_state()) };
+        let Some(changes) = self.journal.undo_changes() else { return Ok(self.edit_state()) };
         self.apply_changes(&changes)?;
+        self.journal.commit_undo();
         Ok(self.edit_state())
     }
 
     pub fn redo(&mut self) -> Result<EditState, String> {
-        let Some(changes) = self.journal.redo() else { return Ok(self.edit_state()) };
+        let Some(changes) = self.journal.redo_changes() else { return Ok(self.edit_state()) };
         self.apply_changes(&changes)?;
+        self.journal.commit_redo();
         Ok(self.edit_state())
+    }
+
+    /// Guards operations prepared in the UI against a task that moved or
+    /// changed since: the task at `path` must still have `expected` as its ID.
+    pub fn check_task_id(&self, pack: usize, root: usize, path: &[usize], expected: u32) -> Result<(), String> {
+        let bytes = self.current_root(pack, root)?;
+        let decoded = decode_exact(&self.schema, &bytes, self.container.header.version)?;
+        let id = task_at(&decoded, path).and_then(task_heading).map(|(id, _)| id).ok();
+        if id != Some(expected) {
+            return Err(format!("Task {expected} is no longer at the selected position. Close this dialog and choose it again"));
+        }
+        Ok(())
     }
 
     pub fn revert_all(&mut self) -> Result<EditState, String> {
@@ -913,6 +918,22 @@ impl TaskDocument {
 
     pub(crate) fn current_root(&self, pack: usize, root: usize) -> Result<Vec<u8>, String> {
         self.current_root_optional(pack, root)?.ok_or_else(|| format!("Task root {}:{} does not exist", pack + 1, root + 1))
+    }
+
+    /// A range of `count` unused task IDs above every indexed ID and the
+    /// session's `id_floor`. Requires the complete background index.
+    fn fresh_task_ids(&self, count: usize) -> Result<(u64, u64), String> {
+        let index = self.search.read().map_err(|_| "Task search index lock poisoned")?;
+        if !index.indexed {
+            return Err("Task IDs are still being indexed. Try cloning again in a moment".into());
+        }
+        let highest = index.entries.iter().map(|task| task.id).max().unwrap_or(0).max(self.id_floor);
+        let first = u64::from(highest) + 1;
+        let last = first.checked_add(count.saturating_sub(1) as u64).ok_or("Task ID range overflow")?;
+        if last > u64::from(u32::MAX) {
+            return Err("There are no free task IDs after the current maximum".into());
+        }
+        Ok((first, last))
     }
 
     pub(crate) fn root_count(&self, pack: usize) -> Result<usize, String> {
@@ -1216,6 +1237,59 @@ fn verify_task_root(schema: &Schema, bytes: &[u8], version: u32, context: &str) 
         return Err(format!("{context}: exact byte round trip failed"));
     }
     Ok(())
+}
+
+/// Official tools store every task's parent, previous sibling, next sibling and
+/// first child IDs in the last 16 bytes of its fixed block (`ATaskTemplFixedData`,
+/// refreshed by `ATaskTempl::SynchID` before each save; top-level tasks hold zeros).
+/// The game recomputes them after loading, but other editors read them, so
+/// structural edits keep them exact.
+const LINK_BYTES: usize = 16;
+
+fn link_slots(task: &Node, parent: u32, prev: u32, next: u32, slots: &mut Vec<(usize, [u32; 4])>) -> Result<(), String> {
+    let fixed = task.child("fixed").ok_or("Task record has no fixed block")?;
+    if fixed.byte_len < LINK_BYTES {
+        return Err("Task fixed block is too small for hierarchy links".into());
+    }
+    let id = task_heading(task)?.0;
+    let children = task.child("subtasks").map(Node::children).unwrap_or_default();
+    let ids = children.iter().map(|child| task_heading(child).map(|(id, _)| id)).collect::<Result<Vec<_>, _>>()?;
+    slots.push((fixed.offset + fixed.byte_len - LINK_BYTES, [parent, prev, next, ids.first().copied().unwrap_or(0)]));
+    for (index, child) in children.iter().enumerate() {
+        let prev = if index > 0 { ids[index - 1] } else { 0 };
+        link_slots(child, id, prev, ids.get(index + 1).copied().unwrap_or(0), slots)?;
+    }
+    Ok(())
+}
+
+fn read_links(bytes: &[u8], offset: usize) -> Option<[u32; 4]> {
+    let block = bytes.get(offset..offset + LINK_BYTES)?;
+    Some(std::array::from_fn(|index| u32::from_le_bytes(block[index * 4..index * 4 + 4].try_into().unwrap())))
+}
+
+/// True when every task in the root stores the links of its actual position.
+fn hierarchy_links_consistent(schema: &Schema, bytes: &[u8], version: u32) -> bool {
+    let Ok(node) = decode_exact(schema, bytes, version) else { return false };
+    let mut slots = Vec::new();
+    link_slots(&node, 0, 0, 0, &mut slots).is_ok() && slots.iter().all(|(offset, links)| read_links(bytes, *offset) == Some(*links))
+}
+
+/// Rewrites every task's hierarchy links in `after` when the root they came
+/// from (`before`) kept them consistent; other roots are left untouched.
+fn sync_hierarchy_links(schema: &Schema, version: u32, before: &[&[u8]], after: Vec<u8>) -> Result<Vec<u8>, String> {
+    if !before.iter().all(|bytes| hierarchy_links_consistent(schema, bytes, version)) {
+        return Ok(after);
+    }
+    let node = decode_exact(schema, &after, version)?;
+    let mut slots = Vec::new();
+    link_slots(&node, 0, 0, 0, &mut slots)?;
+    let mut bytes = after;
+    for (offset, links) in slots {
+        for (index, value) in links.iter().enumerate() {
+            bytes[offset + index * 4..offset + index * 4 + 4].copy_from_slice(&value.to_le_bytes());
+        }
+    }
+    Ok(bytes)
 }
 
 fn parse_integer(value: &str) -> Result<i128, String> {
@@ -1825,6 +1899,8 @@ mod tests {
                 assert_eq!(document.summary().root_count, roots_before_clone + 1);
                 let cloned_root_bytes = document.current_root(clone_root.pack, clone_root.root).unwrap();
                 assert_eq!(decode_exact(&document.schema, &cloned_root_bytes, version).unwrap().encode().unwrap(), cloned_root_bytes);
+                assert!(hierarchy_links_consistent(&document.schema, &document.current_root(parent.pack, parent.root).unwrap(), version));
+                assert!(hierarchy_links_consistent(&document.schema, &cloned_root_bytes, version), "a cloned tree links its children to the new IDs");
                 assert_eq!(document.task(clone_root.pack, clone_root.root, &[]).unwrap().id, clone_root.id);
                 document.undo().unwrap();
                 assert_eq!(document.summary().root_count, roots_before_clone);
@@ -1836,6 +1912,7 @@ mod tests {
                 let source_after_move = document.current_root(parent.pack, parent.root).unwrap();
                 assert_ne!(source_after_move, source_before_move);
                 assert_eq!(decode_exact(&document.schema, &source_after_move, version).unwrap().encode().unwrap(), source_after_move);
+                assert!(hierarchy_links_consistent(&document.schema, &source_after_move, version), "moving updates sibling and first-child links");
                 document.undo().unwrap();
                 assert_eq!(document.current_root(parent.pack, parent.root).unwrap(), source_before_move);
 
@@ -1850,6 +1927,8 @@ mod tests {
                 let destination_after_cross_move = document.current_root(destination.pack, destination.root).unwrap();
                 assert_eq!(decode_exact(&document.schema, &source_after_cross_move, version).unwrap().encode().unwrap(), source_after_cross_move);
                 assert_eq!(decode_exact(&document.schema, &destination_after_cross_move, version).unwrap().encode().unwrap(), destination_after_cross_move);
+                assert!(hierarchy_links_consistent(&document.schema, &source_after_cross_move, version));
+                assert!(hierarchy_links_consistent(&document.schema, &destination_after_cross_move, version));
                 document.undo().unwrap();
                 assert_eq!(document.current_root(parent.pack, parent.root).unwrap(), source_before_move);
                 assert_eq!(document.current_root(destination.pack, destination.root).unwrap(), destination_before_move);
@@ -1865,6 +1944,9 @@ mod tests {
                 let after = document.current_root(parent.pack, parent.root).unwrap();
                 assert_ne!(after, before);
                 assert_eq!(decode_exact(&document.schema, &after, version).unwrap().encode().unwrap(), after);
+                assert!(hierarchy_links_consistent(&document.schema, &after, version), "a cloned subtree links into its new siblings");
+                assert!(document.check_task_id(parent.pack, parent.root, &cloned.path, cloned.id).is_ok());
+                assert!(document.check_task_id(parent.pack, parent.root, &cloned.path, source.id).is_err());
                 let preview = document.delete_subtask_preview(parent.pack, parent.root, &cloned.path).unwrap();
                 assert_eq!(preview.id, cloned.id);
                 assert_eq!(preview.tasks, cloned.tasks);
@@ -1876,7 +1958,15 @@ mod tests {
                 assert_eq!(document.current_root(parent.pack, parent.root).unwrap(), after);
                 document.undo().unwrap();
                 assert_eq!(document.current_root(parent.pack, parent.root).unwrap(), before);
+
+                // IDs handed out earlier stay reserved after the clone was deleted and undone.
+                let again = document.clone_subtask(parent.pack, parent.root, &[0]).unwrap();
+                assert!(again.id > cloned.id + cloned.tasks as u32 - 1, "fresh IDs must not reuse {} after its clone was removed", cloned.id);
+                document.undo().unwrap();
+                assert_eq!(document.current_root(parent.pack, parent.root).unwrap(), before);
             }
         }
     }
 }
+
+

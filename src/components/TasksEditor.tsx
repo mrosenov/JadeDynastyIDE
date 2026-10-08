@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { AlertTriangle, ArrowRight, BarChart3, Braces, Check, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
-import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditHistory, getTaskEditState, getTaskLayoutPatch, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
+import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditHistory, getTaskEditState, getTaskLayoutPatch, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import type { TaskAnalysisReport, TaskDeletePreview, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
@@ -51,6 +51,20 @@ const pathKey = (path: number[]) => path.join(".");
 const rootKey = (root: TaskRootSummary) => `${root.pack}:${root.root}`;
 const branchKey = (root: TaskRootSummary, path: number[]) => `${rootKey(root)}:${pathKey(path)}`;
 const label = (name: string) => name.replace(/^unknown_/, "unknown · ").replaceAll("_", " ");
+const problemText = (problem: unknown) => String(problem).replace(/^Error: /, "");
+
+/** The longest prefix of `path` that still names a task in `tree`. */
+function existingPath(tree: TaskTreeNode, path: number[]) {
+  const result: number[] = [];
+  let node = tree;
+  for (const index of path) {
+    const child = node.children[index];
+    if (!child) break;
+    result.push(index);
+    node = child;
+  }
+  return result;
+}
 
 function fixedTypeOptions(width: number) {
   switch (width) {
@@ -235,6 +249,8 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const [conditionDraft, setConditionDraft] = useState<{ index: number; field: string; rows: TaskLayoutCondition[] } | null>(null);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase());
+  const queryRef = useRef(deferredQuery);
+  queryRef.current = deferredQuery;
   const [page, setPage] = useState(0);
   const [pageInput, setPageInput] = useState("1");
   const [selectedRoot, setSelectedRoot] = useState<TaskRootSummary | null>(initialRoot);
@@ -242,6 +258,8 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const [detail, setDetail] = useState<TaskDetail | null>(null);
   const [trees, setTrees] = useState<Map<string, TaskTreeNode>>(new Map());
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const expandedRef = useRef(expanded);
+  expandedRef.current = expanded;
   const [busy, setBusy] = useState(false);
   const [taskBusy, setTaskBusy] = useState(false);
   const [searchReport, setSearchReport] = useState<TaskSearchReport | null>(null);
@@ -260,6 +278,18 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const autoOpened = useRef<string | null>(initialFile?.path ?? initialUnsupported?.path ?? null);
   const restoring = useRef(!!initialFile);
   const request = useRef(0);
+  /** True while an edit, structural operation, undo or redo is running; list clicks and undo wait for it. */
+  const operation = useRef(false);
+  /** True while a task dialog is open; undo/redo would change the tasks the dialog refers to. */
+  const dialogOpen = useRef(false);
+  dialogOpen.current = !!(moveSource || deletePreview || saving);
+  const noteTimer = useRef<number | undefined>(undefined);
+  const showNote = useCallback((text: string) => {
+    setSavedNote(text);
+    window.clearTimeout(noteTimer.current);
+    noteTimer.current = window.setTimeout(() => setSavedNote(null), 5000);
+  }, []);
+  useEffect(() => () => window.clearTimeout(noteTimer.current), []);
 
   const selectTask = useCallback(async (root: TaskRootSummary, taskPath: number[], expandAfter = false) => {
     const current = ++request.current;
@@ -283,6 +313,78 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     }
   }, []);
 
+  /** Selection made by the user; ignored while an operation is reshaping the task trees. */
+  const userSelect = useCallback((root: TaskRootSummary, taskPath: number[], expandAfter = false) => {
+    if (!operation.current) void selectTask(root, taskPath, expandAfter);
+  }, [selectTask]);
+
+  /** Marks an operation as running and discards any task selection still loading. */
+  const beginOperation = () => {
+    if (operation.current) return false;
+    operation.current = true;
+    request.current++;
+    setTaskBusy(true);
+    setError(null);
+    return true;
+  };
+  const endOperation = () => {
+    operation.current = false;
+    setTaskBusy(false);
+  };
+
+  const expandTo = useCallback((root: TaskRootSummary, taskPath: number[]) => {
+    setExpanded((current) => {
+      const next = new Set(current);
+      for (let depth = 0; depth < taskPath.length; depth++) next.add(branchKey(root, taskPath.slice(0, depth)));
+      return next;
+    });
+  }, []);
+
+  /**
+   * After undo, redo or revert all: reloads the root list (top-level clones may have appeared or gone),
+   * drops trees and nested expansion of the roots that changed, and selects the same quest again by ID
+   * (a move puts it elsewhere), else its nearest surviving ancestor.
+   */
+  const resync = useCallback(async (affected: Set<string>, focus: { root: Pick<TaskRootSummary, "pack" | "root" | "index">; path: number[]; id: number | null } | null) => {
+    const summary = await getTaskSummary();
+    const roots = new Map(summary.roots.map((root) => [rootKey(root), root]));
+    setFile(summary);
+    setTrees((current) => new Map([...current].filter(([key]) => roots.has(key) && !affected.has(key))));
+    const keep = (key: string) => {
+      const [pack, root, path] = key.split(":");
+      const owner = `${pack}:${root}`;
+      return roots.has(owner) && (!affected.has(owner) || path === "");
+    };
+    const expandedRoots = [...expandedRef.current].filter((key) => keep(key) && key.endsWith(":") && affected.has(key.slice(0, -1))).map((key) => key.slice(0, -1));
+    setExpanded((current) => new Set([...current].filter(keep)));
+    const refreshed = await Promise.all(expandedRoots.map(async (key) => {
+      const root = roots.get(key)!;
+      return [key, (await getTask(root.pack, root.root, [])).tree] as const;
+    }));
+    if (refreshed.length) setTrees((current) => new Map([...current, ...refreshed]));
+    if (!focus) return;
+    let target: { root: TaskRootSummary; path: number[] } | null = null;
+    if (focus.id !== null) {
+      const hits = (await searchTasks(String(focus.id), 50)).matches.filter((task) => task.id === focus.id && roots.has(`${task.pack}:${task.root}`));
+      const hit = hits.find((task) => task.pack === focus.root.pack && task.root === focus.root.root && pathKey(task.path) === pathKey(focus.path)) ?? (hits.length === 1 ? hits[0] : undefined);
+      if (hit) target = { root: roots.get(`${hit.pack}:${hit.root}`)!, path: hit.path };
+    }
+    if (!target) {
+      const root = roots.get(`${focus.root.pack}:${focus.root.root}`) ?? summary.roots[Math.min(focus.root.index, summary.roots.length - 1)];
+      if (!root) {
+        setSelectedRoot(null);
+        setSelectedPath([]);
+        setDetail(null);
+        return;
+      }
+      const path = root.pack === focus.root.pack && root.root === focus.root.root ? existingPath((await getTask(root.pack, root.root, [])).tree, focus.path) : [];
+      target = { root, path };
+    }
+    expandTo(target.root, target.path);
+    if (!queryRef.current) setPage(Math.floor(target.root.index / PAGE_SIZE));
+    await selectTask(target.root, target.path);
+  }, [expandTo, selectTask]);
+
   const refreshSelected = useCallback(async () => {
     if (!selectedRoot) return;
     const next = await getTask(selectedRoot.pack, selectedRoot.root, selectedPath);
@@ -304,94 +406,70 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     if (history !== null) setHistory(await getTaskEditHistory());
   }, [history]);
 
-  const runEditAction = useCallback(async (action: () => Promise<TaskEditState>) => {
-    setTaskBusy(true);
-    setError(null);
+  const editField = useCallback(async (field: TaskFieldView, value: string) => {
+    if (!selectedRoot) return;
+    if (!beginOperation()) throw new Error("Another task operation is still running");
     try {
-      const state = await action();
-      setEditState(state);
+      setEditState(await editTaskField({ pack: selectedRoot.pack, root: selectedRoot.root, taskPath: selectedPath, fieldPath: field.path, value }));
       await refreshSelected();
       await refreshHistory();
     } catch (problem) {
-      setError(String(problem).replace(/^Error: /, ""));
+      setError(problemText(problem));
       throw problem;
     } finally {
-      setTaskBusy(false);
+      endOperation();
     }
-  }, [refreshHistory, refreshSelected]);
+  }, [refreshHistory, refreshSelected, selectedPath, selectedRoot]);
 
-  const editField = useCallback(async (field: TaskFieldView, value: string) => {
-    if (!selectedRoot) return;
-    await runEditAction(() => editTaskField({ pack: selectedRoot.pack, root: selectedRoot.root, taskPath: selectedPath, fieldPath: field.path, value }));
-  }, [runEditAction, selectedPath, selectedRoot]);
+  /** Undo, redo and revert all can touch any root, including appended top-level tasks. */
+  const runHistoryAction = useCallback(async (action: () => Promise<TaskEditState>) => {
+    if (dialogOpen.current || !beginOperation()) return;
+    const focus = selectedRoot ? { root: selectedRoot, path: selectedPath, id: detail?.id ?? null } : null;
+    try {
+      const next = await action();
+      const affected = new Set([...editState.changedRoots, ...next.changedRoots].map((root) => `${root.pack}:${root.root}`));
+      setEditState(next);
+      await resync(affected, focus);
+      await refreshHistory();
+    } catch (problem) {
+      setError(problemText(problem));
+    } finally {
+      endOperation();
+    }
+  }, [detail?.id, editState.changedRoots, refreshHistory, resync, selectedPath, selectedRoot]);
 
   const cloneSelectedSubtree = useCallback(async () => {
-    if (!selectedRoot || !selectedPath.length || taskBusy) return;
-    setTaskBusy(true);
-    setError(null);
+    if (!selectedRoot || !selectedPath.length || !beginOperation()) return;
     try {
       const report = await cloneTaskSubtree(selectedRoot.pack, selectedRoot.root, selectedPath);
       setEditState(report.state);
-      setSelectedPath(report.path);
-      const next = await getTask(report.pack, report.root, report.path);
-      setDetail(next);
-      setTrees((currentTrees) => new Map(currentTrees).set(rootKey(selectedRoot), next.tree));
-      setFile((currentFile) => currentFile ? {
-        ...currentFile,
-        roots: currentFile.roots.map((root) => root.pack === report.pack && root.root === report.root ? {
-          ...root,
-          id: next.tree.id,
-          name: next.tree.name,
-          childCount: next.tree.children.length,
-          byteSize: next.rootBytes,
-        } : root),
-      } : currentFile);
-      setExpanded((current) => {
-        const expanded = new Set(current);
-        for (let depth = 0; depth < report.path.length; depth++) expanded.add(branchKey(selectedRoot, report.path.slice(0, depth)));
-        return expanded;
-      });
+      await resync(new Set([`${report.pack}:${report.root}`]), { root: selectedRoot, path: report.path, id: report.id });
       await refreshHistory();
-      setSavedNote(report.tasks === 1 ? `Cloned subquest as ID ${report.id}.` : `Cloned ${report.tasks} quests with fresh IDs; new root ID ${report.id}.`);
-      window.setTimeout(() => setSavedNote(null), 5000);
+      showNote(report.tasks === 1 ? `Cloned subquest as ID ${report.id}.` : `Cloned ${report.tasks} quests with fresh IDs; new root ID ${report.id}.`);
     } catch (problem) {
-      setError(String(problem).replace(/^Error: /, ""));
+      setError(problemText(problem));
     } finally {
-      setTaskBusy(false);
+      endOperation();
     }
-  }, [refreshHistory, selectedPath, selectedRoot, taskBusy]);
+  }, [refreshHistory, resync, selectedPath, selectedRoot, showNote]);
 
   const cloneSelectedRoot = useCallback(async () => {
-    if (!selectedRoot || selectedPath.length || taskBusy || !taskIndexReady) return;
-    setTaskBusy(true);
-    setError(null);
+    if (!selectedRoot || selectedPath.length || !taskIndexReady || !beginOperation()) return;
     try {
       const report = await cloneTaskRoot(selectedRoot.pack, selectedRoot.root);
-      const next = await getTask(report.pack, report.root, []);
-      const roots = file?.roots ?? [];
-      const at = roots.reduce((last, root, index) => root.pack === report.pack ? index + 1 : last, 0);
-      const clonedRoot: TaskRootSummary = { ...selectedRoot, index: at, pack: report.pack, root: report.root, id: next.tree.id, name: next.tree.name, childCount: next.tree.children.length, byteSize: next.rootBytes };
-      setFile((currentFile) => currentFile ? {
-        ...currentFile,
-        rootCount: currentFile.rootCount + 1,
-        roots: [...currentFile.roots.slice(0, at), clonedRoot, ...currentFile.roots.slice(at)].map((root, index) => ({ ...root, index })),
-      } : currentFile);
-      setSelectedRoot(clonedRoot);
-      setSelectedPath([]);
-      setDetail(next);
-      setTrees((currentTrees) => new Map(currentTrees).set(rootKey(clonedRoot), next.tree));
+      setEditState(report.state);
+      await resync(new Set([`${report.pack}:${report.root}`]), { root: { pack: report.pack, root: report.root, index: selectedRoot.index }, path: [], id: report.id });
       await refreshHistory();
-      setSavedNote(report.tasks === 1 ? `Cloned task as ID ${report.id}.` : `Cloned task tree with ${report.tasks} fresh IDs; new root ID ${report.id}.`);
-      window.setTimeout(() => setSavedNote(null), 5000);
+      showNote(report.tasks === 1 ? `Cloned task as ID ${report.id}.` : `Cloned task tree with ${report.tasks} fresh IDs; new root ID ${report.id}.`);
     } catch (problem) {
-      setError(String(problem).replace(/^Error: /, ""));
+      setError(problemText(problem));
     } finally {
-      setTaskBusy(false);
+      endOperation();
     }
-  }, [file?.roots, refreshHistory, selectedPath.length, selectedRoot, taskBusy, taskIndexReady]);
+  }, [refreshHistory, resync, selectedPath.length, selectedRoot, showNote, taskIndexReady]);
 
   const openMoveSelected = useCallback(() => {
-    if (!selectedRoot || !detail || !selectedPath.length || taskBusy) return;
+    if (!selectedRoot || !detail || !selectedPath.length || operation.current) return;
     setMoveSource({
       pack: selectedRoot.pack,
       root: selectedRoot.root,
@@ -401,114 +479,70 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       childCount: detail.tree.children.length,
     });
     setMoveError(null);
-  }, [detail, selectedPath, selectedRoot, taskBusy]);
+  }, [detail, selectedPath, selectedRoot]);
 
   const confirmMoveSelected = useCallback(async (destination: TaskSearchEntry) => {
-    if (!moveSource || moveBusy) return;
+    if (!moveSource || moveBusy || !beginOperation()) return;
     setMoveBusy(true);
-    setTaskBusy(true);
     setMoveError(null);
     try {
       const report = await moveTaskSubtree(moveSource, destination);
       setEditState(report.state);
-      const affected = [
-        { pack: moveSource.pack, root: moveSource.root },
-        { pack: destination.pack, root: destination.root },
-      ].filter((value, index, values) => values.findIndex((other) => other.pack === value.pack && other.root === value.root) === index);
-      const roots = await Promise.all(affected.map(async (value) => ({ ...value, detail: await getTask(value.pack, value.root, []) })));
-      const byRoot = new Map(roots.map((value) => [`${value.pack}:${value.root}`, value.detail]));
-      setTrees((currentTrees) => {
-        const next = new Map(currentTrees);
-        for (const value of roots) next.set(`${value.pack}:${value.root}`, value.detail.tree);
-        return next;
-      });
-      setFile((currentFile) => currentFile ? {
-        ...currentFile,
-        roots: currentFile.roots.map((root) => {
-          const refreshed = byRoot.get(`${root.pack}:${root.root}`);
-          return refreshed ? { ...root, id: refreshed.tree.id, name: refreshed.tree.name, childCount: refreshed.tree.children.length, byteSize: refreshed.rootBytes } : root;
-        }),
-      } : currentFile);
-      const sourceRoot = file?.roots.find((root) => root.pack === report.pack && root.root === report.root);
-      if (!sourceRoot) throw new Error("The destination task root is no longer available.");
-      const refreshedRoot = byRoot.get(`${report.pack}:${report.root}`);
-      const selectedRoot = refreshedRoot ? { ...sourceRoot, id: refreshedRoot.tree.id, name: refreshedRoot.tree.name, childCount: refreshedRoot.tree.children.length, byteSize: refreshedRoot.rootBytes } : sourceRoot;
-      const selected = await getTask(report.pack, report.root, report.path);
-      setSelectedRoot(selectedRoot);
-      setSelectedPath(report.path);
-      setDetail(selected);
-      setTrees((currentTrees) => new Map(currentTrees).set(rootKey(selectedRoot), selected.tree));
       setMoveSource(null);
+      await resync(new Set([`${moveSource.pack}:${moveSource.root}`, `${destination.pack}:${destination.root}`]), { root: { pack: report.pack, root: report.root, index: 0 }, path: report.path, id: report.id });
       await refreshHistory();
-      setSavedNote(report.tasks === 1 ? `Moved subquest ${report.id}. Undo is available.` : `Moved ${report.tasks} quests as one subtree. Undo is available.`);
-      window.setTimeout(() => setSavedNote(null), 5000);
+      showNote(report.tasks === 1 ? `Moved subquest ${report.id}. Undo is available.` : `Moved ${report.tasks} quests as one subtree. Undo is available.`);
     } catch (problem) {
-      setMoveError(String(problem).replace(/^Error: /, ""));
+      setMoveError(problemText(problem));
     } finally {
-      setTaskBusy(false);
+      endOperation();
       setMoveBusy(false);
     }
-  }, [file?.roots, moveBusy, moveSource, refreshHistory]);
+  }, [moveBusy, moveSource, refreshHistory, resync, showNote]);
 
   const inspectDeleteSelected = useCallback(async () => {
-    if (!selectedRoot || !selectedPath.length || taskBusy) return;
-    setTaskBusy(true);
-    setError(null);
+    if (!selectedRoot || !selectedPath.length || !beginOperation()) return;
     try {
       setDeletePreview(await previewDeleteTaskSubtree(selectedRoot.pack, selectedRoot.root, selectedPath));
       setDeleteError(null);
     } catch (problem) {
-      setError(String(problem).replace(/^Error: /, ""));
+      setError(problemText(problem));
     } finally {
-      setTaskBusy(false);
+      endOperation();
     }
-  }, [selectedPath, selectedRoot, taskBusy]);
+  }, [selectedPath, selectedRoot]);
 
   const confirmDeleteSelected = useCallback(async () => {
-    if (!deletePreview || deleteBusy) return;
+    if (!deletePreview || deleteBusy || !beginOperation()) return;
     setDeleteBusy(true);
     setDeleteError(null);
     try {
       const report = await deleteTaskSubtree(deletePreview);
       setEditState(report.state);
-      const root = file?.roots.find((candidate) => candidate.pack === report.pack && candidate.root === report.root) ?? selectedRoot;
-      if (!root) throw new Error("The changed task root is no longer available.");
-      setSelectedRoot(root);
-      setSelectedPath(report.path);
-      const next = await getTask(report.pack, report.root, report.path);
-      setDetail(next);
-      setTrees((currentTrees) => new Map(currentTrees).set(rootKey(root), next.tree));
-      setFile((currentFile) => currentFile ? {
-        ...currentFile,
-        roots: currentFile.roots.map((candidate) => candidate.pack === report.pack && candidate.root === report.root ? {
-          ...candidate,
-          id: next.tree.id,
-          name: next.tree.name,
-          childCount: next.tree.children.length,
-          byteSize: next.rootBytes,
-        } : candidate),
-      } : currentFile);
       setDeletePreview(null);
+      await resync(new Set([`${report.pack}:${report.root}`]), { root: { pack: report.pack, root: report.root, index: selectedRoot?.index ?? 0 }, path: report.path, id: null });
       await refreshHistory();
-      setSavedNote(report.tasks === 1 ? `Deleted subquest ${report.id}. Undo is available.` : `Deleted ${report.tasks} quests from subtree ${report.id}. Undo is available.`);
-      window.setTimeout(() => setSavedNote(null), 5000);
+      showNote(report.tasks === 1 ? `Deleted subquest ${report.id}. Undo is available.` : `Deleted ${report.tasks} quests from subtree ${report.id}. Undo is available.`);
     } catch (problem) {
-      setDeleteError(String(problem).replace(/^Error: /, ""));
+      setDeleteError(problemText(problem));
     } finally {
+      endOperation();
       setDeleteBusy(false);
     }
-  }, [deleteBusy, deletePreview, file?.roots, refreshHistory, selectedRoot]);
+  }, [deleteBusy, deletePreview, refreshHistory, resync, selectedRoot?.index, showNote]);
 
-  const undo = useCallback(() => void runEditAction(undoTaskEdit).catch(() => {}), [runEditAction]);
-  const redo = useCallback(() => void runEditAction(redoTaskEdit).catch(() => {}), [runEditAction]);
+  const undo = useCallback(() => void runHistoryAction(undoTaskEdit), [runHistoryAction]);
+  const redo = useCallback(() => void runHistoryAction(redoTaskEdit), [runHistoryAction]);
   const revertAll = useCallback(() => {
-    if (!editState.changedRoots.length || !window.confirm(`Put ${editState.changedRoots.length} changed task root(s) back as they were opened? Undo can bring the edits back.`)) return;
-    void runEditAction(revertTaskEdits).catch(() => {});
-  }, [editState.changedRoots.length, runEditAction]);
+    if (!editState.changedRoots.length || operation.current || dialogOpen.current) return;
+    if (!window.confirm(`Put ${editState.changedRoots.length} changed task root(s) back as they were last opened or saved? Undo can bring the edits back.`)) return;
+    void runHistoryAction(revertTaskEdits);
+  }, [editState.changedRoots.length, runHistoryAction]);
 
   const load = useCallback(async (path: string, skipUnsavedPrompt = false) => {
     if (!skipUnsavedPrompt && file && editState.changedRoots.length && !window.confirm("Open another tasks.data file and discard the current unsaved changes?")) return;
     const current = ++request.current;
+    operation.current = false;
     setBusy(true);
     setTaskBusy(false);
     setError(null);
@@ -772,9 +806,6 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       setCandidateDraft(null);
       setConditionDraft(null);
       return true;
-    } catch (problem) {
-      setError(String(problem).replace(/^Error: /, ""));
-      return false;
     } finally {
       setLayoutBusy(false);
     }
@@ -796,9 +827,6 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       setCandidateDraft(null);
       setConditionDraft(null);
       return true;
-    } catch (problem) {
-      setError(String(problem).replace(/^Error: /, ""));
-      return false;
     } finally {
       setLayoutBusy(false);
     }
@@ -965,6 +993,14 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     };
   }, [file]);
 
+  // Links to subquests resolve only once the background index is complete; refresh the open task then.
+  const selectionRef = useRef({ root: selectedRoot, path: selectedPath });
+  selectionRef.current = { root: selectedRoot, path: selectedPath };
+  useEffect(() => {
+    const { root, path } = selectionRef.current;
+    if (taskIndexReady && root && !operation.current) void selectTask(root, path);
+  }, [selectTask, taskIndexReady]);
+
   const matches = useMemo<TaskMatch[]>(() => {
     if (!file) return [];
     if (!deferredQuery) return file.roots.map((root) => ({ root, path: [], id: root.id, name: root.name, childCount: root.childCount }));
@@ -1007,11 +1043,14 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const followReference = useCallback((reference: TaskFieldReference) => {
     if (reference.kind === "task" && reference.pack !== undefined && reference.root !== undefined && file) {
       const root = file.roots.find((candidate) => candidate.pack === reference.pack && candidate.root === reference.root);
-      if (root) void selectTask(root, reference.path ?? []);
+      if (root) {
+        expandTo(root, reference.path ?? []);
+        userSelect(root, reference.path ?? []);
+      }
     } else if (reference.kind === "element" && reference.list !== undefined && reference.row !== undefined) {
       onOpenElement?.(reference.list, reference.row);
     }
-  }, [file, onOpenElement, selectTask]);
+  }, [expandTo, file, onOpenElement, userSelect]);
 
   if (!file) {
     if (unsupported) {
@@ -1146,7 +1185,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
               const selected = selectedBranch === key;
               return <div className={"task-list-row child task-search-result" + (selected ? " selected" : "")} key={`${rootKey(root)}:${pathKey(match.path)}`}>
                 <span className="task-disclosure-spacer task-search-branch">↳</span>
-                <button className="task-list-select" onClick={() => void selectTask(root, match.path)} title={`Subquest of ${root.id} · path ${match.path.map((part) => part + 1).join(".")}`}>
+                <button className="task-list-select" onClick={() => userSelect(root, match.path)} title={`Subquest of ${root.id} · path ${match.path.map((part) => part + 1).join(".")}`}>
                   <span className="mono task-tree-id">{match.id}</span>
                   <span className="truncate">{match.name || "(unnamed task)"}</span>
                   <span className="task-search-context">root {root.id}{match.childCount ? ` · ${match.childCount} subquests` : ""}</span>
@@ -1159,14 +1198,14 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
             const selected = selectedBranch === key;
             return <div className="task-root-branch" key={rootKey(root)}>
               <div className={"task-list-row root" + (selected ? " selected" : "")}>
-                {root.childCount ? <button className="task-disclosure" onClick={() => tree ? toggleBranch(root, []) : void selectTask(root, [], true)} title={open ? `Collapse ${root.childCount} subtasks` : `Expand ${root.childCount} subtasks`} aria-label={open ? `Collapse ${root.name}` : `Expand ${root.name}`}>{open ? <Minus size={11} /> : <Plus size={11} />}</button> : <span className="task-disclosure-spacer" />}
-                <button className="task-list-select" onClick={() => void selectTask(root, [])} title={`Root task ${root.index + 1} · ID ${root.id}`}>
+                {root.childCount ? <button className="task-disclosure" onClick={() => tree ? toggleBranch(root, []) : userSelect(root, [], true)} title={open ? `Collapse ${root.childCount} subtasks` : `Expand ${root.childCount} subtasks`} aria-label={open ? `Collapse ${root.name}` : `Expand ${root.name}`}>{open ? <Minus size={11} /> : <Plus size={11} />}</button> : <span className="task-disclosure-spacer" />}
+                <button className="task-list-select" onClick={() => userSelect(root, [])} title={`Root task ${root.index + 1} · ID ${root.id}`}>
                   <span className="mono task-tree-id">{root.id}</span>
                   <span className="truncate">{changedRoots.has(rootKey(root)) && <span className="changed-dot" />} {root.name || "(unnamed task)"}</span>
                   <span className="muted mono">{bytes(root.byteSize)}</span>
                 </button>
               </div>
-              {open && tree?.children.map((child) => <NestedTaskRow key={pathKey(child.path)} root={root} node={child} selected={selectedBranch} expanded={expanded} onSelect={(taskPath) => void selectTask(root, taskPath)} onToggle={(taskPath) => toggleBranch(root, taskPath)} />)}
+              {open && tree?.children.map((child) => <NestedTaskRow key={pathKey(child.path)} root={root} node={child} selected={selectedBranch} expanded={expanded} onSelect={(taskPath) => userSelect(root, taskPath)} onToggle={(taskPath) => toggleBranch(root, taskPath)} />)}
             </div>;
           })}
           {!shown.length && <div className="empty-note center">{searchReport?.error || (deferredQuery && !searchReport ? "Searching…" : deferredQuery && !searchReport?.indexed ? "Indexing subquests…" : "No quests match this search.")}</div>}
@@ -1208,7 +1247,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
             </div>) : <div className="empty-note">No task edits yet.</div>}</div>
           </section>}
           <div className="task-fields-head"><span>Field</span><span>Value</span><span>Type</span><span>Offset</span></div>
-          <div className="task-fields">{categories.map((category) => <details className="task-category" key={category.key} open>
+          <div className="task-fields" key={`${detail.pack}:${detail.root}:${pathKey(detail.path)}`}>{categories.map((category) => <details className="task-category" key={category.key} open>
             <summary><span>{category.label}</span><span>{category.fields.length} fields</span></summary>
             {category.fields.map((field, index) => <FieldRow key={`${field.name}:${field.offset}:${index}`} field={field} onReference={followReference} onEdit={editField} />)}
           </details>)}</div>
@@ -1219,9 +1258,9 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     {saving && <TaskSaveDialog path={file.path} onCancel={() => setSaving(false)} onSaved={(report) => {
       setSaving(false);
       setFile((current) => current ? { ...current, path: report.path, size: report.size } : current);
-      getTaskEditState().then(setEditState).catch((problem) => setError(String(problem)));
-      setSavedNote(`Saved ${report.changedRoots} changed root${report.changedRoots === 1 ? "" : "s"} across ${report.changedPacks} pack${report.changedPacks === 1 ? "" : "s"}.`);
-      window.setTimeout(() => setSavedNote(null), 5000);
+      getTaskEditState().then(setEditState).catch((problem) => setError(problemText(problem)));
+      void refreshHistory().catch((problem) => setError(problemText(problem)));
+      showNote(`Saved ${report.changedRoots} changed root${report.changedRoots === 1 ? "" : "s"} across ${report.changedPacks} pack${report.changedPacks === 1 ? "" : "s"}.${report.historyCleared ? " A new undo history starts here." : ""}`);
     }} />}
   </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
 });
