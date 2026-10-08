@@ -54,6 +54,7 @@ import type {
   TaskSearchReport,
   TaskFieldEdit,
   TaskEditState,
+  TaskCloneReport,
   TaskHistoryEntry,
   TaskSaveOptions,
   TaskSavePlan,
@@ -117,6 +118,8 @@ export const getTask = (pack: number, root: number, path: number[]) => invoke<Ta
 export const searchTasks = (query: string, limit = 50_000) => invoke<TaskSearchReport>("search_tasks", { query, limit });
 /** Changes one safe leaf inside a task root in memory. */
 export const editTaskField = (edit: TaskFieldEdit) => invoke<TaskEditState>("edit_task_field", { edit });
+/** Clones a selected subquest and its descendants beside the source with fresh task IDs. */
+export const cloneTaskSubtree = (pack: number, root: number, path: number[]) => invoke<TaskCloneReport>("clone_task_subtree", { pack, root, path });
 export const getTaskEditState = () => invoke<TaskEditState>("task_edit_state");
 export const getTaskEditHistory = () => invoke<TaskHistoryEntry[]>("task_edit_history");
 export const undoTaskEdit = () => invoke<TaskEditState>("undo_task_edit");

@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, BarChart3, Braces, Check, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Undo2, Upload, X } from "lucide-react";
-import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, compareTaskIds, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditHistory, getTaskEditState, getTaskLayoutPatch, importTaskLayoutPatch, inspectTasks, openTasks, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
+import { AlertTriangle, BarChart3, Braces, Check, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Undo2, Upload, X } from "lucide-react";
+import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskSubtree, compareTaskIds, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditHistory, getTaskEditState, getTaskLayoutPatch, importTaskLayoutPatch, inspectTasks, openTasks, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import type { TaskAnalysisReport, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
@@ -243,6 +243,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const [busy, setBusy] = useState(false);
   const [taskBusy, setTaskBusy] = useState(false);
   const [searchReport, setSearchReport] = useState<TaskSearchReport | null>(null);
+  const [taskIndexReady, setTaskIndexReady] = useState(false);
   const [editState, setEditState] = useState<TaskEditState>(initialState?.edits ?? { changedRoots: [] });
   const [history, setHistory] = useState<TaskHistoryEntry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -316,6 +317,42 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     await runEditAction(() => editTaskField({ pack: selectedRoot.pack, root: selectedRoot.root, taskPath: selectedPath, fieldPath: field.path, value }));
   }, [runEditAction, selectedPath, selectedRoot]);
 
+  const cloneSelectedSubtree = useCallback(async () => {
+    if (!selectedRoot || !selectedPath.length || taskBusy) return;
+    setTaskBusy(true);
+    setError(null);
+    try {
+      const report = await cloneTaskSubtree(selectedRoot.pack, selectedRoot.root, selectedPath);
+      setEditState(report.state);
+      setSelectedPath(report.path);
+      const next = await getTask(report.pack, report.root, report.path);
+      setDetail(next);
+      setTrees((currentTrees) => new Map(currentTrees).set(rootKey(selectedRoot), next.tree));
+      setFile((currentFile) => currentFile ? {
+        ...currentFile,
+        roots: currentFile.roots.map((root) => root.pack === report.pack && root.root === report.root ? {
+          ...root,
+          id: next.tree.id,
+          name: next.tree.name,
+          childCount: next.tree.children.length,
+          byteSize: next.rootBytes,
+        } : root),
+      } : currentFile);
+      setExpanded((current) => {
+        const expanded = new Set(current);
+        for (let depth = 0; depth < report.path.length; depth++) expanded.add(branchKey(selectedRoot, report.path.slice(0, depth)));
+        return expanded;
+      });
+      await refreshHistory();
+      setSavedNote(report.tasks === 1 ? `Cloned subquest as ID ${report.id}.` : `Cloned ${report.tasks} quests with fresh IDs; new root ID ${report.id}.`);
+      window.setTimeout(() => setSavedNote(null), 5000);
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setTaskBusy(false);
+    }
+  }, [refreshHistory, selectedPath, selectedRoot, taskBusy]);
+
   const undo = useCallback(() => void runEditAction(undoTaskEdit).catch(() => {}), [runEditAction]);
   const redo = useCallback(() => void runEditAction(redoTaskEdit).catch(() => {}), [runEditAction]);
   const revertAll = useCallback(() => {
@@ -348,6 +385,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setTrees(new Map());
     setExpanded(new Set());
     setSearchReport(null);
+    setTaskIndexReady(false);
     setEditState({ changedRoots: [] });
     setHistory(null);
     try {
@@ -751,6 +789,30 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     };
   }, [deferredQuery, file]);
 
+  useEffect(() => {
+    if (!file) {
+      setTaskIndexReady(false);
+      return;
+    }
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const check = async () => {
+      try {
+        const report = await searchTasks("", 0);
+        if (cancelled) return;
+        setTaskIndexReady(report.indexed);
+        if (!report.indexed && !report.error) timer = setTimeout(check, 500);
+      } catch {
+        if (!cancelled) timer = setTimeout(check, 1000);
+      }
+    };
+    void check();
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [file]);
+
   const matches = useMemo<TaskMatch[]>(() => {
     if (!file) return [];
     if (!deferredQuery) return file.roots.map((root) => ({ root, path: [], id: root.id, name: root.name, childCount: root.childCount }));
@@ -973,6 +1035,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
             <div className="truncate"><h2 className="truncate">{detail.name || "(unnamed task)"}</h2><span className="muted mono">ID {detail.id} · root {selectedRoot ? selectedRoot.index + 1 : "?"} · offset 0x{detail.taskOffset.toString(16).toUpperCase()} · {bytes(detail.taskSize)}</span></div>
             {taskBusy && <span className="muted">Reading…</span>}
             <div className="task-edit-actions">
+              {selectedPath.length > 0 && <button className="btn small" onClick={() => void cloneSelectedSubtree()} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Clone this subquest and all of its descendants beside the source" : "Task IDs are still being indexed"}><Copy size={13}/> {taskIndexReady ? "Clone subtree" : "Indexing IDs…"}</button>}
               <button className="icon-btn" onClick={undo} disabled={!editState.undo || taskBusy} title={editState.undo ? `Undo ${editState.undo}` : "Nothing to undo"}><Undo2 size={14} /></button>
               <button className="icon-btn" onClick={redo} disabled={!editState.redo || taskBusy} title={editState.redo ? `Redo ${editState.redo}` : "Nothing to redo"}><Redo2 size={14} /></button>
               <button className={"icon-btn" + (history !== null ? " active" : "")} onClick={() => history === null ? void getTaskEditHistory().then(setHistory).catch((problem) => setError(String(problem))) : setHistory(null)} title="Edit history"><History size={14} /></button>

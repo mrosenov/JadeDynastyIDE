@@ -445,6 +445,11 @@ async fn edit_task_field(edit: tasks::browser::FieldEdit, state: State<'_, AppSt
 }
 
 #[tauri::command]
+async fn clone_task_subtree(pack: usize, root: usize, path: Vec<usize>, state: State<'_, AppState>) -> Result<tasks::browser::TaskCloneReport, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.clone_subtask(pack, root, &path)
+}
+
+#[tauri::command]
 async fn task_edit_state(state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
     Ok(state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.edit_state())
 }
@@ -1121,6 +1126,7 @@ pub fn run() {
             get_task,
             search_tasks,
             edit_task_field,
+            clone_task_subtree,
             task_edit_state,
             task_edit_history,
             undo_task_edit,

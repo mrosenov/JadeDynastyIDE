@@ -593,6 +593,17 @@ export interface TaskEditState {
   changedRoots: TaskChangedRoot[];
 }
 
+export interface TaskCloneReport {
+  state: TaskEditState;
+  pack: number;
+  root: number;
+  path: number[];
+  id: number;
+  name: string;
+  /** Number of quests in the copied subtree. */
+  tasks: number;
+}
+
 export interface TaskHistoryEntry {
   id: number;
   label: string;

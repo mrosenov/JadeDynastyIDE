@@ -146,6 +146,18 @@ pub struct FieldEdit {
     pub value: String,
 }
 
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TaskCloneReport {
+    pub state: EditState,
+    pub pack: usize,
+    pub root: usize,
+    pub path: Vec<usize>,
+    pub id: u32,
+    pub name: String,
+    pub tasks: usize,
+}
+
 impl TaskDetail {
     pub fn resolve_references(&mut self, document: Option<&Document>, resources: Option<&Resources>) {
         fn walk(fields: &mut [FieldView], document: Option<&Document>, resources: Option<&Resources>) {
@@ -502,6 +514,75 @@ impl TaskDocument {
         Ok(self.edit_state())
     }
 
+    pub fn clone_subtask(&mut self, pack: usize, root: usize, path: &[usize]) -> Result<TaskCloneReport, String> {
+        let (&source_index, parent_path) = path.split_last().ok_or("Root-task cloning requires pack rebuilding and is not available yet")?;
+        let before = self.current_root(pack, root)?;
+        let mut decoded = decode_exact(&self.schema, &before, self.container.header.version)?;
+        let source = task_at(&decoded, path)?.clone();
+        let (source_id, source_name) = task_heading(&source)?;
+
+        let mut source_ids = Vec::new();
+        collect_task_ids(&source, &mut source_ids)?;
+        let unique = source_ids.iter().copied().collect::<HashSet<_>>();
+        if unique.len() != source_ids.len() {
+            return Err("The selected subtree contains duplicate task IDs and cannot be cloned safely".into());
+        }
+        let first = {
+            let index = self.search.read().map_err(|_| "Task search index lock poisoned")?;
+            if !index.indexed {
+                return Err("Task IDs are still being indexed. Try cloning again in a moment".into());
+            }
+            u64::from(index.entries.iter().map(|task| task.id).max().unwrap_or(0)) + 1
+        };
+        let last = first.checked_add(source_ids.len().saturating_sub(1) as u64).ok_or("Task ID range overflow")?;
+        if last > u64::from(u32::MAX) {
+            return Err("There are no free task IDs after the current maximum".into());
+        }
+        let replacements = source_ids.into_iter().enumerate().map(|(index, old)| (old, (first + index as u64) as u32)).collect::<HashMap<_, _>>();
+        let mut cloned = source;
+        replace_own_task_ids(&mut cloned, &replacements)?;
+        rewrite_internal_task_references(&mut cloned, "", &replacements)?;
+        let (id, name) = task_heading(&cloned)?;
+
+        let insert_at = source_index.checked_add(1).ok_or("Subtask position overflow")?;
+        let parent = task_at_mut(&mut decoded, parent_path)?;
+        let subtasks = parent.child_mut("subtasks").ok_or("The parent task has no subtask array")?;
+        let count_field = match &subtasks.ty {
+            FieldType::RecursiveArray { count_field, .. } => count_field.clone(),
+            _ => return Err("The parent task's subtask field has an unexpected type".into()),
+        };
+        let count = {
+            let children = subtasks.array_mut().ok_or("The parent task's subtask field is not an array")?;
+            if insert_at > children.len() {
+                return Err("The selected subtask position no longer exists".into());
+            }
+            children.insert(insert_at, cloned);
+            children.len()
+        };
+        set_count(parent, &count_field, count)?;
+
+        let after = decoded.encode()?;
+        let verified = decode_exact(&self.schema, &after, self.container.header.version)
+            .map_err(|error| format!("The cloned subtree would make this task invalid: {error}"))?;
+        if verified.encode()? != after {
+            return Err("The cloned subtree did not pass an exact byte round trip".into());
+        }
+        let mut cloned_path = parent_path.to_vec();
+        cloned_path.push(insert_at);
+        let tasks = replacements.len();
+        let change = RootChange { pack, root, before: before.clone(), after: after.clone() };
+        self.apply_changes(std::slice::from_ref(&change))?;
+        self.journal.record(EntryDetails {
+            label: if tasks == 1 { "Clone subquest".into() } else { format!("Clone subtree ({tasks} quests)") },
+            task_id: id,
+            task_name: name.clone(),
+            field: "Task hierarchy".into(),
+            old: format!("{source_id} · {source_name}"),
+            new: format!("{id} · {name}"),
+        }, vec![change]);
+        Ok(TaskCloneReport { state: self.edit_state(), pack, root, path: cloned_path, id, name, tasks })
+    }
+
     pub fn undo(&mut self) -> Result<EditState, String> {
         let Some(changes) = self.journal.undo() else { return Ok(self.edit_state()) };
         self.apply_changes(&changes)?;
@@ -752,6 +833,57 @@ fn set_count(parent: &mut Node, reference: &str, count: usize) -> Result<(), Str
         _ => return Err(format!("{} is not an integer count", reference)),
     };
     node.set_value(value)
+}
+
+fn collect_task_ids(task: &Node, output: &mut Vec<u32>) -> Result<(), String> {
+    output.push(task_heading(task)?.0);
+    for child in task.child("subtasks").map(Node::children).unwrap_or_default() {
+        collect_task_ids(child, output)?;
+    }
+    Ok(())
+}
+
+fn replace_own_task_ids(task: &mut Node, replacements: &HashMap<u32, u32>) -> Result<(), String> {
+    let old = task_heading(task)?.0;
+    let new = replacements.get(&old).copied().ok_or_else(|| format!("No replacement was assigned for task ID {old}"))?;
+    let id = task.child_mut("fixed").and_then(|fixed| fixed.child_mut("id")).ok_or("Task record has no fixed.id field")?;
+    let value = match id.value {
+        Value::U64(_) => Value::U64(u64::from(new)),
+        Value::I64(_) => Value::I64(i64::from(new)),
+        _ => return Err("Task ID has an unexpected binary type".into()),
+    };
+    id.set_value(value)?;
+    let children = task.child_mut("subtasks").map(Node::children_mut).unwrap_or_default();
+    for child in children {
+        replace_own_task_ids(child, replacements)?;
+    }
+    Ok(())
+}
+
+fn rewrite_internal_task_references(node: &mut Node, semantic: &str, replacements: &HashMap<u32, u32>) -> Result<(), String> {
+    if node.children().is_empty() {
+        if matches!(semantic, "task_id" | "new_task_id" | "terminate_task_ids") {
+            let old = match node.value {
+                Value::U64(value) => u32::try_from(value).ok(),
+                Value::I64(value) => u32::try_from(value).ok(),
+                _ => None,
+            };
+            if let Some(new) = old.and_then(|value| replacements.get(&value)).copied() {
+                let value = match node.value {
+                    Value::U64(_) => Value::U64(u64::from(new)),
+                    Value::I64(_) => Value::I64(i64::from(new)),
+                    _ => unreachable!(),
+                };
+                node.set_value(value)?;
+            }
+        }
+        return Ok(());
+    }
+    for child in node.children_mut() {
+        let child_semantic = if child.name.starts_with('[') { semantic.to_string() } else { child.name.to_ascii_lowercase() };
+        rewrite_internal_task_references(child, &child_semantic, replacements)?;
+    }
+    Ok(())
 }
 
 fn label_path_part(part: &str) -> String {
@@ -1169,6 +1301,21 @@ mod tests {
             };
             assert!(report.total > document.summary().root_count);
             assert!(report.matches.iter().any(|task| !task.path.is_empty()));
+            if version == 165 {
+                let before = document.current_root(parent.pack, parent.root).unwrap();
+                let source = document.task(parent.pack, parent.root, &[0]).unwrap();
+                let cloned = document.clone_subtask(parent.pack, parent.root, &[0]).unwrap();
+                assert_ne!(cloned.id, source.id);
+                assert_eq!(cloned.name, source.name);
+                assert!(cloned.tasks >= 1);
+                let copy = document.task(parent.pack, parent.root, &cloned.path).unwrap();
+                assert_eq!(copy.id, cloned.id);
+                let after = document.current_root(parent.pack, parent.root).unwrap();
+                assert_ne!(after, before);
+                assert_eq!(decode_exact(&document.schema, &after, version).unwrap().encode().unwrap(), after);
+                document.undo().unwrap();
+                assert_eq!(document.current_root(parent.pack, parent.root).unwrap(), before);
+            }
         }
     }
 }

@@ -420,6 +420,13 @@ impl Node {
         }
     }
 
+    pub fn array_mut(&mut self) -> Option<&mut Vec<Node>> {
+        match &mut self.value {
+            Value::Array(children) => Some(children),
+            _ => None,
+        }
+    }
+
     pub fn child(&self, name: &str) -> Option<&Node> {
         self.children().iter().find(|node| node.name == name)
     }

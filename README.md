@@ -135,6 +135,12 @@ offsets after variable-length text. Switching tools
 preserves the selected task, changed roots, history and undo/redo journal; JD IDE asks before
 closing or opening another task set.
 
+Selecting a subquest also provides **Clone subtree**. It copies that subquest beside the original,
+including every descendant, gives every copied quest a fresh ID above the current task-set maximum,
+and rewrites references between quests inside the copy. External task references remain unchanged.
+The complete clone is one undoable root edit and must pass an exact decode/encode check before it is
+accepted. Top-level root cloning remains unavailable until pack-level insertion is implemented.
+
 **Save…** or Ctrl+S writes the task index and its numbered packs. JD IDE rebuilds only packs with
 edited roots when saving over the open task set, recalculates every affected root offset and pack
 MD5, and preserves unchanged packs byte-for-byte. Save As writes a complete task set. Before any

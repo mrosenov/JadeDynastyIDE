@@ -239,7 +239,9 @@ round trip and is explicitly accepted.
 
 ## Later work
 
-- Clone, delete, move and reparent tasks.
+- Clone, delete, move and reparent tasks. Subquest subtree cloning is now available as one undoable
+  root edit with fresh IDs and internal-reference remapping; top-level roots and the remaining
+  hierarchy operations still need pack-level structural editing and reference checks.
 - Compare and transfer compatible fields between task files.
 - Translation workflow for names, descriptions and dialog text by task ID.
 - JSON import/export.
