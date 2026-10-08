@@ -144,6 +144,11 @@ exist. Cloning and deletion are each one undoable root edit and must pass an exa
 check before being accepted. Top-level root cloning and deletion remain unavailable until pack-level
 insertion and removal are implemented.
 
+**Move subtree** opens a searchable destination picker. It appends the selected subquest and every
+descendant below the chosen existing quest, including across roots or packs, while keeping task IDs
+and references unchanged. The old and new parent counts are rebuilt, moving into the selected
+subtree is rejected, and the complete move is one undoable operation.
+
 **Save…** or Ctrl+S writes the task index and its numbered packs. JD IDE rebuilds only packs with
 edited roots when saving over the open task set, recalculates every affected root offset and pack
 MD5, and preserves unchanged packs byte-for-byte. Save As writes a complete task set. Before any

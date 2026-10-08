@@ -163,6 +163,18 @@ pub struct TaskCloneReport {
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
+pub struct TaskMoveReport {
+    pub state: EditState,
+    pub pack: usize,
+    pub root: usize,
+    pub path: Vec<usize>,
+    pub id: u32,
+    pub name: String,
+    pub tasks: usize,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TaskDeleteReference {
     pub source_id: u32,
     pub source_name: String,
@@ -631,6 +643,80 @@ impl TaskDocument {
         Ok(TaskCloneReport { state: self.edit_state(), pack, root, path: cloned_path, id, name, tasks })
     }
 
+    pub fn move_subtask(
+        &mut self,
+        source_pack: usize,
+        source_root: usize,
+        source_path: &[usize],
+        destination_pack: usize,
+        destination_root: usize,
+        destination_path: &[usize],
+    ) -> Result<TaskMoveReport, String> {
+        if source_path.is_empty() {
+            return Err("Root-task moving requires pack rebuilding and is not available yet".into());
+        }
+        if source_pack == destination_pack && source_root == destination_root && destination_path.starts_with(source_path) {
+            return Err("A subquest cannot be moved into itself or one of its descendants".into());
+        }
+        let source_before = self.current_root(source_pack, source_root)?;
+        let destination_before = if source_pack == destination_pack && source_root == destination_root {
+            source_before.clone()
+        } else {
+            self.current_root(destination_pack, destination_root)?
+        };
+        let mut source_decoded = decode_exact(&self.schema, &source_before, self.container.header.version)?;
+        let (id, name) = task_heading(task_at(&source_decoded, source_path)?)?;
+        let mut ids = Vec::new();
+        collect_task_ids(task_at(&source_decoded, source_path)?, &mut ids)?;
+        let tasks = ids.len();
+
+        let (destination_id, destination_name) = if source_pack == destination_pack && source_root == destination_root {
+            task_heading(task_at(&source_decoded, destination_path)?)?
+        } else {
+            let decoded = decode_exact(&self.schema, &destination_before, self.container.header.version)?;
+            task_heading(task_at(&decoded, destination_path)?)?
+        };
+
+        let (changes, selected_path) = if source_pack == destination_pack && source_root == destination_root {
+            let adjusted_destination = task_path_after_removal(destination_path, source_path);
+            let moved = remove_subtask(&mut source_decoded, source_path)?;
+            let insertion = append_subtask(task_at_mut(&mut source_decoded, &adjusted_destination)?, moved)?;
+            let after = source_decoded.encode()?;
+            verify_task_root(&self.schema, &after, self.container.header.version, "Moving this subtree would make the task invalid")?;
+            let mut path = adjusted_destination;
+            path.push(insertion);
+            (vec![RootChange { pack: source_pack, root: source_root, before: source_before, after }], path)
+        } else {
+            let moved = remove_subtask(&mut source_decoded, source_path)?;
+            let source_after = source_decoded.encode()?;
+            verify_task_root(&self.schema, &source_after, self.container.header.version, "Moving this subtree would make the source task invalid")?;
+
+            let mut destination_decoded = decode_exact(&self.schema, &destination_before, self.container.header.version)?;
+            let insertion = append_subtask(task_at_mut(&mut destination_decoded, destination_path)?, moved)?;
+            let destination_after = destination_decoded.encode()?;
+            verify_task_root(&self.schema, &destination_after, self.container.header.version, "Moving this subtree would make the destination task invalid")?;
+            let mut path = destination_path.to_vec();
+            path.push(insertion);
+            (
+                vec![
+                    RootChange { pack: source_pack, root: source_root, before: source_before, after: source_after },
+                    RootChange { pack: destination_pack, root: destination_root, before: destination_before, after: destination_after },
+                ],
+                path,
+            )
+        };
+        self.apply_changes(&changes)?;
+        self.journal.record(EntryDetails {
+            label: if tasks == 1 { "Move subquest".into() } else { format!("Move subtree ({tasks} quests)") },
+            task_id: id,
+            task_name: name.clone(),
+            field: "Task hierarchy".into(),
+            old: format!("Parent {} · {}", source_root + 1, display_path(&source_path[..source_path.len() - 1])),
+            new: format!("{} · {}", destination_id, destination_name),
+        }, changes);
+        Ok(TaskMoveReport { state: self.edit_state(), pack: destination_pack, root: destination_root, path: selected_path, id, name, tasks })
+    }
+
     pub fn delete_subtask_preview(&self, pack: usize, root: usize, path: &[usize]) -> Result<TaskDeletePreview, String> {
         if path.is_empty() {
             return Err("Root-task deletion requires pack rebuilding and is not available yet".into());
@@ -910,6 +996,62 @@ fn task_at_mut<'a>(root: &'a mut Node, path: &[usize]) -> Result<&'a mut Node, S
             .ok_or_else(|| format!("Task path {shown} does not exist"))?;
     }
     Ok(task)
+}
+
+fn task_path_after_removal(destination: &[usize], source: &[usize]) -> Vec<usize> {
+    let (&source_index, source_parent) = source.split_last().expect("move source paths are never empty");
+    let mut adjusted = destination.to_vec();
+    if adjusted.len() > source_parent.len()
+        && adjusted[..source_parent.len()] == source_parent[..]
+        && adjusted[source_parent.len()] > source_index
+    {
+        adjusted[source_parent.len()] -= 1;
+    }
+    adjusted
+}
+
+fn remove_subtask(root: &mut Node, path: &[usize]) -> Result<Node, String> {
+    let (&index, parent_path) = path.split_last().ok_or("Root-task moving is not available yet")?;
+    let parent = task_at_mut(root, parent_path)?;
+    let subtasks = parent.child_mut("subtasks").ok_or("The parent task has no subtask array")?;
+    let count_field = match &subtasks.ty {
+        FieldType::RecursiveArray { count_field, .. } => count_field.clone(),
+        _ => return Err("The parent task's subtask field has an unexpected type".into()),
+    };
+    let (moved, count) = {
+        let children = subtasks.array_mut().ok_or("The parent task's subtask field is not an array")?;
+        if index >= children.len() {
+            return Err("The selected subtask position no longer exists".into());
+        }
+        let moved = children.remove(index);
+        (moved, children.len())
+    };
+    set_count(parent, &count_field, count)?;
+    Ok(moved)
+}
+
+fn append_subtask(parent: &mut Node, task: Node) -> Result<usize, String> {
+    let subtasks = parent.child_mut("subtasks").ok_or("The destination task has no subtask array")?;
+    let count_field = match &subtasks.ty {
+        FieldType::RecursiveArray { count_field, .. } => count_field.clone(),
+        _ => return Err("The destination task's subtask field has an unexpected type".into()),
+    };
+    let (index, count) = {
+        let children = subtasks.array_mut().ok_or("The destination task's subtask field is not an array")?;
+        let index = children.len();
+        children.push(task);
+        (index, children.len())
+    };
+    set_count(parent, &count_field, count)?;
+    Ok(index)
+}
+
+fn verify_task_root(schema: &Schema, bytes: &[u8], version: u32, context: &str) -> Result<(), String> {
+    let verified = decode_exact(schema, bytes, version).map_err(|error| format!("{context}: {error}"))?;
+    if verified.encode()? != bytes {
+        return Err(format!("{context}: exact byte round trip failed"));
+    }
+    Ok(())
 }
 
 fn parse_integer(value: &str) -> Result<i128, String> {
@@ -1457,6 +1599,15 @@ mod tests {
     }
 
     #[test]
+    fn moving_a_subtask_adjusts_later_sibling_destinations() {
+        assert_eq!(task_path_after_removal(&[2], &[1]), vec![1]);
+        assert_eq!(task_path_after_removal(&[2, 4], &[1]), vec![1, 4]);
+        assert_eq!(task_path_after_removal(&[1], &[1]), vec![1]);
+        assert_eq!(task_path_after_removal(&[0, 2], &[0, 1]), vec![0, 1]);
+        assert_eq!(task_path_after_removal(&[1, 0], &[0, 1]), vec![1, 0]);
+    }
+
+    #[test]
     fn browses_first_root_of_real_supported_files() {
         let samples = [
             (r"E:/Games/XtremeJade/element/data/tasks.data", 165),
@@ -1496,6 +1647,30 @@ mod tests {
             assert!(report.total > document.summary().root_count);
             assert!(report.matches.iter().any(|task| !task.path.is_empty()));
             if version == 165 {
+                let source_before_move = document.current_root(parent.pack, parent.root).unwrap();
+                let moved_within_root = document.move_subtask(parent.pack, parent.root, &[0], parent.pack, parent.root, &[]).unwrap();
+                assert_eq!(moved_within_root.path, vec![parent.child_count - 1]);
+                let source_after_move = document.current_root(parent.pack, parent.root).unwrap();
+                assert_ne!(source_after_move, source_before_move);
+                assert_eq!(decode_exact(&document.schema, &source_after_move, version).unwrap().encode().unwrap(), source_after_move);
+                document.undo().unwrap();
+                assert_eq!(document.current_root(parent.pack, parent.root).unwrap(), source_before_move);
+
+                let destination = document.summary().roots.into_iter().find(|root| root.pack != parent.pack || root.root != parent.root)
+                    .expect("real task set should contain more than one root");
+                let destination_before_move = document.current_root(destination.pack, destination.root).unwrap();
+                let moved_across_roots = document.move_subtask(parent.pack, parent.root, &[0], destination.pack, destination.root, &[]).unwrap();
+                assert_eq!(moved_across_roots.pack, destination.pack);
+                assert_eq!(moved_across_roots.root, destination.root);
+                assert_eq!(moved_across_roots.path, vec![destination.child_count]);
+                let source_after_cross_move = document.current_root(parent.pack, parent.root).unwrap();
+                let destination_after_cross_move = document.current_root(destination.pack, destination.root).unwrap();
+                assert_eq!(decode_exact(&document.schema, &source_after_cross_move, version).unwrap().encode().unwrap(), source_after_cross_move);
+                assert_eq!(decode_exact(&document.schema, &destination_after_cross_move, version).unwrap().encode().unwrap(), destination_after_cross_move);
+                document.undo().unwrap();
+                assert_eq!(document.current_root(parent.pack, parent.root).unwrap(), source_before_move);
+                assert_eq!(document.current_root(destination.pack, destination.root).unwrap(), destination_before_move);
+
                 let before = document.current_root(parent.pack, parent.root).unwrap();
                 let source = document.task(parent.pack, parent.root, &[0]).unwrap();
                 let cloned = document.clone_subtask(parent.pack, parent.root, &[0]).unwrap();

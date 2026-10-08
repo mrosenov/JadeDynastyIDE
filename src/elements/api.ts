@@ -55,6 +55,7 @@ import type {
   TaskFieldEdit,
   TaskEditState,
   TaskCloneReport,
+  TaskMoveReport,
   TaskDeletePreview,
   TaskDeleteReport,
   TaskHistoryEntry,
@@ -122,6 +123,16 @@ export const searchTasks = (query: string, limit = 50_000) => invoke<TaskSearchR
 export const editTaskField = (edit: TaskFieldEdit) => invoke<TaskEditState>("edit_task_field", { edit });
 /** Clones a selected subquest and its descendants beside the source with fresh task IDs. */
 export const cloneTaskSubtree = (pack: number, root: number, path: number[]) => invoke<TaskCloneReport>("clone_task_subtree", { pack, root, path });
+/** Moves a selected subquest tree below another existing quest without changing task IDs. */
+export const moveTaskSubtree = (source: { pack: number; root: number; path: number[] }, destination: { pack: number; root: number; path: number[] }) =>
+  invoke<TaskMoveReport>("move_task_subtree", {
+    sourcePack: source.pack,
+    sourceRoot: source.root,
+    sourcePath: source.path,
+    destinationPack: destination.pack,
+    destinationRoot: destination.root,
+    destinationPath: destination.path,
+  });
 /** Finds surviving task references before removing a selected subquest tree. */
 export const previewDeleteTaskSubtree = (pack: number, root: number, path: number[]) => invoke<TaskDeletePreview>("preview_delete_task_subtree", { pack, root, path });
 /** Removes a previously previewed subquest tree as one undoable root edit. */

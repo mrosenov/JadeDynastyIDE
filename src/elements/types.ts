@@ -604,6 +604,17 @@ export interface TaskCloneReport {
   tasks: number;
 }
 
+export interface TaskMoveReport {
+  state: TaskEditState;
+  pack: number;
+  root: number;
+  path: number[];
+  id: number;
+  name: string;
+  /** Number of quests in the moved subtree. */
+  tasks: number;
+}
+
 export interface TaskDeleteReference {
   sourceId: number;
   sourceName: string;

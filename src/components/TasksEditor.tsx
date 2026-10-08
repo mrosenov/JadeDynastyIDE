@@ -1,15 +1,16 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, BarChart3, Braces, Check, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
-import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditHistory, getTaskEditState, getTaskLayoutPatch, importTaskLayoutPatch, inspectTasks, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
+import { AlertTriangle, ArrowRight, BarChart3, Braces, Check, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
+import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditHistory, getTaskEditState, getTaskLayoutPatch, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskAnalysisReport, TaskDeletePreview, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskAnalysisReport, TaskDeletePreview, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 import { TaskSaveDialog } from "./TaskSaveDialog";
 import { TaskSchemaDialog } from "./TaskSchemaDialog";
 import { TaskCountedArrayDialog, type TaskCountedArrayDraft } from "./TaskCountedArrayDialog";
 import { TaskBaselineFieldDialog, type TaskBaselineFieldDraft } from "./TaskBaselineFieldDialog";
 import { TaskDeleteDialog } from "./TaskDeleteDialog";
+import { TaskMoveDialog } from "./TaskMoveDialog";
 
 export interface TasksEditorState {
   loaded: boolean;
@@ -248,6 +249,9 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const [deletePreview, setDeletePreview] = useState<TaskDeletePreview | null>(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [moveSource, setMoveSource] = useState<TaskSearchEntry | null>(null);
+  const [moveBusy, setMoveBusy] = useState(false);
+  const [moveError, setMoveError] = useState<string | null>(null);
   const [editState, setEditState] = useState<TaskEditState>(initialState?.edits ?? { changedRoots: [] });
   const [history, setHistory] = useState<TaskHistoryEntry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -357,6 +361,66 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     }
   }, [refreshHistory, selectedPath, selectedRoot, taskBusy]);
 
+  const openMoveSelected = useCallback(() => {
+    if (!selectedRoot || !detail || !selectedPath.length || taskBusy) return;
+    setMoveSource({
+      pack: selectedRoot.pack,
+      root: selectedRoot.root,
+      path: selectedPath,
+      id: detail.id,
+      name: detail.name,
+      childCount: detail.tree.children.length,
+    });
+    setMoveError(null);
+  }, [detail, selectedPath, selectedRoot, taskBusy]);
+
+  const confirmMoveSelected = useCallback(async (destination: TaskSearchEntry) => {
+    if (!moveSource || moveBusy) return;
+    setMoveBusy(true);
+    setTaskBusy(true);
+    setMoveError(null);
+    try {
+      const report = await moveTaskSubtree(moveSource, destination);
+      setEditState(report.state);
+      const affected = [
+        { pack: moveSource.pack, root: moveSource.root },
+        { pack: destination.pack, root: destination.root },
+      ].filter((value, index, values) => values.findIndex((other) => other.pack === value.pack && other.root === value.root) === index);
+      const roots = await Promise.all(affected.map(async (value) => ({ ...value, detail: await getTask(value.pack, value.root, []) })));
+      const byRoot = new Map(roots.map((value) => [`${value.pack}:${value.root}`, value.detail]));
+      setTrees((currentTrees) => {
+        const next = new Map(currentTrees);
+        for (const value of roots) next.set(`${value.pack}:${value.root}`, value.detail.tree);
+        return next;
+      });
+      setFile((currentFile) => currentFile ? {
+        ...currentFile,
+        roots: currentFile.roots.map((root) => {
+          const refreshed = byRoot.get(`${root.pack}:${root.root}`);
+          return refreshed ? { ...root, id: refreshed.tree.id, name: refreshed.tree.name, childCount: refreshed.tree.children.length, byteSize: refreshed.rootBytes } : root;
+        }),
+      } : currentFile);
+      const sourceRoot = file?.roots.find((root) => root.pack === report.pack && root.root === report.root);
+      if (!sourceRoot) throw new Error("The destination task root is no longer available.");
+      const refreshedRoot = byRoot.get(`${report.pack}:${report.root}`);
+      const selectedRoot = refreshedRoot ? { ...sourceRoot, id: refreshedRoot.tree.id, name: refreshedRoot.tree.name, childCount: refreshedRoot.tree.children.length, byteSize: refreshedRoot.rootBytes } : sourceRoot;
+      const selected = await getTask(report.pack, report.root, report.path);
+      setSelectedRoot(selectedRoot);
+      setSelectedPath(report.path);
+      setDetail(selected);
+      setTrees((currentTrees) => new Map(currentTrees).set(rootKey(selectedRoot), selected.tree));
+      setMoveSource(null);
+      await refreshHistory();
+      setSavedNote(report.tasks === 1 ? `Moved subquest ${report.id}. Undo is available.` : `Moved ${report.tasks} quests as one subtree. Undo is available.`);
+      window.setTimeout(() => setSavedNote(null), 5000);
+    } catch (problem) {
+      setMoveError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setTaskBusy(false);
+      setMoveBusy(false);
+    }
+  }, [file?.roots, moveBusy, moveSource, refreshHistory]);
+
   const inspectDeleteSelected = useCallback(async () => {
     if (!selectedRoot || !selectedPath.length || taskBusy) return;
     setTaskBusy(true);
@@ -442,6 +506,9 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setDeletePreview(null);
     setDeleteBusy(false);
     setDeleteError(null);
+    setMoveSource(null);
+    setMoveBusy(false);
+    setMoveError(null);
     setEditState({ changedRoots: [] });
     setHistory(null);
     try {
@@ -1092,6 +1159,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
             {taskBusy && <span className="muted">Reading…</span>}
             <div className="task-edit-actions">
               {selectedPath.length > 0 && <button className="btn small" onClick={() => void cloneSelectedSubtree()} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Clone this subquest and all of its descendants beside the source" : "Task IDs are still being indexed"}><Copy size={13}/> {taskIndexReady ? "Clone subtree" : "Indexing IDs…"}</button>}
+              {selectedPath.length > 0 && <button className="btn small" onClick={openMoveSelected} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Choose a new parent for this subquest tree" : "Task destinations are still being indexed"}><ArrowRight size={13}/> Move subtree</button>}
               {selectedPath.length > 0 && <button className="btn small danger-outline" onClick={() => void inspectDeleteSelected()} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Review references and delete this subquest with all descendants" : "Task references are still being indexed"}><Trash2 size={13}/> Delete subtree</button>}
               <button className="icon-btn" onClick={undo} disabled={!editState.undo || taskBusy} title={editState.undo ? `Undo ${editState.undo}` : "Nothing to undo"}><Undo2 size={14} /></button>
               <button className="icon-btn" onClick={redo} disabled={!editState.redo || taskBusy} title={editState.redo ? `Redo ${editState.redo}` : "Nothing to redo"}><Redo2 size={14} /></button>
@@ -1125,5 +1193,5 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       setSavedNote(`Saved ${report.changedRoots} changed root${report.changedRoots === 1 ? "" : "s"} across ${report.changedPacks} pack${report.changedPacks === 1 ? "" : "s"}.`);
       window.setTimeout(() => setSavedNote(null), 5000);
     }} />}
-  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
+  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
 });
