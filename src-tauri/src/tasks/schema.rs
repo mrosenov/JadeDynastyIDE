@@ -543,7 +543,7 @@ pub fn probe_root_integer(schema: &Schema, bytes: &[u8], version: u32, field_nam
 pub(crate) fn probe_root_integer_validated(schema: &Schema, bytes: &[u8], version: u32, field_name: &str) -> Result<i128, String> {
     let definition = schema.structs.get(&schema.root)
         .ok_or_else(|| format!("unknown root structure {:?}", schema.root))?;
-    let mut decoder = ProbeDecoder { schema, bytes, version, limits: Limits::default(), position: 0, tasks: None, task_path: Vec::new() };
+    let mut decoder = ProbeDecoder { schema, bytes, version, limits: Limits::default(), position: 0, tasks: None, task_path: Vec::new(), task_stack: Vec::new(), task_bases: Vec::new() };
     let mut scope = HashMap::<String, i128>::new();
     for field in &definition.fields {
         let path = format!("{}.{}", schema.root, field.name);
@@ -568,6 +568,13 @@ pub(crate) struct ProbedTask {
     pub name: String,
     pub path: Vec<usize>,
     pub child_count: usize,
+    pub references: Vec<ProbedTaskReference>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ProbedTaskReference {
+    pub field: String,
+    pub target_id: u32,
 }
 
 pub(crate) fn probe_task_index_validated(schema: &Schema, bytes: &[u8], version: u32) -> Result<Vec<ProbedTask>, String> {
@@ -580,6 +587,8 @@ pub(crate) fn probe_task_index_validated(schema: &Schema, bytes: &[u8], version:
         position: 0,
         tasks: Some(Vec::new()),
         task_path: Vec::new(),
+        task_stack: Vec::new(),
+        task_bases: Vec::new(),
     };
     decoder.named(&root, &root, 0)?;
     if decoder.position != bytes.len() {
@@ -616,6 +625,8 @@ struct ProbeDecoder<'a> {
     position: usize,
     tasks: Option<Vec<ProbedTask>>,
     task_path: Vec<usize>,
+    task_stack: Vec<usize>,
+    task_bases: Vec<String>,
 }
 
 impl ProbeDecoder<'_> {
@@ -635,10 +646,14 @@ impl ProbeDecoder<'_> {
                 name: String::from_utf16_lossy(&units[..end]),
                 path: self.task_path.clone(),
                 child_count: 0,
+                references: Vec::new(),
             };
             let tasks = self.tasks.as_mut().unwrap();
             tasks.push(task);
-            Some(tasks.len() - 1)
+            let index = tasks.len() - 1;
+            self.task_stack.push(index);
+            self.task_bases.push(path.to_string());
+            Some(index)
         } else {
             None
         };
@@ -655,6 +670,8 @@ impl ProbeDecoder<'_> {
             let count = scope.get("subtask_count").copied().unwrap_or(0);
             let child_count = usize::try_from(count).map_err(|_| format!("{path}: invalid subtask count {count}"))?;
             self.tasks.as_mut().unwrap()[index].child_count = child_count;
+            self.task_stack.pop();
+            self.task_bases.pop();
         }
         Ok(scope)
     }
@@ -771,7 +788,19 @@ impl ProbeDecoder<'_> {
             }
             _ => return Err(format!("{path}: expected a leaf type")),
         };
-        Ok(numeric.map_or(ProbeNumeric::None, ProbeNumeric::Integer))
+        if let Some(value) = numeric {
+            let semantic = path.rsplit('.').next().unwrap_or(path).split('[').next().unwrap_or("");
+            if matches!(semantic, "task_id" | "new_task_id" | "terminate_task_ids") {
+                if let (Some(index), Ok(target_id)) = (self.task_stack.last().copied(), u32::try_from(value)) {
+                    let base = self.task_bases.last().map(String::as_str).unwrap_or("");
+                    let field = path.strip_prefix(base).unwrap_or(path).trim_start_matches('.').to_string();
+                    self.tasks.as_mut().unwrap()[index].references.push(ProbedTaskReference { field, target_id });
+                }
+            }
+            Ok(ProbeNumeric::Integer(value))
+        } else {
+            Ok(ProbeNumeric::None)
+        }
     }
 
     fn check_depth(&self, depth: usize, path: &str) -> Result<(), String> {
@@ -1295,6 +1324,39 @@ mod tests {
         let limits = Limits { max_depth: 2, ..Limits::default() };
         let error = decode_prefix_with_limits(&layout, &bytes, 165, limits).unwrap_err();
         assert!(error.contains("nesting is deeper"), "{error}");
+    }
+
+    #[test]
+    fn task_index_probe_keeps_references_with_their_owning_task() {
+        let layout = schema(vec![
+            field("id", FieldType::U32),
+            field("name", FieldType::FixedUtf16 { units: 30 }),
+            field("task_id", FieldType::U32),
+            field("subtask_count", FieldType::U32),
+            field(
+                "subtasks",
+                FieldType::RecursiveArray {
+                    count_field: "subtask_count".into(),
+                    target: "Task".into(),
+                },
+            ),
+        ]);
+        fn task(bytes: &mut Vec<u8>, id: u32, name: &str, target: u32, children: u32) {
+            bytes.extend_from_slice(&id.to_le_bytes());
+            let mut units = name.encode_utf16().collect::<Vec<_>>();
+            units.resize(30, 0);
+            bytes.extend(units.into_iter().flat_map(u16::to_le_bytes));
+            bytes.extend_from_slice(&target.to_le_bytes());
+            bytes.extend_from_slice(&children.to_le_bytes());
+        }
+        let mut bytes = Vec::new();
+        task(&mut bytes, 1, "Root", 99, 1);
+        task(&mut bytes, 2, "Child", 1, 0);
+
+        let tasks = probe_task_index_validated(&layout, &bytes, 165).unwrap();
+        assert_eq!(tasks.len(), 2);
+        assert_eq!(tasks[0].references, vec![ProbedTaskReference { field: "task_id".into(), target_id: 99 }]);
+        assert_eq!(tasks[1].references, vec![ProbedTaskReference { field: "task_id".into(), target_id: 1 }]);
     }
 
     #[test]

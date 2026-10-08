@@ -604,6 +604,39 @@ export interface TaskCloneReport {
   tasks: number;
 }
 
+export interface TaskDeleteReference {
+  sourceId: number;
+  sourceName: string;
+  pack: number;
+  root: number;
+  path: number[];
+  field: string;
+  targetId: number;
+}
+
+export interface TaskDeletePreview {
+  pack: number;
+  root: number;
+  path: number[];
+  id: number;
+  name: string;
+  tasks: number;
+  referenceCount: number;
+  referencesTruncated: boolean;
+  references: TaskDeleteReference[];
+  token: string;
+}
+
+export interface TaskDeleteReport {
+  state: TaskEditState;
+  pack: number;
+  root: number;
+  path: number[];
+  id: number;
+  name: string;
+  tasks: number;
+}
+
 export interface TaskHistoryEntry {
   id: number;
   label: string;

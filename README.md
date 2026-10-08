@@ -138,8 +138,11 @@ closing or opening another task set.
 Selecting a subquest also provides **Clone subtree**. It copies that subquest beside the original,
 including every descendant, gives every copied quest a fresh ID above the current task-set maximum,
 and rewrites references between quests inside the copy. External task references remain unchanged.
-The complete clone is one undoable root edit and must pass an exact decode/encode check before it is
-accepted. Top-level root cloning remains unavailable until pack-level insertion is implemented.
+**Delete subtree** first checks the completed background quest index and shows every surviving task
+reference that would become unresolved. The user must explicitly confirm deletion when references
+exist. Cloning and deletion are each one undoable root edit and must pass an exact decode/encode
+check before being accepted. Top-level root cloning and deletion remain unavailable until pack-level
+insertion and removal are implemented.
 
 **Save…** or Ctrl+S writes the task index and its numbered packs. JD IDE rebuilds only packs with
 edited roots when saving over the open task set, recalculates every affected root offset and pack

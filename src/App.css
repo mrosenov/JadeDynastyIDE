@@ -6333,6 +6333,78 @@ button.task-field-reference:hover {
   background: var(--accent-soft);
   color: var(--accent);
 }
+.task-delete-dialog {
+  width: min(720px, calc(100vw - 40px));
+  max-height: min(760px, calc(100vh - 40px));
+}
+.task-delete-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 16px 18px;
+}
+.task-delete-summary > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.task-delete-summary span,
+.task-delete-warning header span {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+.task-delete-warning {
+  margin: 0 18px 16px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--danger) 50%, var(--border));
+  border-radius: 7px;
+}
+.task-delete-warning > header {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  padding: 11px 12px;
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+.task-delete-warning > header > div {
+  display: grid;
+  gap: 3px;
+}
+.task-delete-reference-head,
+.task-delete-reference {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.25fr) minmax(160px, 1fr) 90px;
+  gap: 10px;
+  align-items: center;
+  padding: 7px 12px;
+  border-top: 1px solid var(--border-soft);
+  font-size: 11px;
+}
+.task-delete-reference-head {
+  color: var(--text-faint);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.task-delete-warning > footer {
+  padding: 8px 12px;
+  border-top: 1px solid var(--border-soft);
+  color: var(--text-dim);
+  font-size: 11px;
+}
+.task-delete-safe {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 18px 16px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  border-radius: 7px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-size: 12px;
+}
 .task-history {
   flex: 0 0 auto;
   max-height: 190px;

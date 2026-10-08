@@ -5,13 +5,14 @@ use std::path::Path;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, RwLock};
 
+use md5::{Digest, Md5};
 use serde::{Deserialize, Serialize};
 
 use crate::{client::Resources, elements::Document};
 
 use super::container::{Pack, TaskContainer};
 use super::edit::{ChangedRoot, EditState, EntryDetails, HistoryEntry, Journal, RootChange};
-use super::schema::{decode_exact, probe_root_integer_validated, probe_task_index_validated, FieldType, Node, Schema, Value};
+use super::schema::{decode_exact, probe_root_integer_validated, probe_task_index_validated, FieldType, Node, ProbedTaskReference, Schema, Value};
 use super::schema_for_version;
 
 const ROOT_HEADING_BYTES: usize = 64;
@@ -50,6 +51,8 @@ pub struct TaskSearchEntry {
     pub id: u32,
     pub name: String,
     pub child_count: usize,
+    #[serde(skip)]
+    pub(crate) references: Vec<ProbedTaskReference>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -158,6 +161,45 @@ pub struct TaskCloneReport {
     pub tasks: usize,
 }
 
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TaskDeleteReference {
+    pub source_id: u32,
+    pub source_name: String,
+    pub pack: usize,
+    pub root: usize,
+    pub path: Vec<usize>,
+    pub field: String,
+    pub target_id: u32,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TaskDeletePreview {
+    pub pack: usize,
+    pub root: usize,
+    pub path: Vec<usize>,
+    pub id: u32,
+    pub name: String,
+    pub tasks: usize,
+    pub reference_count: usize,
+    pub references_truncated: bool,
+    pub references: Vec<TaskDeleteReference>,
+    pub token: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TaskDeleteReport {
+    pub state: EditState,
+    pub pack: usize,
+    pub root: usize,
+    pub path: Vec<usize>,
+    pub id: u32,
+    pub name: String,
+    pub tasks: usize,
+}
+
 impl TaskDetail {
     pub fn resolve_references(&mut self, document: Option<&Document>, resources: Option<&Resources>) {
         fn walk(fields: &mut [FieldView], document: Option<&Document>, resources: Option<&Resources>) {
@@ -241,6 +283,7 @@ impl TaskDocument {
                 id: root.id,
                 name: root.name.clone(),
                 child_count: root.child_count,
+                references: Vec::new(),
             }).collect::<Vec<_>>();
         let by_id = entries.iter().map(|task| (task.id, task.clone())).collect();
         let search = Arc::new(RwLock::new(TaskSearchIndex { entries, by_id, ..TaskSearchIndex::default() }));
@@ -263,12 +306,17 @@ impl TaskDocument {
             let Ok(mut index) = background_search.write() else { return };
             match result {
                 Ok(subtasks) => {
+                    let edited_roots = index.edited_roots.clone();
+                    index.entries.retain(|task| edited_roots.contains(&(task.pack, task.root)));
                     for task in subtasks {
                         if index.edited_roots.contains(&(task.pack, task.root)) {
                             continue;
                         }
-                        index.by_id.insert(task.id, task.clone());
                         index.entries.push(task);
+                    }
+                    index.by_id.clear();
+                    for task in index.entries.clone() {
+                        index.by_id.insert(task.id, task);
                     }
                     index.indexed = true;
                 }
@@ -583,6 +631,105 @@ impl TaskDocument {
         Ok(TaskCloneReport { state: self.edit_state(), pack, root, path: cloned_path, id, name, tasks })
     }
 
+    pub fn delete_subtask_preview(&self, pack: usize, root: usize, path: &[usize]) -> Result<TaskDeletePreview, String> {
+        if path.is_empty() {
+            return Err("Root-task deletion requires pack rebuilding and is not available yet".into());
+        }
+        let before = self.current_root(pack, root)?;
+        let decoded = decode_exact(&self.schema, &before, self.container.header.version)?;
+        let selected = task_at(&decoded, path)?;
+        let (id, name) = task_heading(selected)?;
+        let mut deleted_ids = Vec::new();
+        collect_task_ids(selected, &mut deleted_ids)?;
+        let deleted_ids = deleted_ids.into_iter().collect::<HashSet<_>>();
+        let mut references = Vec::new();
+        let mut reference_count = 0usize;
+        let index = self.search.read().map_err(|_| "Task search index lock poisoned")?;
+        if let Some(error) = &index.error {
+            return Err(format!("Task references could not be indexed: {error}"));
+        }
+        if !index.indexed {
+            return Err("Task references are still being indexed. Try deleting again in a moment".into());
+        }
+        for task in &index.entries {
+            if task.pack == pack && task.root == root && task.path.starts_with(path) {
+                continue;
+            }
+            for reference in task.references.iter().filter(|reference| deleted_ids.contains(&reference.target_id)) {
+                reference_count += 1;
+                if references.len() < 100 {
+                    references.push(TaskDeleteReference {
+                        source_id: task.id,
+                        source_name: task.name.clone(),
+                        pack: task.pack,
+                        root: task.root,
+                        path: task.path.clone(),
+                        field: reference.field.split('.').map(label_path_part).collect::<Vec<_>>().join(" › "),
+                        target_id: reference.target_id,
+                    });
+                }
+            }
+        }
+        let token = delete_token(&before, path);
+        Ok(TaskDeletePreview {
+            pack,
+            root,
+            path: path.to_vec(),
+            id,
+            name,
+            tasks: deleted_ids.len(),
+            reference_count,
+            references_truncated: reference_count > references.len(),
+            references,
+            token,
+        })
+    }
+
+    pub fn delete_subtask(&mut self, pack: usize, root: usize, path: &[usize], token: &str, allow_referenced: bool) -> Result<TaskDeleteReport, String> {
+        let preview = self.delete_subtask_preview(pack, root, path)?;
+        if preview.token != token {
+            return Err("The selected subtree changed after the confirmation was opened. Review the deletion again".into());
+        }
+        if preview.reference_count > 0 && !allow_referenced {
+            return Err(format!("{} surviving task reference(s) point into this subtree", preview.reference_count));
+        }
+        let (&source_index, parent_path) = path.split_last().ok_or("Root-task deletion is not available yet")?;
+        let before = self.current_root(pack, root)?;
+        let mut decoded = decode_exact(&self.schema, &before, self.container.header.version)?;
+        let parent = task_at_mut(&mut decoded, parent_path)?;
+        let subtasks = parent.child_mut("subtasks").ok_or("The parent task has no subtask array")?;
+        let count_field = match &subtasks.ty {
+            FieldType::RecursiveArray { count_field, .. } => count_field.clone(),
+            _ => return Err("The parent task's subtask field has an unexpected type".into()),
+        };
+        let count = {
+            let children = subtasks.array_mut().ok_or("The parent task's subtask field is not an array")?;
+            if source_index >= children.len() {
+                return Err("The selected subtask position no longer exists".into());
+            }
+            children.remove(source_index);
+            children.len()
+        };
+        set_count(parent, &count_field, count)?;
+        let after = decoded.encode()?;
+        let verified = decode_exact(&self.schema, &after, self.container.header.version)
+            .map_err(|error| format!("Deleting this subtree would make the parent task invalid: {error}"))?;
+        if verified.encode()? != after {
+            return Err("The task root did not pass an exact byte round trip after deletion".into());
+        }
+        let change = RootChange { pack, root, before: before.clone(), after: after.clone() };
+        self.apply_changes(std::slice::from_ref(&change))?;
+        self.journal.record(EntryDetails {
+            label: if preview.tasks == 1 { "Delete subquest".into() } else { format!("Delete subtree ({} quests)", preview.tasks) },
+            task_id: preview.id,
+            task_name: preview.name.clone(),
+            field: "Task hierarchy".into(),
+            old: format!("{} quest{}", preview.tasks, if preview.tasks == 1 { "" } else { "s" }),
+            new: "Deleted".into(),
+        }, vec![change]);
+        Ok(TaskDeleteReport { state: self.edit_state(), pack, root, path: parent_path.to_vec(), id: preview.id, name: preview.name, tasks: preview.tasks })
+    }
+
     pub fn undo(&mut self) -> Result<EditState, String> {
         let Some(changes) = self.journal.undo() else { return Ok(self.edit_state()) };
         self.apply_changes(&changes)?;
@@ -886,6 +1033,46 @@ fn rewrite_internal_task_references(node: &mut Node, semantic: &str, replacement
     Ok(())
 }
 
+fn delete_token(root: &[u8], path: &[usize]) -> String {
+    let mut digest = Md5::new();
+    digest.update(root);
+    for index in path {
+        digest.update((*index as u64).to_le_bytes());
+    }
+    format!("{:x}", digest.finalize())
+}
+
+fn collect_task_reference_fields(
+    node: &Node,
+    semantic: &str,
+    path: Vec<String>,
+    mut found: impl FnMut(u32, String),
+) -> Result<(), String> {
+    fn walk(node: &Node, semantic: &str, path: Vec<String>, found: &mut dyn FnMut(u32, String)) -> Result<(), String> {
+        if node.children().is_empty() {
+            if matches!(semantic, "task_id" | "new_task_id" | "terminate_task_ids") {
+                let target = match node.value {
+                    Value::U64(value) => u32::try_from(value).ok(),
+                    Value::I64(value) => u32::try_from(value).ok(),
+                    _ => None,
+                };
+                if let Some(target) = target {
+                    found(target, path.iter().map(|part| label_path_part(part)).collect::<Vec<_>>().join(" › "));
+                }
+            }
+            return Ok(());
+        }
+        for child in node.children() {
+            let child_semantic = if child.name.starts_with('[') { semantic.to_string() } else { child.name.to_ascii_lowercase() };
+            let mut child_path = path.clone();
+            child_path.push(child.name.clone());
+            walk(child, &child_semantic, child_path, found)?;
+        }
+        Ok(())
+    }
+    walk(node, semantic, path, &mut found)
+}
+
 fn label_path_part(part: &str) -> String {
     if part.starts_with('[') { part.into() } else { part.replace('_', " ") }
 }
@@ -893,7 +1080,13 @@ fn label_path_part(part: &str) -> String {
 fn collect_search_entries(task: &Node, pack: usize, root: usize, path: Vec<usize>, output: &mut Vec<TaskSearchEntry>) -> Result<(), String> {
     let (id, name) = task_heading(task)?;
     let children = task.child("subtasks").map(Node::children).unwrap_or_default();
-    output.push(TaskSearchEntry { pack, root, path: path.clone(), id, name, child_count: children.len() });
+    let mut references = Vec::new();
+    for field in task.children().iter().filter(|field| field.name != "subtasks") {
+        collect_task_reference_fields(field, &field.name.to_ascii_lowercase(), vec![field.name.clone()], |target_id, field| {
+            references.push(ProbedTaskReference { field, target_id });
+        })?;
+    }
+    output.push(TaskSearchEntry { pack, root, path: path.clone(), id, name, child_count: children.len(), references });
     for (index, child) in children.iter().enumerate() {
         let mut child_path = path.clone();
         child_path.push(index);
@@ -1012,13 +1205,14 @@ fn read_pack_nested_index(pack: &Pack, pack_index: usize, schema: &Schema, versi
         let bytes = data.get(start..end).ok_or_else(|| format!("{}: root {} range is outside the pack", pack.path().display(), root + 1))?;
         let mut tasks = probe_task_index_validated(schema, bytes, version)
             .map_err(|error| format!("{}: root {}: {error}", pack.path().display(), root + 1))?;
-        result.extend(tasks.drain(1..).map(|task| TaskSearchEntry {
+        result.extend(tasks.drain(..).map(|task| TaskSearchEntry {
             pack: pack_index,
             root,
             path: task.path,
             id: task.id,
             name: task.name,
             child_count: task.child_count,
+            references: task.references,
         }));
     }
     Ok(result)
@@ -1313,6 +1507,15 @@ mod tests {
                 let after = document.current_root(parent.pack, parent.root).unwrap();
                 assert_ne!(after, before);
                 assert_eq!(decode_exact(&document.schema, &after, version).unwrap().encode().unwrap(), after);
+                let preview = document.delete_subtask_preview(parent.pack, parent.root, &cloned.path).unwrap();
+                assert_eq!(preview.id, cloned.id);
+                assert_eq!(preview.tasks, cloned.tasks);
+                assert!(document.delete_subtask(parent.pack, parent.root, &cloned.path, "stale", true).is_err());
+                let deleted = document.delete_subtask(parent.pack, parent.root, &cloned.path, &preview.token, true).unwrap();
+                assert_eq!(deleted.path, cloned.path[..cloned.path.len() - 1]);
+                assert_eq!(document.current_root(parent.pack, parent.root).unwrap(), before);
+                document.undo().unwrap();
+                assert_eq!(document.current_root(parent.pack, parent.root).unwrap(), after);
                 document.undo().unwrap();
                 assert_eq!(document.current_root(parent.pack, parent.root).unwrap(), before);
             }

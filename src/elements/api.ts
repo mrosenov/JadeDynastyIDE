@@ -55,6 +55,8 @@ import type {
   TaskFieldEdit,
   TaskEditState,
   TaskCloneReport,
+  TaskDeletePreview,
+  TaskDeleteReport,
   TaskHistoryEntry,
   TaskSaveOptions,
   TaskSavePlan,
@@ -120,6 +122,16 @@ export const searchTasks = (query: string, limit = 50_000) => invoke<TaskSearchR
 export const editTaskField = (edit: TaskFieldEdit) => invoke<TaskEditState>("edit_task_field", { edit });
 /** Clones a selected subquest and its descendants beside the source with fresh task IDs. */
 export const cloneTaskSubtree = (pack: number, root: number, path: number[]) => invoke<TaskCloneReport>("clone_task_subtree", { pack, root, path });
+/** Finds surviving task references before removing a selected subquest tree. */
+export const previewDeleteTaskSubtree = (pack: number, root: number, path: number[]) => invoke<TaskDeletePreview>("preview_delete_task_subtree", { pack, root, path });
+/** Removes a previously previewed subquest tree as one undoable root edit. */
+export const deleteTaskSubtree = (preview: TaskDeletePreview) => invoke<TaskDeleteReport>("delete_task_subtree", {
+  pack: preview.pack,
+  root: preview.root,
+  path: preview.path,
+  token: preview.token,
+  allowReferenced: preview.referenceCount > 0,
+});
 export const getTaskEditState = () => invoke<TaskEditState>("task_edit_state");
 export const getTaskEditHistory = () => invoke<TaskHistoryEntry[]>("task_edit_history");
 export const undoTaskEdit = () => invoke<TaskEditState>("undo_task_edit");
