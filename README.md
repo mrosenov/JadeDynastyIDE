@@ -193,6 +193,25 @@ a field copies when the path and binary type match, so values copy between versi
 tasks (with all their subquests and IDs) copy only between identical versions and layouts, and only
 when none of their IDs is already used. The comparison refreshes after each copy.
 
+**Tools › Translate from tasks.data…** copies human-facing task text from a translated task set
+into the open one. The versions may differ: tasks pair by ID and texts by field path. Three groups
+can be applied separately:
+
+| Group | Texts |
+|---|---|
+| Names | task names and signatures |
+| Descriptions | description, success, failure, tribute, hint and can-deliver texts, award tributes |
+| Dialogs | NPC window texts, player option labels and talk prompts |
+
+The preview shows per group how many tasks and texts change, with samples (current → translated),
+and counts what is skipped: tasks the source lacks, blank source text (the open text is kept), text
+too long for its fixed-size field, and talks whose windows or options differ in shape (translating
+those could put text in the wrong window). Only text changes; IDs, numbers, counts and raw bytes
+never do, and counted text keeps its stored length in step. Each text keeps the open file's
+terminator convention: v165 dialog texts end with a NUL character inside the text, later versions
+do not. Applying the chosen groups is one undo step, and only re-reads the task roots it changes. If
+the open task set changes after the preview, preview again.
+
 **Task schema** opens the effective binary layout for the current task version. It lists every
 structure, field type and condition and can search across all four. Verified v165, v172 and v184
 layouts are read-only. For an unsupported version, the same window shows the selected older

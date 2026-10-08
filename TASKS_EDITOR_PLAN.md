@@ -254,7 +254,9 @@ round trip and is explicitly accepted.
 - ~~Compare and transfer compatible fields between task files.~~ Done (October 2026): Compare panel
   pairing tasks by ID across versions, lazy field diffs, patch notes, and copying fields or whole
   top-level trees through the JSON import checks.
-- Translation workflow for names, descriptions and dialog text by task ID.
+- ~~Translation workflow for names, descriptions and dialog text by task ID.~~ Done (October 2026):
+  Tools › Translate from tasks.data with Names, Descriptions and Dialogs groups, shape-checked talks
+  and the open file's terminator convention.
 - ~~JSON import/export.~~ Done (October 2026): versioned `jdide-tasks` export of a task, a tree or
   the listed tasks; import previews and applies field updates by task ID with the inspector's
   checks and adds missing top-level trees from `_raw` when version and layout match.
@@ -267,5 +269,6 @@ round trip and is explicitly accepted.
 
 ## Recommended implementation order
 
-Milestones 1–9, the problems scanner, JSON export/import and compare/transfer are complete. Next:
-the translation workflow for names, descriptions and dialog text by task ID.
+Milestones 1–9, the problems scanner, JSON export/import, compare/transfer and translation are
+complete. Remaining: `dyn_tasks.data` and `task_npc.data` editors, top-level task deletion,
+creating a numbered pack when every pack is full, and optional loader tracing.

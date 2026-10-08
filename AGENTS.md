@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (150 at last run, ~3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (152 at last run, ~2–3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -303,6 +303,12 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   selection into import rows (`ComparedTasks::copy_rows`, `resolve_copy` expands whole tasks) and
   applies them with `TaskDocument::copy_rows` (JSON planner, additions only if `same_layout`).
   v165 vs v172 compare: ~31 s in a debug build, 27,629 changed pairs, 625 KB report.
+- **Task translation** (`tasks/translate.rs`, `TaskTranslateDialog.tsx`): `TranslationSource`
+  (`AppState.task_translation`; lock order tasks, then task_translation) holds the source
+  `ComparedTasks` and the previewed `RootEdits` (task path, field, group, text per root). Preview
+  decodes paired roots in parallel and trial-applies each text with `set_task_field`; apply only
+  replays the stored edits of the chosen groups on the unchanged roots. v165 from v172: ~16 s debug,
+  718 names, 473 descriptions, 11,687 dialog texts, 23 talks skipped for shape.
 - XtremeJade v165 scan (official data): 15 duplicate IDs, 32 broken references (e.g. four "Join …"
   quests awarding missing task 2608), 1 self-reference, 0 stale links, 44 full packs.
 

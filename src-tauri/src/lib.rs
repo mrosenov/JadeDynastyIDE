@@ -27,6 +27,8 @@ struct AppState {
     compared: Mutex<Option<Document>>,
     /// The task set compared with the open one (lock order: tasks, then compared_tasks).
     compared_tasks: Mutex<Option<tasks::compare::ComparedTasks>>,
+    /// The translated task set and its previewed plan (lock order: tasks, then task_translation).
+    task_translation: Mutex<Option<tasks::translate::TranslationSource>>,
     catalog: RwLock<Arc<Catalog>>,
     /// The user's data folder: `layouts/`, `enums/` and `masks/` written by the editors.
     user_dir: PathBuf,
@@ -540,6 +542,40 @@ async fn copy_compared_tasks(selection: tasks::compare::CopySelection, state: St
         (compared.copy_rows(&document.resolve_copy(compared, &selection)?)?, document.same_layout(compared)?)
     };
     document.copy_rows(&rows, same_layout)
+}
+
+#[tauri::command]
+async fn preview_task_translation(path: String, state: State<'_, AppState>) -> Result<tasks::translate::TranslationReport, String> {
+    let user_dir = state.user_dir.clone();
+    let source = tauri::async_runtime::spawn_blocking(move || tasks::compare::ComparedTasks::open(&path, &user_dir))
+        .await
+        .map_err(|error| error.to_string())??;
+    let tasks = state.tasks.lock().map_err(|_| "State lock poisoned")?;
+    let (report, roots) = tasks.as_ref().ok_or("Open tasks.data first")?.translation_plan(&source)?;
+    *state.task_translation.lock().map_err(|_| "State lock poisoned")? = Some(tasks::translate::TranslationSource { source, plan: Some((report.token.clone(), roots)) });
+    Ok(report)
+}
+
+#[tauri::command]
+async fn apply_task_translation(token: String, groups: Vec<tasks::translate::TextGroup>, state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
+    let mut tasks = state.tasks.lock().map_err(|_| "State lock poisoned")?;
+    let document = tasks.as_mut().ok_or("Open tasks.data first")?;
+    let mut translation = state.task_translation.lock().map_err(|_| "State lock poisoned")?;
+    let source = translation.as_mut().ok_or("Preview a translation first")?;
+    let current = source.plan.as_ref().is_some_and(|(planned, _)| *planned == token) && document.translation_current(&source.source, &token);
+    if !current {
+        return Err("The open task set changed since the preview. Preview the translation again.".into());
+    }
+    let (_, roots) = source.plan.take().unwrap();
+    let (edit_state, _) = document.apply_translation(&roots, &groups)?;
+    *translation = None;
+    Ok(edit_state)
+}
+
+#[tauri::command]
+async fn close_task_translation(state: State<'_, AppState>) -> Result<(), String> {
+    *state.task_translation.lock().map_err(|_| "State lock poisoned")? = None;
+    Ok(())
 }
 
 #[tauri::command]
@@ -1191,6 +1227,7 @@ pub fn run() {
                 tasks: Mutex::new(None),
                 compared: Mutex::new(None),
                 compared_tasks: Mutex::new(None),
+                task_translation: Mutex::new(None),
                 catalog: RwLock::new(catalog),
                 user_dir,
                 settings: Mutex::new(settings.clone()),
@@ -1248,6 +1285,9 @@ pub fn run() {
             task_problems,
             task_referenced_by,
             export_tasks_json,
+            preview_task_translation,
+            apply_task_translation,
+            close_task_translation,
             open_task_compare,
             task_compare,
             task_compare_fields,

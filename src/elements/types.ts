@@ -819,6 +819,51 @@ export interface TaskCopySelection {
   tasks: number[];
 }
 
+export type TaskTextGroup = "names" | "descriptions" | "dialogs";
+
+export interface TaskTranslationGroup {
+  group: TaskTextGroup;
+  tasks: number;
+  fields: number;
+  tooLong: number;
+}
+
+export interface TaskTranslationSample {
+  id: number;
+  name: string;
+  group: TaskTextGroup;
+  field: string;
+  old: string;
+  new: string;
+}
+
+export interface TaskTranslationIssue {
+  id: number;
+  name: string;
+  field?: string;
+  message: string;
+}
+
+export interface TaskTranslationReport {
+  token: string;
+  sourcePath: string;
+  sourceVersion: number;
+  version: number;
+  matched: number;
+  missingSource: number;
+  ambiguous: number;
+  groups: TaskTranslationGroup[];
+  /** Open texts left as they are because the source text is blank. */
+  blank: number;
+  same: number;
+  /** Talks whose windows or options differ in shape. */
+  shape: number;
+  tooLong: number;
+  samples: TaskTranslationSample[];
+  issues: TaskTranslationIssue[];
+  elapsedMs: number;
+}
+
 export interface TaskSaveOptions {
   path: string;
   backup: boolean;

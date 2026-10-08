@@ -15,6 +15,7 @@ import { TaskHistoryPanel } from "./TaskHistoryPanel";
 import { TaskProblemsPanel } from "./TaskProblemsPanel";
 import { TaskImportDialog } from "./TaskImportDialog";
 import { TaskComparePanel } from "./TaskComparePanel";
+import { TaskTranslateDialog } from "./TaskTranslateDialog";
 
 export interface TasksEditorState {
   loaded: boolean;
@@ -51,6 +52,7 @@ export interface TasksEditorHandle {
   /** Exports the selected task, it with its subquests, or every task in the list. */
   exportJson: (scope: TaskExportScope) => void;
   importJson: () => void;
+  translate: () => void;
 }
 
 export type TaskExportScope = "task" | "tree" | "listed";
@@ -295,6 +297,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const onProblemCounts = useCallback((errors: number, warnings: number) => setProblemCounts({ errors, warnings }), []);
   const [referrers, setReferrers] = useState<TaskDeleteReference[] | null>(null);
   const [importing, setImporting] = useState(false);
+  const [translating, setTranslating] = useState(false);
   // The compare panel keeps its report while hidden; comparing two versions takes a while.
   const [compareMounted, setCompareMounted] = useState(false);
   useEffect(() => { if (panel === "compare") setCompareMounted(true); }, [panel]);
@@ -308,7 +311,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const operation = useRef(false);
   /** True while a task dialog is open; undo/redo would change the tasks the dialog refers to. */
   const dialogOpen = useRef(false);
-  dialogOpen.current = !!(moveSource || deletePreview || saving || importing);
+  dialogOpen.current = !!(moveSource || deletePreview || saving || importing || translating);
   const noteTimer = useRef<number | undefined>(undefined);
   const showNote = useCallback((text: string) => {
     setSavedNote(text);
@@ -601,6 +604,21 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     }
   }, [detail?.id, editState.changedRoots, resync, selectedPath, selectedRoot, showNote]);
 
+  const translationApplied = useCallback(async (next: EditStateValue, fields: number) => {
+    if (!beginOperation()) return;
+    const focus = selectedRoot ? { root: selectedRoot, path: selectedPath, id: detail?.id ?? null } : null;
+    try {
+      const affected = new Set([...editState.changedRoots, ...next.changedRoots].map((root) => `${root.pack}:${root.root}`));
+      setEditState(next);
+      await resync(affected, focus);
+      showNote(`Translated ${count(fields)} text${fields === 1 ? "" : "s"}. Undo is available.`);
+    } catch (problem) {
+      setError(problemText(problem));
+    } finally {
+      endOperation();
+    }
+  }, [detail?.id, editState.changedRoots, resync, selectedPath, selectedRoot, showNote]);
+
   /** Selects the task at a position, revealing it in the list. */
   const openTaskAt = useCallback(async (pack: number, rootIndex: number, taskPath: number[]) => {
     const root = file?.roots.find((candidate) => candidate.pack === pack && candidate.root === rootIndex);
@@ -677,6 +695,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setPanel(null);
     setProblemCounts(null);
     setImporting(false);
+    setTranslating(false);
     setCompareMounted(false);
     try {
       const sourceVersion = await taskSourceVersion(path);
@@ -739,7 +758,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [defaultPath, file?.path, load, unsupported?.path]);
 
   const openSave = useCallback(() => file && !busy && !taskBusy && setSaving(true), [busy, file, taskBusy]);
-  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave, toggleHistory: () => togglePanel("history"), showHistory: () => setPanel("history"), toggleProblems: () => togglePanel("problems"), toggleCompare: () => togglePanel("compare"), exportJson: (scope) => void exportJson(scope), importJson: () => file && !operation.current && setImporting(true) }), [choose, exportJson, file, load, openSave, redo, revertAll, togglePanel, undo]);
+  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave, toggleHistory: () => togglePanel("history"), showHistory: () => setPanel("history"), toggleProblems: () => togglePanel("problems"), toggleCompare: () => togglePanel("compare"), exportJson: (scope) => void exportJson(scope), importJson: () => file && !operation.current && setImporting(true), translate: () => file && !operation.current && setTranslating(true) }), [choose, exportJson, file, load, openSave, redo, revertAll, togglePanel, undo]);
 
   useEffect(() => {
     if (!active) return;
@@ -1372,5 +1391,5 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       getTaskEditState().then(setEditState).catch((problem) => setError(problemText(problem)));
       showNote(`Saved ${report.changedRoots} changed root${report.changedRoots === 1 ? "" : "s"} across ${report.changedPacks} pack${report.changedPacks === 1 ? "" : "s"}.${report.historyCleared ? " A new undo history starts here." : ""}`);
     }} />}
-  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {importing && file && <TaskImportDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, report) => void bulkApplied(next, report, "Imported JSON")} onClose={() => setImporting(false)} />} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
+  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {translating && file && <TaskTranslateDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, fields) => void translationApplied(next, fields)} onClose={() => setTranslating(false)} />} {importing && file && <TaskImportDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, report) => void bulkApplied(next, report, "Imported JSON")} onClose={() => setImporting(false)} />} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
 });

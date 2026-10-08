@@ -31,11 +31,11 @@ type Position = (usize, usize, Vec<usize>);
 pub struct ComparedTasks {
     pub path: String,
     pub version: u32,
-    digest: String,
-    container: TaskContainer,
-    schema: Schema,
-    entries: Vec<TaskSearchEntry>,
-    size: u64,
+    pub(crate) digest: String,
+    pub(crate) container: TaskContainer,
+    pub(crate) schema: Schema,
+    pub(crate) entries: Vec<TaskSearchEntry>,
+    pub(crate) size: u64,
 }
 
 #[derive(Debug, Serialize)]
@@ -139,11 +139,11 @@ pub struct CopySelection {
 }
 
 /// Every pack's bytes, to slice roots from without reopening files.
-fn read_packs(container: &TaskContainer) -> Result<Vec<Vec<u8>>, String> {
+pub(crate) fn read_packs(container: &TaskContainer) -> Result<Vec<Vec<u8>>, String> {
     container.packs.iter().map(|pack| std::fs::read(pack.path()).map_err(|error| format!("{}: {error}", pack.path().display()))).collect()
 }
 
-fn slice<'a>(container: &TaskContainer, packs: &'a [Vec<u8>], pack: usize, root: usize) -> Result<&'a [u8], String> {
+pub(crate) fn slice<'a>(container: &TaskContainer, packs: &'a [Vec<u8>], pack: usize, root: usize) -> Result<&'a [u8], String> {
     let range = container.packs.get(pack).ok_or("Task pack does not exist")?.root_range(root)?;
     packs.get(pack).and_then(|data| data.get(range.start as usize..range.end as usize)).ok_or_else(|| format!("Root {}:{} is outside its pack", pack + 1, root + 1))
 }
@@ -201,7 +201,7 @@ fn child_ids(task: &Node) -> Vec<u32> {
 }
 
 /// Each ID used exactly once, with its position; the count of IDs used more than once.
-fn unique_positions(entries: &[TaskSearchEntry]) -> (HashMap<u32, &TaskSearchEntry>, HashSet<u32>) {
+pub(crate) fn unique_positions(entries: &[TaskSearchEntry]) -> (HashMap<u32, &TaskSearchEntry>, HashSet<u32>) {
     let mut seen = HashMap::<u32, &TaskSearchEntry>::new();
     let mut duplicated = HashSet::new();
     for entry in entries {

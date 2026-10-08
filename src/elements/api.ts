@@ -79,6 +79,8 @@ import type {
   TaskCompareReport,
   TaskFieldDiff,
   TaskCopySelection,
+  TaskTextGroup,
+  TaskTranslationReport,
   TaskDeleteReference,
 } from "./types";
 
@@ -170,6 +172,11 @@ export const taskCompareFields = (id: number) => invoke<TaskFieldDiff[]>("task_c
 export const closeTaskCompare = () => invoke<void>("close_task_compare");
 /** Copies fields and whole top-level tasks from the compared set as one undo step. */
 export const copyComparedTasks = (selection: TaskCopySelection) => invoke<TaskImportReport>("copy_compared_tasks", { selection });
+/** Plans copying names, descriptions and dialog text from a translated tasks.data by task ID. */
+export const previewTaskTranslation = (path: string) => invoke<TaskTranslationReport>("preview_task_translation", { path });
+/** Applies the previewed translation of the chosen text groups as one undo step. */
+export const applyTaskTranslation = (token: string, groups: TaskTextGroup[]) => invoke<TaskEditState>("apply_task_translation", { token, groups });
+export const closeTaskTranslation = () => invoke<void>("close_task_translation");
 /** Writes tasks (optionally with every subtask) as versioned JSON. */
 export const exportTasksJson = (targets: TaskExportTarget[], subtrees: boolean, path: string) => invoke<TaskExportReport>("export_tasks_json", { targets, subtrees, path });
 /** Previews a task JSON import, or applies it when the preview token is passed. */

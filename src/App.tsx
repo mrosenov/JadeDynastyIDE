@@ -855,6 +855,7 @@ export default function App() {
         },
         { label: "Import JSON…", icon: FileUp, onSelect: () => tasksEditor.current?.importJson(), disabled: !tasksEditorState.summary },
         "separator",
+        { label: "Translate from tasks.data…", icon: Languages, onSelect: () => tasksEditor.current?.translate(), disabled: !tasksEditorState.summary, title: "Copy names, descriptions and dialog text from a translated task set" },
         { label: "Compare with another tasks.data…", icon: GitCompareArrows, onSelect: () => tasksEditor.current?.toggleCompare(), disabled: !tasksEditorState.summary, checked: tasksEditorState.panel === "compare" },
       ],
     },
