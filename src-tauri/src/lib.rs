@@ -497,6 +497,16 @@ async fn task_edit_history(state: State<'_, AppState>) -> Result<Vec<tasks::edit
 }
 
 #[tauri::command]
+async fn export_tasks_json(targets: Vec<tasks::json::ExportTarget>, subtrees: bool, path: String, state: State<'_, AppState>) -> Result<tasks::json::ExportReport, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.export_json(&targets, subtrees, std::path::Path::new(&path))
+}
+
+#[tauri::command]
+async fn import_tasks_json(path: String, token: Option<String>, state: State<'_, AppState>) -> Result<tasks::json::ImportReport, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.import_json(std::path::Path::new(&path), token.as_deref())
+}
+
+#[tauri::command]
 async fn task_problems(state: State<'_, AppState>) -> Result<tasks::problems::Report, String> {
     // Element IDs are checked without holding both locks (document, then tasks elsewhere).
     let wanted = state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.element_reference_ids()?;
@@ -1190,6 +1200,8 @@ pub fn run() {
             revert_task_entry,
             task_problems,
             task_referenced_by,
+            export_tasks_json,
+            import_tasks_json,
             move_task_subtree,
             preview_delete_task_subtree,
             delete_task_subtree,

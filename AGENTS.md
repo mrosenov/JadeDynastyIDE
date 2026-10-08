@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (145 at last run, ~3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (148 at last run, ~2–3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -289,6 +289,13 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   stored links. `tasks/problems.rs` scans only that index; `task_problems` collects element IDs,
   checks them against the open elements.data, then scans, never holding both locks at once.
   `referenced_by` serves the inspector's Referenced by section.
+- **Task JSON** (`tasks/json.rs`, `TaskImportDialog.tsx`): `export_tasks_json` writes
+  `jdide-tasks` v1 with `taskVersion` and `schemaDigest` (MD5 of the serialized schema; user
+  layouts can differ under one version). `import_tasks_json` previews without a token and applies
+  with one (MD5 of input, path, `Journal::generation` and digest). Field values go through
+  `browser::set_task_field`, the same validation as inspector edits (`edit_field` calls it too).
+  Additions append decoded `_raw` roots as `RootChange`s with empty `before`, after the edited
+  roots, in pack/root order.
 - XtremeJade v165 scan (official data): 15 duplicate IDs, 32 broken references (e.g. four "Join …"
   quests awarding missing task 2608), 1 self-reference, 0 stale links, 44 full packs.
 

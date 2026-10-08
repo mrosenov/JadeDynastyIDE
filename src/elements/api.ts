@@ -73,6 +73,9 @@ import type {
   TaskLayoutCondition,
   TaskSchemaView,
   TaskProblemReport,
+  TaskExportTarget,
+  TaskExportReport,
+  TaskImportReport,
   TaskDeleteReference,
 } from "./types";
 
@@ -156,6 +159,10 @@ export const getTaskEditHistory = () => invoke<TaskHistoryEntry[]>("task_edit_hi
 export const undoTaskEdit = () => invoke<TaskEditState>("undo_task_edit");
 /** Scans the complete task index for duplicate IDs, broken references, stale links and full packs. */
 export const getTaskProblems = () => invoke<TaskProblemReport>("task_problems");
+/** Writes tasks (optionally with every subtask) as versioned JSON. */
+export const exportTasksJson = (targets: TaskExportTarget[], subtrees: boolean, path: string) => invoke<TaskExportReport>("export_tasks_json", { targets, subtrees, path });
+/** Previews a task JSON import, or applies it when the preview token is passed. */
+export const importTasksJson = (path: string, token?: string) => invoke<TaskImportReport>("import_tasks_json", { path, token });
 /** Tasks whose fields name the given task ID. */
 export const getTaskReferencedBy = (id: number) => invoke<TaskDeleteReference[]>("task_referenced_by", { id });
 /** Takes back one applied task edit from the history without undoing later ones. */

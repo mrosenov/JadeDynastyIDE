@@ -702,6 +702,58 @@ export interface TaskProblemReport {
   elapsedMs: number;
 }
 
+export interface TaskExportTarget {
+  pack: number;
+  root: number;
+  path: number[];
+}
+
+export interface TaskExportReport {
+  path: string;
+  tasks: number;
+  bytes: number;
+}
+
+export interface TaskImportChange {
+  sourceRow: number;
+  id: number;
+  name: string;
+  field: string;
+  old: string;
+  new: string;
+}
+
+export interface TaskImportAddition {
+  sourceRow: number;
+  id: number;
+  name: string;
+  pack: number;
+  /** Tasks in the added tree, the top-level task included. */
+  tasks: number;
+}
+
+export interface TaskImportIssue {
+  sourceRow: number;
+  id?: number;
+  message: string;
+}
+
+export interface TaskImportReport {
+  token: string;
+  sourceVersion: number;
+  total: number;
+  changing: number;
+  adding: number;
+  unchanged: number;
+  rejected: number;
+  fields: number;
+  changes: TaskImportChange[];
+  additions: TaskImportAddition[];
+  issues: TaskImportIssue[];
+  /** Set once the import was applied. */
+  state?: TaskEditState;
+}
+
 export interface TaskSaveOptions {
   path: string;
   backup: boolean;

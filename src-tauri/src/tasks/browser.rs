@@ -266,7 +266,7 @@ pub struct TaskDocument {
     /// The highest task ID handed out or deleted in this session. Fresh IDs
     /// start above it, so an ID freed by a delete or an undone clone is never
     /// given to a different quest while references to it may survive.
-    id_floor: u32,
+    pub(crate) id_floor: u32,
 }
 
 pub(crate) struct CachedRoot {
@@ -425,15 +425,7 @@ impl TaskDocument {
         }).collect::<Vec<_>>();
         let raw = matches!(node.ty, FieldType::Raw { .. });
         let (value, interpretation) = display_value(node);
-        let editable = children.is_empty()
-            && !locked.contains(&path)
-            && !(path.len() == 2 && path[0] == "fixed" && (path[1] == "id" || LINK_FIELDS.contains(&path[1].as_str())))
-            && matches!(node.ty,
-                FieldType::I8 | FieldType::U8 | FieldType::Bool8 | FieldType::I16 | FieldType::U16 |
-                FieldType::I32 | FieldType::U32 | FieldType::I64 | FieldType::U64 | FieldType::F32 |
-                FieldType::F64 | FieldType::FixedUtf16 { .. } | FieldType::PrefixedUtf16 { .. } |
-                FieldType::CountedUtf16 { .. } | FieldType::Raw { .. }
-            );
+        let editable = children.is_empty() && locked_field(locked, &path).is_none() && editable_type(&node.ty);
         let changed = original.map_or(false, |candidate| candidate.encode().ok() != node.encode().ok());
         FieldView {
             name: node.name.clone(),
@@ -567,62 +559,15 @@ impl TaskDocument {
     pub fn edit_field(&mut self, edit: FieldEdit) -> Result<EditState, String> {
         let before = self.current_root(edit.pack, edit.root)?;
         let mut decoded = decode_exact(&self.schema, &before, self.container.header.version)?;
-        let selected = task_at_mut(&mut decoded, &edit.task_path)?;
-        let locked = structural_paths(&self.schema, selected);
-        if locked.contains(&edit.field_path) {
-            return Err("This value controls the binary structure and cannot be edited directly".into());
-        }
-        if edit.field_path.len() == 2 && edit.field_path[0] == "fixed" && edit.field_path[1] == "id" {
-            return Err("Task IDs are locked until task-reference rewriting is implemented".into());
-        }
-        if edit.field_path.len() == 2 && edit.field_path[0] == "fixed" && LINK_FIELDS.contains(&edit.field_path[1].as_str()) {
-            return Err("Hierarchy links follow the task tree and are updated by clone, move and delete".into());
-        }
-        let target = node_at(selected, &edit.field_path)?;
-        if !target.children().is_empty() {
-            return Err(format!("{} is a group; edit one of its values", target.name));
-        }
-        let ty = target.ty.clone();
-        if !matches!(ty,
-            FieldType::I8 | FieldType::U8 | FieldType::Bool8 | FieldType::I16 | FieldType::U16 |
-            FieldType::I32 | FieldType::U32 | FieldType::I64 | FieldType::U64 | FieldType::F32 |
-            FieldType::F64 | FieldType::FixedUtf16 { .. } | FieldType::PrefixedUtf16 { .. } |
-            FieldType::CountedUtf16 { .. } | FieldType::Raw { .. }
-        ) {
-            return Err(format!("{} is not editable in this milestone", target.name));
-        }
-        let old = display_value(target).0.unwrap_or_default();
-        let value = parse_value(&ty, &edit.value)?;
-        let counted_text_length = match (&ty, &value) {
-            (FieldType::CountedUtf16 { unit, .. }, Value::Text(text)) => {
-                let units = text.encode_utf16().count();
-                Some(match unit {
-                    super::schema::TextLengthUnit::Utf16Units => units,
-                    super::schema::TextLengthUnit::Bytes => units.checked_mul(2).ok_or("Text byte length overflow")?,
-                })
+        let (old, _) = {
+            let index = self.search.read().map_err(|_| "Task search index lock poisoned")?;
+            let known = |id: u32| !index.indexed || index.by_id.contains_key(&id);
+            let selected = task_at_mut(&mut decoded, &edit.task_path)?;
+            match set_task_field(&self.schema, selected, &edit.field_path, &edit.value, &known)? {
+                Some(change) => change,
+                None => return Ok(self.edit_state()),
             }
-            _ => None,
         };
-        let semantic = edit.field_path.iter().rev().find(|part| !part.starts_with('[')).map(String::as_str).unwrap_or_default();
-        if is_task_reference(semantic) {
-            let id = match &value {
-                Value::U64(value) => u32::try_from(*value).ok(),
-                Value::I64(value) => u32::try_from(*value).ok(),
-                _ => None,
-            }.ok_or("Task references must contain a 32-bit task ID")?;
-            if id != 0 {
-                let index = self.search.read().map_err(|_| "Task search index lock poisoned")?;
-                if index.indexed && !index.by_id.contains_key(&id) {
-                    return Err(format!("Task ID {id} does not exist in the open task set"));
-                }
-            }
-        }
-        node_at_mut(selected, &edit.field_path)?.set_value(value)?;
-        if let (FieldType::CountedUtf16 { count_field, .. }, Some(count)) = (&ty, counted_text_length) {
-            let parent_path = &edit.field_path[..edit.field_path.len().saturating_sub(1)];
-            let parent = node_at_mut(selected, parent_path)?;
-            set_count(parent, count_field, count)?;
-        }
         let after = decoded.encode()?;
         let verified = decode_exact(&self.schema, &after, self.container.header.version)
             .map_err(|error| format!("The edit would make this task invalid: {error}"))?;
@@ -1029,7 +974,7 @@ impl TaskDocument {
         keys.into_iter().collect()
     }
 
-    fn apply_changes(&mut self, changes: &[RootChange]) -> Result<(), String> {
+    pub(crate) fn apply_changes(&mut self, changes: &[RootChange]) -> Result<(), String> {
         for change in changes {
             let current = self.current_root_optional(change.pack, change.root)?;
             if (change.before.is_empty() && current.is_some()) || (!change.before.is_empty() && current.as_deref() != Some(change.before.as_slice())) {
@@ -1159,7 +1104,86 @@ impl TaskDocument {
     }
 }
 
-fn structural_paths(schema: &Schema, task: &Node) -> HashSet<Vec<String>> {
+/// Whether a leaf type can be edited as a value (inspector and JSON import).
+pub(crate) fn editable_type(ty: &FieldType) -> bool {
+    matches!(ty,
+        FieldType::I8 | FieldType::U8 | FieldType::Bool8 | FieldType::I16 | FieldType::U16 |
+        FieldType::I32 | FieldType::U32 | FieldType::I64 | FieldType::U64 | FieldType::F32 |
+        FieldType::F64 | FieldType::FixedUtf16 { .. } | FieldType::PrefixedUtf16 { .. } |
+        FieldType::CountedUtf16 { .. } | FieldType::Raw { .. }
+    )
+}
+
+/// Whether a field of a task (path from the task) is locked: it drives the
+/// binary shape, is the task ID, or is a hierarchy link kept by structural edits.
+pub(crate) fn locked_field(locked: &HashSet<Vec<String>>, field_path: &[String]) -> Option<&'static str> {
+    if locked.contains(field_path) {
+        return Some("This value controls the binary structure and cannot be edited directly");
+    }
+    if field_path.len() == 2 && field_path[0] == "fixed" && field_path[1] == "id" {
+        return Some("Task IDs are locked until task-reference rewriting is implemented");
+    }
+    if field_path.len() == 2 && field_path[0] == "fixed" && LINK_FIELDS.contains(&field_path[1].as_str()) {
+        return Some("Hierarchy links follow the task tree and are updated by clone, move and delete");
+    }
+    None
+}
+
+/// Sets one value of a decoded task (`task` is the task itself, `field_path`
+/// runs from it) with the inspector's rules: locked fields refused, the
+/// value parsed for the field's type, task references checked with
+/// `known_task`, and counted text keeping its stored length. Returns the old
+/// and new displayed values, or none when the value is unchanged.
+pub(crate) fn set_task_field(schema: &Schema, task: &mut Node, field_path: &[String], input: &str, known_task: &dyn Fn(u32) -> bool) -> Result<Option<(String, String)>, String> {
+    let locked = structural_paths(schema, task);
+    if let Some(reason) = locked_field(&locked, field_path) {
+        return Err(reason.into());
+    }
+    let target = node_at(task, field_path)?;
+    if !target.children().is_empty() {
+        return Err(format!("{} is a group; edit one of its values", target.name));
+    }
+    let ty = target.ty.clone();
+    if !editable_type(&ty) {
+        return Err(format!("{} is not editable in this milestone", target.name));
+    }
+    let old = display_value(target).0.unwrap_or_default();
+    let value = parse_value(&ty, input)?;
+    if target.value == value {
+        return Ok(None);
+    }
+    let counted_text_length = match (&ty, &value) {
+        (FieldType::CountedUtf16 { unit, .. }, Value::Text(text)) => {
+            let units = text.encode_utf16().count();
+            Some(match unit {
+                super::schema::TextLengthUnit::Utf16Units => units,
+                super::schema::TextLengthUnit::Bytes => units.checked_mul(2).ok_or("Text byte length overflow")?,
+            })
+        }
+        _ => None,
+    };
+    let semantic = field_path.iter().rev().find(|part| !part.starts_with('[')).map(String::as_str).unwrap_or_default();
+    if is_task_reference(semantic) {
+        let id = match &value {
+            Value::U64(value) => u32::try_from(*value).ok(),
+            Value::I64(value) => u32::try_from(*value).ok(),
+            _ => None,
+        }.ok_or("Task references must contain a 32-bit task ID")?;
+        if id != 0 && !known_task(id) {
+            return Err(format!("Task ID {id} does not exist in the open task set"));
+        }
+    }
+    node_at_mut(task, field_path)?.set_value(value)?;
+    if let (FieldType::CountedUtf16 { count_field, .. }, Some(count)) = (&ty, counted_text_length) {
+        let parent_path = &field_path[..field_path.len().saturating_sub(1)];
+        let parent = node_at_mut(task, parent_path)?;
+        set_count(parent, count_field, count)?;
+    }
+    let new = display_value(node_at(task, field_path)?).0.unwrap_or_default();
+    Ok(Some((old, new)))
+}
+
+pub(crate) fn structural_paths(schema: &Schema, task: &Node) -> HashSet<Vec<String>> {
     let mut paths = HashSet::new();
     collect_structural_paths(schema, task, &task.ty, &[], &mut paths);
     paths
@@ -1218,7 +1242,7 @@ fn relative_path(base: &[String], reference: &str) -> Vec<String> {
     base.iter().cloned().chain(reference.split('.').map(str::to_string)).collect()
 }
 
-fn node_at<'a>(node: &'a Node, path: &[String]) -> Result<&'a Node, String> {
+pub(crate) fn node_at<'a>(node: &'a Node, path: &[String]) -> Result<&'a Node, String> {
     let mut current = node;
     for part in path {
         current = current.child(part).ok_or_else(|| format!("Field path {} does not exist", path.join(".")))?;
@@ -1235,7 +1259,7 @@ fn node_at_mut<'a>(node: &'a mut Node, path: &[String]) -> Result<&'a mut Node, 
     Ok(current)
 }
 
-fn task_at_mut<'a>(root: &'a mut Node, path: &[usize]) -> Result<&'a mut Node, String> {
+pub(crate) fn task_at_mut<'a>(root: &'a mut Node, path: &[usize]) -> Result<&'a mut Node, String> {
     let shown = display_path(path);
     let mut task = root;
     for &index in path {
@@ -1295,7 +1319,7 @@ fn append_subtask(parent: &mut Node, task: Node) -> Result<usize, String> {
     Ok(index)
 }
 
-fn verify_task_root(schema: &Schema, bytes: &[u8], version: u32, context: &str) -> Result<(), String> {
+pub(crate) fn verify_task_root(schema: &Schema, bytes: &[u8], version: u32, context: &str) -> Result<(), String> {
     let verified = decode_exact(schema, bytes, version).map_err(|error| format!("{context}: {error}"))?;
     if verified.encode()? != bytes {
         return Err(format!("{context}: exact byte round trip failed"));
@@ -1426,7 +1450,7 @@ fn set_count(parent: &mut Node, reference: &str, count: usize) -> Result<(), Str
     node.set_value(value)
 }
 
-fn collect_task_ids(task: &Node, output: &mut Vec<u32>) -> Result<(), String> {
+pub(crate) fn collect_task_ids(task: &Node, output: &mut Vec<u32>) -> Result<(), String> {
     output.push(task_heading(task)?.0);
     for child in task.child("subtasks").map(Node::children).unwrap_or_default() {
         collect_task_ids(child, output)?;
@@ -1671,7 +1695,7 @@ fn fixed_utf16(bytes: &[u8]) -> String {
     String::from_utf16_lossy(&units[..end])
 }
 
-fn task_at<'a>(root: &'a Node, path: &[usize]) -> Result<&'a Node, String> {
+pub(crate) fn task_at<'a>(root: &'a Node, path: &[usize]) -> Result<&'a Node, String> {
     let mut task = root;
     for &index in path {
         task = task
@@ -1686,7 +1710,7 @@ fn display_path(path: &[usize]) -> String {
     if path.is_empty() { "root".into() } else { path.iter().map(|index| (index + 1).to_string()).collect::<Vec<_>>().join(".") }
 }
 
-fn task_heading(task: &Node) -> Result<(u32, String), String> {
+pub(crate) fn task_heading(task: &Node) -> Result<(u32, String), String> {
     let fixed = task.child("fixed").ok_or("Task has no fixed header")?;
     let id = match &fixed.child("id").ok_or("Task has no ID")?.value {
         Value::U64(value) => u32::try_from(*value).map_err(|_| "Task ID is outside u32")?,

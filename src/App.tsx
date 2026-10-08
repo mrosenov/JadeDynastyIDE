@@ -839,6 +839,23 @@ export default function App() {
         { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => tasksEditor.current?.toggleHistory(), disabled: !tasksEditorState.summary, checked: tasksEditorState.panel === "history" },
       ],
     },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        {
+          label: "Export",
+          icon: Download,
+          disabled: !tasksEditorState.summary,
+          submenu: [
+            { label: "Selected task…", onSelect: () => tasksEditor.current?.exportJson("task"), disabled: !tasksEditorState.selection, title: "The task open in the inspector" },
+            { label: "Selected task with subquests…", onSelect: () => tasksEditor.current?.exportJson("tree"), disabled: !tasksEditorState.selection, title: "The task open in the inspector and every task below it" },
+            { label: "Listed tasks…", onSelect: () => tasksEditor.current?.exportJson("listed"), title: "The current search results, or every top-level task when there is no search" },
+          ],
+        },
+        { label: "Import JSON…", icon: FileUp, onSelect: () => tasksEditor.current?.importJson(), disabled: !tasksEditorState.summary },
+      ],
+    },
   ] : elementMenus;
   const switchWorkspace = (next: DataWorkspace) => {
     if (next === workspace) return;

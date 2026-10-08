@@ -143,6 +143,38 @@ never exceed 5 and unused slots are zero. They link to their tasks, are validate
 remapped inside clones and are followed by delete previews, Problems and Referenced by. The four
 hierarchy link fields are shown but locked, because clone, move and delete maintain them.
 
+**Tools › Export** writes tasks as JSON: the selected task, the selected task with every subquest
+below it, or the listed tasks (the search results, or every top-level task without a search). Each
+task is listed by ID with its editable values by field path, such as `fixed.name`,
+`fixed.premise_tasks[0]` or `fixed.time_limit`. Text keeps CR LF line breaks, floats use their
+shortest exact form, and integers beyond 2^53 are strings. Raw fields of unknown meaning, the task
+ID and the hierarchy links are left out. Top-level tasks also carry `_raw`, the complete bytes of
+the task and all its subquests.
+
+```json
+{
+  "format": "jdide-tasks",
+  "formatVersion": 1,
+  "taskVersion": 172,
+  "schemaDigest": "…",
+  "tasks": [
+    { "id": 2500, "name": "Join Jadeon", "_pack": 0, "_root": 0, "_path": [], "fields": { "fixed.name": "Join Jadeon" }, "_raw": "c4090000…" }
+  ]
+}
+```
+
+**Tools › Import JSON…** previews **Added / Updated / Skipped** tasks with current → imported values
+and applies them as one undo step; nothing changes on disk until you save. The task version and the
+layout (`schemaDigest`) must match the open task set. Tasks match by `id`; `_pack`, `_root` and
+`_path` are informational. Only the fields present in `fields` change, with the inspector's rules:
+fields that control counts or structure, task IDs and hierarchy links are locked, array lengths
+cannot change, text must fit, and task references must name a task that exists (or one added by the
+same import). Any error skips the whole row. A missing top-level task is added from `_raw` with all
+its subquests and their IDs, appended to its original pack when it has room, otherwise another; an
+ID in its tree that the open set already uses stops that row. Missing subquests are not added.
+Duplicate IDs in the file, or IDs several open tasks share, skip their rows. If the file or the
+task set changes after the preview, **Refresh preview** is required before applying.
+
 **Task schema** opens the effective binary layout for the current task version. It lists every
 structure, field type and condition and can search across all four. Verified v165, v172 and v184
 layouts are read-only. For an unsupported version, the same window shows the selected older

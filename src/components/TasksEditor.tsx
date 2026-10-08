@@ -1,9 +1,9 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { AlertTriangle, ArrowRight, BarChart3, Braces, Check, CircleAlert, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
-import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskReferencedBy, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
+import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskField, exportTasksJson, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskReferencedBy, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskAnalysisReport, TaskDeletePreview, TaskDeleteReference, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskAnalysisReport, TaskDeletePreview, TaskDeleteReference, TaskEditState as EditStateValue, TaskExportTarget, TaskImportReport, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 import { TaskSaveDialog } from "./TaskSaveDialog";
 import { TaskSchemaDialog } from "./TaskSchemaDialog";
@@ -13,6 +13,7 @@ import { TaskDeleteDialog } from "./TaskDeleteDialog";
 import { TaskMoveDialog } from "./TaskMoveDialog";
 import { TaskHistoryPanel } from "./TaskHistoryPanel";
 import { TaskProblemsPanel } from "./TaskProblemsPanel";
+import { TaskImportDialog } from "./TaskImportDialog";
 
 export interface TasksEditorState {
   loaded: boolean;
@@ -45,7 +46,12 @@ export interface TasksEditorHandle {
   toggleHistory: () => void;
   showHistory: () => void;
   toggleProblems: () => void;
+  /** Exports the selected task, it with its subquests, or every task in the list. */
+  exportJson: (scope: TaskExportScope) => void;
+  importJson: () => void;
 }
+
+export type TaskExportScope = "task" | "tree" | "listed";
 
 interface Props {
   active: boolean;
@@ -286,6 +292,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const [problemCounts, setProblemCounts] = useState<{ errors: number; warnings: number } | null>(null);
   const onProblemCounts = useCallback((errors: number, warnings: number) => setProblemCounts({ errors, warnings }), []);
   const [referrers, setReferrers] = useState<TaskDeleteReference[] | null>(null);
+  const [importing, setImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedNote, setSavedNote] = useState<string | null>(null);
@@ -296,7 +303,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const operation = useRef(false);
   /** True while a task dialog is open; undo/redo would change the tasks the dialog refers to. */
   const dialogOpen = useRef(false);
-  dialogOpen.current = !!(moveSource || deletePreview || saving);
+  dialogOpen.current = !!(moveSource || deletePreview || saving || importing);
   const noteTimer = useRef<number | undefined>(undefined);
   const showNote = useCallback((text: string) => {
     setSavedNote(text);
@@ -544,6 +551,51 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [editState.changedRoots.length, runHistoryAction]);
   const revertEntry = useCallback((id: number) => runHistoryAction(() => revertTaskEntry(id)), [runHistoryAction]);
 
+  /** Writes tasks as versioned JSON next to the task set by default. */
+  const exportJson = useCallback(async (scope: TaskExportScope) => {
+    if (!file || operation.current) return;
+    let targets: TaskExportTarget[];
+    let name: string;
+    if (scope === "listed") {
+      targets = deferredQuery
+        ? (searchReport?.matches ?? []).map((task) => ({ pack: task.pack, root: task.root, path: task.path }))
+        : file.roots.map((root) => ({ pack: root.pack, root: root.root, path: [] }));
+      name = deferredQuery ? "tasks-search.json" : "tasks-all.json";
+      if (!targets.length) return;
+      if (targets.length > 2000 && !window.confirm(`Export ${count(targets.length)} tasks? Each top-level task includes its complete data, so the file can be very large.`)) return;
+    } else {
+      if (!selectedRoot || !detail) return;
+      targets = [{ pack: selectedRoot.pack, root: selectedRoot.root, path: selectedPath }];
+      name = scope === "tree" ? `task-${detail.id}-tree.json` : `task-${detail.id}.json`;
+    }
+    const folder = file.path.replace(/[\\/][^\\/]*$/, "");
+    const target = await save({ defaultPath: `${folder}/${name}`, title: "Export tasks as JSON", filters: [{ name: "JSON", extensions: ["json"] }] });
+    if (!target || !beginOperation()) return;
+    try {
+      const report = await exportTasksJson(targets, scope === "tree", target);
+      showNote(`Exported ${count(report.tasks)} task${report.tasks === 1 ? "" : "s"} (${bytes(report.bytes)}) to ${report.path.split(/[\\/]/).pop()}.`);
+    } catch (problem) {
+      setError(problemText(problem));
+    } finally {
+      endOperation();
+    }
+  }, [deferredQuery, detail, file, searchReport, selectedPath, selectedRoot, showNote]);
+
+  const importApplied = useCallback(async (next: EditStateValue, report: TaskImportReport) => {
+    if (!beginOperation()) return;
+    const focus = selectedRoot ? { root: selectedRoot, path: selectedPath, id: detail?.id ?? null } : null;
+    try {
+      const affected = new Set([...editState.changedRoots, ...next.changedRoots].map((root) => `${root.pack}:${root.root}`));
+      setEditState(next);
+      await resync(affected, focus);
+      showNote(`Imported JSON: ${count(report.changing)} task${report.changing === 1 ? "" : "s"} updated, ${count(report.adding)} added. Undo is available.`);
+    } catch (problem) {
+      setError(problemText(problem));
+    } finally {
+      endOperation();
+    }
+  }, [detail?.id, editState.changedRoots, resync, selectedPath, selectedRoot, showNote]);
+
   /** Selects the task at a position, revealing it in the list. */
   const openTaskAt = useCallback(async (pack: number, rootIndex: number, taskPath: number[]) => {
     const root = file?.roots.find((candidate) => candidate.pack === pack && candidate.root === rootIndex);
@@ -619,6 +671,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setEditState({ changedRoots: [] });
     setPanel(null);
     setProblemCounts(null);
+    setImporting(false);
     try {
       const sourceVersion = await taskSourceVersion(path);
       if (!sourceVersion.supported) {
@@ -680,7 +733,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [defaultPath, file?.path, load, unsupported?.path]);
 
   const openSave = useCallback(() => file && !busy && !taskBusy && setSaving(true), [busy, file, taskBusy]);
-  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave, toggleHistory: () => togglePanel("history"), showHistory: () => setPanel("history"), toggleProblems: () => togglePanel("problems") }), [choose, load, openSave, redo, revertAll, togglePanel, undo]);
+  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave, toggleHistory: () => togglePanel("history"), showHistory: () => setPanel("history"), toggleProblems: () => togglePanel("problems"), exportJson: (scope) => void exportJson(scope), importJson: () => file && !operation.current && setImporting(true) }), [choose, exportJson, file, load, openSave, redo, revertAll, togglePanel, undo]);
 
   useEffect(() => {
     if (!active) return;
@@ -1312,5 +1365,5 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       getTaskEditState().then(setEditState).catch((problem) => setError(problemText(problem)));
       showNote(`Saved ${report.changedRoots} changed root${report.changedRoots === 1 ? "" : "s"} across ${report.changedPacks} pack${report.changedPacks === 1 ? "" : "s"}.${report.historyCleared ? " A new undo history starts here." : ""}`);
     }} />}
-  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
+  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {importing && file && <TaskImportDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, report) => void importApplied(next, report)} onClose={() => setImporting(false)} />} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
 });

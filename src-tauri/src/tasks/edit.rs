@@ -122,6 +122,11 @@ impl Journal {
         self.done.iter().find(|entry| entry.id == id).map(|entry| (entry.label.clone(), entry.changes.clone()))
     }
 
+    /// Changes whenever an entry is recorded, undone or redone (for stale-preview tokens).
+    pub fn generation(&self) -> (u64, usize, usize) {
+        (self.next_id, self.done.len(), self.undone.len())
+    }
+
     pub fn is_reverted(&self, id: u64) -> bool {
         self.done.iter().any(|entry| entry.reverts == Some(id))
     }

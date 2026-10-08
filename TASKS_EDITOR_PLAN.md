@@ -253,7 +253,9 @@ round trip and is explicitly accepted.
   including across roots and packs. Top-level deletion and explicit sibling ordering remain later work.
 - Compare and transfer compatible fields between task files.
 - Translation workflow for names, descriptions and dialog text by task ID.
-- JSON import/export.
+- ~~JSON import/export.~~ Done (October 2026): versioned `jdide-tasks` export of a task, a tree or
+  the listed tasks; import previews and applies field updates by task ID with the inspector's
+  checks and adds missing top-level trees from `_raw` when version and layout match.
 - ~~Task problems scanner and reference graph.~~ Done (October 2026): Problems panel from the
   background index (duplicate and skipped IDs, broken and self references, stale hierarchy links,
   missing elements.data items/monsters, full packs) and the inspector's Referenced by section.
@@ -263,6 +265,5 @@ round trip and is explicitly accepted.
 
 ## Recommended implementation order
 
-Milestones 1–9 and the problems scanner are complete. Next come the JSON, compare and translation
-workflows; JSON export/import first, since compare and translation can reuse its field matching by
-task ID.
+Milestones 1–9, the problems scanner and JSON export/import are complete. Next: compare and
+transfer between task files, then translation, both reusing the JSON field matching by task ID.
