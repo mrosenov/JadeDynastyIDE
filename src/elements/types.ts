@@ -353,6 +353,8 @@ export interface TasksFileSummary {
   /** Index and numbered packs together. */
   size: number;
   roots: TaskRootSummary[];
+  /** This version was opened with a user layout that passed exact whole-file verification. */
+  userLayout: boolean;
 }
 
 export interface TaskSearchEntry {
@@ -492,6 +494,14 @@ export interface TaskLayoutOperation {
   afterField?: string;
   width?: number;
   fieldType?: string;
+  conditions: TaskLayoutCondition[];
+}
+
+export interface TaskLayoutCondition {
+  field: string;
+  operator: "zero" | "non_zero" | "eq" | "not_eq" | "one_of" | "at_least" | "at_most" | "bits_any" | "bits_all";
+  value?: string;
+  label: string;
 }
 
 export interface TaskLayoutPatch {
@@ -499,11 +509,45 @@ export interface TaskLayoutPatch {
   taskVersion: number;
   baseVersion: number;
   operations: TaskLayoutOperation[];
+  verified: boolean;
+  verifiedAt?: number;
+  verifiedRoots?: number;
+  verifiedBytes?: number;
 }
 
 export interface TaskLayoutPatchReport {
   patch: TaskLayoutPatch;
   analysis: TaskAnalysisReport;
+}
+
+export interface TaskLayoutExportReport {
+  path: string;
+  taskVersion: number;
+  baseVersion: number;
+  operations: number;
+}
+
+export interface TaskSchemaField {
+  name: string;
+  fieldType: string;
+  conditions: string[];
+  patched: boolean;
+  integer: boolean;
+  fixedWidth?: number;
+}
+
+export interface TaskSchemaStructure {
+  name: string;
+  root: boolean;
+  fields: TaskSchemaField[];
+}
+
+export interface TaskSchemaView {
+  taskVersion: number;
+  baselineVersion: number;
+  source: "built_in" | "baseline" | "user_patch";
+  root: string;
+  structures: TaskSchemaStructure[];
 }
 
 export interface TaskTreeNode {

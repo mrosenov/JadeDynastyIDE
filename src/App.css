@@ -5243,6 +5243,11 @@ select.sf-control {
   gap: 4px;
   min-width: 0;
 }
+.task-analysis-result > .btn {
+  align-self: center;
+  flex: none;
+  margin-left: auto;
+}
 .task-analysis-result span {
   color: var(--text-dim);
   font-size: 11px;
@@ -5525,7 +5530,7 @@ select.sf-control {
 .task-layout-patch-head,
 .task-layout-patch-row {
   display: grid;
-  grid-template-columns: minmax(150px, 1fr) 80px minmax(220px, 1.3fr) 110px 30px;
+  grid-template-columns: minmax(140px, 1fr) 70px minmax(190px, 1.2fr) 105px minmax(150px, .9fr) 30px;
   gap: 8px;
   align-items: center;
   min-height: 30px;
@@ -5545,7 +5550,8 @@ select.sf-control {
   background: var(--bg-subtle);
 }
 .task-layout-patch-row select,
-.task-candidate-draft select {
+.task-candidate-draft select,
+.task-condition-row select {
   min-width: 0;
   height: 27px;
   padding: 0 24px 0 7px;
@@ -5554,6 +5560,65 @@ select.sf-control {
   background: var(--bg-input);
   color: var(--text);
   font: inherit;
+}
+.task-condition-button {
+  justify-content: flex-start;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-dim);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.task-condition-button.active {
+  color: var(--accent-strong);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: var(--accent-soft);
+}
+.task-condition-draft {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg-pane));
+}
+.task-condition-draft > header,
+.task-condition-draft > footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.task-condition-draft > header {
+  margin-bottom: 8px;
+}
+.task-condition-draft > header > div {
+  display: grid;
+  flex: 1;
+  gap: 2px;
+}
+.task-condition-draft > header span {
+  color: var(--text-dim);
+  font-size: 10px;
+}
+.task-condition-draft > footer {
+  margin-top: 8px;
+}
+.task-condition-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 145px minmax(150px, .7fr) 30px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+.task-condition-row input {
+  min-width: 0;
+  height: 27px;
+  padding: 0 7px;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  color: var(--text);
+  background: var(--bg-input);
+  font: inherit;
+}
+.task-condition-row > span {
+  padding-left: 7px;
 }
 .task-layout-patch > footer {
   padding: 8px 10px;
@@ -5587,6 +5652,272 @@ select.sf-control {
   background: var(--bg-input);
   color: var(--text);
   font: inherit;
+}
+.task-schema-dialog {
+  width: min(1120px, 100%);
+  height: min(780px, 100%);
+}
+.task-schema-dialog .modal-head > div {
+  display: grid;
+  gap: 2px;
+}
+.task-schema-dialog .modal-head p {
+  margin: 0;
+}
+.task-schema-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: none;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  background: var(--bg-pane);
+}
+.task-schema-search svg {
+  position: absolute;
+  left: 24px;
+  pointer-events: none;
+}
+.task-schema-search input {
+  width: 100%;
+  height: 31px;
+  padding: 0 10px 0 31px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  background: var(--bg-input);
+  font: inherit;
+}
+.task-schema-search input:focus {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent-soft);
+}
+.task-schema-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 9px;
+  color: var(--text-dim);
+}
+.task-schema-body {
+  display: grid;
+  grid-template-columns: minmax(230px, 30%) minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+}
+.task-schema-structures {
+  min-width: 0;
+  overflow: auto;
+  border-right: 1px solid var(--border);
+  background: var(--bg-pane);
+}
+.task-schema-structures > button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content max-content;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 34px;
+  padding: 5px 10px;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  color: var(--text);
+  text-align: left;
+  background: transparent;
+  cursor: pointer;
+}
+.task-schema-structures > button:hover {
+  background: var(--bg-hover);
+}
+.task-schema-structures > button.selected {
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 var(--accent);
+}
+.task-schema-structures > button small {
+  color: var(--text-dim);
+}
+.task-schema-fields {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.task-schema-fields > header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.task-schema-fields > header > div {
+  display: grid;
+  flex: 1;
+  gap: 2px;
+}
+.task-schema-fields > header span:not(.tag) {
+  color: var(--text-dim);
+  font-size: 10px;
+}
+.task-schema-field-head,
+.task-schema-field-list > div:not(.empty-note) {
+  display: grid;
+  grid-template-columns: minmax(170px, 1fr) minmax(150px, .9fr) minmax(180px, 1.1fr) 82px;
+  align-items: center;
+  gap: 10px;
+  min-height: 31px;
+  padding: 4px 11px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+}
+.task-schema-field-head {
+  flex: none;
+  min-height: 27px;
+  color: var(--text-dim);
+  background: var(--bg-subtle);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.task-schema-field-list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  font-size: 11px;
+}
+.task-schema-field-list > div:nth-child(even):not(.empty-note) {
+  background: var(--bg-subtle);
+}
+.task-schema-field-list > div.patched {
+  background: color-mix(in srgb, var(--warn) 9%, var(--bg-pane));
+  box-shadow: inset 3px 0 var(--warn);
+}
+.task-array-dialog {
+  width: min(720px, 100%);
+  max-height: min(760px, 100%);
+}
+.task-array-dialog .modal-head > div {
+  display: grid;
+  gap: 2px;
+}
+.task-array-dialog .modal-head p {
+  margin: 0;
+}
+.task-array-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px 16px;
+  padding: 16px;
+  overflow: auto;
+}
+.task-array-form > label {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  min-width: 0;
+  color: var(--text-dim);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+.task-array-form > label:nth-child(2),
+.task-array-form > label:nth-child(4),
+.task-array-explanation {
+  grid-column: 1 / -1;
+}
+.task-array-form input,
+.task-array-form select {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  padding: 0 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  color: var(--text);
+  background: var(--bg-input);
+  font: inherit;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.task-array-form small {
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.task-array-explanation {
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-subtle);
+}
+.task-array-explanation span {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+.task-baseline-dialog {
+  width: min(680px, 100%);
+  max-height: min(720px, 100%);
+}
+.task-baseline-dialog .modal-head > div {
+  display: grid;
+  gap: 2px;
+}
+.task-baseline-dialog .modal-head p {
+  margin: 0;
+}
+.task-baseline-form {
+  display: grid;
+  gap: 13px;
+  padding: 16px;
+  overflow: auto;
+}
+.task-baseline-modes {
+  justify-self: start;
+}
+.task-baseline-modes button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.task-baseline-form > label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  color: var(--text-dim);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+.task-baseline-form select {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  padding: 0 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  color: var(--text);
+  background: var(--bg-input);
+  font: inherit;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.task-baseline-form small {
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.task-schema-dialog .modal-foot {
+  min-height: 49px;
 }
 .tasks-body {
   display: grid;

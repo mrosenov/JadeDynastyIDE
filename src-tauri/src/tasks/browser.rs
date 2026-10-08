@@ -38,6 +38,7 @@ pub struct FileSummary {
     pub pack_count: usize,
     pub size: u64,
     pub roots: Vec<RootSummary>,
+    pub user_layout: bool,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -211,6 +212,15 @@ impl TaskDocument {
     pub fn open(path: impl AsRef<Path>) -> Result<Self, String> {
         let container = TaskContainer::open(path)?;
         let schema = schema_for_version(container.header.version)?;
+        Self::from_container(container, schema, false)
+    }
+
+    pub fn open_with_schema(path: impl AsRef<Path>, schema: Schema) -> Result<Self, String> {
+        let container = TaskContainer::open(path)?;
+        Self::from_container(container, schema, true)
+    }
+
+    fn from_container(container: TaskContainer, schema: Schema, user_layout: bool) -> Result<Self, String> {
         let roots = read_root_summaries(&container, &schema)?;
         let entries = roots.iter().map(|root| TaskSearchEntry {
                 pack: root.pack,
@@ -231,6 +241,7 @@ impl TaskDocument {
             size: std::fs::metadata(container.index_path()).map(|metadata| metadata.len()).unwrap_or(0)
                 + container.total_pack_bytes(),
             roots,
+            user_layout,
         };
         let background_search = search.clone();
         let background_container = container.clone();

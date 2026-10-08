@@ -197,7 +197,7 @@ Completion gate:
 
 ## Milestone 9: unsupported-version analyzer and schema editor
 
-**In progress (October 2026).** Unsupported files now open in a read-only analyzer with selectable
+**Complete (October 2026).** Unsupported files now open in a read-only analyzer with selectable
 v165/v172/v184 baselines, parallel whole-file root and byte coverage, first-failure offsets and
 per-pack results. A second supported task set can be compared by root ID, with added/removed/renamed
 IDs and recurring root-size deltas summarized as structural evidence. The analyzer now scores
@@ -205,7 +205,23 @@ IDs and recurring root-size deltas summarized as structural evidence. The analyz
 alignment confidence, type hints and example bytes. A user can accept one suggestion as a named,
 version-gated fixed-width insertion, keep the safe raw default or choose a same-width integer, float,
 boolean or byte type, persist it under `task-layouts/v<version>.json`, change its type, remove it later,
-and re-run complete coverage after every operation. Conditions, counted arrays, and patch import/export remain.
+and re-run complete coverage after every operation. Candidate scoring is patch-aware: it normalizes
+accepted fixed-width spans in temporary root copies and can anchor the next adjacent field after an
+earlier accepted field. Complete versioned patches can be exported and imported as JSON; imports
+must match the open task version and pass schema validation plus whole-file coverage before replacing
+the active patch. The task header now opens an explicit searchable schema browser for supported and
+unsupported files. It presents verified built-ins as read-only and shows the effective baseline plus
+accepted user fields for an unsupported version. Inserted fields can now have multiple validated
+controller-field predicates; changing them reruns whole-file coverage, and iterative scoring applies
+them per record. A guarded manual operation adds counted arrays of scalar values or existing task
+structures, requiring an earlier integer count field and rerunning whole-file coverage before it is
+stored. Inherited baseline fields can now be removed or assigned another fixed-width type, with
+dependency validation and whole-file analysis. A candidate layout can be promoted only after every
+root decodes and re-encodes byte-for-byte and the normal task browser also reads the complete set.
+Promotion stores a digest of the exact schema operations, opens that version in the editable task
+workspace, and is cleared automatically by any later schema change. Accepted layouts can be sent
+back to the analyzer explicitly for further work. An unchanged older baseline may also be promoted
+when it already matches the newer version exactly.
 
 Build the workflow for future task versions after the known parsers and saver are trusted.
 
@@ -218,7 +234,8 @@ Build the workflow for future task versions after the known parsers and saver ar
 - Preserve unresolved regions as opaque bytes when their fixed length is known.
 - Export/import user task-layout patches.
 
-Saving remains unavailable until the candidate schema parses every record and passes an exact no-edit round trip.
+Saving remains unavailable until the candidate schema parses every record, passes an exact no-edit
+round trip and is explicitly accepted.
 
 ## Later work
 

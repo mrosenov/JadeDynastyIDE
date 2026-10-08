@@ -65,6 +65,9 @@ import type {
   TaskFieldCandidateReport,
   TaskLayoutPatch,
   TaskLayoutPatchReport,
+  TaskLayoutExportReport,
+  TaskLayoutCondition,
+  TaskSchemaView,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -84,14 +87,29 @@ export const taskSourceVersion = (path: string) => invoke<TaskSourceVersion>("ta
 export const inspectTasks = (path: string) => invoke<TaskSourceInfo>("inspect_tasks", { path });
 export const analyzeTasks = (path: string, baselineVersion: number) => invoke<TaskAnalysisReport>("analyze_tasks", { path, baselineVersion });
 export const compareTaskIds = (path: string, referencePath: string) => invoke<TaskIdComparisonReport>("compare_task_ids", { path, referencePath });
-/** Scores read-only fixed-width field insertion candidates against a verified older task set. */
+/** Scores read-only fixed-width insertions after normalizing any accepted user-layout fields. */
 export const scoreTaskFields = (path: string, referencePath: string) => invoke<TaskFieldCandidateReport>("score_task_fields", { path, referencePath });
 export const getTaskLayoutPatch = (version: number) => invoke<TaskLayoutPatch | null>("task_layout_patch", { version });
+export const getTaskSchema = (version: number, baselineVersion: number) => invoke<TaskSchemaView>("task_schema", { version, baselineVersion });
 export const analyzeTaskLayoutPatch = (path: string) => invoke<TaskLayoutPatchReport>("analyze_task_layout_patch", { path });
+/** Accepts a user layout only after every root decodes and re-encodes byte-for-byte. */
+export const verifyTaskLayout = (path: string, baselineVersion: number) => invoke<TaskLayoutPatch>("verify_task_layout", { path, baselineVersion });
+/** Returns an accepted user layout to read-only analysis before schema changes. */
+export const editTaskLayout = (version: number) => invoke<TaskLayoutPatch | null>("edit_task_layout", { version });
 export const addTaskLayoutField = (path: string, baseVersion: number, structure: string, afterField: string, name: string, width: number, fieldType: string) =>
   invoke<TaskLayoutPatchReport>("add_task_layout_field", { path, baseVersion, structure, afterField, name, width, fieldType });
+export const addTaskLayoutCountedArray = (path: string, baseVersion: number, structure: string, afterField: string, name: string, countField: string, itemType: string) =>
+  invoke<TaskLayoutPatchReport>("add_task_layout_counted_array", { path, baseVersion, structure, afterField, name, countField, itemType });
+export const removeTaskLayoutField = (path: string, baseVersion: number, structure: string, field: string) =>
+  invoke<TaskLayoutPatchReport>("remove_task_layout_field", { path, baseVersion, structure, field });
+export const replaceTaskLayoutFieldType = (path: string, baseVersion: number, structure: string, field: string, fieldType: string) =>
+  invoke<TaskLayoutPatchReport>("replace_task_layout_field_type", { path, baseVersion, structure, field, fieldType });
 export const setTaskLayoutOperationType = (path: string, index: number, fieldType: string) =>
   invoke<TaskLayoutPatchReport>("set_task_layout_operation_type", { path, index, fieldType });
+export const setTaskLayoutOperationConditions = (path: string, index: number, conditions: TaskLayoutCondition[]) =>
+  invoke<TaskLayoutPatchReport>("set_task_layout_operation_conditions", { path, index, conditions: conditions.map(({ field, operator, value }) => ({ field, operator, value })) });
+export const exportTaskLayoutPatch = (version: number, targetPath: string) => invoke<TaskLayoutExportReport>("export_task_layout_patch", { version, targetPath });
+export const importTaskLayoutPatch = (tasksPath: string, patchPath: string) => invoke<TaskLayoutPatchReport>("import_task_layout_patch", { tasksPath, patchPath });
 export const removeTaskLayoutOperation = (path: string, index: number) => invoke<TaskLayoutPatchReport>("remove_task_layout_operation", { path, index });
 /** Decodes one root lazily, then selects a task in its recursive hierarchy. */
 export const getTask = (pack: number, root: number, path: number[]) => invoke<TaskDetail>("get_task", { pack, root, path });

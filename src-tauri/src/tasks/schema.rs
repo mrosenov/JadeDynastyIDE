@@ -159,7 +159,7 @@ pub enum Predicate {
 }
 
 impl Predicate {
-    fn matches(&self, value: i128) -> bool {
+    pub(crate) fn matches(&self, value: i128) -> bool {
         match self {
             Self::Eq(expected) => value == *expected,
             Self::NotEq(expected) => value != *expected,

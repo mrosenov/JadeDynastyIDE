@@ -116,6 +116,12 @@ link to the matching quest, item and monster IDs link to the open `elements.data
 buff and title values use the configured client's names and descriptions. One decoded root is
 cached, so moving among its subtasks does not reread or decode the pack.
 
+**Task schema** opens the effective binary layout for the current task version. It lists every
+structure, field type and condition and can search across all four. Verified v165, v172 and v184
+layouts are read-only. For an unsupported version, the same window shows the selected older
+baseline plus accepted user patch fields, which are marked separately; structural changes still
+go through the analyzer so every operation is validated against the complete task set.
+
 Click an editable value in the inspector to change it in memory. Known integers, floats, booleans,
 names, quest text, existing array entries and dialog text are supported. Unknown fixed-width fields
 accept exact hexadecimal bytes and retain their declared width. Fields that control counts,
@@ -144,7 +150,7 @@ are still verified first. Choose v165, v172 or v184 as an older baseline and run
 to test every root. The report separates byte-exact roots, roots where the baseline ends with
 trailing bytes, and structural failures; it shows root and byte coverage, the first stopping
 field and offset, and coverage for each pack. Analysis never changes the file, and saving remains
-disabled even when an older schema happens to round-trip every root.
+disabled until the effective layout round-trips every root exactly and the user accepts it.
 
 The analyzer can also compare the newer file with an older supported `tasks.data`. Root tasks are
 matched by ID rather than file order. The comparison counts matching, added, removed, renamed and
@@ -162,8 +168,43 @@ field in a user patch at `%APPDATA%\com.jdide.app\task-layouts\v<version>.json`.
 default; the picker can assign a same-width integer, float, boolean or byte type, and the patch panel
 can change that type later without moving following fields. JD IDE validates every addition or type
 change, rechecks every root, then stores the patch. The patch panel can also remove an operation.
-Task data is never changed, and opening, editing and saving remain disabled until the
-layout is independently verified.
+**Find next candidates** then removes the accepted fixed-width spans from temporary root copies and
+ranks the remaining differences. Adjacent additions can anchor after a field already in the patch,
+so layouts with several new fields can be built incrementally. The reference file must match the
+patch's baseline version. Task data is never changed during analysis.
+
+An inserted field can be **Always** present or have one or more conditions. Conditions use an
+earlier integer field in the same structure and support zero/non-zero, equality, ranges, lists and
+bit-mask predicates. Every condition must match before the field is read. Applying or clearing the
+conditions validates the controller references, analyzes every root again and only then saves the
+user patch. Iterative candidate scoring also evaluates those conditions per record before removing
+accepted bytes from its temporary comparison copy.
+
+**Counted array…** adds a variable-length array manually when fixed-width comparison cannot infer
+one. Choose its containing structure and insertion point, name the earlier integer field that stores
+the count, then select a scalar item type or reuse an existing task structure. The schema validator
+rejects forward, missing and non-integer count references or unknown item structures, and whole-file
+analysis runs before the operation is saved. Fixed-width candidate scoring pauses after a variable
+field is present because its byte span differs per record; the coverage report remains available.
+
+**Baseline field…** handles changes inherited from the older layout. **Replace type** keeps the
+field name and conditions but assigns another fixed-width scalar, byte or raw type; the dialog shows
+the old and new byte widths. **Remove field** deletes it from the effective schema. Both operations
+are rejected when they break a later count, condition, insertion or structure dependency, and both
+run whole-file analysis before being stored. Removing their row from the patch restores the baseline.
+
+Use **Export…** to share or back up the complete versioned patch as JSON. **Import patch…** accepts
+that JSON only when its target version matches the open `tasks.data`, validates every schema
+operation, runs whole-file coverage, and replaces the active user patch only after those checks
+complete. Importing a patch still does not enable task editing or saving by itself.
+
+When coverage reaches an exact byte-for-byte round trip for every root, **Accept layout and open
+editor** reruns that complete check, performs the normal task-browser decode, and stores a digest of
+the exact user schema. The version then opens in the normal editable task workspace and is marked
+**Accepted user layout**. Any later schema operation clears that acceptance. **Edit layout** returns
+the version to the read-only analyzer so the schema can be changed and verified again. A matching
+older baseline can also be accepted without adding operations when it already matches the newer
+file exactly.
 
 ## path.data editor
 

@@ -1,11 +1,14 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { open } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, BarChart3, Check, FileCheck2, FlaskConical, FolderOpen, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Undo2, X } from "lucide-react";
-import { addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, compareTaskIds, editTaskField, getTask, getTaskEditHistory, getTaskEditState, getTaskLayoutPatch, inspectTasks, openTasks, redoTaskEdit, removeTaskLayoutOperation, revertTaskEdits, scoreTaskFields, searchTasks, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit } from "../elements/api";
+import { open, save } from "@tauri-apps/plugin-dialog";
+import { AlertTriangle, BarChart3, Braces, Check, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, RotateCcw, Search, ShieldCheck, Undo2, Upload, X } from "lucide-react";
+import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, compareTaskIds, editTaskField, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditHistory, getTaskEditState, getTaskLayoutPatch, importTaskLayoutPatch, inspectTasks, openTasks, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskAnalysisReport, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskIdComparisonReport, TaskLayoutPatch, TaskRootSummary, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskAnalysisReport, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskHistoryEntry, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 import { TaskSaveDialog } from "./TaskSaveDialog";
+import { TaskSchemaDialog } from "./TaskSchemaDialog";
+import { TaskCountedArrayDialog, type TaskCountedArrayDraft } from "./TaskCountedArrayDialog";
+import { TaskBaselineFieldDialog, type TaskBaselineFieldDraft } from "./TaskBaselineFieldDialog";
 
 export interface TasksEditorState {
   loaded: boolean;
@@ -60,6 +63,20 @@ function fixedTypeOptions(width: number) {
 function safestCandidateType(candidate: TaskFieldCandidate) {
   return [...candidate.typeHints].reverse().find((type) => type.startsWith("raw")) ?? candidate.typeHints.at(-1) ?? fixedTypeOptions(candidate.width).at(-1)!;
 }
+
+const CONDITION_OPERATORS: Array<{ value: TaskLayoutCondition["operator"]; label: string; needsValue: boolean }> = [
+  { value: "non_zero", label: "is not zero", needsValue: false },
+  { value: "zero", label: "is zero", needsValue: false },
+  { value: "eq", label: "equals", needsValue: true },
+  { value: "not_eq", label: "does not equal", needsValue: true },
+  { value: "one_of", label: "is one of", needsValue: true },
+  { value: "at_least", label: "is at least", needsValue: true },
+  { value: "at_most", label: "is at most", needsValue: true },
+  { value: "bits_any", label: "has any bits", needsValue: true },
+  { value: "bits_all", label: "has all bits", needsValue: true },
+];
+
+const conditionNeedsValue = (operator: TaskLayoutCondition["operator"]) => CONDITION_OPERATORS.find((candidate) => candidate.value === operator)?.needsValue ?? true;
 
 interface TaskMatch {
   root: TaskRootSummary;
@@ -208,7 +225,12 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const [comparisonBusy, setComparisonBusy] = useState(false);
   const [candidatesBusy, setCandidatesBusy] = useState(false);
   const [layoutBusy, setLayoutBusy] = useState(false);
+  const [layoutNote, setLayoutNote] = useState<string | null>(null);
+  const [schemaOpen, setSchemaOpen] = useState(false);
+  const [arrayOpen, setArrayOpen] = useState(false);
+  const [baselineFieldOpen, setBaselineFieldOpen] = useState(false);
   const [candidateDraft, setCandidateDraft] = useState<{ candidate: TaskFieldCandidate; name: string; fieldType: string } | null>(null);
+  const [conditionDraft, setConditionDraft] = useState<{ index: number; field: string; rows: TaskLayoutCondition[] } | null>(null);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase());
   const [page, setPage] = useState(0);
@@ -301,8 +323,8 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     void runEditAction(revertTaskEdits).catch(() => {});
   }, [editState.changedRoots.length, runEditAction]);
 
-  const load = useCallback(async (path: string) => {
-    if (file && editState.changedRoots.length && !window.confirm("Open another tasks.data file and discard the current unsaved changes?")) return;
+  const load = useCallback(async (path: string, skipUnsavedPrompt = false) => {
+    if (!skipUnsavedPrompt && file && editState.changedRoots.length && !window.confirm("Open another tasks.data file and discard the current unsaved changes?")) return;
     const current = ++request.current;
     setBusy(true);
     setTaskBusy(false);
@@ -314,6 +336,11 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setFieldCandidates(null);
     setLayoutPatch(null);
     setCandidateDraft(null);
+    setConditionDraft(null);
+    setLayoutNote(null);
+    setSchemaOpen(false);
+    setArrayOpen(false);
+    setBaselineFieldOpen(false);
     setReferencePath(null);
     setDetail(null);
     setSelectedRoot(null);
@@ -456,6 +483,36 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     }
   }, [analysisBusy, baseline, layoutPatch, unsupported]);
 
+  const acceptLayout = useCallback(async () => {
+    if (!unsupported || !analysis?.exactRoundTrip || layoutBusy) return;
+    setLayoutBusy(true);
+    setError(null);
+    setLayoutNote(null);
+    try {
+      await verifyTaskLayout(unsupported.path, layoutPatch?.baseVersion ?? baseline);
+      await load(unsupported.path, true);
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setLayoutBusy(false);
+    }
+  }, [analysis?.exactRoundTrip, baseline, layoutBusy, layoutPatch?.baseVersion, load, unsupported]);
+
+  const reopenLayoutAnalyzer = useCallback(async () => {
+    if (!file?.userLayout || layoutBusy) return;
+    if (editState.changedRoots.length && !window.confirm("Discard the current unsaved task edits and return this user layout to analysis mode?")) return;
+    setLayoutBusy(true);
+    setError(null);
+    try {
+      await editTaskLayout(file.version);
+      await load(file.path, true);
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setLayoutBusy(false);
+    }
+  }, [editState.changedRoots.length, file, layoutBusy, load]);
+
   const chooseComparison = useCallback(async () => {
     if (!unsupported || comparisonBusy) return;
     const picked = await open({
@@ -497,12 +554,14 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     if (!unsupported || !candidateDraft || layoutBusy) return;
     setLayoutBusy(true);
     setError(null);
+    setLayoutNote(null);
     try {
       const report = await addTaskLayoutField(unsupported.path, layoutPatch?.baseVersion ?? baseline, candidateDraft.candidate.structure, candidateDraft.candidate.afterField, candidateDraft.name.trim(), candidateDraft.candidate.width, candidateDraft.fieldType);
       setLayoutPatch(report.patch);
       setAnalysis(report.analysis);
       setFieldCandidates(null);
       setCandidateDraft(null);
+      setConditionDraft(null);
     } catch (problem) {
       setError(String(problem).replace(/^Error: /, ""));
     } finally {
@@ -510,16 +569,63 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     }
   }, [baseline, candidateDraft, layoutBusy, layoutPatch?.baseVersion, unsupported]);
 
+  const addCountedArray = useCallback(async (draft: TaskCountedArrayDraft) => {
+    if (!unsupported || layoutBusy) return false;
+    setLayoutBusy(true);
+    setError(null);
+    setLayoutNote(null);
+    try {
+      const report = await addTaskLayoutCountedArray(unsupported.path, layoutPatch?.baseVersion ?? baseline, draft.structure, draft.afterField, draft.name, draft.countField, draft.itemType);
+      setLayoutPatch(report.patch);
+      setAnalysis(report.analysis);
+      setFieldCandidates(null);
+      setCandidateDraft(null);
+      setConditionDraft(null);
+      return true;
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+      return false;
+    } finally {
+      setLayoutBusy(false);
+    }
+  }, [baseline, layoutBusy, layoutPatch?.baseVersion, unsupported]);
+
+  const changeBaselineField = useCallback(async (draft: TaskBaselineFieldDraft) => {
+    if (!unsupported || layoutBusy) return false;
+    setLayoutBusy(true);
+    setError(null);
+    setLayoutNote(null);
+    try {
+      const baseVersion = layoutPatch?.baseVersion ?? baseline;
+      const report = draft.mode === "remove"
+        ? await removeTaskLayoutField(unsupported.path, baseVersion, draft.structure, draft.field)
+        : await replaceTaskLayoutFieldType(unsupported.path, baseVersion, draft.structure, draft.field, draft.fieldType);
+      setLayoutPatch(report.patch);
+      setAnalysis(report.analysis);
+      setFieldCandidates(null);
+      setCandidateDraft(null);
+      setConditionDraft(null);
+      return true;
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+      return false;
+    } finally {
+      setLayoutBusy(false);
+    }
+  }, [baseline, layoutBusy, layoutPatch?.baseVersion, unsupported]);
+
   const removePatchOperation = useCallback(async (index: number) => {
     if (!unsupported || layoutBusy) return;
     setLayoutBusy(true);
     setError(null);
+    setLayoutNote(null);
     try {
       const report = await removeTaskLayoutOperation(unsupported.path, index);
       setLayoutPatch(report.patch.operations.length ? report.patch : null);
       setAnalysis(report.analysis);
       setFieldCandidates(null);
       setCandidateDraft(null);
+      setConditionDraft(null);
     } catch (problem) {
       setError(String(problem).replace(/^Error: /, ""));
     } finally {
@@ -531,18 +637,94 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     if (!unsupported || layoutBusy) return;
     setLayoutBusy(true);
     setError(null);
+    setLayoutNote(null);
     try {
       const report = await setTaskLayoutOperationType(unsupported.path, index, fieldType);
       setLayoutPatch(report.patch);
       setAnalysis(report.analysis);
       setFieldCandidates(null);
       setCandidateDraft(null);
+      setConditionDraft(null);
     } catch (problem) {
       setError(String(problem).replace(/^Error: /, ""));
     } finally {
       setLayoutBusy(false);
     }
   }, [layoutBusy, unsupported]);
+
+  const applyPatchConditions = useCallback(async () => {
+    if (!unsupported || !conditionDraft || layoutBusy) return;
+    setLayoutBusy(true);
+    setError(null);
+    setLayoutNote(null);
+    try {
+      const report = await setTaskLayoutOperationConditions(unsupported.path, conditionDraft.index, conditionDraft.rows);
+      setLayoutPatch(report.patch);
+      setAnalysis(report.analysis);
+      setFieldCandidates(null);
+      setCandidateDraft(null);
+      setConditionDraft(null);
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setLayoutBusy(false);
+    }
+  }, [conditionDraft, layoutBusy, unsupported]);
+
+  const exportLayoutPatch = useCallback(async () => {
+    if (!unsupported || !layoutPatch || layoutBusy) return;
+    const target = await save({
+      defaultPath: unsupported.path.replace(/tasks\.data$/i, `tasks-v${unsupported.version}-layout.json`),
+      title: `Export tasks.data v${unsupported.version} layout patch`,
+      filters: [{ name: "JD IDE task layout", extensions: ["json"] }],
+    });
+    if (typeof target !== "string") return;
+    setLayoutBusy(true);
+    setError(null);
+    setLayoutNote(null);
+    try {
+      const report = await exportTaskLayoutPatch(unsupported.version, target);
+      setLayoutNote(`Exported ${report.operations} operation${report.operations === 1 ? "" : "s"} to ${report.path.split(/[\\/]/).pop()}.`);
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setLayoutBusy(false);
+    }
+  }, [layoutBusy, layoutPatch, unsupported]);
+
+  const importLayoutPatch = useCallback(async () => {
+    if (!unsupported || layoutBusy) return;
+    const source = await open({
+      multiple: false,
+      directory: false,
+      defaultPath: layoutPatch?.path ?? unsupported.path,
+      title: `Import tasks.data v${unsupported.version} layout patch`,
+      filters: [{ name: "JD IDE task layout", extensions: ["json"] }],
+    });
+    if (typeof source !== "string") return;
+    if (layoutPatch && !window.confirm(`Replace the current v${unsupported.version} user layout with ${source.split(/[\\/]/).pop()}? The imported patch will be validated against every task root first.`)) return;
+    setLayoutBusy(true);
+    setError(null);
+    setLayoutNote(null);
+    try {
+      const report = await importTaskLayoutPatch(unsupported.path, source);
+      setLayoutPatch(report.patch);
+      setAnalysis(report.analysis);
+      setBaseline(report.patch.baseVersion);
+      setFieldCandidates(null);
+      setCandidateDraft(null);
+      setConditionDraft(null);
+      if (comparison && comparison.reference.version !== report.patch.baseVersion) {
+        setComparison(null);
+        setReferencePath(null);
+      }
+      setLayoutNote(`Imported ${report.patch.operations.length} operation${report.patch.operations.length === 1 ? "" : "s"} and checked every task root.`);
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setLayoutBusy(false);
+    }
+  }, [comparison, layoutBusy, layoutPatch, unsupported]);
 
   useEffect(() => {
     if (!file || !deferredQuery) {
@@ -620,10 +802,12 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   if (!file) {
     if (unsupported) {
       const issue = analysis?.firstIssue;
-      return <section className="tasks-pane task-analyzer-pane" aria-busy={busy || analysisBusy || comparisonBusy || candidatesBusy || layoutBusy}>
+      const scoringBlocked = !!layoutPatch?.operations.some((operation) => operation.kind !== "insert" || !operation.width);
+      return <><section className="tasks-pane task-analyzer-pane" aria-busy={busy || analysisBusy || comparisonBusy || candidatesBusy || layoutBusy}>
         <header className="tasks-head">
           <div><h2>Task layout analyzer <span className="tag warn">unverified layout</span></h2><div className="tasks-file-line"><span className="mono truncate" title={unsupported.path}>{unsupported.path}</span><span className="path-data-badge"><b>Version:</b> v{unsupported.version}</span><span className="path-data-badge"><b>Roots:</b> {count(unsupported.rootCount)}</span><span className="path-data-badge"><b>Packs:</b> {unsupported.packCount}</span><span className="path-data-badge"><b>Size:</b> {bytes(unsupported.size)}</span></div></div>
           <span className="tasks-integrity" title="The index, pack headers, root offsets and stored MD5 values are valid"><ShieldCheck size={14}/> Container verified</span>
+          <button className="btn" onClick={() => setSchemaOpen(true)} disabled={layoutBusy}><Braces size={14}/> Task schema</button>
           <button className="btn" onClick={choose} disabled={busy || analysisBusy || comparisonBusy || candidatesBusy || layoutBusy}><FolderOpen size={14}/> Open…</button>
         </header>
         <div className="task-analyzer-scroll">
@@ -633,9 +817,13 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
           <section className="task-analyzer-controls">
             <label>Older schema <select value={baseline} onChange={(event) => { setBaseline(Number(event.target.value)); setAnalysis(null); }} disabled={analysisBusy || !!layoutPatch}>{unsupported.supportedVersions.map((version) => <option value={version} key={version}>v{version}{version === unsupported.closestVersion ? " · closest" : ""}</option>)}</select></label>
             <button className="btn primary" onClick={() => void runAnalysis()} disabled={analysisBusy || layoutBusy}>{analysisBusy ? <Loader2 size={14} className="spin"/> : <FlaskConical size={14}/>} {analysisBusy ? "Analyzing every root…" : layoutPatch ? "Analyze patched layout" : "Analyze layout"}</button>
+            <button className="btn" onClick={() => setArrayOpen(true)} disabled={layoutBusy || analysisBusy}><Plus size={14}/> Counted array…</button>
+            <button className="btn" onClick={() => setBaselineFieldOpen(true)} disabled={layoutBusy || analysisBusy}><Pencil size={14}/> Baseline field…</button>
+            <button className="btn" onClick={() => void importLayoutPatch()} disabled={layoutBusy || analysisBusy}><Upload size={14}/> Import patch…</button>
             <span className="muted small">No data is changed.</span>
           </section>
           {error && <div className="path-data-message error">{error}</div>}
+          {layoutNote && <div className="path-data-message ok">{layoutNote}</div>}
           {analysis && <>
             <section className="task-analysis-metrics">
               <div><span>Exact roots</span><b>{count(analysis.exactRoots)} / {count(analysis.source.rootCount)}</b><small>{analysis.rootCoverage.toFixed(2)}%</small></div>
@@ -643,13 +831,13 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
               <div><span>Trailing roots</span><b>{count(analysis.trailingRoots)}</b><small>baseline ends early</small></div>
               <div><span>Failed roots</span><b>{count(analysis.failedRoots)}</b><small>structural failure</small></div>
             </section>
-            {analysis.exactRoundTrip ? <div className="task-analysis-result exact"><ShieldCheck size={17}/><div><b>Every root matches the v{analysis.baselineVersion} layout byte-for-byte.</b><span>The container version is still unverified, so editing and saving remain locked until a user layout is created and accepted.</span></div></div>
+            {analysis.exactRoundTrip ? <div className="task-analysis-result exact"><ShieldCheck size={17}/><div><b>Every root matches the v{analysis.baselineVersion} layout byte-for-byte.</b><span>Accepting reruns the whole-file check, stores this exact schema, and opens the normal task editor.</span></div><button className="btn primary" onClick={() => void acceptLayout()} disabled={layoutBusy}>{layoutBusy ? <Loader2 size={14} className="spin"/> : <Check size={14}/>} Accept layout and open editor</button></div>
               : issue && <div className="task-analysis-result issue"><BarChart3 size={17}/><div><b>First stopping point: pack {issue.pack + 1}, root {issue.root + 1}, offset 0x{issue.offset.toString(16).toUpperCase()}</b><span className="mono">{issue.message}</span><span>{bytes(issue.offset)} of this {bytes(issue.rootBytes)} root was reached before the failure.</span></div></div>}
             <section className="task-pack-coverage"><header><b>Coverage by pack</b><span>Baseline v{analysis.baselineVersion}</span></header><div className="task-pack-coverage-head"><span>Pack</span><span>Exact roots</span><span>Trailing</span><span>Failed</span><span>Decoded bytes</span><span>Coverage</span></div>{analysis.packs.map((pack) => <div className={pack.failedRoots || pack.trailingRoots ? "has-issue" : ""} key={pack.pack}><span className="mono">tasks.data{pack.pack + 1}</span><span>{pack.exactRoots} / {pack.roots}</span><span>{pack.trailingRoots}</span><span>{pack.failedRoots}</span><span>{bytes(pack.decodedBytes)} / {bytes(pack.bytes)}</span><span>{(pack.bytes ? pack.decodedBytes * 100 / pack.bytes : 100).toFixed(2)}%</span></div>)}</section>
           </>}
           {layoutPatch && <section className="task-layout-patch">
-            <header><div><b>User task layout patch</b><span>v{layoutPatch.taskVersion} based on v{layoutPatch.baseVersion} · stored at {layoutPatch.path}</span></div><span className="tag warn">unverified</span></header>
-            <div className="task-layout-patch-head"><span>Field</span><span>Operation</span><span>Location</span><span>Type</span><span/></div>
+            <header><div><b>User task layout patch</b><span>v{layoutPatch.taskVersion} based on v{layoutPatch.baseVersion} · stored at {layoutPatch.path}</span></div><button className="btn small" onClick={() => setBaselineFieldOpen(true)} disabled={layoutBusy}><Pencil size={13}/> Baseline field…</button><button className="btn small" onClick={() => setArrayOpen(true)} disabled={layoutBusy}><Plus size={13}/> Counted array…</button><button className="btn small" onClick={() => void exportLayoutPatch()} disabled={layoutBusy}><Download size={13}/> Export…</button><span className="tag warn">unverified</span></header>
+            <div className="task-layout-patch-head"><span>Field</span><span>Operation</span><span>Location</span><span>Type</span><span>Condition</span><span/></div>
             {layoutPatch.operations.map((operation) => <div className="task-layout-patch-row" key={`${operation.index}:${operation.field}`}>
               <span className="mono">{operation.field}</span>
               <span>{operation.kind}</span>
@@ -657,9 +845,23 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
               {operation.kind === "insert" && operation.width && operation.fieldType
                 ? <select value={operation.fieldType} onChange={(event) => void changePatchOperationType(operation.index, event.target.value)} disabled={layoutBusy} title={`${operation.width} bytes`}>{fixedTypeOptions(operation.width).map((type) => <option value={type} key={type}>{type}</option>)}</select>
                 : <span>{operation.fieldType ?? "—"}</span>}
+              {operation.kind === "insert"
+                ? <button className={`btn small task-condition-button${operation.conditions.length ? " active" : ""}`} onClick={() => { setCandidateDraft(null); setConditionDraft({ index: operation.index, field: operation.field, rows: operation.conditions.map((condition) => ({ ...condition })) }); }} disabled={layoutBusy} title={operation.conditions.map((condition) => condition.label).join(" and ") || "Field is always present"}><GitBranch size={12}/>{operation.conditions.length ? operation.conditions.map((condition) => condition.label).join(" · ") : "Always"}</button>
+                : <span>—</span>}
               <button className="icon-btn" onClick={() => void removePatchOperation(operation.index)} disabled={layoutBusy} title={`Remove ${operation.field}`}><X size={14}/></button>
             </div>)}
-            <footer>Adding, removing or changing a field type reruns the entire file. Type changes keep the same byte width. The file stays read-only until a future patch passes exact coverage.</footer>
+            {conditionDraft && <div className="task-condition-draft">
+              <header><div><b>Read <span className="mono">{conditionDraft.field}</span> only when</b><span>Every row must match. Controller fields must be earlier integers in the same structure.</span></div><button className="icon-btn" onClick={() => setConditionDraft(null)} disabled={layoutBusy} aria-label="Close condition editor"><X size={14}/></button></header>
+              {conditionDraft.rows.map((condition, index) => <div className="task-condition-row" key={index}>
+                <input value={condition.field} onChange={(event) => setConditionDraft({ ...conditionDraft, rows: conditionDraft.rows.map((row, rowIndex) => rowIndex === index ? { ...row, field: event.target.value } : row) })} placeholder="controller_field" aria-label={`Condition ${index + 1} controller field`}/>
+                <select value={condition.operator} onChange={(event) => { const operator = event.target.value as TaskLayoutCondition["operator"]; setConditionDraft({ ...conditionDraft, rows: conditionDraft.rows.map((row, rowIndex) => rowIndex === index ? { ...row, operator, value: conditionNeedsValue(operator) ? row.value ?? "" : undefined } : row) }); }} aria-label={`Condition ${index + 1} operator`}>{CONDITION_OPERATORS.map((operator) => <option value={operator.value} key={operator.value}>{operator.label}</option>)}</select>
+                {conditionNeedsValue(condition.operator) ? <input value={condition.value ?? ""} onChange={(event) => setConditionDraft({ ...conditionDraft, rows: conditionDraft.rows.map((row, rowIndex) => rowIndex === index ? { ...row, value: event.target.value } : row) })} placeholder={condition.operator === "one_of" ? "1, 2, 3" : condition.operator.startsWith("bits_") ? "0x01" : "value"} aria-label={`Condition ${index + 1} value`}/> : <span className="muted">No value needed</span>}
+                <button className="icon-btn" onClick={() => setConditionDraft({ ...conditionDraft, rows: conditionDraft.rows.filter((_, rowIndex) => rowIndex !== index) })} disabled={layoutBusy} title="Remove condition"><X size={13}/></button>
+              </div>)}
+              {!conditionDraft.rows.length && <div className="empty-note">No conditions. This field is read for every record.</div>}
+              <footer><button className="btn small" onClick={() => setConditionDraft({ ...conditionDraft, rows: [...conditionDraft.rows, { field: "", operator: "non_zero", label: "" }] })} disabled={layoutBusy || conditionDraft.rows.length >= 16}><Plus size={12}/> Add condition</button><span className="spacer"/><button className="btn small" onClick={() => setConditionDraft(null)} disabled={layoutBusy}>Cancel</button><button className="btn primary small" onClick={() => void applyPatchConditions()} disabled={layoutBusy}>{layoutBusy ? <Loader2 size={13} className="spin"/> : <Check size={13}/>} Apply and analyze</button></footer>
+            </div>}
+            <footer>Adding, removing, changing a field type or changing its conditions reruns the entire file. Type changes keep the same byte width. Exact whole-file coverage enables the Accept layout action above.</footer>
           </section>}
           <section className="task-id-comparison">
             <header><div><b>Compare matching root-task IDs</b><span>Choose an older supported task set. Repeated record-size deltas are evidence of fields added to the newer task structure.</span></div><button className="btn" onClick={() => void chooseComparison()} disabled={comparisonBusy}>{comparisonBusy ? <Loader2 size={14} className="spin"/> : <FolderOpen size={14}/>} {comparisonBusy ? "Comparing task sets…" : comparison ? "Choose another…" : "Choose older tasks.data…"}</button></header>
@@ -671,8 +873,8 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
                 <section className="task-id-differences"><header><b>ID and name differences</b><span>{count(comparison.differenceCount)}</span></header>{comparison.differences.length ? <><div className="task-id-differences-head"><span>ID</span><span>Kind</span><span>Newer</span><span>Older</span></div>{comparison.differences.map((row, index) => <div key={`${row.kind}:${row.id}:${index}`}><span className="mono">{row.id}</span><span className={`tag ${row.kind}`}>{row.kind.replaceAll("_", " ")}</span><span className="truncate" title={row.targetName}>{row.targetName ?? "—"}</span><span className="truncate" title={row.referenceName}>{row.referenceName ?? "—"}</span></div>)}{comparison.differencesTruncated && <footer>Showing {comparison.differences.length} of {comparison.differenceCount} differences.</footer>}</> : <div className="empty-note">Every unique root ID and name exists in both files.</div>}</section>
               </div>
               <section className="task-field-candidates">
-                <header><div><b>Candidate fixed-width fields</b><span>Tests known field boundaries and ranks positions where skipping a small block makes the newer bytes realign with the older schema.</span></div><button className="btn" onClick={() => void findFieldCandidates()} disabled={candidatesBusy || !!layoutPatch}>{candidatesBusy ? <Loader2 size={14} className="spin"/> : <FlaskConical size={14}/>} {candidatesBusy ? "Scoring candidates…" : layoutPatch ? "Patch coverage first" : fieldCandidates ? "Run again" : "Find candidates"}</button></header>
-                {layoutPatch && !fieldCandidates && <div className="task-field-candidates-note"><b>Candidate list cleared</b><span>The ranking used the unpatched byte layout. Check the new coverage before adding another field.</span></div>}
+                <header><div><b>Candidate fixed-width fields</b><span>Tests known field boundaries and ranks positions where skipping a small block makes the newer bytes realign with the older schema.</span></div><button className="btn" onClick={() => void findFieldCandidates()} disabled={candidatesBusy || layoutBusy || scoringBlocked}>{candidatesBusy ? <Loader2 size={14} className="spin"/> : <FlaskConical size={14}/>} {candidatesBusy ? "Scoring candidates…" : scoringBlocked ? "Structural operation added" : layoutPatch ? "Find next candidates" : fieldCandidates ? "Run again" : "Find candidates"}</button></header>
+                {layoutPatch && !fieldCandidates && <div className="task-field-candidates-note"><b>Ready for the next field</b><span>The scorer will remove the {layoutPatch.operations.length} accepted operation{layoutPatch.operations.length === 1 ? "" : "s"} from temporary root copies and rank what still differs.</span></div>}
                 {fieldCandidates && <>{fieldCandidates.candidates.length ? <>
                   <div className="task-field-candidates-note"><b>{fieldCandidates.candidateCount} candidate{fieldCandidates.candidateCount === 1 ? "" : "s"}</b><span>from {count(fieldCandidates.sampledRoots)} changed matching roots · baseline v{fieldCandidates.baselineVersion}</span><span>Adding one stores a typed fixed-width patch and rechecks every root.</span></div>
                   <div className="task-field-candidates-head"><span>Score</span><span>Insert after</span><span>Width</span><span>Likely types</span><span>Evidence</span><span>Offsets</span><span>Example bytes</span><span/></div>
@@ -684,7 +886,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
             </>}
           </section>
         </div>
-      </section>;
+      </section>{schemaOpen && <TaskSchemaDialog version={unsupported.version} baselineVersion={layoutPatch?.baseVersion ?? baseline} onClose={() => setSchemaOpen(false)}/>} {arrayOpen && <TaskCountedArrayDialog version={unsupported.version} baselineVersion={layoutPatch?.baseVersion ?? baseline} operationNumber={(layoutPatch?.operations.length ?? 0) + 1} onApply={addCountedArray} onClose={() => setArrayOpen(false)}/>} {baselineFieldOpen && <TaskBaselineFieldDialog version={unsupported.version} baselineVersion={layoutPatch?.baseVersion ?? baseline} onApply={changeBaselineField} onClose={() => setBaselineFieldOpen(false)}/>}</>;
     }
     return <section className="tasks-pane empty">
       <div className="drop-card tasks-empty">
@@ -698,7 +900,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     </section>;
   }
 
-  return <section className="tasks-pane" aria-busy={busy || taskBusy}>
+  return <><section className="tasks-pane" aria-busy={busy || taskBusy}>
     <header className="tasks-head">
       <div>
         <h2>Tasks editor</h2>
@@ -711,7 +913,10 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
         </div>
       </div>
       <span className="tasks-integrity" title="The index, pack headers, offsets and every stored pack MD5 were verified"><ShieldCheck size={14} /> Integrity verified</span>
+      {file.userLayout && <span className="tag ok" title="This user layout decoded and re-encoded every root byte-for-byte">Accepted user layout</span>}
       {!!editState.changedRoots.length && <span className="status-edits"><span className="changed-dot" /> {editState.changedRoots.length} changed root{editState.changedRoots.length === 1 ? "" : "s"}</span>}
+      <button className="btn" onClick={() => setSchemaOpen(true)} disabled={busy || taskBusy}><Braces size={14}/> Task schema</button>
+      {file.userLayout && <button className="btn" onClick={() => void reopenLayoutAnalyzer()} disabled={busy || taskBusy || layoutBusy}><Pencil size={14}/> Edit layout</button>}
       <button className="btn" onClick={choose} disabled={busy}><FolderOpen size={14} /> Open…</button>
       <button className="btn primary" onClick={openSave} disabled={busy || taskBusy}><FileCheck2 size={14} /> Save…</button>
     </header>
@@ -800,5 +1005,5 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       setSavedNote(`Saved ${report.changedRoots} changed root${report.changedRoots === 1 ? "" : "s"} across ${report.changedPacks} pack${report.changedPacks === 1 ? "" : "s"}.`);
       window.setTimeout(() => setSavedNote(null), 5000);
     }} />}
-  </section>;
+  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>}</>;
 });

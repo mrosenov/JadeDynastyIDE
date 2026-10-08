@@ -7,7 +7,7 @@ use std::path::Path;
 use serde::Serialize;
 
 use super::container::{Pack, TaskContainer, INDEX_MAGIC};
-use super::schema::{decode_exact, decode_prefix_diagnostic, FieldType, Node, Value};
+use super::schema::{decode_exact, decode_prefix_diagnostic, Condition, FieldType, Node, PatchOperation, Schema, Value};
 use super::{closest_schema_version, schema_for_version, supported_versions};
 
 #[derive(Debug, Clone, Serialize)]
@@ -376,11 +376,22 @@ pub fn compare_ids(target: impl AsRef<Path>, reference: impl AsRef<Path>) -> Res
 /// supports a candidate when bytes before the boundary still align and bytes
 /// after it align substantially better after skipping the proposed width.
 pub fn score_fixed_fields(target: impl AsRef<Path>, reference: impl AsRef<Path>) -> Result<FieldCandidateReport, String> {
+    score_fixed_fields_with_operations(target, reference, &[])
+}
+
+/// Scores the next insertion after normalizing fields already accepted into a
+/// user patch. The accepted spans are removed only from temporary root copies;
+/// the task files and the stored patch are never changed by scoring.
+pub fn score_fixed_fields_with_operations(target: impl AsRef<Path>, reference: impl AsRef<Path>, operations: &[PatchOperation]) -> Result<FieldCandidateReport, String> {
     const MAX_ROOTS: usize = 256;
     const MAX_CANDIDATES: usize = 100;
     const WIDTHS: [usize; 6] = [1, 2, 4, 8, 16, 32];
     const LEFT_WINDOW: usize = 64;
     const RIGHT_WINDOW: usize = 512;
+
+    if operations.iter().any(|operation| !matches!(operation, PatchOperation::InsertAfter { .. })) {
+        return Err("Iterative candidate scoring currently supports inserted fixed-width fields only".into());
+    }
 
     let target = TaskContainer::open(target)?;
     let reference = TaskContainer::open(reference)?;
@@ -389,6 +400,8 @@ pub fn score_fixed_fields(target: impl AsRef<Path>, reference: impl AsRef<Path>)
     }
     let schema = schema_for_version(reference.header.version)?;
     schema.validate()?;
+    let patched_schema = schema.with_operations(operations)?;
+    let inserted = inserted_fields(&schema, &patched_schema)?;
     let target_roots = root_identities(&target)?;
     let reference_roots = root_identities(&reference)?;
     let mut target_by_id = HashMap::<u32, Vec<&RootIdentity>>::new();
@@ -414,10 +427,22 @@ pub fn score_fixed_fields(target: impl AsRef<Path>, reference: impl AsRef<Path>)
             Ok(decoded) => decoded,
             Err(_) => continue,
         };
-        sampled_roots += 1;
         let mut boundaries = Vec::new();
-        collect_boundaries(&decoded, &mut boundaries);
+        let mut accepted_spans = Vec::new();
+        collect_patched_boundaries(&decoded, &schema, &inserted, target.header.version, &mut accepted_spans, &mut boundaries)?;
+        let target_bytes = match normalize_insertions(&target_bytes, &accepted_spans) {
+            Ok(bytes) => bytes,
+            Err(_) => continue,
+        };
+        sampled_roots += 1;
         boundaries.sort_by_key(|boundary| boundary.offset);
+        let mut tied = 0;
+        while tied < boundaries.len() {
+            let mut end = tied + 1;
+            while end < boundaries.len() && boundaries[end].offset == boundaries[tied].offset { end += 1; }
+            boundaries[tied..end].reverse();
+            tied = end;
+        }
         let mut found_width = [false; WIDTHS.len()];
         for boundary in boundaries {
             for (width_index, width) in WIDTHS.into_iter().enumerate() {
@@ -498,6 +523,146 @@ pub fn score_fixed_fields(target: impl AsRef<Path>, reference: impl AsRef<Path>)
     })
 }
 
+#[derive(Debug, Clone)]
+struct InsertedField {
+    name: String,
+    slot: usize,
+    width: usize,
+    conditions: Vec<Condition>,
+}
+
+#[derive(Debug, Clone, Copy)]
+struct AcceptedSpan {
+    offset: usize,
+    width: usize,
+}
+
+fn inserted_fields(base: &Schema, patched: &Schema) -> Result<HashMap<String, Vec<InsertedField>>, String> {
+    let mut result = HashMap::new();
+    for (structure, patched_definition) in &patched.structs {
+        let base_definition = base.structs.get(structure).ok_or_else(|| format!("Patched task layout introduced unsupported structure {structure:?}"))?;
+        let base_indexes = base_definition.fields.iter().enumerate().map(|(index, field)| (field.name.as_str(), index)).collect::<HashMap<_, _>>();
+        let mut slot = 0;
+        let mut fields = Vec::new();
+        for field in &patched_definition.fields {
+            if let Some(index) = base_indexes.get(field.name.as_str()) {
+                slot = index + 1;
+                continue;
+            }
+            let width = fixed_width(&field.ty).ok_or_else(|| format!("Iterative scoring needs a fixed-width inserted field, but {structure}.{} is not fixed-width", field.name))?;
+            fields.push(InsertedField { name: field.name.clone(), slot, width, conditions: field.when.clone() });
+        }
+        if !fields.is_empty() { result.insert(structure.clone(), fields); }
+    }
+    Ok(result)
+}
+
+fn fixed_width(ty: &FieldType) -> Option<usize> {
+    match ty {
+        FieldType::I8 | FieldType::U8 | FieldType::Bool8 => Some(1),
+        FieldType::I16 | FieldType::U16 => Some(2),
+        FieldType::I32 | FieldType::U32 | FieldType::F32 => Some(4),
+        FieldType::I64 | FieldType::U64 | FieldType::F64 => Some(8),
+        FieldType::Bytes { len } | FieldType::Raw { len } => Some(*len),
+        _ => None,
+    }
+}
+
+fn collect_patched_boundaries(node: &Node, schema: &Schema, inserted: &HashMap<String, Vec<InsertedField>>, version: u32, spans: &mut Vec<AcceptedSpan>, boundaries: &mut Vec<FieldBoundary>) -> Result<(), String> {
+    match &node.value {
+        Value::Struct(children) => {
+            let structure = match &node.ty {
+                FieldType::Named { name } => name,
+                _ => &node.name,
+            };
+            let definition = schema.structs.get(structure).ok_or_else(|| format!("Decoded task structure {structure:?} is missing from its baseline schema"))?;
+            let accepted = inserted.get(structure);
+            let scope = numeric_scope(children);
+            let mut offset = node.offset;
+            for slot in 0..=definition.fields.len() {
+                if let Some(fields) = accepted {
+                    for field in fields.iter().filter(|field| field.slot == slot) {
+                        if !inserted_conditions_match(field, version, &scope, structure)? { continue; }
+                        spans.push(AcceptedSpan { offset, width: field.width });
+                        boundaries.push(FieldBoundary { structure: structure.clone(), after_field: field.name.clone(), offset });
+                    }
+                }
+                if slot == definition.fields.len() { break; }
+                let field = &definition.fields[slot];
+                if let Some(child) = children.iter().find(|child| child.name == field.name) {
+                    boundaries.push(FieldBoundary { structure: structure.clone(), after_field: child.name.clone(), offset: child.offset + child.byte_len });
+                    collect_patched_boundaries(child, schema, inserted, version, spans, boundaries)?;
+                    offset = child.offset + child.byte_len;
+                }
+            }
+        }
+        Value::Array(children) => {
+            for child in children { collect_patched_boundaries(child, schema, inserted, version, spans, boundaries)?; }
+        }
+        _ => {}
+    }
+    Ok(())
+}
+
+fn numeric_scope(children: &[Node]) -> HashMap<String, i128> {
+    let mut scope = HashMap::new();
+    for child in children {
+        collect_numeric_values(child, &child.name, &mut scope);
+    }
+    scope
+}
+
+fn collect_numeric_values(node: &Node, path: &str, scope: &mut HashMap<String, i128>) {
+    let number = match &node.value {
+        Value::I64(value) => Some(*value as i128),
+        Value::U64(value) => Some(*value as i128),
+        Value::Bool(value) => Some(i128::from(*value)),
+        _ => None,
+    };
+    if let Some(number) = number {
+        scope.insert(path.into(), number);
+    }
+    if let Value::Struct(children) = &node.value {
+        for child in children {
+            collect_numeric_values(child, &format!("{path}.{}", child.name), scope);
+        }
+    }
+}
+
+fn inserted_conditions_match(field: &InsertedField, version: u32, scope: &HashMap<String, i128>, structure: &str) -> Result<bool, String> {
+    for condition in &field.conditions {
+        let matches = match condition {
+            Condition::Version { min, max } => min.map_or(true, |minimum| version >= minimum) && max.map_or(true, |maximum| version <= maximum),
+            Condition::Field { field: controller, predicate } => {
+                let value = scope.get(controller).ok_or_else(|| format!("{structure}.{}: condition field {controller:?} was not decoded in the reference root", field.name))?;
+                predicate.matches(*value)
+            }
+        };
+        if !matches { return Ok(false); }
+    }
+    Ok(true)
+}
+
+fn normalize_insertions(target: &[u8], spans: &[AcceptedSpan]) -> Result<Vec<u8>, String> {
+    let removed_bytes = spans.iter().try_fold(0usize, |total, span| total.checked_add(span.width).ok_or("Accepted task fields are too large"))?;
+    let capacity = target.len().checked_sub(removed_bytes).ok_or("The newer root is shorter than its accepted task fields")?;
+    let mut normalized = Vec::with_capacity(capacity);
+    let mut source = 0;
+    let mut removed = 0usize;
+    for span in spans {
+        let start = span.offset.checked_add(removed).ok_or("Accepted task field offset overflow")?;
+        let end = start.checked_add(span.width).ok_or("Accepted task field width overflow")?;
+        if start < source || end > target.len() {
+            return Err("Accepted task field is outside the newer root".into());
+        }
+        normalized.extend_from_slice(&target[source..start]);
+        source = end;
+        removed += span.width;
+    }
+    normalized.extend_from_slice(&target[source..]);
+    Ok(normalized)
+}
+
 fn source_info(container: &TaskContainer) -> SourceInfo {
     SourceInfo {
         path: container.index_path().display().to_string(),
@@ -535,29 +700,6 @@ fn root_identities(container: &TaskContainer) -> Result<Vec<RootIdentity>, Strin
         }
     }
     Ok(roots)
-}
-
-fn collect_boundaries(node: &Node, output: &mut Vec<FieldBoundary>) {
-    match &node.value {
-        Value::Struct(children) => {
-            let structure = match &node.ty {
-                FieldType::Named { name } => name.clone(),
-                _ => node.name.clone(),
-            };
-            for child in children {
-                output.push(FieldBoundary {
-                    structure: structure.clone(),
-                    after_field: child.name.clone(),
-                    offset: child.offset + child.byte_len,
-                });
-                collect_boundaries(child, output);
-            }
-        }
-        Value::Array(children) => {
-            for child in children { collect_boundaries(child, output); }
-        }
-        _ => {}
-    }
 }
 
 fn similarity(left: &[u8], right: &[u8]) -> f64 {
@@ -753,6 +895,29 @@ mod tests {
             .expect("the four inserted bytes should realign at the name boundary");
         assert_eq!(candidate.after_field, "name");
         assert_eq!(candidate.example_values, vec!["12 34 56 78"]);
+        std::fs::remove_dir_all(folder).unwrap();
+    }
+
+    #[test]
+    fn fixed_field_scoring_normalizes_an_accepted_insertion_before_finding_the_next() {
+        let source_path = Path::new(r"E:/Games/XtremeJade/element/data/tasks.data");
+        if !source_path.is_file() { return }
+        let source = TaskContainer::open(source_path).unwrap();
+        let mut root = source.root(0, 0).unwrap();
+        root.splice(64..64, [0x12, 0x34, 0x56, 0x78]);
+        root.splice(68..68, [0xAB, 0xCD]);
+        let (folder, index) = single_root_set(&root, 200, source.header.export_version, "field-score-next");
+        let mut accepted = super::super::schema::FieldDef::new("accepted_v200_1", FieldType::Raw { len: 4 });
+        accepted.when.push(Condition::Field { field: "id".into(), predicate: super::super::schema::Predicate::NonZero });
+        let operations = vec![PatchOperation::InsertAfter {
+            structure: "TASK_FIXED_V165".into(),
+            after: Some("name".into()),
+            field: accepted,
+        }];
+        let report = score_fixed_fields_with_operations(&index, source_path, &operations).unwrap();
+        let candidate = report.candidates.iter().find(|candidate| candidate.width == 2 && candidate.min_offset == 64 && candidate.after_field == "accepted_v200_1")
+            .unwrap_or_else(|| panic!("the second field should anchor after the accepted field: {:#?}", report.candidates));
+        assert_eq!(candidate.example_values, vec!["AB CD"]);
         std::fs::remove_dir_all(folder).unwrap();
     }
 
