@@ -1634,7 +1634,7 @@ fn read_pack_summaries(pack: &Pack, pack_index: usize, first_index: usize, schem
     Ok(result)
 }
 
-fn read_nested_index(container: &TaskContainer, schema: &Schema) -> Result<Vec<TaskSearchEntry>, String> {
+pub(crate) fn read_nested_index(container: &TaskContainer, schema: &Schema) -> Result<Vec<TaskSearchEntry>, String> {
     let next_pack = AtomicUsize::new(0);
     let workers = std::thread::available_parallelism().map(usize::from).unwrap_or(1).min(container.packs.len());
     let mut by_pack = std::thread::scope(|scope| -> Result<Vec<Option<Vec<TaskSearchEntry>>>, String> {
@@ -1740,7 +1740,7 @@ fn tree_view(task: &Node, path: Vec<usize>) -> Result<TreeNode, String> {
     Ok(TreeNode { id, name, path, children })
 }
 
-fn display_value(node: &Node) -> (Option<String>, Option<String>) {
+pub(crate) fn display_value(node: &Node) -> (Option<String>, Option<String>) {
     match &node.value {
         Value::I64(value) => (Some(value.to_string()), None),
         Value::U64(value) => (Some(value.to_string()), None),

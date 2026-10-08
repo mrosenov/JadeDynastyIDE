@@ -2,6 +2,7 @@
 
 pub mod analyze;
 pub mod browser;
+pub mod compare;
 pub mod container;
 pub mod edit;
 pub mod json;

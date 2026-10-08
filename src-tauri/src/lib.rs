@@ -25,6 +25,8 @@ struct AppState {
     tasks: Mutex<Option<tasks::browser::TaskDocument>>,
     /// A second file compared with the open one (locked after `document`).
     compared: Mutex<Option<Document>>,
+    /// The task set compared with the open one (lock order: tasks, then compared_tasks).
+    compared_tasks: Mutex<Option<tasks::compare::ComparedTasks>>,
     catalog: RwLock<Arc<Catalog>>,
     /// The user's data folder: `layouts/`, `enums/` and `masks/` written by the editors.
     user_dir: PathBuf,
@@ -494,6 +496,50 @@ async fn task_edit_state(state: State<'_, AppState>) -> Result<tasks::edit::Edit
 #[tauri::command]
 async fn task_edit_history(state: State<'_, AppState>) -> Result<Vec<tasks::edit::HistoryEntry>, String> {
     Ok(state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.history())
+}
+
+#[tauri::command]
+async fn open_task_compare(path: String, state: State<'_, AppState>) -> Result<tasks::compare::TaskCompareReport, String> {
+    let user_dir = state.user_dir.clone();
+    let compared = tauri::async_runtime::spawn_blocking(move || tasks::compare::ComparedTasks::open(&path, &user_dir))
+        .await
+        .map_err(|error| error.to_string())??;
+    let tasks = state.tasks.lock().map_err(|_| "State lock poisoned")?;
+    let report = tasks.as_ref().ok_or("Open tasks.data first")?.compare_with(&compared)?;
+    *state.compared_tasks.lock().map_err(|_| "State lock poisoned")? = Some(compared);
+    Ok(report)
+}
+
+#[tauri::command]
+async fn task_compare(state: State<'_, AppState>) -> Result<tasks::compare::TaskCompareReport, String> {
+    let tasks = state.tasks.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared_tasks.lock().map_err(|_| "State lock poisoned")?;
+    tasks.as_ref().ok_or("Open tasks.data first")?.compare_with(compared.as_ref().ok_or("Choose a task set to compare with first")?)
+}
+
+#[tauri::command]
+async fn task_compare_fields(id: u32, state: State<'_, AppState>) -> Result<Vec<tasks::compare::FieldDiff>, String> {
+    let tasks = state.tasks.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared_tasks.lock().map_err(|_| "State lock poisoned")?;
+    tasks.as_ref().ok_or("Open tasks.data first")?.compare_task_fields(compared.as_ref().ok_or("Choose a task set to compare with first")?, id)
+}
+
+#[tauri::command]
+async fn close_task_compare(state: State<'_, AppState>) -> Result<(), String> {
+    *state.compared_tasks.lock().map_err(|_| "State lock poisoned")? = None;
+    Ok(())
+}
+
+#[tauri::command]
+async fn copy_compared_tasks(selection: tasks::compare::CopySelection, state: State<'_, AppState>) -> Result<tasks::json::ImportReport, String> {
+    let mut tasks = state.tasks.lock().map_err(|_| "State lock poisoned")?;
+    let document = tasks.as_mut().ok_or("Open tasks.data first")?;
+    let (rows, same_layout) = {
+        let compared = state.compared_tasks.lock().map_err(|_| "State lock poisoned")?;
+        let compared = compared.as_ref().ok_or("Choose a task set to compare with first")?;
+        (compared.copy_rows(&document.resolve_copy(compared, &selection)?)?, document.same_layout(compared)?)
+    };
+    document.copy_rows(&rows, same_layout)
 }
 
 #[tauri::command]
@@ -1144,6 +1190,7 @@ pub fn run() {
                 document: Mutex::new(None),
                 tasks: Mutex::new(None),
                 compared: Mutex::new(None),
+                compared_tasks: Mutex::new(None),
                 catalog: RwLock::new(catalog),
                 user_dir,
                 settings: Mutex::new(settings.clone()),
@@ -1201,6 +1248,11 @@ pub fn run() {
             task_problems,
             task_referenced_by,
             export_tasks_json,
+            open_task_compare,
+            task_compare,
+            task_compare_fields,
+            close_task_compare,
+            copy_compared_tasks,
             import_tasks_json,
             move_task_subtree,
             preview_delete_task_subtree,

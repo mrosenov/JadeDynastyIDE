@@ -754,6 +754,71 @@ export interface TaskImportReport {
   state?: TaskEditState;
 }
 
+export interface TaskCompareFile {
+  path: string;
+  version: number;
+  roots: number;
+  tasks: number;
+  packs: number;
+  size: number;
+}
+
+export interface TaskFieldDiff {
+  /** Dotted path, as in JSON exports. */
+  field: string;
+  /** Value in the open file; missing when the field does not exist there. */
+  this?: string;
+  other?: string;
+  copyable: boolean;
+}
+
+export interface TaskChangedTask {
+  id: number;
+  name: string;
+  otherName?: string;
+  pack: number;
+  root: number;
+  path: number[];
+  moved: boolean;
+  subtasksDiffer: boolean;
+  fieldCount: number;
+  copyableCount: number;
+}
+
+export interface TaskOneSided {
+  id: number;
+  name: string;
+  pack: number;
+  root: number;
+  path: number[];
+  tasks: number;
+  copyable: boolean;
+  reason?: string;
+}
+
+export interface TaskCompareReport {
+  this: TaskCompareFile;
+  other: TaskCompareFile;
+  sameLayout: boolean;
+  identical: number;
+  changedCount: number;
+  changed: TaskChangedTask[];
+  onlyThisCount: number;
+  onlyThis: TaskOneSided[];
+  onlyOtherCount: number;
+  onlyOther: TaskOneSided[];
+  ambiguous: number;
+  elapsedMs: number;
+}
+
+export interface TaskCopySelection {
+  fields: { id: number; field: string }[];
+  /** Tasks whose every copyable differing field is copied. */
+  allFields: number[];
+  /** Compared-only top-level tasks to add with their subquests. */
+  tasks: number[];
+}
+
 export interface TaskSaveOptions {
   path: string;
   backup: boolean;

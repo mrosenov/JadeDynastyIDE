@@ -76,6 +76,9 @@ import type {
   TaskExportTarget,
   TaskExportReport,
   TaskImportReport,
+  TaskCompareReport,
+  TaskFieldDiff,
+  TaskCopySelection,
   TaskDeleteReference,
 } from "./types";
 
@@ -159,6 +162,14 @@ export const getTaskEditHistory = () => invoke<TaskHistoryEntry[]>("task_edit_hi
 export const undoTaskEdit = () => invoke<TaskEditState>("undo_task_edit");
 /** Scans the complete task index for duplicate IDs, broken references, stale links and full packs. */
 export const getTaskProblems = () => invoke<TaskProblemReport>("task_problems");
+/** Opens another task set read-only and compares it with the open one by task ID. */
+export const openTaskCompare = (path: string) => invoke<TaskCompareReport>("open_task_compare", { path });
+export const taskCompare = () => invoke<TaskCompareReport>("task_compare");
+/** The differing fields of one paired task. */
+export const taskCompareFields = (id: number) => invoke<TaskFieldDiff[]>("task_compare_fields", { id });
+export const closeTaskCompare = () => invoke<void>("close_task_compare");
+/** Copies fields and whole top-level tasks from the compared set as one undo step. */
+export const copyComparedTasks = (selection: TaskCopySelection) => invoke<TaskImportReport>("copy_compared_tasks", { selection });
 /** Writes tasks (optionally with every subtask) as versioned JSON. */
 export const exportTasksJson = (targets: TaskExportTarget[], subtrees: boolean, path: string) => invoke<TaskExportReport>("export_tasks_json", { targets, subtrees, path });
 /** Previews a task JSON import, or applies it when the preview token is passed. */

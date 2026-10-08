@@ -854,6 +854,8 @@ export default function App() {
           ],
         },
         { label: "Import JSON…", icon: FileUp, onSelect: () => tasksEditor.current?.importJson(), disabled: !tasksEditorState.summary },
+        "separator",
+        { label: "Compare with another tasks.data…", icon: GitCompareArrows, onSelect: () => tasksEditor.current?.toggleCompare(), disabled: !tasksEditorState.summary, checked: tasksEditorState.panel === "compare" },
       ],
     },
   ] : elementMenus;

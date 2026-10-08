@@ -96,7 +96,7 @@ pub struct ImportReport {
 }
 
 /// "fixed.premise_tasks[0]" for a field path from a task.
-fn dotted(path: &[String]) -> String {
+pub(crate) fn dotted(path: &[String]) -> String {
     let mut text = String::new();
     for part in path {
         if !part.starts_with('[') && !text.is_empty() {
@@ -108,7 +108,7 @@ fn dotted(path: &[String]) -> String {
 }
 
 /// The inverse of \`dotted\`.
-fn field_path(dotted: &str) -> Result<Vec<String>, String> {
+pub(crate) fn field_path(dotted: &str) -> Result<Vec<String>, String> {
     let mut parts = Vec::new();
     for segment in dotted.split('.') {
         let (name, mut rest) = segment.split_once('[').map_or((segment, ""), |(name, rest)| (name, rest));
@@ -135,7 +135,7 @@ fn label(path: &[String]) -> String {
 
 /// A value as JSON: integers as numbers (strings beyond 2^53), floats in their
 /// shortest exact form, booleans, text, and raw bytes as hex.
-fn json_value(node: &Node) -> Option<Json> {
+pub(crate) fn json_value(node: &Node) -> Option<Json> {
     const SAFE: u64 = 1 << 53;
     Some(match &node.value {
         Value::U64(value) if *value < SAFE => json!(value),
@@ -200,7 +200,7 @@ fn unhex(text: &str) -> Result<Vec<u8>, String> {
 }
 
 /// Identifies the binary layout: equal versions can still differ through user layouts.
-fn schema_digest(schema: &Schema) -> Result<String, String> {
+pub(crate) fn schema_digest(schema: &Schema) -> Result<String, String> {
     let mut hash = Md5::new();
     hash.update(serde_json::to_vec(schema).map_err(|error| error.to_string())?);
     Ok(format!("{:x}", hash.finalize()))
@@ -285,14 +285,28 @@ impl TaskDocument {
         if token != plan.report.token {
             return Err("The import file or the open task set changed since the preview. Refresh the preview before applying.".into());
         }
+        let label = format!("Import JSON ({} updated, {} added)", plan.report.changing, plan.report.adding);
+        self.apply_plan(plan, label, "Imported tasks")
+    }
+
+    /// Copies field values and whole top-level trees from compared tasks (rows
+    /// built by `ComparedTasks::copy_rows`) as one undo step. Trees are added
+    /// only when `same_layout`.
+    pub fn copy_rows(&mut self, rows: &[Json], same_layout: bool) -> Result<ImportReport, String> {
+        let plan = self.plan_rows(rows, same_layout, String::new(), self.container.header.version)?;
+        let label = format!("Copy from compared file ({} updated, {} added)", plan.report.changing, plan.report.adding);
+        self.apply_plan(plan, label, "Compared tasks")
+    }
+
+    fn apply_plan(&mut self, plan: Plan, label: String, task_name: &str) -> Result<ImportReport, String> {
         let Plan { mut report, changes, highest_added } = plan;
         if !changes.is_empty() {
             self.apply_changes(&changes)?;
             self.id_floor = self.id_floor.max(highest_added);
             self.journal.record(EntryDetails {
-                label: format!("Import JSON ({} updated, {} added)", report.changing, report.adding),
+                label,
                 task_id: 0,
-                task_name: "Imported tasks".into(),
+                task_name: task_name.into(),
                 field: "Multiple fields".into(),
                 old: format!("{} task root(s)", changes.len()),
                 new: format!("{} field change(s), {} added task tree(s)", report.fields, report.adding),
@@ -327,7 +341,13 @@ impl TaskDocument {
         hash.update(format!("{:?}", self.journal.generation()).as_bytes());
         hash.update(digest.as_bytes());
         let token = format!("{:x}", hash.finalize());
+        self.plan_rows(rows, true, token, source_version)
+    }
 
+    /// Plans field updates by task ID and, when `allow_additions`, missing
+    /// top-level trees from `_raw`. Rows with any error are skipped whole.
+    fn plan_rows(&self, rows: &[Json], allow_additions: bool, token: String, source_version: u32) -> Result<Plan, String> {
+        let version = self.container.header.version;
         let index = self.search.read().map_err(|_| "Task search index lock poisoned")?;
         if let Some(error) = &index.error {
             return Err(format!("The task index could not be built: {error}"));
@@ -379,6 +399,11 @@ impl TaskDocument {
         for (index, row) in rows.iter().enumerate() {
             let id = match ids[index] { Some(id) if valid[index] && !existing.contains_key(&id) => id, _ => continue };
             let Some(raw) = row.get("_raw").and_then(Json::as_str) else { continue };
+            if !allow_additions {
+                valid[index] = false;
+                reject(&mut report, index + 1, Some(id), "Whole tasks can be added only between identical task versions and layouts".into());
+                continue;
+            }
             let attempt = (|| -> Result<(usize, usize, Node, Vec<(u32, Vec<usize>)>), String> {
                 let bytes = unhex(raw)?;
                 verify_task_root(&self.schema, &bytes, version, "_raw is not a valid task of this version")?;

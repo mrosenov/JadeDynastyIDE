@@ -175,6 +175,24 @@ ID in its tree that the open set already uses stops that row. Missing subquests 
 Duplicate IDs in the file, or IDs several open tasks share, skip their rows. If the file or the
 task set changes after the preview, **Refresh preview** is required before applying.
 
+**Tools › Compare with another tasks.data…** opens a second task set read-only (another version, or
+the server's set against the client's) and shows the comparison in place of the quest list, beside
+the inspector. Tasks pair by ID. Roots whose bytes are identical at the same position are counted
+without decoding, so comparing a set with a lightly edited copy is quick; comparing two versions
+decodes every task and can take half a minute. The panel shows Before and After (the arrow swaps
+them), counts of added, removed, changed and identical tasks, and **Copy patch notes** copies those
+lists as Markdown. A changed task lists its differing fields (dotted paths, as in JSON exports) when
+expanded, and is marked when it has another parent or its subquests differ. Fields that exist only
+in one version are listed only when they hold a value. IDs that several tasks share on either side
+are not compared.
+
+Tick fields, a whole changed task (every compatible field), or compared-only top-level tasks, then
+**Copy selected** to take them from the compared set into the open one as one undo step; **Select
+all copyable** picks everything that can be copied. Copying goes through the JSON import checks:
+a field copies when the path and binary type match, so values copy between versions too; whole
+tasks (with all their subquests and IDs) copy only between identical versions and layouts, and only
+when none of their IDs is already used. The comparison refreshes after each copy.
+
 **Task schema** opens the effective binary layout for the current task version. It lists every
 structure, field type and condition and can search across all four. Verified v165, v172 and v184
 layouts are read-only. For an unsupported version, the same window shows the selected older

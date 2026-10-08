@@ -251,7 +251,9 @@ round trip and is explicitly accepted.
   rebuilds its index data when saved. Deletion previews surviving references and requires explicit
   confirmation if any become unresolved; moving preserves IDs and updates both parent counts,
   including across roots and packs. Top-level deletion and explicit sibling ordering remain later work.
-- Compare and transfer compatible fields between task files.
+- ~~Compare and transfer compatible fields between task files.~~ Done (October 2026): Compare panel
+  pairing tasks by ID across versions, lazy field diffs, patch notes, and copying fields or whole
+  top-level trees through the JSON import checks.
 - Translation workflow for names, descriptions and dialog text by task ID.
 - ~~JSON import/export.~~ Done (October 2026): versioned `jdide-tasks` export of a task, a tree or
   the listed tasks; import previews and applies field updates by task ID with the inspector's
@@ -265,5 +267,5 @@ round trip and is explicitly accepted.
 
 ## Recommended implementation order
 
-Milestones 1–9, the problems scanner and JSON export/import are complete. Next: compare and
-transfer between task files, then translation, both reusing the JSON field matching by task ID.
+Milestones 1–9, the problems scanner, JSON export/import and compare/transfer are complete. Next:
+the translation workflow for names, descriptions and dialog text by task ID.

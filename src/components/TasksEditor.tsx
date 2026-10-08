@@ -14,6 +14,7 @@ import { TaskMoveDialog } from "./TaskMoveDialog";
 import { TaskHistoryPanel } from "./TaskHistoryPanel";
 import { TaskProblemsPanel } from "./TaskProblemsPanel";
 import { TaskImportDialog } from "./TaskImportDialog";
+import { TaskComparePanel } from "./TaskComparePanel";
 
 export interface TasksEditorState {
   loaded: boolean;
@@ -34,7 +35,7 @@ export interface TasksEditorState {
   panel?: TaskPanel;
 }
 
-export type TaskPanel = "history" | "problems" | null;
+export type TaskPanel = "history" | "problems" | "compare" | null;
 
 export interface TasksEditorHandle {
   choose: () => void;
@@ -46,6 +47,7 @@ export interface TasksEditorHandle {
   toggleHistory: () => void;
   showHistory: () => void;
   toggleProblems: () => void;
+  toggleCompare: () => void;
   /** Exports the selected task, it with its subquests, or every task in the list. */
   exportJson: (scope: TaskExportScope) => void;
   importJson: () => void;
@@ -293,6 +295,9 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const onProblemCounts = useCallback((errors: number, warnings: number) => setProblemCounts({ errors, warnings }), []);
   const [referrers, setReferrers] = useState<TaskDeleteReference[] | null>(null);
   const [importing, setImporting] = useState(false);
+  // The compare panel keeps its report while hidden; comparing two versions takes a while.
+  const [compareMounted, setCompareMounted] = useState(false);
+  useEffect(() => { if (panel === "compare") setCompareMounted(true); }, [panel]);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedNote, setSavedNote] = useState<string | null>(null);
@@ -581,14 +586,14 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     }
   }, [deferredQuery, detail, file, searchReport, selectedPath, selectedRoot, showNote]);
 
-  const importApplied = useCallback(async (next: EditStateValue, report: TaskImportReport) => {
+  const bulkApplied = useCallback(async (next: EditStateValue, report: TaskImportReport, what: string) => {
     if (!beginOperation()) return;
     const focus = selectedRoot ? { root: selectedRoot, path: selectedPath, id: detail?.id ?? null } : null;
     try {
       const affected = new Set([...editState.changedRoots, ...next.changedRoots].map((root) => `${root.pack}:${root.root}`));
       setEditState(next);
       await resync(affected, focus);
-      showNote(`Imported JSON: ${count(report.changing)} task${report.changing === 1 ? "" : "s"} updated, ${count(report.adding)} added. Undo is available.`);
+      showNote(`${what}: ${count(report.changing)} task${report.changing === 1 ? "" : "s"} updated, ${count(report.adding)} added. Undo is available.`);
     } catch (problem) {
       setError(problemText(problem));
     } finally {
@@ -672,6 +677,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setPanel(null);
     setProblemCounts(null);
     setImporting(false);
+    setCompareMounted(false);
     try {
       const sourceVersion = await taskSourceVersion(path);
       if (!sourceVersion.supported) {
@@ -733,7 +739,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [defaultPath, file?.path, load, unsupported?.path]);
 
   const openSave = useCallback(() => file && !busy && !taskBusy && setSaving(true), [busy, file, taskBusy]);
-  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave, toggleHistory: () => togglePanel("history"), showHistory: () => setPanel("history"), toggleProblems: () => togglePanel("problems"), exportJson: (scope) => void exportJson(scope), importJson: () => file && !operation.current && setImporting(true) }), [choose, exportJson, file, load, openSave, redo, revertAll, togglePanel, undo]);
+  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave, toggleHistory: () => togglePanel("history"), showHistory: () => setPanel("history"), toggleProblems: () => togglePanel("problems"), toggleCompare: () => togglePanel("compare"), exportJson: (scope) => void exportJson(scope), importJson: () => file && !operation.current && setImporting(true) }), [choose, exportJson, file, load, openSave, redo, revertAll, togglePanel, undo]);
 
   useEffect(() => {
     if (!active) return;
@@ -1282,9 +1288,10 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     </header>
     {error && <div className="path-data-message error">{error}</div>}
     {historyOpen && <div className="tasks-body tasks-history-body"><TaskHistoryPanel edits={editState} busy={taskBusy} onUndo={undo} onRedo={redo} onRevertAll={revertAll} onRevert={revertEntry} onOpen={(taskId) => void openHistoryTask(taskId)} onClose={() => setPanel(null)} /></div>}
-    <div className={"tasks-body" + (panel === "problems" ? " problems-open" : "")} hidden={historyOpen}>
+    <div className={"tasks-body" + (panel === "problems" || panel === "compare" ? " problems-open" : "")} hidden={historyOpen}>
       {panel === "problems" && <TaskProblemsPanel edits={editState} indexReady={taskIndexReady} onOpen={(problem) => void openProblem(problem)} onCounts={onProblemCounts} onClose={() => setPanel(null)} />}
-      <aside className="tasks-roots" hidden={panel === "problems"}>
+      {compareMounted && <div className="task-compare-slot" hidden={panel !== "compare"}><TaskComparePanel currentPath={file.path} suggestions={defaultPath ? [defaultPath] : []} onOpen={(pack, root, taskPath) => void openTaskAt(pack, root, taskPath)} onCopied={(next, report) => bulkApplied(next, report, "Copied from the compared file")} onClose={() => setPanel(null)} /></div>}
+      <aside className="tasks-roots" hidden={panel === "problems" || panel === "compare"}>
         <div className="tasks-search"><Search size={14} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search all quests by ID or name…" autoComplete="off" /></div>
         <div className="tasks-root-list">
           {shown.map((match) => {
@@ -1365,5 +1372,5 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       getTaskEditState().then(setEditState).catch((problem) => setError(problemText(problem)));
       showNote(`Saved ${report.changedRoots} changed root${report.changedRoots === 1 ? "" : "s"} across ${report.changedPacks} pack${report.changedPacks === 1 ? "" : "s"}.${report.historyCleared ? " A new undo history starts here." : ""}`);
     }} />}
-  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {importing && file && <TaskImportDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, report) => void importApplied(next, report)} onClose={() => setImporting(false)} />} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
+  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {importing && file && <TaskImportDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, report) => void bulkApplied(next, report, "Imported JSON")} onClose={() => setImporting(false)} />} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
 });
