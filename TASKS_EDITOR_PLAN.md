@@ -200,8 +200,12 @@ Completion gate:
 **In progress (October 2026).** Unsupported files now open in a read-only analyzer with selectable
 v165/v172/v184 baselines, parallel whole-file root and byte coverage, first-failure offsets and
 per-pack results. A second supported task set can be compared by root ID, with added/removed/renamed
-IDs and recurring root-size deltas summarized as structural evidence. Candidate-field scoring,
-schema patch editing and patch import/export remain.
+IDs and recurring root-size deltas summarized as structural evidence. The analyzer now scores
+1/2/4/8/16/32-byte insertions at known field boundaries across matching changed roots, including
+alignment confidence, type hints and example bytes. A user can accept one suggestion as a named,
+version-gated fixed-width insertion, keep the safe raw default or choose a same-width integer, float,
+boolean or byte type, persist it under `task-layouts/v<version>.json`, change its type, remove it later,
+and re-run complete coverage after every operation. Conditions, counted arrays, and patch import/export remain.
 
 Build the workflow for future task versions after the known parsers and saver are trusted.
 

@@ -5425,6 +5425,169 @@ select.sf-control {
 .task-id-differences .tag.duplicate {
   color: var(--warn);
 }
+.task-field-candidates {
+  overflow-x: auto;
+  border-top: 1px solid var(--border);
+  font-size: 10.5px;
+}
+.task-field-candidates > header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 900px;
+  min-height: 54px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+.task-field-candidates > header > div {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+}
+.task-field-candidates > header span,
+.task-field-candidates-note span {
+  color: var(--text-dim);
+}
+.task-field-candidates-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 900px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.task-field-candidates-note span:last-child {
+  margin-left: auto;
+}
+.task-field-candidates-head,
+.task-field-candidate {
+  display: grid;
+  grid-template-columns: 58px minmax(190px, 1.2fr) 52px minmax(170px, 1fr) 65px 100px minmax(150px, 1fr) 54px;
+  gap: 10px;
+  align-items: center;
+  min-width: 900px;
+  min-height: 30px;
+  padding: 4px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+}
+.task-field-candidates-head {
+  min-height: 27px;
+  color: var(--text-dim);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.task-field-candidate:nth-of-type(even) {
+  background: var(--bg-subtle);
+}
+.task-field-candidate > b {
+  color: var(--accent);
+}
+.task-field-candidates > footer {
+  min-width: 900px;
+  padding: 7px 12px;
+  color: var(--text-dim);
+}
+.task-field-candidates > .empty-note {
+  min-width: 700px;
+  padding: 18px 12px;
+}
+.task-layout-patch {
+  max-width: 1100px;
+  margin: 14px auto 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-pane);
+  font-size: 11px;
+}
+.task-layout-patch > header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.task-layout-patch > header > div {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+  min-width: 0;
+}
+.task-layout-patch > header span:not(.tag),
+.task-layout-patch > footer {
+  color: var(--text-dim);
+  font-size: 10px;
+}
+.task-layout-patch-head,
+.task-layout-patch-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) 80px minmax(220px, 1.3fr) 110px 30px;
+  gap: 8px;
+  align-items: center;
+  min-height: 30px;
+  padding: 4px 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+}
+.task-layout-patch-head {
+  min-height: 26px;
+  color: var(--text-dim);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  background: var(--bg-subtle);
+}
+.task-layout-patch-row:nth-child(odd) {
+  background: var(--bg-subtle);
+}
+.task-layout-patch-row select,
+.task-candidate-draft select {
+  min-width: 0;
+  height: 27px;
+  padding: 0 24px 0 7px;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text);
+  font: inherit;
+}
+.task-layout-patch > footer {
+  padding: 8px 10px;
+}
+.task-candidate-draft {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  min-width: 900px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg-pane));
+}
+.task-candidate-draft > span {
+  min-width: 250px;
+}
+.task-candidate-draft label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.task-candidate-draft input {
+  width: 170px;
+  height: 27px;
+  padding: 0 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text);
+  font: inherit;
+}
 .tasks-body {
   display: grid;
   grid-template-columns: minmax(330px, 430px) minmax(0, 1fr);

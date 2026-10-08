@@ -7,7 +7,7 @@ use std::path::Path;
 use serde::Serialize;
 
 use super::container::{Pack, TaskContainer, INDEX_MAGIC};
-use super::schema::decode_prefix_diagnostic;
+use super::schema::{decode_exact, decode_prefix_diagnostic, FieldType, Node, Value};
 use super::{closest_schema_version, schema_for_version, supported_versions};
 
 #[derive(Debug, Clone, Serialize)]
@@ -120,6 +120,34 @@ pub struct IdComparisonReport {
     pub differences: Vec<IdDifference>,
 }
 
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FieldCandidate {
+    pub structure: String,
+    pub after_field: String,
+    pub width: usize,
+    pub score: f64,
+    pub supporting_samples: usize,
+    pub tested_samples: usize,
+    pub min_offset: usize,
+    pub max_offset: usize,
+    pub type_hints: Vec<String>,
+    pub example_values: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FieldCandidateReport {
+    pub target: SourceInfo,
+    pub reference: SourceInfo,
+    pub baseline_version: u32,
+    pub matched_ids: usize,
+    pub sampled_roots: usize,
+    pub candidate_count: usize,
+    pub candidates_truncated: bool,
+    pub candidates: Vec<FieldCandidate>,
+}
+
 #[derive(Debug)]
 struct PackResult {
     coverage: PackCoverage,
@@ -131,6 +159,27 @@ struct RootIdentity {
     id: u32,
     name: String,
     bytes: u64,
+    pack: usize,
+    root: usize,
+}
+
+#[derive(Debug)]
+struct FieldBoundary {
+    structure: String,
+    after_field: String,
+    offset: usize,
+}
+
+#[derive(Debug, Default)]
+struct CandidateEvidence {
+    tested: usize,
+    supporting: usize,
+    left_sum: f64,
+    shifted_sum: f64,
+    gain_sum: f64,
+    min_offset: usize,
+    max_offset: usize,
+    values: Vec<Vec<u8>>,
 }
 
 pub fn inspect(path: impl AsRef<Path>) -> Result<SourceInfo, String> {
@@ -155,9 +204,13 @@ pub fn source_version(path: impl AsRef<Path>) -> Result<SourceVersion, String> {
 }
 
 pub fn analyze(path: impl AsRef<Path>, baseline_version: u32) -> Result<AnalysisReport, String> {
-    let container = TaskContainer::open(path)?;
     let schema = schema_for_version(baseline_version)
         .map_err(|_| format!("v{baseline_version} is not a supported task-analysis baseline"))?;
+    analyze_with_schema(path, &schema, baseline_version, baseline_version)
+}
+
+pub fn analyze_with_schema(path: impl AsRef<Path>, schema: &super::schema::Schema, decode_version: u32, baseline_version: u32) -> Result<AnalysisReport, String> {
+    let container = TaskContainer::open(path)?;
     schema.validate()?;
 
     let next_pack = AtomicUsize::new(0);
@@ -170,7 +223,7 @@ pub fn analyze(path: impl AsRef<Path>, baseline_version: u32) -> Result<Analysis
                 loop {
                     let pack_index = next_pack.fetch_add(1, Ordering::Relaxed);
                     let Some(pack) = container.packs.get(pack_index) else { break };
-                    scanned.push((pack_index, analyze_pack(pack, pack_index, &schema, baseline_version)));
+                    scanned.push((pack_index, analyze_pack(pack, pack_index, schema, decode_version)));
                 }
                 scanned
             }));
@@ -318,6 +371,133 @@ pub fn compare_ids(target: impl AsRef<Path>, reference: impl AsRef<Path>) -> Res
     })
 }
 
+/// Ranks possible fixed-width insertions at known schema field boundaries.
+/// This is evidence only: it never modifies a schema or task bytes. A sample
+/// supports a candidate when bytes before the boundary still align and bytes
+/// after it align substantially better after skipping the proposed width.
+pub fn score_fixed_fields(target: impl AsRef<Path>, reference: impl AsRef<Path>) -> Result<FieldCandidateReport, String> {
+    const MAX_ROOTS: usize = 256;
+    const MAX_CANDIDATES: usize = 100;
+    const WIDTHS: [usize; 6] = [1, 2, 4, 8, 16, 32];
+    const LEFT_WINDOW: usize = 64;
+    const RIGHT_WINDOW: usize = 512;
+
+    let target = TaskContainer::open(target)?;
+    let reference = TaskContainer::open(reference)?;
+    if !supported_versions().contains(&reference.header.version) {
+        return Err(format!("The reference task set is v{}, but candidate scoring needs a verified reference layout ({})", reference.header.version, supported_versions().iter().map(|version| format!("v{version}")).collect::<Vec<_>>().join(", ")));
+    }
+    let schema = schema_for_version(reference.header.version)?;
+    schema.validate()?;
+    let target_roots = root_identities(&target)?;
+    let reference_roots = root_identities(&reference)?;
+    let mut target_by_id = HashMap::<u32, Vec<&RootIdentity>>::new();
+    let mut reference_by_id = HashMap::<u32, Vec<&RootIdentity>>::new();
+    for root in &target_roots { target_by_id.entry(root.id).or_default().push(root); }
+    for root in &reference_roots { reference_by_id.entry(root.id).or_default().push(root); }
+
+    let mut ids = target_by_id.keys().filter(|id| reference_by_id.contains_key(id)).copied().collect::<Vec<_>>();
+    ids.sort_unstable();
+    let matched_ids = ids.iter().filter(|id| target_by_id[id].len() == 1 && reference_by_id[id].len() == 1).count();
+    let mut evidence = HashMap::<(String, String, usize), CandidateEvidence>::new();
+    let mut sampled_roots = 0;
+    for id in ids {
+        let target_matches = &target_by_id[&id];
+        let reference_matches = &reference_by_id[&id];
+        if target_matches.len() != 1 || reference_matches.len() != 1 { continue; }
+        let target_identity = target_matches[0];
+        let reference_identity = reference_matches[0];
+        if target_identity.bytes <= reference_identity.bytes { continue; }
+        let target_bytes = target.root(target_identity.pack, target_identity.root)?;
+        let reference_bytes = reference.root(reference_identity.pack, reference_identity.root)?;
+        let decoded = match decode_exact(&schema, &reference_bytes, reference.header.version) {
+            Ok(decoded) => decoded,
+            Err(_) => continue,
+        };
+        sampled_roots += 1;
+        let mut boundaries = Vec::new();
+        collect_boundaries(&decoded, &mut boundaries);
+        boundaries.sort_by_key(|boundary| boundary.offset);
+        let mut found_width = [false; WIDTHS.len()];
+        for boundary in boundaries {
+            for (width_index, width) in WIDTHS.into_iter().enumerate() {
+                if found_width[width_index] { continue; }
+                if target_bytes.len() < reference_bytes.len().saturating_add(width) { continue; }
+                let position = boundary.offset;
+                if position > reference_bytes.len() || position.saturating_add(width) > target_bytes.len() { continue; }
+                let left_start = position.saturating_sub(LEFT_WINDOW);
+                let left_len = position - left_start;
+                let right_len = RIGHT_WINDOW.min(reference_bytes.len() - position).min(target_bytes.len() - position - width);
+                if left_len < 16 || right_len < 16 { continue; }
+                let left = similarity(&reference_bytes[left_start..position], &target_bytes[left_start..position]);
+                let shifted = similarity(&reference_bytes[position..position + right_len], &target_bytes[position + width..position + width + right_len]);
+                let direct = similarity(&reference_bytes[position..position + right_len], &target_bytes[position..position + right_len]);
+                let shifted_run = matching_prefix(&reference_bytes[position..position + right_len], &target_bytes[position + width..position + width + right_len]);
+                let direct_run = matching_prefix(&reference_bytes[position..position + right_len], &target_bytes[position..position + right_len]);
+                let entry = evidence.entry((boundary.structure.clone(), boundary.after_field.clone(), width)).or_default();
+                entry.tested += 1;
+                let gain = shifted - direct;
+                let run_supports_shift = shifted_run >= 32 && shifted_run >= direct_run.saturating_add(16);
+                if left >= 0.70 && shifted >= 0.70 && (gain >= 0.05 || run_supports_shift) {
+                    found_width[width_index] = true;
+                    entry.supporting += 1;
+                    entry.left_sum += left;
+                    entry.shifted_sum += shifted;
+                    entry.gain_sum += gain;
+                    if entry.supporting == 1 {
+                        entry.min_offset = position;
+                        entry.max_offset = position;
+                    } else {
+                        entry.min_offset = entry.min_offset.min(position);
+                        entry.max_offset = entry.max_offset.max(position);
+                    }
+                    let value = target_bytes[position..position + width].to_vec();
+                    if entry.values.len() < 5 && !entry.values.contains(&value) { entry.values.push(value); }
+                }
+            }
+        }
+        if sampled_roots >= MAX_ROOTS { break; }
+    }
+
+    let minimum_support = if sampled_roots >= 3 { 2 } else { 1 };
+    let mut candidates = evidence.into_iter().filter_map(|((structure, after_field, width), evidence)| {
+        if evidence.supporting < minimum_support { return None; }
+        let support_ratio = evidence.supporting as f64 / evidence.tested.max(1) as f64;
+        let alignment = (evidence.left_sum + evidence.shifted_sum) / (2.0 * evidence.supporting as f64);
+        let gain = evidence.gain_sum / evidence.supporting as f64;
+        let score = 100.0 * (support_ratio * 0.45 + alignment * 0.40 + (gain / 0.75).min(1.0) * 0.15);
+        Some(FieldCandidate {
+            structure,
+            after_field,
+            width,
+            score,
+            supporting_samples: evidence.supporting,
+            tested_samples: evidence.tested,
+            min_offset: evidence.min_offset,
+            max_offset: evidence.max_offset,
+            type_hints: type_hints(width, &evidence.values),
+            example_values: evidence.values.iter().map(|value| value.iter().map(|byte| format!("{byte:02X}")).collect::<Vec<_>>().join(" ")).collect(),
+        })
+    }).collect::<Vec<_>>();
+    candidates.sort_by(|left, right| right.score.total_cmp(&left.score)
+        .then_with(|| right.supporting_samples.cmp(&left.supporting_samples))
+        .then_with(|| left.structure.cmp(&right.structure))
+        .then_with(|| left.after_field.cmp(&right.after_field))
+        .then_with(|| left.width.cmp(&right.width)));
+    let candidate_count = candidates.len();
+    candidates.truncate(MAX_CANDIDATES);
+    Ok(FieldCandidateReport {
+        target: source_info(&target),
+        reference: source_info(&reference),
+        baseline_version: reference.header.version,
+        matched_ids,
+        sampled_roots,
+        candidate_count,
+        candidates_truncated: candidate_count > MAX_CANDIDATES,
+        candidates,
+    })
+}
+
 fn source_info(container: &TaskContainer) -> SourceInfo {
     SourceInfo {
         path: container.index_path().display().to_string(),
@@ -335,7 +515,7 @@ fn source_info(container: &TaskContainer) -> SourceInfo {
 fn root_identities(container: &TaskContainer) -> Result<Vec<RootIdentity>, String> {
     const HEADING_BYTES: usize = 64;
     let mut roots = Vec::with_capacity(container.header.root_count as usize);
-    for pack in &container.packs {
+    for (pack_index, pack) in container.packs.iter().enumerate() {
         let data = std::fs::read(pack.path()).map_err(|error| format!("{}: {error}", pack.path().display()))?;
         for root in 0..pack.root_count() {
             let range = pack.root_range(root)?;
@@ -349,10 +529,64 @@ fn root_identities(container: &TaskContainer) -> Result<Vec<RootIdentity>, Strin
                 id: u32::from_le_bytes(bytes[0..4].try_into().unwrap()),
                 name: fixed_utf16(&bytes[4..HEADING_BYTES]),
                 bytes: bytes.len() as u64,
+                pack: pack_index,
+                root,
             });
         }
     }
     Ok(roots)
+}
+
+fn collect_boundaries(node: &Node, output: &mut Vec<FieldBoundary>) {
+    match &node.value {
+        Value::Struct(children) => {
+            let structure = match &node.ty {
+                FieldType::Named { name } => name.clone(),
+                _ => node.name.clone(),
+            };
+            for child in children {
+                output.push(FieldBoundary {
+                    structure: structure.clone(),
+                    after_field: child.name.clone(),
+                    offset: child.offset + child.byte_len,
+                });
+                collect_boundaries(child, output);
+            }
+        }
+        Value::Array(children) => {
+            for child in children { collect_boundaries(child, output); }
+        }
+        _ => {}
+    }
+}
+
+fn similarity(left: &[u8], right: &[u8]) -> f64 {
+    if left.is_empty() { return 0.0; }
+    left.iter().zip(right).filter(|(left, right)| left == right).count() as f64 / left.len() as f64
+}
+
+fn matching_prefix(left: &[u8], right: &[u8]) -> usize {
+    left.iter().zip(right).take_while(|(left, right)| left == right).count()
+}
+
+fn type_hints(width: usize, values: &[Vec<u8>]) -> Vec<String> {
+    match width {
+        1 if values.iter().all(|value| matches!(value.as_slice(), [0] | [1])) => vec!["bool8".into(), "uint8".into(), "raw8".into()],
+        1 => vec!["uint8".into(), "int8".into(), "raw8".into()],
+        2 => vec!["uint16".into(), "int16".into(), "raw16".into()],
+        4 => {
+            let plausible_float = !values.is_empty() && values.iter().all(|value| {
+                let number = f32::from_le_bytes(value.as_slice().try_into().unwrap());
+                number == 0.0 || number.is_finite() && number.abs() >= 1.0e-6 && number.abs() <= 1.0e9
+            });
+            let mut hints = vec!["uint32".into(), "int32".into()];
+            if plausible_float { hints.push("float32".into()); }
+            hints.push("raw32".into());
+            hints
+        }
+        8 => vec!["uint64".into(), "int64".into(), "float64".into(), "raw64".into()],
+        width => vec![format!("bytes[{width}]"), format!("raw[{width}]")],
+    }
 }
 
 fn fixed_utf16(bytes: &[u8]) -> String {
@@ -423,6 +657,29 @@ mod tests {
 
     use super::*;
 
+    fn single_root_set(root: &[u8], version: u32, export_version: u32, label: &str) -> (std::path::PathBuf, std::path::PathBuf) {
+        let folder = std::env::temp_dir().join(format!("jdide-task-{label}-{}-{}", std::process::id(), SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos()));
+        std::fs::create_dir(&folder).unwrap();
+        let index = folder.join("tasks.data");
+        let pack = folder.join("tasks.data1");
+        let mut pack_bytes = Vec::new();
+        pack_bytes.extend_from_slice(&0x0693_4554u32.to_le_bytes());
+        pack_bytes.extend_from_slice(&1u32.to_le_bytes());
+        pack_bytes.extend_from_slice(&12u32.to_le_bytes());
+        pack_bytes.extend_from_slice(root);
+        std::fs::write(&pack, &pack_bytes).unwrap();
+        let digest: [u8; 16] = Md5::digest(&pack_bytes).into();
+        let mut index_bytes = Vec::new();
+        index_bytes.extend_from_slice(&0x6934_0304u32.to_le_bytes());
+        index_bytes.extend_from_slice(&version.to_le_bytes());
+        index_bytes.extend_from_slice(&export_version.to_le_bytes());
+        index_bytes.extend_from_slice(&1u32.to_le_bytes());
+        index_bytes.extend_from_slice(&1u32.to_le_bytes());
+        index_bytes.extend_from_slice(&digest);
+        std::fs::write(&index, index_bytes).unwrap();
+        (folder, index)
+    }
+
     #[test]
     fn unchanged_newer_header_scores_the_matching_baseline_exactly() {
         let source_path = Path::new(r"E:/Games/XtremeJade/element/data/tasks.data");
@@ -480,4 +737,23 @@ mod tests {
         let (_, used) = decode_prefix_diagnostic(&schema, &bytes, 165).unwrap();
         assert_eq!(used, expected);
     }
+
+    #[test]
+    fn fixed_field_scoring_finds_an_inserted_raw32_boundary() {
+        let source_path = Path::new(r"E:/Games/XtremeJade/element/data/tasks.data");
+        if !source_path.is_file() { return }
+        let source = TaskContainer::open(source_path).unwrap();
+        let mut root = source.root(0, 0).unwrap();
+        root.splice(64..64, [0x12, 0x34, 0x56, 0x78]);
+        let (folder, index) = single_root_set(&root, 200, source.header.export_version, "field-score");
+        let report = score_fixed_fields(&index, source_path).unwrap();
+        assert_eq!(report.matched_ids, 1);
+        assert_eq!(report.sampled_roots, 1);
+        let candidate = report.candidates.iter().find(|candidate| candidate.width == 4 && candidate.min_offset == 64)
+            .expect("the four inserted bytes should realign at the name boundary");
+        assert_eq!(candidate.after_field, "name");
+        assert_eq!(candidate.example_values, vec!["12 34 56 78"]);
+        std::fs::remove_dir_all(folder).unwrap();
+    }
+
 }

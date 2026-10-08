@@ -165,6 +165,75 @@ async fn compare_task_ids(path: String, reference_path: String) -> Result<tasks:
 }
 
 #[tauri::command]
+async fn score_task_fields(path: String, reference_path: String) -> Result<tasks::analyze::FieldCandidateReport, String> {
+    tauri::async_runtime::spawn_blocking(move || tasks::analyze::score_fixed_fields(path, reference_path)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+fn task_layout_patch(version: u32, state: State<'_, AppState>) -> Result<Option<tasks::layout::LayoutSummary>, String> {
+    Ok(tasks::layout::load(&state.user_dir, version)?.map(|layout| tasks::layout::summary(&state.user_dir, &layout)))
+}
+
+#[tauri::command]
+async fn analyze_task_layout_patch(path: String, state: State<'_, AppState>) -> Result<tasks::layout::LayoutReport, String> {
+    let user_dir = state.user_dir.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let source = tasks::analyze::source_version(&path)?;
+        let layout = tasks::layout::load(&user_dir, source.version)?.ok_or_else(|| format!("No user task layout exists for v{}", source.version))?;
+        let schema = layout.validate()?;
+        let analysis = tasks::analyze::analyze_with_schema(&path, &schema, source.version, layout.base_version)?;
+        Ok(tasks::layout::LayoutReport { patch: tasks::layout::summary(&user_dir, &layout), analysis })
+    }).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn add_task_layout_field(path: String, base_version: u32, structure: String, after_field: String, name: String, width: usize, field_type: String, state: State<'_, AppState>) -> Result<tasks::layout::LayoutReport, String> {
+    let user_dir = state.user_dir.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let source = tasks::analyze::source_version(&path)?;
+        let mut layout = match tasks::layout::load(&user_dir, source.version)? {
+            Some(layout) => {
+                if layout.base_version != base_version {
+                    return Err(format!("The v{} user layout already uses baseline v{}, not v{base_version}", source.version, layout.base_version));
+                }
+                layout
+            }
+            None => tasks::layout::UserTaskLayout::new(source.version, base_version)?,
+        };
+        let schema = layout.add_fixed(structure, after_field, name, width, &field_type)?;
+        let analysis = tasks::analyze::analyze_with_schema(&path, &schema, source.version, layout.base_version)?;
+        tasks::layout::save(&user_dir, &layout)?;
+        Ok(tasks::layout::LayoutReport { patch: tasks::layout::summary(&user_dir, &layout), analysis })
+    }).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn set_task_layout_operation_type(path: String, index: usize, field_type: String, state: State<'_, AppState>) -> Result<tasks::layout::LayoutReport, String> {
+    let user_dir = state.user_dir.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let source = tasks::analyze::source_version(&path)?;
+        let mut layout = tasks::layout::load(&user_dir, source.version)?.ok_or_else(|| format!("No user task layout exists for v{}", source.version))?;
+        let schema = layout.set_type(index, &field_type)?;
+        let analysis = tasks::analyze::analyze_with_schema(&path, &schema, source.version, layout.base_version)?;
+        tasks::layout::save(&user_dir, &layout)?;
+        Ok(tasks::layout::LayoutReport { patch: tasks::layout::summary(&user_dir, &layout), analysis })
+    }).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn remove_task_layout_operation(path: String, index: usize, state: State<'_, AppState>) -> Result<tasks::layout::LayoutReport, String> {
+    let user_dir = state.user_dir.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let source = tasks::analyze::source_version(&path)?;
+        let mut layout = tasks::layout::load(&user_dir, source.version)?.ok_or_else(|| format!("No user task layout exists for v{}", source.version))?;
+        let schema = layout.remove(index)?;
+        let analysis = tasks::analyze::analyze_with_schema(&path, &schema, source.version, layout.base_version)?;
+        tasks::layout::save(&user_dir, &layout)?;
+        Ok(tasks::layout::LayoutReport { patch: tasks::layout::summary(&user_dir, &layout), analysis })
+    }).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
 async fn get_task(pack: usize, root: usize, path: Vec<usize>, state: State<'_, AppState>) -> Result<tasks::browser::TaskDetail, String> {
     let mut detail = {
         state
@@ -856,6 +925,12 @@ pub fn run() {
             inspect_tasks,
             analyze_tasks,
             compare_task_ids,
+            score_task_fields,
+            task_layout_patch,
+            analyze_task_layout_patch,
+            add_task_layout_field,
+            set_task_layout_operation_type,
+            remove_task_layout_operation,
             get_task,
             search_tasks,
             edit_task_field,

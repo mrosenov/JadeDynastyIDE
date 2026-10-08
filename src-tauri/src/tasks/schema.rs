@@ -262,6 +262,15 @@ fn apply_patch(schema: &mut Schema, operation: &PatchOperation) -> Result<(), St
 }
 
 impl Schema {
+    pub fn with_operations(&self, operations: &[PatchOperation]) -> Result<Self, String> {
+        let mut schema = self.clone();
+        for operation in operations {
+            apply_patch(&mut schema, operation)?;
+        }
+        schema.validate()?;
+        Ok(schema)
+    }
+
     pub fn validate(&self) -> Result<(), String> {
         if !self.structs.contains_key(&self.root) {
             return Err(format!("task schema root {:?} does not exist", self.root));

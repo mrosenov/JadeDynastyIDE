@@ -62,6 +62,9 @@ import type {
   TaskSourceVersion,
   TaskAnalysisReport,
   TaskIdComparisonReport,
+  TaskFieldCandidateReport,
+  TaskLayoutPatch,
+  TaskLayoutPatchReport,
 } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
@@ -81,6 +84,15 @@ export const taskSourceVersion = (path: string) => invoke<TaskSourceVersion>("ta
 export const inspectTasks = (path: string) => invoke<TaskSourceInfo>("inspect_tasks", { path });
 export const analyzeTasks = (path: string, baselineVersion: number) => invoke<TaskAnalysisReport>("analyze_tasks", { path, baselineVersion });
 export const compareTaskIds = (path: string, referencePath: string) => invoke<TaskIdComparisonReport>("compare_task_ids", { path, referencePath });
+/** Scores read-only fixed-width field insertion candidates against a verified older task set. */
+export const scoreTaskFields = (path: string, referencePath: string) => invoke<TaskFieldCandidateReport>("score_task_fields", { path, referencePath });
+export const getTaskLayoutPatch = (version: number) => invoke<TaskLayoutPatch | null>("task_layout_patch", { version });
+export const analyzeTaskLayoutPatch = (path: string) => invoke<TaskLayoutPatchReport>("analyze_task_layout_patch", { path });
+export const addTaskLayoutField = (path: string, baseVersion: number, structure: string, afterField: string, name: string, width: number, fieldType: string) =>
+  invoke<TaskLayoutPatchReport>("add_task_layout_field", { path, baseVersion, structure, afterField, name, width, fieldType });
+export const setTaskLayoutOperationType = (path: string, index: number, fieldType: string) =>
+  invoke<TaskLayoutPatchReport>("set_task_layout_operation_type", { path, index, fieldType });
+export const removeTaskLayoutOperation = (path: string, index: number) => invoke<TaskLayoutPatchReport>("remove_task_layout_operation", { path, index });
 /** Decodes one root lazily, then selects a task in its recursive hierarchy. */
 export const getTask = (pack: number, root: number, path: number[]) => invoke<TaskDetail>("get_task", { pack, root, path });
 /** Searches root and nested quests through the background task index. */

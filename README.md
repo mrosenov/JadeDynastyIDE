@@ -153,6 +153,18 @@ as `8,468 B → 8,472 B` across thousands of IDs is strong evidence that a four-
 to the task structure. The report keeps a few example IDs for each size pattern and bounded examples
 of ID/name differences, so large task sets do not create an oversized interface.
 
+After comparing the files, **Find candidates** tests 1, 2, 4, 8, 16 and 32-byte insertions at
+real field boundaries from the older schema. It samples matching changed roots and ranks positions
+where bytes before the boundary still match while bytes after the proposed block realign. Each row
+shows the containing structure, preceding field, width, likely fixed-width types, supporting sample
+count, offsets and example raw bytes. **Add** turns one selected suggestion into a named fixed-width
+field in a user patch at `%APPDATA%\com.jdide.app\task-layouts\v<version>.json`. Raw is the safe
+default; the picker can assign a same-width integer, float, boolean or byte type, and the patch panel
+can change that type later without moving following fields. JD IDE validates every addition or type
+change, rechecks every root, then stores the patch. The patch panel can also remove an operation.
+Task data is never changed, and opening, editing and saving remain disabled until the
+layout is independently verified.
+
 ## path.data editor
 
 The folder-tree icon in the activity bar opens `path.data` as a separate data workspace. If

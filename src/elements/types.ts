@@ -460,6 +460,52 @@ export interface TaskIdComparisonReport {
   differences: TaskIdDifference[];
 }
 
+export interface TaskFieldCandidate {
+  structure: string;
+  afterField: string;
+  width: number;
+  score: number;
+  supportingSamples: number;
+  testedSamples: number;
+  minOffset: number;
+  maxOffset: number;
+  typeHints: string[];
+  exampleValues: string[];
+}
+
+export interface TaskFieldCandidateReport {
+  target: TaskSourceInfo;
+  reference: TaskSourceInfo;
+  baselineVersion: number;
+  matchedIds: number;
+  sampledRoots: number;
+  candidateCount: number;
+  candidatesTruncated: boolean;
+  candidates: TaskFieldCandidate[];
+}
+
+export interface TaskLayoutOperation {
+  index: number;
+  kind: "insert" | "remove" | "replace";
+  structure: string;
+  field: string;
+  afterField?: string;
+  width?: number;
+  fieldType?: string;
+}
+
+export interface TaskLayoutPatch {
+  path: string;
+  taskVersion: number;
+  baseVersion: number;
+  operations: TaskLayoutOperation[];
+}
+
+export interface TaskLayoutPatchReport {
+  patch: TaskLayoutPatch;
+  analysis: TaskAnalysisReport;
+}
+
 export interface TaskTreeNode {
   id: number;
   name: string;
