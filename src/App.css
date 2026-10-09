@@ -7383,6 +7383,10 @@ button.task-field-reference:hover {
   flex-wrap: wrap;
   gap: 4px;
 }
+/* Quest results have no icon column: checkbox, name, ID. */
+.search-hit.pickable.task-search-hit {
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+}
 .task-search-hit .search-hit-match {
   font-size: 11.5px;
 }
