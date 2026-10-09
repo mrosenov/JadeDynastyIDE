@@ -516,11 +516,11 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [refreshSelected, selectedPath, selectedRoot]);
 
   /** Adds, clones or removes a list row of the selected task (monsters to kill, candidate items, …). */
-  const editRows = useCallback(async (field: TaskFieldView, countPath: string[] | null, change: TaskArrayEdit) => {
+  const editRows = useCallback(async (field: TaskFieldView, countPath: string[] | null, change: TaskArrayEdit, companions?: string[][]) => {
     if (!selectedRoot) return;
     if (!beginOperation()) throw new Error("Another task operation is still running");
     try {
-      setEditState(await editTaskArray(selectedRoot.pack, selectedRoot.root, selectedPath, field.path, countPath, change));
+      setEditState(await editTaskArray(selectedRoot.pack, selectedRoot.root, selectedPath, field.path, countPath, change, companions));
       await refreshSelected();
     } catch (problem) {
       setError(problemText(problem));

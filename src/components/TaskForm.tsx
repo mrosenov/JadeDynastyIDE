@@ -28,8 +28,9 @@ interface Props {
   onEdit: (field: TaskFieldView, value: string) => Promise<void>;
   /** Several values of the shown task as one undo step. */
   onBatch: (values: BatchValue[], label: string) => Promise<void>;
-  /** Adds, clones or removes a row of a list; `countPath` names the count of a fixed list. */
-  onRows: (field: TaskFieldView, countPath: string[] | null, change: TaskArrayEdit) => Promise<void>;
+  /** Adds, clones or removes a row of a list; `countPath` names the count of a fixed list and
+   *  `companions` fixed lists whose slots pair with the rows (scaled award ratios and counts). */
+  onRows: (field: TaskFieldView, countPath: string[] | null, change: TaskArrayEdit, companions?: string[][]) => Promise<void>;
   renderReference: (reference: TaskFieldReference) => ReactNode;
   /** Opens Enums & masks at a set; dropdowns offer "Edit names…". */
   onEditSet?: (key: string) => void;
@@ -259,7 +260,7 @@ function Cell({ field }: { field: TaskFieldView }) {
 }
 
 /** Add, clone and remove for a list's rows. Variable-length lists change size; fixed lists with a count fill their slots in order. */
-function useRows(field: TaskFieldView, countField?: TaskFieldView) {
+function useRows(field: TaskFieldView, countField?: TaskFieldView, companions?: string[][]) {
   const { onRows } = useContext(Form);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -271,7 +272,7 @@ function useRows(field: TaskFieldView, countField?: TaskFieldView) {
     setBusy(true);
     setError(null);
     try {
-      await onRows(field, fixed ? countField!.path : null, change);
+      await onRows(field, fixed ? countField!.path : null, change, companions);
       return true;
     } catch (problem) {
       setError(String(problem).replace(/^Error: /, ""));
@@ -539,15 +540,33 @@ const AWARD_SOURCES: { key: string; label: string; field: string; scale?: "ratio
   { key: "count_failure", label: "Finish-count awards (failure)", field: "failure_count_awards", scale: "counts" },
 ];
 
+/** How the server picks a scaled award entry (TaskTempl.inl CalcAwardDataBy…), and the order that suits it. */
+const SCALE_RULES: Record<string, { value: string; hint: string; order: "up" | "down" }> = {
+  ratio: { value: "Time ratio", order: "up", hint: "The first entry whose ratio is at least the share of the time limit used is given (finishing within half the time takes a 0.5 entry). Keep ratios increasing." },
+  item: { value: "Item count", order: "down", hint: "The first entry whose count the player's number of the item reaches is given. Keep counts decreasing." },
+  count: { value: "Finish count", order: "up", hint: "Checked from the last entry back: the last entry whose count the quest's finish count reaches is given. Keep counts increasing." },
+};
+
 function RewardsView({ fields }: { fields: Map<string, TaskFieldView> }) {
   const sources = AWARD_SOURCES.filter((source) => fields.has(source.field));
   const [selected, setSelected] = useState(sources[0]?.key ?? "success");
   const [entry, setEntry] = useState(0);
   const source = sources.find((candidate) => candidate.key === selected) ?? sources[0];
   const container = source ? fields.get(source.field) : undefined;
-  const awards = source?.scale ? child(container, "awards")?.children ?? [] : [];
-  const award = source?.scale ? awards[Math.min(entry, awards.length - 1)] : container;
+  const awardList = source?.scale ? child(container, "awards") : undefined;
+  const awards = awardList?.children ?? [];
+  const current = Math.max(0, Math.min(entry, awards.length - 1));
+  const award = source?.scale ? awards[current] : container;
   const scale = source?.scale ? child(container, source.scale) : undefined;
+  const empty = { name: "awards", path: [], ty: "", children: [] } as unknown as TaskFieldView;
+  const rows = useRows(awardList ?? empty, undefined, scale ? [scale.path] : undefined);
+  const rule = source?.scale ? SCALE_RULES[source.key.split("_")[0]] : undefined;
+  const values = (scale?.children ?? []).slice(0, awards.length).map((value) => Number(value.value));
+  const ordered = values.every((value, index) => index === 0 || (rule?.order === "up" ? value >= values[index - 1] : value <= values[index - 1]));
+  const capacity = scale?.children?.length ?? 5;
+  const run = async (change: TaskArrayEdit, select: number) => {
+    if (await rows.run(change)) setEntry(Math.max(0, select));
+  };
   const types = ["fixed.award_type_s", "fixed.award_type_f", "fixed.special_award"].map((path) => fields.get(path)).filter((field): field is TaskFieldView => !!field);
   return <>
     <fieldset className="task-form-group wide">
@@ -564,13 +583,22 @@ function RewardsView({ fields }: { fields: Map<string, TaskFieldView> }) {
       </div>
     </fieldset>
     {source?.scale && container && <fieldset className="task-form-group wide">
-      <legend>{source.scale === "ratios" ? "Ratios" : "Counts"}</legend>
-      <Grid fields={[child(container, "scale_count"), child(container, "item_id")].filter((field): field is TaskFieldView => !!field)} />
-      {scale && <ArrayView field={scale} used={Number(child(container, "scale_count")?.value ?? 0)} />}
-      {awards.length > 0 && <div className="segmented task-rewards-entries">{awards.map((item, position) => <button key={item.name} className={position === entry ? "active" : ""} onClick={() => setEntry(position)}>Entry {position + 1}{scale?.children?.[position] ? ` · ${scale.children[position].value}` : ""}</button>)}</div>}
+      <legend>Entries</legend>
+      {rule && <div className="muted small task-rewards-rule">{rule.hint}</div>}
+      {child(container, "item_id") && <Grid fields={[child(container, "item_id")!]} />}
+      {awards.length > 0 && <div className="segmented task-rewards-entries">{awards.map((item, position) => <button key={item.name} className={position === current ? "active" : ""} onClick={() => setEntry(position)}>Entry {position + 1}{scale?.children?.[position] ? ` · ${scale.children[position].value}` : ""}</button>)}</div>}
+      {awardList && rows.editable && <div className="task-form-rows-foot top">
+        <button className="btn small" disabled={rows.busy || awards.length >= capacity} title={awards.length >= capacity ? `At most ${capacity} entries` : "Add an empty entry at the end"} onClick={() => void run({ kind: "add" }, awards.length)}><Plus size={13} /> Add entry</button>
+        {award && <button className="btn small" disabled={rows.busy || awards.length >= capacity} title={awards.length >= capacity ? `At most ${capacity} entries` : "Copy this entry, with its value, right after it"} onClick={() => void run({ kind: "clone", index: current }, current + 1)}><Copy size={13} /> Clone entry {current + 1}</button>}
+        {award && <button className="btn small danger-outline" disabled={rows.busy} onClick={() => void run({ kind: "remove", index: current }, Math.min(current, awards.length - 2))}><Trash2 size={13} /> Remove entry {current + 1}</button>}
+        <span className="muted small">{awards.length} of {capacity} entries</span>
+        {rows.error && <span className="task-field-edit-error">{rows.error}</span>}
+      </div>}
+      {award && scale?.children?.[current] && rule && <div className="task-form-grid"><div className="task-form-cell"><span className="task-form-label">{rule.value} (entry {current + 1})</span><Cell field={scale.children[current]} /></div></div>}
+      {!ordered && <div className="task-field-edit-error">The {rule?.value.toLowerCase()}s are not {rule?.order === "up" ? "increasing" : "decreasing"}, so some entries may never be given.</div>}
     </fieldset>}
-    {award ? <fieldset className="task-form-group wide"><legend>{source?.label}{source?.scale ? ` · entry ${entry + 1}` : ""}</legend><AwardEditor key={`${source?.key}:${entry}`} award={award} /></fieldset>
-      : <div className="empty-note">{source?.scale ? "No entries. The number of entries (scale count) is set in Advanced." : "No award."}</div>}
+    {award ? <fieldset className="task-form-group wide"><legend>{source?.label}{source?.scale ? ` · entry ${current + 1}` : ""}</legend><AwardEditor key={`${source?.key}:${current}`} award={award} /></fieldset>
+      : <div className="empty-note">{source?.scale ? "No entries yet. Add an entry above." : "No award."}</div>}
   </>;
 }
 

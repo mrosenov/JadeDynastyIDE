@@ -653,7 +653,9 @@ impl TaskDocument {
     /// Adds, clones or removes a row of a list and keeps its count in step, as one undo step.
     /// Variable-length lists grow and shrink with their count field. Fixed lists (`count_path`, relative
     /// to the task, names their count) keep their size: the used slots come first and the rest are empty.
-    pub fn edit_array(&mut self, pack: usize, root: usize, task_path: &[usize], array_path: &[String], count_path: Option<&[String]>, edit: &ArrayEdit) -> Result<EditState, String> {
+    /// `companions` are fixed lists (relative to the task) whose slots pair with the rows, such as the
+    /// ratios or counts of scaled awards: they get the same insert, copy or removal and keep their length.
+    pub fn edit_array(&mut self, pack: usize, root: usize, task_path: &[usize], array_path: &[String], count_path: Option<&[String]>, companions: &[Vec<String>], edit: &ArrayEdit) -> Result<EditState, String> {
         let version = self.container.header.version;
         let before = self.current_root(pack, root)?;
         let mut decoded = decode_exact(&self.schema, &before, version)?;
@@ -677,6 +679,30 @@ impl TaskDocument {
         // A new row is decoded from zero bytes with the list's own item type, so it is well-formed.
         let empty = || empty_node(&self.schema, &item, version);
         let label = fieldless_label(array_path);
+        let rows_before = if slots.is_some() { used } else { node_at(task, array_path)?.children().len() };
+        for companion in companions {
+            let node = node_at_mut(task, companion)?;
+            let FieldType::FixedArray { len, item } = node.ty.clone() else { return Err(format!("{} is not a fixed list", companion.join("."))) };
+            if !matches!(edit, ArrayEdit::Remove { .. }) && rows_before >= len {
+                return Err(format!("{label} holds at most {len} entries"));
+            }
+            let values = node.array_mut().ok_or("The paired list is not an array")?;
+            match edit {
+                ArrayEdit::Add => values[rows_before] = empty_node(&self.schema, &item, version)?,
+                ArrayEdit::Clone { index } => {
+                    let value = values.get(*index).cloned().ok_or("That row no longer exists")?;
+                    values.insert(index + 1, value);
+                    values.pop();
+                }
+                ArrayEdit::Remove { index } => {
+                    if *index >= values.len() {
+                        return Err("That row no longer exists".into());
+                    }
+                    values.remove(*index);
+                    values.push(empty_node(&self.schema, &item, version)?);
+                }
+            }
+        }
         let (count, action) = {
             let rows = node_at_mut(task, array_path)?.array_mut().ok_or("The list is not an array")?;
             let used = slots.map_or(rows.len(), |slots| used.min(slots));
@@ -2258,17 +2284,17 @@ mod tests {
         let original = document.current_root(root.pack, root.root).unwrap();
         let (start, rows) = count(&document, root.pack, root.root);
         let list = ["monsters_wanted".to_string()];
-        document.edit_array(root.pack, root.root, &[], &list, None, &ArrayEdit::Clone { index: 0 }).unwrap();
+        document.edit_array(root.pack, root.root, &[], &list, None, &[], &ArrayEdit::Clone { index: 0 }).unwrap();
         let (cloned, after) = count(&document, root.pack, root.root);
         assert_eq!(cloned, start + 1);
         assert_eq!(after[1].encode().unwrap(), rows[0].encode().unwrap(), "the copy follows its source row");
-        document.edit_array(root.pack, root.root, &[], &list, None, &ArrayEdit::Add).unwrap();
+        document.edit_array(root.pack, root.root, &[], &list, None, &[], &ArrayEdit::Add).unwrap();
         let (added, after) = count(&document, root.pack, root.root);
         assert_eq!(added, start + 2);
         assert!(after.last().unwrap().encode().unwrap().iter().all(|byte| *byte == 0), "a new row is empty");
-        document.edit_array(root.pack, root.root, &[], &list, None, &ArrayEdit::Remove { index: 0 }).unwrap();
+        document.edit_array(root.pack, root.root, &[], &list, None, &[], &ArrayEdit::Remove { index: 0 }).unwrap();
         assert_eq!(count(&document, root.pack, root.root).0, start + 1);
-        assert!(document.edit_array(root.pack, root.root, &[], &["fixed".into(), "premise_tasks".into()], None, &ArrayEdit::Add).is_err(), "a fixed list needs its count");
+        assert!(document.edit_array(root.pack, root.root, &[], &["fixed".into(), "premise_tasks".into()], None, &[], &ArrayEdit::Add).is_err(), "a fixed list needs its count");
         for _ in 0..3 {
             document.undo().unwrap();
         }
@@ -2285,15 +2311,58 @@ mod tests {
         let root = document.summary().roots.into_iter().find(|root| slots(&document, root.pack, root.root).0 == 0).unwrap();
         let original = document.current_root(root.pack, root.root).unwrap();
         let length = slots(&document, root.pack, root.root).1.len();
-        document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &ArrayEdit::Add).unwrap();
-        document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &ArrayEdit::Clone { index: 0 }).unwrap();
+        document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &[], &ArrayEdit::Add).unwrap();
+        document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &[], &ArrayEdit::Clone { index: 0 }).unwrap();
         let (used, values) = slots(&document, root.pack, root.root);
         assert_eq!((used, values.len()), (2, length), "the slot count stays fixed");
-        document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &ArrayEdit::Remove { index: 1 }).unwrap();
+        document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &[], &ArrayEdit::Remove { index: 1 }).unwrap();
         assert_eq!(slots(&document, root.pack, root.root).0, 1);
-        assert!(document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &ArrayEdit::Remove { index: 1 }).is_err(), "only used slots can be removed");
-        assert!(document.edit_array(root.pack, root.root, &[], &list, None, &ArrayEdit::Remove { index: 99 }).is_err());
+        assert!(document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &[], &ArrayEdit::Remove { index: 1 }).is_err(), "only used slots can be removed");
+        assert!(document.edit_array(root.pack, root.root, &[], &list, None, &[], &ArrayEdit::Remove { index: 99 }).is_err());
         for _ in 0..3 {
+            document.undo().unwrap();
+        }
+        assert_eq!(document.current_root(root.pack, root.root).unwrap(), original);
+    }
+
+    #[test]
+    fn scaled_award_entries_keep_their_ratios() {
+        let path = r"E:/Games/XtremeJade/element/data/tasks.data";
+        if !Path::new(path).is_file() {
+            return;
+        }
+        let mut document = TaskDocument::open(path).unwrap();
+        let version = document.container.header.version;
+        let root = document.summary().roots[0].clone();
+        let original = document.current_root(root.pack, root.root).unwrap();
+        let awards = ["success_ratio_awards".to_string(), "awards".to_string()];
+        let ratios = vec!["success_ratio_awards".to_string(), "ratios".to_string()];
+        let state = |document: &TaskDocument| -> (u64, usize, Vec<f32>) {
+            let node = decode_exact(&document.schema, &document.current_root(root.pack, root.root).unwrap(), version).unwrap();
+            let scale = node.child("success_ratio_awards").unwrap();
+            let count = match scale.child("scale_count").unwrap().value { Value::U64(value) => value, _ => panic!("count") };
+            (count, scale.child("awards").unwrap().children().len(), scale.child("ratios").unwrap().children().iter().map(|ratio| match ratio.value { Value::F32(value) => value, _ => panic!("ratio") }).collect())
+        };
+        let (start, _, _) = state(&document);
+        let mut edits = 0;
+        for _ in start..5 {
+            document.edit_array(root.pack, root.root, &[], &awards, None, std::slice::from_ref(&ratios), &ArrayEdit::Add).unwrap();
+            edits += 1;
+        }
+        assert_eq!(state(&document).0, 5);
+        assert!(document.edit_array(root.pack, root.root, &[], &awards, None, std::slice::from_ref(&ratios), &ArrayEdit::Add).unwrap_err().contains("at most 5"));
+        document.edit_fields(root.pack, root.root, &[], &[FieldValue { field_path: vec!["success_ratio_awards".into(), "ratios".into(), "[0]".into()], value: "0.25".into() }, FieldValue { field_path: vec!["success_ratio_awards".into(), "ratios".into(), "[1]".into()], value: "0.5".into() }], "ratios").unwrap();
+        document.edit_array(root.pack, root.root, &[], &awards, None, std::slice::from_ref(&ratios), &ArrayEdit::Remove { index: 4 }).unwrap();
+        document.edit_array(root.pack, root.root, &[], &awards, None, std::slice::from_ref(&ratios), &ArrayEdit::Clone { index: 0 }).unwrap();
+        let (count, rows, values) = state(&document);
+        assert_eq!((count, rows), (5, 5));
+        assert_eq!(&values[..3], &[0.25, 0.25, 0.5], "a copied entry copies its ratio");
+        document.edit_array(root.pack, root.root, &[], &awards, None, std::slice::from_ref(&ratios), &ArrayEdit::Remove { index: 0 }).unwrap();
+        let (count, rows, values) = state(&document);
+        assert_eq!((count, rows, values.len()), (4, 4, 5));
+        assert_eq!(&values[..2], &[0.25, 0.5]);
+        assert_eq!(values[4], 0.0, "the freed slot is empty");
+        for _ in 0..edits + 4 {
             document.undo().unwrap();
         }
         assert_eq!(document.current_root(root.pack, root.root).unwrap(), original);

@@ -451,8 +451,8 @@ async fn edit_task_field(edit: tasks::browser::FieldEdit, state: State<'_, AppSt
 }
 
 #[tauri::command]
-async fn edit_task_array(pack: usize, root: usize, task_path: Vec<usize>, array_path: Vec<String>, count_path: Option<Vec<String>>, edit: tasks::browser::ArrayEdit, state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
-    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.edit_array(pack, root, &task_path, &array_path, count_path.as_deref(), &edit)
+async fn edit_task_array(pack: usize, root: usize, task_path: Vec<usize>, array_path: Vec<String>, count_path: Option<Vec<String>>, companions: Option<Vec<Vec<String>>>, edit: tasks::browser::ArrayEdit, state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.edit_array(pack, root, &task_path, &array_path, count_path.as_deref(), &companions.unwrap_or_default(), &edit)
 }
 
 #[tauri::command]

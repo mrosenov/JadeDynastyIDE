@@ -300,7 +300,13 @@ Referenced by and the delete preview.
 
 **Rewards** follows the official editors: a reward selector (award on success or failure, and the
 ratio, item-count and finish-count awards for each), the two award-type dropdowns, and for scaled
-awards their ratios or counts with one entry per scale. The selected award is split into sub-tabs
+awards their entries. A scaled award holds up to 5 entries, each an award with its time ratio, item
+count or finish count: **Add entry**, **Clone entry** (with its value, right after it) and **Remove
+entry** keep the entries and their values paired and the entry count in step, each as one undo step.
+The panel says how the server picks an entry (ratio awards: the first whose ratio is at least the share
+of the time limit used; item-count awards: the first whose count the player's item count reaches;
+finish-count awards: from the last entry back, the first whose count the finish count reaches) and
+warns when the values are not in the order that rule needs. The selected award is split into sub-tabs
 (Dividends, Candidate items, Storage, Faction, Travel, Spawn, Quests, Character, Messages,
 Friendship, Other); a dot marks sources and sub-tabs that hold values. Candidate items list each
 candidate with its random-choice flag and an item table (item, common, amount, probability, bind,

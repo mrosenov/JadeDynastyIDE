@@ -6673,6 +6673,9 @@ input[type=checkbox].changed {
   margin-top: 8px;
   border-bottom: 0;
 }
+.task-rewards-rule {
+  margin-bottom: 8px;
+}
 .task-form-candidates > .segmented {
   margin-bottom: 8px;
 }

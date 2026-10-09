@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (161 at last run, ~2–3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (162 at last run, ~2–3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -379,6 +379,11 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   (a non-structural count, from the layout's `count`) and keep their length, used slots first. New
   rows are decoded from zero bytes with the list's item type. `given_items` row operations recount
   `given_common_item_count`/`given_task_item_count` (the client also recomputes them on load).
+  `companions` are fixed lists whose slots pair with the rows (scaled awards: `awards` counted by
+  `scale_count`, paired with `ratios[5]` or `counts[5]`): they get the same insert/copy/removal, keep their
+  length, and cap the rows (5). Selection rules (server zgame/gs/task/TaskTempl.inl CalcAwardDataBy…):
+  ratio = first with time ratio ≤ ratios[i]; items = first with item count ≥ counts[i]; count = from the
+  last back, first with finish count ≥ counts[i]. `SCALE_RULES` in TaskForm.tsx shows them.
 - **Talk option parameters**: for functions 0, 6, 7, 8 and 21 (`TASK_OPTION_FUNCTIONS`; NPC_TALK,
   GIVE_TASK, COMPLETE_TASK, GIVE_TASK_MATTER, GIVEUP_TASK) `parameter` is a task ID. Verified on
   ForsakenJD (function 6: 8,834 options, 6,878 to their own task; 17/18 and window links never use
