@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (157 at last run, ~2–3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (158 at last run, ~2–3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -81,6 +81,7 @@ Environment quirks (Windows 11, Git Bash):
 | `tasks/schema.rs`, `structures.rs`, `v165.rs`, `v172.rs`, `v184.rs` | Byte-preserving task schema engine and verified version layouts. |
 | `tasks/browser.rs` | Lazy tree loading, background search/reference index, field inspection and hierarchy summaries. |
 | `tasks/edit.rs` | In-memory task value edits, history, undo/redo, clone, delete and move/reparent operations. |
+| `tasks/dialogs.rs` | NPC talks as trees (`Dialog`/`DialogWindow`/`DialogOption`): read, validate, rewrite in the official editor's order. |
 | `tasks/search.rs` | Advanced task search: field catalog, conditions (same-row groups, `any:` fields), value anywhere, scopes, parallel byte scan with prefilter, cancel and progress. |
 | `tasks/save.rs` | Task-set staging, pack rebuilding, MD5/index updates, verification, backups and atomic replacement. |
 | `tasks/analyze.rs`, `layout.rs` | Unsupported-version analysis and validated user task-layout patches. |
@@ -299,6 +300,17 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `browser::set_task_field`, the same validation as inspector edits (`edit_field` calls it too).
   Additions append decoded `_raw` roots as `RootChange`s with empty `before`, after the edited
   roots, in pack/root order.
+- **Dialog editor** (`tasks/dialogs.rs`, `TaskDialogEditor.tsx`, commands `task_dialogs`, `set_task_dialog`): the
+  UI sends a whole talk (windows with texts and options; option `target` = window ID or `0x80000000 |
+  function`), `set_dialog` checks it is a tree (every window opened by exactly one option, no missing
+  targets, texts ≤ 63 units, quest parameters exist) and writes it depth-first from the root like
+  `CTalkModifyDlg::FillWindowData` (ZElementData/TalkModifyDlg.cpp), setting `parent_id` (-1 for the root)
+  and counts. Unchanged windows and options keep their nodes, so a no-op write is byte-identical; new ones
+  come from `browser::empty_node`. Window text follows the task's terminator convention (NUL inside the
+  text in v165). Client (DlgNPC.cpp): `windows[0]` opens first, windows are found by ID, Back uses
+  `parent_id`; a talk shows only with >1 window or text in the first. Sample data: all 24,456 ForsakenJD
+  talks are trees in that order (HDN: one unreachable window). Talks: delivery (`CanDeliverTask`),
+  unqualified (requirements fail), execution (`GetUnfinishedTalk`), award (`CanFinishTask`), item_delivery.
 - **Advanced task search** (`tasks/search.rs`, `TaskSearchPanel.tsx`, commands `task_search_fields`,
   `search_tasks_advanced`, `cancel_task_search`, `task_search_progress`): `SearchSource::of` snapshots the
   container, schema and unsaved roots under the lock; `run` scans packs on all cores without it, using

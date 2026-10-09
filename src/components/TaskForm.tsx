@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Copy, Plus, Trash2 } from "lucide-react";
 import { characterClasses, namedSet } from "../elements/api";
-import type { TaskArrayEdit, TaskDetail, TaskFieldReference, TaskFieldView } from "../elements/types";
+import type { TaskArrayEdit, TaskDetail, TaskDialog, TaskFieldReference, TaskFieldView } from "../elements/types";
+import { TaskDialogEditor } from "./TaskDialogEditor";
 
 /** The quest form's tabs; "advanced" is the raw field tree rendered by the editor. */
 export type TaskFormTab = "general" | "locations" | "requirements" | "objectives" | "rewards" | "texts" | "advanced";
@@ -32,6 +33,8 @@ interface Props {
   renderReference: (reference: TaskFieldReference) => ReactNode;
   /** Opens Enums & masks at a set; dropdowns offer "Edit names…". */
   onEditSet?: (key: string) => void;
+  /** Replaces one NPC talk of the shown task (one undo step). */
+  onDialog: (dialog: TaskDialog, label: string) => Promise<void>;
   /** Changes when enums or masks were edited, so the names are loaded again. */
   setsVersion?: number;
   /** Shown at the end of the General tab. */
@@ -443,56 +446,6 @@ function ClassChecklist({ list, count }: { list: TaskFieldView; count: TaskField
   </div>;
 }
 
-/** NPC talks: each window's text with its player options. */
-const isWindow = (value?: string) => !!value && value !== "0" && value !== "4294967295";
-/** NPC functions an option can run (SERVICE_TYPE in ExpTypes.h, after the 0x80000000 flag). */
-const SERVICES = ["Talk", "Sell", "Buy", "Repair", "Install", "Uninstall", "Give quest", "Complete quest", "Give quest item", "Skills", "Heal", "Teleport", "Transport", "Proxy", "Storage", "Make", "Decompose", "Back", "Exit", "Storage password", "Identify", "Give up quest", "War tower", "Reset properties", "Bind equipment", "Destroy equipment", "Undo destroy equipment", "War archers", "Item trade", "Soul meld", "Consign", "Transcription"];
-/** Functions whose parameter is a quest ID (cloning a quest moves these to the copy). */
-const QUEST_SERVICES = new Set([0, 6, 7, 8, 21]);
-function optionTarget(value?: string) {
-  const id = Number(value ?? 0);
-  if (id >= 0x80000000) return `→ ${SERVICES[id - 0x80000000] ?? "function"} (${id - 0x80000000})`;
-  return id ? `→ window ${id}` : "→ close";
-}
-function OptionView({ option, taskId }: { option: TaskFieldView; taskId: number }) {
-  const text = child(option, "text");
-  const parameter = child(option, "parameter");
-  const id = Number(child(option, "id")?.value ?? 0);
-  const service = id >= 0x80000000 ? id - 0x80000000 : null;
-  const quest = service !== null && QUEST_SERVICES.has(service);
-  // Window links and most functions leave the parameter at zero; show it whenever it means something.
-  const showParameter = parameter && (quest || parameter.value !== "0");
-  return <div className="task-form-option">
-    <span className="muted">▸</span>
-    {text && <Value field={text} />}
-    <span className="task-form-option-target muted small mono" title={`Option ID ${id}`}>{optionTarget(String(id))}</span>
-    {showParameter && <span className="task-form-option-parameter" title={dotted(parameter.path)}>
-      <span className="muted small">{quest ? "Quest" : "Parameter"}</span>
-      <Cell field={parameter} />
-      {quest && Number(parameter.value) === taskId && <span className="muted small">this quest</span>}
-    </span>}
-  </div>;
-}
-function DialogsView({ field, taskId }: { field: TaskFieldView; taskId: number }) {
-  return <>{(field.children ?? []).map((talk) => {
-    const windows = child(talk, "windows")?.children ?? [];
-    const prompt = child(talk, "prompt");
-    return <div className="task-form-sub" key={talk.name}>
-      <div className="task-form-subtitle">{fieldLabel(talk.name)} <span className="muted small">· {windows.length} window{windows.length === 1 ? "" : "s"}</span></div>
-      {prompt && <Grid fields={[prompt]} />}
-      {windows.map((window) => {
-        const text = child(window, "text");
-        const options = child(window, "options")?.children ?? [];
-        return <div className="task-form-window" key={window.name}>
-          <div className="muted small">Window {child(window, "id")?.value}{isWindow(child(window, "parent_id")?.value) ? ` · opened from window ${child(window, "parent_id")?.value}` : ""}</div>
-          {text && <Value field={text} wide />}
-          {options.map((option) => <OptionView key={option.name} option={option} taskId={taskId} />)}
-        </div>;
-      })}
-    </div>;
-  })}</>;
-}
-
 // ---------------------------------------------------------------- rewards
 
 /** AWARD_DATA split into sub-tabs like the official editors; "Other" takes the rest. */
@@ -740,7 +693,7 @@ export function describeTaskField(path: string): { tab: TaskFormTab; tabLabel: s
 }
 
 /** The quest as a form: labelled groups per tab, like the official editors. */
-export function TaskForm({ detail, tab, onEdit, onBatch, onRows, onEditSet, setsVersion, renderReference, referencedBy }: Props) {
+export function TaskForm({ detail, tab, onEdit, onBatch, onRows, onEditSet, onDialog, setsVersion, renderReference, referencedBy }: Props) {
   const fields = useMemo(() => index(detail.fields), [detail]);
   const [sets, setSets] = useState<Record<string, Map<number, string>>>({});
   const [classes, setClasses] = useState<[number, string][]>([]);
@@ -784,7 +737,7 @@ export function TaskForm({ detail, tab, onEdit, onBatch, onRows, onEditSet, sets
         if (field) body = <>{before}<FriendshipTable field={field} /></>;
       } else if ("dialogs" in group) {
         const field = get(group.dialogs);
-        if (field) body = <DialogsView field={field} taskId={detail.id} />;
+        if (field) body = <TaskDialogEditor detail={detail} fields={fields} renderReference={renderReference} onSave={onDialog} />;
       } else {
         const rest = (get("fixed")?.children ?? []).filter((field) => !PLACED.has(dotted(field.path)) && !hidden(field) && group.rest(field.name));
         if (rest.length) body = <><Grid fields={rest.filter((field) => !isComposite(field))} />{rest.filter(isComposite).map((field) => <div className="task-form-sub" key={field.name}><div className="task-form-subtitle">{fieldLabel(field.name)}</div><ArrayView field={field} /></div>)}</>;

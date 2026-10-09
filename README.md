@@ -268,13 +268,35 @@ grow with the quest change size and their count; fixed lists (for example the 5 
 finished first) fill their slots in order and show how many are used. Each row operation is one undo
 step. Adding or removing given items also updates the stored common/task item counts.
 
-In **Texts & dialogs** every option shows what it does (`→ window 3`, `→ Give quest (6)`,
-`→ Complete quest (7)`, `→ Exit (18)`, named from `SERVICE_TYPE`) and, for the quest functions
-(Talk, Give quest, Complete quest, Give quest item, Give up quest), its quest parameter as an
-editable box with the quest's link; "this quest" marks options that point at the quest itself.
-Cloning a quest moves these parameters to the copy, so its NPC gives and completes the copy, not the
-original. Option parameters also count as quest references in Problems, Referenced by and the
-delete preview.
+**Texts & dialogs** edits the quest's five NPC talks, each on its own tab (a dot marks talks in use):
+**Delivery** (offered when the quest can be accepted), **Unqualified** (shown greyed out when the
+requirements are not met), **Item delivery**, **Execution** (while the quest is in progress) and
+**Award** (when it can be completed). A talk is a tree, shown like the official editor: the first
+window, its options, and under each option the window it opens. You can:
+
+- edit the prompt (the NPC menu entry that starts the talk), window texts (several lines) and option
+  texts (at most 63 characters, as the game stores them);
+- choose what an option does: **Opens a window** (adds a new window under it, with a Back option) or
+  an NPC function: Give quest, Complete quest, Give quest item, Give up quest, Talk, Back or Exit.
+  For the quest functions the parameter is a quest ID with its link, filled with this quest; "use this
+  quest" resets it;
+- add options, move them up and down, and remove them. Removing an option, or turning it into a
+  function, removes the window it opened and every window below it (after asking when they hold text);
+- **Create talk** for an empty stage with a starter (Delivery: Accept → Give quest and Leave → Exit;
+  Award: Complete → Complete quest and Leave; the others: Leave), and **Clear talk**;
+- **Preview** the talk like the NPC window in game, with colour codes: options open windows, Back
+  returns to the window before, and functions end the talk saying what the NPC would do.
+
+Every change is one undo step. JD IDE writes talks the way the official editor does: the first window
+(parent -1), then each option's window followed by its own windows, with parent IDs set and new
+windows numbered after the highest ID. Line breaks are stored as CR LF and window texts keep the
+file's terminator convention; v184 window parameters stay with their window, and a talk written
+back unchanged stays byte for byte the same. Options naming a quest that does not exist are refused,
+and a window no option opens (one HDN talk has one) is flagged with a button to remove it.
+
+Cloning a quest moves the quest parameters of its options to the copy, so its NPC gives and completes
+the copy, not the original. Option parameters also count as quest references in Problems,
+Referenced by and the delete preview.
 
 **Rewards** follows the official editors: a reward selector (award on success or failure, and the
 ratio, item-count and finish-count awards for each), the two award-type dropdowns, and for scaled

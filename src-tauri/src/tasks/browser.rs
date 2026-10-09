@@ -673,13 +673,7 @@ impl TaskDocument {
         let used = integer(node_at(task, &count_reference)?).ok_or("The list count is not a number")?;
         let used = usize::try_from(used).map_err(|_| "The list count is negative")?;
         // A new row is decoded from zero bytes with the list's own item type, so it is well-formed.
-        let empty = || -> Result<Node, String> {
-            let mut structs = self.schema.structs.clone();
-            structs.insert("__row".into(), super::schema::StructDef { fields: vec![super::schema::FieldDef::new("[0]", item.clone())] });
-            let wrapper = Schema { root: "__row".into(), structs };
-            let (node, _) = super::schema::decode_prefix(&wrapper, &vec![0; 65536], version)?;
-            node.children().first().cloned().ok_or_else(|| "Could not build an empty row".to_string())
-        };
+        let empty = || empty_node(&self.schema, &item, version);
         let label = fieldless_label(array_path);
         let (count, action) = {
             let rows = node_at_mut(task, array_path)?.array_mut().ok_or("The list is not an array")?;
@@ -1389,7 +1383,7 @@ pub(crate) fn node_at<'a>(node: &'a Node, path: &[String]) -> Result<&'a Node, S
     Ok(current)
 }
 
-fn node_at_mut<'a>(node: &'a mut Node, path: &[String]) -> Result<&'a mut Node, String> {
+pub(crate) fn node_at_mut<'a>(node: &'a mut Node, path: &[String]) -> Result<&'a mut Node, String> {
     let shown = path.join(".");
     let mut current = node;
     for part in path {
@@ -1578,7 +1572,16 @@ fn parse_hex(input: &str, expected: usize) -> Result<Vec<u8>, String> {
     Ok(bytes)
 }
 
-fn set_count(parent: &mut Node, reference: &str, count: usize) -> Result<(), String> {
+/// A well-formed value of `ty` decoded from zero bytes: an empty list row, window or option.
+pub(crate) fn empty_node(schema: &Schema, ty: &FieldType, version: u32) -> Result<Node, String> {
+    let mut structs = schema.structs.clone();
+    structs.insert("__row".into(), super::schema::StructDef { fields: vec![super::schema::FieldDef::new("[0]", ty.clone())] });
+    let wrapper = Schema { root: "__row".into(), structs };
+    let (node, _) = super::schema::decode_prefix(&wrapper, &vec![0; 65536], version)?;
+    node.children().first().cloned().ok_or_else(|| "Could not build an empty value".to_string())
+}
+
+pub(crate) fn set_count(parent: &mut Node, reference: &str, count: usize) -> Result<(), String> {
     let path = reference.split('.').map(str::to_string).collect::<Vec<_>>();
     let node = node_at_mut(parent, &path)?;
     let value = match node.value {

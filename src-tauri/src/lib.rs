@@ -530,6 +530,18 @@ async fn open_task_compare(path: String, state: State<'_, AppState>) -> Result<t
     Ok(report)
 }
 
+/// The talks of a task as trees of windows and options.
+#[tauri::command]
+async fn task_dialogs(pack: usize, root: usize, task_path: Vec<usize>, state: State<'_, AppState>) -> Result<Vec<tasks::dialogs::Dialog>, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.dialogs(pack, root, &task_path)
+}
+
+/// Replaces one talk of a task (one undo step).
+#[tauri::command]
+async fn set_task_dialog(pack: usize, root: usize, task_path: Vec<usize>, dialog: tasks::dialogs::Dialog, label: String, state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.set_dialog(pack, root, &task_path, &dialog, &label)
+}
+
 /// The searchable fields of the open task layout.
 #[tauri::command]
 async fn task_search_fields(state: State<'_, AppState>) -> Result<Vec<tasks::search::SearchField>, String> {
@@ -1336,6 +1348,8 @@ pub fn run() {
             edit_task_fields,
             edit_task_array,
             task_search_fields,
+            task_dialogs,
+            set_task_dialog,
             search_tasks_advanced,
             cancel_task_search,
             task_search_progress,

@@ -81,7 +81,7 @@ import type {
   TaskCopySelection,
   TaskTextGroup,
   TaskTranslationReport,
-  TaskDeleteReference, TaskArrayEdit, TaskSearchField, TaskSearchQuery, TaskSearchResults } from "./types";
+  TaskDeleteReference, TaskArrayEdit, TaskDialog, TaskSearchField, TaskSearchQuery, TaskSearchResults } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
 
@@ -136,6 +136,10 @@ export const editTaskFields = (pack: number, root: number, taskPath: number[], v
 /** Adds, clones or removes a row of a list of the task; `countPath` names the count of a fixed list. */
 export const editTaskArray = (pack: number, root: number, taskPath: number[], arrayPath: string[], countPath: string[] | null, edit: TaskArrayEdit) =>
   invoke<TaskEditState>("edit_task_array", { pack, root, taskPath, arrayPath, countPath, edit });
+/** The talks of a task as trees of windows and options. */
+export const taskDialogs = (pack: number, root: number, taskPath: number[]) => invoke<TaskDialog[]>("task_dialogs", { pack, root, taskPath });
+/** Replaces one talk of a task (one undo step). */
+export const setTaskDialog = (pack: number, root: number, taskPath: number[], dialog: TaskDialog, label: string) => invoke<TaskEditState>("set_task_dialog", { pack, root, taskPath, dialog, label });
 /** The searchable fields of the open task layout. */
 export const taskSearchFields = () => invoke<TaskSearchField[]>("task_search_fields");
 /** Advanced task search over the whole set, unsaved edits included. */

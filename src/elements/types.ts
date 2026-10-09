@@ -1546,3 +1546,25 @@ export interface TaskSearchResults {
   truncated: boolean;
   elapsedMs: number;
 }
+
+/** One option of a talk window: `target` is a child window ID or `0x80000000 | function`. */
+export interface TaskDialogOption {
+  target: number;
+  text: string;
+  parameter: number;
+}
+
+export interface TaskDialogWindow {
+  id: number;
+  /** Set on reading (-1 = 4294967295 for the root); the tree decides it on writing. */
+  parentId: number;
+  text: string;
+  options: TaskDialogOption[];
+}
+
+/** One NPC talk of a task (`task_dialogs`), root window first. */
+export interface TaskDialog {
+  talk: "delivery" | "unqualified" | "item_delivery" | "execution" | "award";
+  prompt: string;
+  windows: TaskDialogWindow[];
+}

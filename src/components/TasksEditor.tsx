@@ -1,9 +1,9 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { AlertTriangle, ArrowRight, BarChart3, Braces, Check, CircleAlert, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
-import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskArray, editTaskField, editTaskFields, exportTasksJson, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskReferencedBy, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
+import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskArray, setTaskDialog, editTaskField, editTaskFields, exportTasksJson, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskReferencedBy, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskAnalysisReport, TaskArrayEdit, TaskDeletePreview, TaskDeleteReference, TaskEditState as EditStateValue, TaskExportTarget, TaskImportReport, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchHit, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskAnalysisReport, TaskArrayEdit, TaskDialog, TaskDeletePreview, TaskDeleteReference, TaskEditState as EditStateValue, TaskExportTarget, TaskImportReport, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchHit, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 import { TaskSaveDialog } from "./TaskSaveDialog";
 import { TaskSchemaDialog } from "./TaskSchemaDialog";
@@ -468,6 +468,21 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     if (!beginOperation()) throw new Error("Another task operation is still running");
     try {
       setEditState(await editTaskFields(selectedRoot.pack, selectedRoot.root, selectedPath, values, label));
+      await refreshSelected();
+    } catch (problem) {
+      setError(problemText(problem));
+      throw problem;
+    } finally {
+      endOperation();
+    }
+  }, [refreshSelected, selectedPath, selectedRoot]);
+
+  /** Replaces one NPC talk of the selected task. */
+  const editDialog = useCallback(async (dialog: TaskDialog, label: string) => {
+    if (!selectedRoot) return;
+    if (!beginOperation()) throw new Error("Another task operation is still running");
+    try {
+      setEditState(await setTaskDialog(selectedRoot.pack, selectedRoot.root, selectedPath, dialog, label));
       await refreshSelected();
     } catch (problem) {
       setError(problemText(problem));
@@ -1455,7 +1470,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
             </div>
           </header>
           <div className="task-form-tabs" role="tablist" aria-label="Task sections">{TASK_FORM_TABS.map((entry) => <button key={entry.key} role="tab" aria-selected={formTab === entry.key} className={formTab === entry.key ? "active" : ""} onClick={() => chooseFormTab(entry.key)}>{entry.label}</button>)}</div>
-          {formTab !== "advanced" ? <TaskForm key={`${detail.pack}:${detail.root}:${pathKey(detail.path)}`} detail={detail} tab={formTab} onEdit={editField} onBatch={editFields} onRows={editRows} onEditSet={onEditSet} setsVersion={setsVersion} renderReference={(reference) => <TaskReferenceView reference={reference} onOpen={followReference} />} referencedBy={referrersView} /> : <>
+          {formTab !== "advanced" ? <TaskForm key={`${detail.pack}:${detail.root}:${pathKey(detail.path)}`} detail={detail} tab={formTab} onEdit={editField} onBatch={editFields} onRows={editRows} onDialog={editDialog} onEditSet={onEditSet} setsVersion={setsVersion} renderReference={(reference) => <TaskReferenceView reference={reference} onOpen={followReference} />} referencedBy={referrersView} /> : <>
           <div className="task-fields-head"><span>Field</span><span>Value</span><span>Type</span><span>Offset</span></div>
           <div className="task-fields" key={`${detail.pack}:${detail.root}:${pathKey(detail.path)}`}>{categories.map((category) => <details className="task-category" key={category.key} open>
             <summary><span>{category.label}</span><span>{category.fields.length} fields</span></summary>

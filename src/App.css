@@ -7075,6 +7075,168 @@ button.task-field-reference:hover {
 .tasks-roots[hidden] {
   display: none;
 }
+/* NPC talks: a tree of windows, each option's window indented under it. */
+.task-dialog-hint {
+  margin-bottom: 8px;
+}
+.task-dialog-empty {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+.task-dialog-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.task-dialog-head .btn,
+.task-dialog-empty .btn,
+.task-dialog-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.task-dialog-prompt {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 260px;
+  font-size: 12px;
+}
+.task-dialog-prompt > .task-dialog-input {
+  flex: 1;
+}
+.task-dialog-input,
+.task-dialog-text {
+  min-width: 0;
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+.task-dialog-input:focus,
+.task-dialog-text:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+.task-dialog-text {
+  width: 100%;
+  resize: vertical;
+  line-height: 1.45;
+}
+.task-dialog-window {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+.task-dialog-window-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.task-dialog-window-id {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.task-dialog-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.task-dialog-option {
+  display: grid;
+  grid-template-columns: 12px minmax(140px, 1fr) auto auto auto;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.task-dialog-parameter {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.task-dialog-parameter > .task-dialog-input {
+  width: 84px;
+}
+.task-dialog-parameter > .task-field-reference {
+  max-width: 180px;
+}
+.task-dialog-child {
+  margin: 4px 0 6px 18px;
+  padding-left: 10px;
+  border-left: 2px solid var(--accent-soft);
+}
+.task-dialog-add {
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.task-dialog-preview {
+  max-width: 520px;
+  margin-bottom: 10px;
+  border: 1px solid #3a3326;
+  border-radius: 8px;
+  background: #1c1a16;
+  color: #e9dfc8;
+  font-size: 13px;
+  overflow: hidden;
+}
+.task-dialog-preview-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #2a251c;
+  color: #f2d48a;
+  font-weight: 650;
+}
+.task-dialog-preview-head .icon-btn {
+  color: #e9dfc8;
+}
+.task-dialog-preview-text {
+  padding: 10px 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.task-dialog-preview-options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 8px 10px;
+}
+.task-dialog-preview-options > button {
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: #8fd3ff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.task-dialog-preview-options > button:hover {
+  background: #2f2a20;
+  text-decoration: underline;
+}
+.task-dialog-preview-end {
+  padding: 12px;
+  color: #c9bfa8;
+}
 /* Advanced task search: in place of the quest list, the inspector stays beside it. */
 .task-search-slot {
   display: flex;

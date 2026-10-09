@@ -4,6 +4,7 @@ pub mod analyze;
 pub mod browser;
 pub mod compare;
 pub mod container;
+pub mod dialogs;
 pub mod edit;
 pub mod json;
 pub mod layout;
