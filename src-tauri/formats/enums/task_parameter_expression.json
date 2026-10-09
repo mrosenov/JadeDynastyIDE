@@ -1,0 +1,16 @@
+{
+  "key": "task_parameter_expression",
+  "label": "Parameter expression award",
+  "values": [
+    {
+      "value": 0,
+      "label": "None",
+      "description": "m_nParaExpSel"
+    },
+    {
+      "value": 1,
+      "label": "Experience",
+      "description": "1: the expression result is awarded as experience"
+    }
+  ]
+}

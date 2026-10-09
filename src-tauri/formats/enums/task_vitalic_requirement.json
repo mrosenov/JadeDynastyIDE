@@ -1,0 +1,21 @@
+{
+  "key": "task_vitalic_requirement",
+  "label": "Vitalic (Fengshen) requirement",
+  "values": [
+    {
+      "value": 0,
+      "label": "Everyone",
+      "description": "TaskTempl.h m_nPremFengshenType / enumPremFSAll: 所有人"
+    },
+    {
+      "value": 1,
+      "label": "Only non-Vitalic",
+      "description": "enumPremFSNoneFengShenOnly: 仅未封神"
+    },
+    {
+      "value": 2,
+      "label": "Only Vitalic",
+      "description": "enumPremFSFengShenOnly: 仅封神"
+    }
+  ]
+}

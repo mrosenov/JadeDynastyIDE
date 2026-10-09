@@ -1,0 +1,26 @@
+{
+  "key": "task_timetable_type",
+  "label": "Timetable type",
+  "values": [
+    {
+      "value": 0,
+      "label": "Date range",
+      "description": "enumTaskTimeDate: between two dates"
+    },
+    {
+      "value": 1,
+      "label": "Each month",
+      "description": "enumTaskTimeMonth: day and time each month"
+    },
+    {
+      "value": 2,
+      "label": "Each week",
+      "description": "enumTaskTimeWeek: weekday and time each week"
+    },
+    {
+      "value": 3,
+      "label": "Each day",
+      "description": "enumTaskTimeDay: time each day"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "key": "task_summon_mode",
+  "label": "Summoned monster owner",
+  "values": [
+    {
+      "value": 0,
+      "label": "Normal monster",
+      "description": "TaskTempl.h m_ulSummonMode: 默认的普通怪"
+    },
+    {
+      "value": 1,
+      "label": "Self",
+      "description": "自己"
+    },
+    {
+      "value": 2,
+      "label": "Master",
+      "description": "师傅"
+    },
+    {
+      "value": 3,
+      "label": "Apprentice",
+      "description": "徒弟"
+    },
+    {
+      "value": 4,
+      "label": "Spouse",
+      "description": "仙侣"
+    },
+    {
+      "value": 5,
+      "label": "Team",
+      "description": "队伍"
+    },
+    {
+      "value": 6,
+      "label": "Team or self",
+      "description": "队伍或自己"
+    },
+    {
+      "value": 7,
+      "label": "Team and self",
+      "description": "队伍与自己"
+    },
+    {
+      "value": 8,
+      "label": "Anyone",
+      "description": "不限"
+    }
+  ]
+}

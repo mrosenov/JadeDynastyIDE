@@ -1,0 +1,21 @@
+{
+  "key": "task_compare_operator",
+  "label": "Expression comparison",
+  "values": [
+    {
+      "value": 0,
+      "label": "Greater than",
+      "description": "COMPARE_EXPRESSION.nCompOper 0: left > right (TaskProcess.cpp CheckGlobalExpression)"
+    },
+    {
+      "value": 1,
+      "label": "Equal to",
+      "description": "1: left == right"
+    },
+    {
+      "value": 2,
+      "label": "Less than",
+      "description": "2: left < right"
+    }
+  ]
+}

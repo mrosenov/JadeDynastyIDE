@@ -1,0 +1,86 @@
+{
+  "key": "task_message_channel",
+  "label": "Chat channel",
+  "values": [
+    {
+      "value": 0,
+      "label": "Local",
+      "description": "GP_CHAT_LOCAL 普通频道"
+    },
+    {
+      "value": 1,
+      "label": "World",
+      "description": "GP_CHAT_WORLD 世界频道"
+    },
+    {
+      "value": 2,
+      "label": "Team",
+      "description": "GP_CHAT_TEAM 队伍频道"
+    },
+    {
+      "value": 3,
+      "label": "Guild",
+      "description": "GP_CHAT_FACTION 帮派频道"
+    },
+    {
+      "value": 4,
+      "label": "Whisper",
+      "description": "GP_CHAT_WHISPER 密语信息"
+    },
+    {
+      "value": 5,
+      "label": "Damage",
+      "description": "GP_CHAT_DAMAGE 伤害消息"
+    },
+    {
+      "value": 6,
+      "label": "Fight",
+      "description": "GP_CHAT_FIGHT 战斗信息"
+    },
+    {
+      "value": 7,
+      "label": "Trade",
+      "description": "GP_CHAT_TRADE 交易频道"
+    },
+    {
+      "value": 8,
+      "label": "System",
+      "description": "GP_CHAT_SYSTEM 系统信息"
+    },
+    {
+      "value": 9,
+      "label": "Broadcast",
+      "description": "GP_CHAT_BROADCAST 广播频道"
+    },
+    {
+      "value": 10,
+      "label": "Misc",
+      "description": "GP_CHAT_MISC 其他信息"
+    },
+    {
+      "value": 11,
+      "label": "Family",
+      "description": "GP_CHAT_FAMILY 家族聊天"
+    },
+    {
+      "value": 12,
+      "label": "Class",
+      "description": "GP_CHAT_CIRCLE 班级聊天"
+    },
+    {
+      "value": 13,
+      "label": "Zone",
+      "description": "GP_CHAT_ZONE 同服聊天频道"
+    },
+    {
+      "value": 14,
+      "label": "Speaker",
+      "description": "CHAT_CHANNEL_SPEAKER 大喇叭"
+    },
+    {
+      "value": 15,
+      "label": "Rumor",
+      "description": "CHAT_CHANNEL_RUMOR 谣言"
+    }
+  ]
+}

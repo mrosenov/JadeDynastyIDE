@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (162 at last run, ~2–3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (164 at last run, ~2–3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -404,6 +404,16 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   13410 + type − 1 (0 is derived on load, never stored by the official editor). `recommend_type` is a
   bit mask, bits 1–8 (`RECOMMEND_TYPE_*`, strings 13420–13426). `rank` is 1–5 stars. Value ranges
   in all three fixtures match these sets; `dynamic_task_type` is always 0.
+- More value names (ENUM_FIELDS/MASK_FIELDS keys are a field name or "list.name", see `setFor`):
+  summon_mode (TaskTempl.h comment), premise_fengshen_type, finish_time_type (GetFinishTimeLimit: day/week),
+  life_again_count_compare and refine_condition (server checks), compare `operator` and joins
+  (CheckGlobalExpression(s)), message channels (znet macros.h GP_CHAT_*, gsp_if.h speaker/rumor),
+  special_award_type, `parameter_tokens.type` (TaskExpAnalyser.h), parameter_expression_selection,
+  TASK_TIME weekday (task_week_map: 1 = Monday), timetable types (enumTaskTime*, one byte per row in
+  `fixed.timetable_types`, edited through the form; fixed `Bytes` up to 64 bytes are editable as hex, kept
+  as `Bytes` so task JSON schema digests do not change). Masks: premise_cult/cultivation → `god_devil_mask`,
+  premise_nation_position_mask → `nation_position_mask`, selected_role → `task_selected_role`
+  (DeliverAwardToSpecifyRole). clear_cultivation_skill bits are unknown (skill library not in the source).
 - XtremeJade v165 scan (official data): 15 duplicate IDs, 32 broken references (e.g. four "Join …"
   quests awarding missing task 2608), 1 self-reference, 0 stale links, 44 full packs.
 

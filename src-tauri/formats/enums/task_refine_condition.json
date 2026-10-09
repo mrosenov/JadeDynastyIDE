@@ -1,0 +1,26 @@
+{
+  "key": "task_refine_condition",
+  "label": "Refine condition",
+  "values": [
+    {
+      "value": 0,
+      "label": "At least",
+      "description": "GetReinforceItemCount cond 0: refine level >= refine_level"
+    },
+    {
+      "value": 1,
+      "label": "At most",
+      "description": "1: refine level <= refine_level"
+    },
+    {
+      "value": 2,
+      "label": "Exactly",
+      "description": "2: refine level == refine_level"
+    },
+    {
+      "value": 255,
+      "label": "Not used",
+      "description": "-1 when the item has no refine requirement"
+    }
+  ]
+}

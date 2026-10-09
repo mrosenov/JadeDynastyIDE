@@ -1,0 +1,21 @@
+{
+  "key": "task_expression_token",
+  "label": "Expression token",
+  "values": [
+    {
+      "value": 0,
+      "label": "Variable",
+      "description": "enumTaskExpVar (TaskExpAnalyser.h)"
+    },
+    {
+      "value": 1,
+      "label": "Constant",
+      "description": "enumTaskExpConst"
+    },
+    {
+      "value": 2,
+      "label": "Operator",
+      "description": "enumTaskExpOprt"
+    }
+  ]
+}

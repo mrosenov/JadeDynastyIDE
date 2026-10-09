@@ -1,0 +1,31 @@
+{
+  "key": "task_selected_role",
+  "label": "Award recipients",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Team leader",
+      "description": "DeliverAwardToSpecifyRole bit 0: 向队长发奖励"
+    },
+    {
+      "bit": 1,
+      "label": "Team members",
+      "description": "bit 1: 队员"
+    },
+    {
+      "bit": 2,
+      "label": "Master",
+      "description": "bit 2: 师傅"
+    },
+    {
+      "bit": 3,
+      "label": "Apprentice",
+      "description": "bit 3: 徒弟"
+    },
+    {
+      "bit": 4,
+      "label": "Family members",
+      "description": "bit 4: 族员(包括族长)"
+    }
+  ]
+}

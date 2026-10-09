@@ -255,7 +255,20 @@ condition are dropdowns (`[1] Kill monsters`), and **Recommended for** (recommen
 checkboxes (Pinned, EXP, Cash, Affinity, Orb, Special item, Title, Gear). Names come from
 `TaskTempl.h`/`DlgTask.h` and the English client's interface strings; task types 7 and 14 follow the
 English client (Clan, Vitalic) where the C++ source says cultivation and cross-server, and 18–20 are
-the white, green and red Archaia quests. **Difficulty** is the 1–5 star rank. Editing works as before (click a value, Enter applies) with the
+the white, green and red Archaia quests. **Difficulty** is the 1–5 star rank.
+
+More values are named from the client and server sources (`TaskTempl.h`, `TaskProcess.cpp`, `TaskTempl.inl`,
+the chat channel list): summon mode (who owns summoned monsters), the Vitalic (Fengshen) requirement,
+the finish count reset (no reset, each day, each week), the rebirth count comparison (at least,
+exactly, at most), expression comparisons (greater than, equal to, less than) and joins (or, and), chat
+channels of award messages, special awards (effect, tiny game), expression token types, refine
+conditions of wanted items (at least, at most, exactly, not used), the parameter expression award,
+weekdays in times (1 Monday … 7 Sunday) and the type of each timetable row (date range, each month,
+each week, each day; stored per row in `timetable_types`). Cultivation requirements and awards use the
+`god_devil_mask` checkboxes (Sage, Demon, Buddha), the nation position requirement `nation_position_mask`
+(King, Queen, General, Minister, Guild member, Royal guard) and the selected-role award `task_selected_role`
+(team leader, team members, master, apprentice, family members). The cultivation skills an award
+clears stay a number: the source does not say what each bit means. Editing works as before (click a value, Enter applies) with the
 same checks, undo and history. **Advanced** keeps the complete field tree with types and offsets.
 The last tab is remembered. Labels share one column width so values line up, and item, NPC and quest
 links stay on the value's line (long names are shortened; hover shows the full name).

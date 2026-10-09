@@ -6,7 +6,6 @@ import { describeTaskField, loadSet, taskValueSet, type TaskFormTab } from "./Ta
 
 const count = (value: number) => value.toLocaleString();
 const plainPath = (field: string) => field.replace(/\[\d+\]/g, "");
-const lastName = (field: string) => (field.match(/^any:[a-z]+:(.+)$/)?.[1] ?? field).split(".").pop() ?? "";
 const hitKey = (hit: TaskSearchHit) => `${hit.pack}:${hit.root}:${hit.path.join(".")}`;
 
 type Kind = TaskSearchField["kind"];
@@ -125,7 +124,7 @@ function FieldPicker({ value, entries, invalid, onChange }: { value: string; ent
 
 /** The value box: dropdowns for named values and flags, a text box otherwise. */
 function ValueInput({ condition, entry, sets, onChange }: { condition: TaskSearchCondition; entry?: PickerEntry; sets: Record<string, Map<number, string>>; onChange: (value: string) => void }) {
-  const set = taskValueSet(lastName(condition.field));
+  const set = taskValueSet(condition.field);
   const names = set ? sets[set.key] : undefined;
   if (entry?.kind === "bool" && (condition.op === "eq" || condition.op === "ne")) {
     return <select className="sf-control" value={condition.value} onChange={(event) => onChange(event.target.value)}><option value="">Choose…</option><option value="true">true (ticked)</option><option value="false">false</option></select>;
@@ -185,7 +184,7 @@ export function TaskSearchPanel({ selection, rootLabel, onOpen, onExport, onClos
   const entries = useMemo(() => pickerEntries(fields), [fields]);
   const byKey = useMemo(() => new Map(entries.map((entry) => [entry.key, entry])), [entries]);
   useEffect(() => {
-    const keys = [...new Set(conditions.map((condition) => taskValueSet(lastName(condition.field))?.key).filter((key): key is string => !!key && !sets[key]))];
+    const keys = [...new Set(conditions.map((condition) => taskValueSet(condition.field)?.key).filter((key): key is string => !!key && !sets[key]))];
     for (const key of keys) void loadSet(key).then((names) => setSets((current) => ({ ...current, [key]: names })));
   }, [conditions, sets]);
   useEffect(() => {

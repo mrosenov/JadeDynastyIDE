@@ -1,0 +1,21 @@
+{
+  "key": "task_finish_time_type",
+  "label": "Finish count reset",
+  "values": [
+    {
+      "value": 0,
+      "label": "No reset",
+      "description": "m_nFinishTimeType; GetFinishTimeLimit handles each day and each week only"
+    },
+    {
+      "value": 1,
+      "label": "Each day",
+      "description": "enumTAFEachDay, at finish_clear_time hour:minute"
+    },
+    {
+      "value": 2,
+      "label": "Each week",
+      "description": "enumTAFEachWeek, at finish_clear_time weekday hour:minute"
+    }
+  ]
+}

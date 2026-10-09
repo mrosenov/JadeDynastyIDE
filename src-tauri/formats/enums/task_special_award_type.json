@@ -1,0 +1,21 @@
+{
+  "key": "task_special_award_type",
+  "label": "Special award",
+  "values": [
+    {
+      "value": 0,
+      "label": "None",
+      "description": "m_ulSpecialAwardType"
+    },
+    {
+      "value": 1,
+      "label": "Play effect",
+      "description": "1: PlayAwardGfx(special_award_id)"
+    },
+    {
+      "value": 2,
+      "label": "Tiny game",
+      "description": "2: PlayTinyGame(special_award_id)"
+    }
+  ]
+}

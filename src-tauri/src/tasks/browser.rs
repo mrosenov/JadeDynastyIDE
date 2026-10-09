@@ -1369,7 +1369,7 @@ pub(crate) fn editable_type(ty: &FieldType) -> bool {
         FieldType::I32 | FieldType::U32 | FieldType::I64 | FieldType::U64 | FieldType::F32 |
         FieldType::F64 | FieldType::FixedUtf16 { .. } | FieldType::PrefixedUtf16 { .. } |
         FieldType::CountedUtf16 { .. } | FieldType::Raw { .. }
-    )
+    ) || matches!(ty, FieldType::Bytes { len } if *len <= 64)
 }
 
 /// Whether a field of a task (path from the task) is locked: it drives the
@@ -1673,7 +1673,7 @@ fn parse_value(ty: &FieldType, input: &str) -> Result<Value, String> {
             Value::F64(value)
         }
         FieldType::FixedUtf16 { .. } | FieldType::PrefixedUtf16 { .. } | FieldType::CountedUtf16 { .. } => Value::Text(crlf(input)),
-        FieldType::Raw { len } => Value::Bytes(parse_hex(input, *len)?),
+        FieldType::Raw { len } | FieldType::Bytes { len } => Value::Bytes(parse_hex(input, *len)?),
         _ => return Err("This binary type cannot be edited here".into()),
     })
 }
@@ -2051,7 +2051,8 @@ pub(crate) fn display_value(node: &Node) -> (Option<String>, Option<String>) {
         Value::Bool(value) => (Some(value.to_string()), None),
         Value::Text(value) => (Some(value.clone()), None),
         Value::Bytes(bytes) => {
-            let shown = if matches!(node.ty, FieldType::Raw { .. }) {
+            // Short byte blocks (such as timetable_types) show every byte, so they can be edited as hex.
+            let shown = if matches!(node.ty, FieldType::Raw { .. }) || matches!(node.ty, FieldType::Bytes { len } if len <= 64) {
                 bytes.iter().map(|byte| format!("{byte:02X}")).collect::<Vec<_>>().join(" ")
             } else {
                 hex_preview(bytes)
@@ -2322,6 +2323,35 @@ mod tests {
         for _ in 0..3 {
             document.undo().unwrap();
         }
+        assert_eq!(document.current_root(root.pack, root.root).unwrap(), original);
+    }
+
+    #[test]
+    fn timetable_types_edit_as_hex_bytes() {
+        let path = r"E:/Games/XtremeJade/element/data/tasks.data";
+        if !Path::new(path).is_file() {
+            return;
+        }
+        let mut document = TaskDocument::open(path).unwrap();
+        let version = document.container.header.version;
+        let types = vec!["fixed".to_string(), "timetable_types".to_string()];
+        let root = document.summary().roots.into_iter().find(|root| {
+            let node = decode_exact(&document.schema, &document.current_root(root.pack, root.root).unwrap(), version).unwrap();
+            node.child("timetables").is_some_and(|rows| !rows.children().is_empty())
+        }).unwrap();
+        let original = document.current_root(root.pack, root.root).unwrap();
+        let detail = document.task(root.pack, root.root, &[]).unwrap();
+        let field = detail.fields.iter().flat_map(|field| std::iter::once(field).chain(field.children.iter())).find(|field| field.path == types).unwrap().clone();
+        assert!(field.editable, "timetable types are editable");
+        let mut bytes: Vec<String> = field.value.clone().unwrap().split(' ').map(str::to_string).collect();
+        assert_eq!(bytes.len(), 12);
+        bytes[0] = if bytes[0] == "03" { "02".into() } else { "03".into() };
+        document.edit_field(FieldEdit { pack: root.pack, root: root.root, task_path: Vec::new(), field_path: types.clone(), value: bytes.join(" ") }).unwrap();
+        let node = decode_exact(&document.schema, &document.current_root(root.pack, root.root).unwrap(), version).unwrap();
+        let Value::Bytes(stored) = &node_at(&node, &types).unwrap().value else { panic!("bytes") };
+        assert_eq!(format!("{:02X}", stored[0]), bytes[0]);
+        assert!(document.edit_field(FieldEdit { pack: root.pack, root: root.root, task_path: Vec::new(), field_path: types.clone(), value: "00 01".into() }).is_err(), "the length stays 12 bytes");
+        document.undo().unwrap();
         assert_eq!(document.current_root(root.pack, root.root).unwrap(), original);
     }
 

@@ -1,0 +1,16 @@
+{
+  "key": "task_compare_join",
+  "label": "Expression join",
+  "values": [
+    {
+      "value": 0,
+      "label": "Or",
+      "description": "m_nPremExp1AndOrExp2 / m_nFinExp1AndOrExp2 0: |"
+    },
+    {
+      "value": 1,
+      "label": "And",
+      "description": "1: &"
+    }
+  ]
+}

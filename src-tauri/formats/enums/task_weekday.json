@@ -1,0 +1,46 @@
+{
+  "key": "task_weekday",
+  "label": "Weekday",
+  "values": [
+    {
+      "value": 0,
+      "label": "Any",
+      "description": "0 where the time does not use a weekday"
+    },
+    {
+      "value": 1,
+      "label": "Monday",
+      "description": "task_week_map: 1 = Monday"
+    },
+    {
+      "value": 2,
+      "label": "Tuesday",
+      "description": ""
+    },
+    {
+      "value": 3,
+      "label": "Wednesday",
+      "description": ""
+    },
+    {
+      "value": 4,
+      "label": "Thursday",
+      "description": ""
+    },
+    {
+      "value": 5,
+      "label": "Friday",
+      "description": ""
+    },
+    {
+      "value": 6,
+      "label": "Saturday",
+      "description": ""
+    },
+    {
+      "value": 7,
+      "label": "Sunday",
+      "description": "task_week_map: 7 = Sunday"
+    }
+  ]
+}

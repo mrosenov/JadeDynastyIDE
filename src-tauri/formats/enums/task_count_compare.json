@@ -1,0 +1,21 @@
+{
+  "key": "task_count_compare",
+  "label": "Count comparison",
+  "values": [
+    {
+      "value": 0,
+      "label": "At least",
+      "description": "m_nLifeAgainCntCompare 0: 大于等于"
+    },
+    {
+      "value": 1,
+      "label": "Exactly",
+      "description": "1: 只等于"
+    },
+    {
+      "value": 2,
+      "label": "At most",
+      "description": "2: 小于等于"
+    }
+  ]
+}

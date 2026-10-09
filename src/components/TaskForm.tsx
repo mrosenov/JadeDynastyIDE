@@ -46,7 +46,10 @@ interface Props {
 
 // ---------------------------------------------------------------- names and sets
 
-/** Fields whose values have names, by the named set that holds them (editable in Enums & masks). */
+/**
+ * Fields whose values have names, by the named set that holds them (editable in Enums & masks). A key is
+ * a field name, or "list.name" where one name means different things (expression tokens' `type`).
+ */
 const ENUM_FIELDS: Record<string, string> = {
   method: "task_method",
   finish_type: "task_finish_type",
@@ -59,10 +62,38 @@ const ENUM_FIELDS: Record<string, string> = {
   clear_receiver_type: "task_clear_receiver_type",
   gender: "task_gender",
   cotask_condition: "task_cotask_condition",
+  summon_mode: "task_summon_mode",
+  premise_fengshen_type: "task_vitalic_requirement",
+  finish_time_type: "task_finish_time_type",
+  life_again_count_compare: "task_count_compare",
+  operator: "task_compare_operator",
+  premise_compare_join: "task_compare_join",
+  finish_compare_join: "task_compare_join",
+  message_channel: "task_message_channel",
+  extra_message_channel: "task_message_channel",
+  special_award_type: "task_special_award_type",
+  "parameter_tokens.type": "task_expression_token",
+  refine_condition: "task_refine_condition",
+  parameter_expression_selection: "task_parameter_expression",
+  weekday: "task_weekday",
 };
 /** Fields whose bits have names (masks), shown as a row of checkboxes. */
-const MASK_FIELDS: Record<string, string> = { recommend_type: "task_recommend_type" };
-const SET_KEYS = [...new Set([...Object.values(ENUM_FIELDS), ...Object.values(MASK_FIELDS), "task_occupation", "task_friendship"])];
+const MASK_FIELDS: Record<string, string> = {
+  recommend_type: "task_recommend_type",
+  premise_cult: "god_devil_mask",
+  cultivation: "god_devil_mask",
+  premise_nation_position_mask: "nation_position_mask",
+  selected_role: "task_selected_role",
+};
+const SET_KEYS = [...new Set([...Object.values(ENUM_FIELDS), ...Object.values(MASK_FIELDS), "task_occupation", "task_friendship", "task_timetable_type"])];
+/** The set for a field path: by "list.name" first, then by name. */
+function setFor(map: Record<string, string>, path: string[]): string | undefined {
+  const names = path.filter((part) => !part.startsWith("["));
+  const name = names[names.length - 1] ?? "";
+  return (names.length > 1 ? map[`${names[names.length - 2]}.${name}`] : undefined) ?? map[name];
+}
+const enumKey = (field: TaskFieldView) => setFor(ENUM_FIELDS, field.path);
+const maskKey = (field: TaskFieldView) => setFor(MASK_FIELDS, field.path);
 const setCache = new Map<string, Promise<Map<number, string>>>();
 /** A named set's names by value (enums) or by bit (masks); cached until `setsVersion` changes. */
 export function loadSet(key: string) {
@@ -172,7 +203,7 @@ function Value({ field, wide }: { field: TaskFieldView; wide?: boolean }) {
   if (field.ty === "bool8") {
     return <input type="checkbox" className={field.changed ? "changed" : undefined} checked={field.value === "true"} disabled={!field.editable || saving} title={error ?? (field.editable ? undefined : "Locked: it controls the binary structure")} onChange={(event) => void commit(event.target.checked ? "true" : "false")} />;
   }
-  const bits = MASK_FIELDS[field.name] ? sets[MASK_FIELDS[field.name]] : undefined;
+  const bits = maskKey(field) ? sets[maskKey(field)!] : undefined;
   if (bits) {
     const current = Number(field.value ?? 0) >>> 0;
     const named = [...bits.entries()].sort((left, right) => left[0] - right[0]);
@@ -182,17 +213,17 @@ function Value({ field, wide }: { field: TaskFieldView; wide?: boolean }) {
       {[...named, ...unnamed.map((bit) => [bit, `Bit ${bit}`] as [number, string])].map(([bit, label]) => <label key={bit} className={current & (1 << bit) ? "checked" : undefined}>
         <input type="checkbox" checked={!!(current & (1 << bit))} disabled={!field.editable || saving} onChange={(event) => toggle(bit, event.target.checked)} />{label}
       </label>)}
-      {onEditSet && <button className="link" onClick={() => onEditSet(MASK_FIELDS[field.name])}>Edit names…</button>}
+      {onEditSet && <button className="link" onClick={() => onEditSet(maskKey(field)!)}>Edit names…</button>}
       {error && <span className="task-field-edit-error">{error}</span>}
     </span>;
   }
-  const names = ENUM_FIELDS[field.name] ? sets[ENUM_FIELDS[field.name]] : undefined;
+  const names = enumKey(field) ? sets[enumKey(field)!] : undefined;
   if (names) {
     const current = Number(field.value);
     const options = [...names.entries()];
     if (!names.has(current)) options.push([current, names.size ? "(no name)" : "(names not loaded)"]);
     return <span className={"task-form-value" + (field.changed ? " changed" : "")}>
-      <select className="task-form-select" value={current} disabled={!field.editable || saving} onChange={(event) => { if (event.target.value === "__edit__") onEditSet?.(ENUM_FIELDS[field.name]); else void commit(event.target.value); }}>
+      <select className="task-form-select" value={current} disabled={!field.editable || saving} onChange={(event) => { if (event.target.value === "__edit__") onEditSet?.(enumKey(field)!); else void commit(event.target.value); }}>
         {options.sort((left, right) => left[0] - right[0]).map(([value, label]) => <option key={value} value={value}>[{value}] {label}</option>)}
         {onEditSet && <option value="__edit__">Edit names…</option>}
       </select>
@@ -221,7 +252,7 @@ function Grid({ fields }: { fields: TaskFieldView[] }) {
   return <div className="task-form-grid">{shown.map((field) => {
     const longText = field.ty.includes("wstring") && field.name !== "name" && field.name !== "signature";
     if (field.ty === "bool8") return <label key={dotted(field.path)} className={"task-form-check" + (field.changed ? " changed" : "")} title={dotted(field.path)}><Value field={field} />{fieldLabel(field.name)}</label>;
-    return <div key={dotted(field.path)} className={"task-form-cell" + (longText || isTime(field) || isVertex(field) || MASK_FIELDS[field.name] ? " wide" : "")}><span className="task-form-label" title={dotted(field.path)}>{fieldLabel(field.name)}</span>{dotted(field.path) === "fixed.id" && onChangeId ? <span className="task-form-value"><Value field={field} /><button className="link small" onClick={onChangeId} title="Give the quest a new ID and update every reference to it">Change ID…</button></span> : <Value field={field} wide={longText} />}</div>;
+    return <div key={dotted(field.path)} className={"task-form-cell" + (longText || isTime(field) || isVertex(field) || maskKey(field) ? " wide" : "")}><span className="task-form-label" title={dotted(field.path)}>{fieldLabel(field.name)}</span>{dotted(field.path) === "fixed.id" && onChangeId ? <span className="task-form-value"><Value field={field} /><button className="link small" onClick={onChangeId} title="Give the quest a new ID and update every reference to it">Change ID…</button></span> : <Value field={field} wide={longText} />}</div>;
   })}</div>;
 }
 
@@ -232,7 +263,7 @@ function Cell({ field }: { field: TaskFieldView }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => setDraft(field.value ?? ""), [field.value]);
-  if (field.children?.length || field.ty === "bool8" || ENUM_FIELDS[field.name]) return <Value field={field} />;
+  if (field.children?.length || field.ty === "bool8" || enumKey(field) || maskKey(field)) return <Value field={field} />;
   const commit = async () => {
     if (draft === (field.value ?? "")) {
       setError(null);
@@ -297,6 +328,35 @@ function RowsFoot({ rows, total, noun }: { rows: ReturnType<typeof useRows>; tot
     <button className="btn small" disabled={rows.busy || rows.full} title={rows.full ? "Every slot is in use" : undefined} onClick={() => void rows.run({ kind: "add" })}><Plus size={13} /> Add {noun}</button>
     {rows.fixed && <span className="muted small">{rows.used} of {total} slots used</span>}
     {rows.error && <span className="task-field-edit-error">{rows.error}</span>}
+  </div>;
+}
+
+/** The type of each timetable row (date range, each month, each week, each day), stored as one byte
+ *  per row in `fixed.timetable_types`. */
+function TimetableTypes({ types, rows }: { types: TaskFieldView; rows: number }) {
+  const { onEdit, sets } = useContext(Form);
+  const [error, setError] = useState<string | null>(null);
+  const names = sets.task_timetable_type ?? new Map<number, string>();
+  const bytes = (types.value ?? "").split(/\s+/).filter(Boolean).map((part) => parseInt(part, 16));
+  if (!rows) return null;
+  const choose = async (row: number, value: number) => {
+    const next = [...bytes];
+    next[row] = value;
+    setError(null);
+    try {
+      await onEdit(types, next.map((byte) => byte.toString(16).toUpperCase().padStart(2, "0")).join(" "));
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    }
+  };
+  return <div className="task-form-grid">
+    {Array.from({ length: rows }, (_, row) => <div className="task-form-cell" key={row}>
+      <span className="task-form-label">Row {row + 1} type</span>
+      <span className="task-form-value"><select className="task-form-select" value={bytes[row] ?? 0} disabled={!types.editable} onChange={(event) => void choose(row, Number(event.target.value))}>
+        {[...names.entries(), ...(names.has(bytes[row]) ? [] : [[bytes[row] ?? 0, "(no name)"] as [number, string]])].sort((left, right) => left[0] - right[0]).map(([value, label]) => <option key={value} value={value}>[{value}] {label}</option>)}
+      </select></span>
+    </div>)}
+    {error && <div className="task-field-edit-error">{error}</div>}
   </div>;
 }
 
@@ -681,10 +741,14 @@ const PLACED = new Set(Object.values(LAYOUT).flat().flatMap((group) => [
   ...("friendship" in group ? [group.friendship] : []),
 ]).concat(f("award_type_s", "award_type_f", "special_award", "life_again_one_occupation", "life_again_two_occupation", "life_again_thr_occupation")));
 
-/** The named set of a field, by its last name: enums, masks (`mask`), and class lists. */
-export function taskValueSet(name: string): { key: string; mask: boolean } | null {
-  if (ENUM_FIELDS[name]) return { key: ENUM_FIELDS[name], mask: false };
-  if (MASK_FIELDS[name]) return { key: MASK_FIELDS[name], mask: true };
+/** The named set of a field (a dotted path, or an `any:` search field): enums, masks (`mask`), and class lists. */
+export function taskValueSet(field: string): { key: string; mask: boolean } | null {
+  const path = field.replace(/^any:[a-z]+:/, "").split(".");
+  const name = path[path.length - 1];
+  const enumSet = setFor(ENUM_FIELDS, path);
+  if (enumSet) return { key: enumSet, mask: false };
+  const maskSet = setFor(MASK_FIELDS, path);
+  if (maskSet) return { key: maskSet, mask: true };
   if (name === "occupations" || name === "occupation") return { key: "task_occupation", mask: false };
   return null;
 }
@@ -756,7 +820,8 @@ export function TaskForm({ detail, tab, onEdit, onBatch, onRows, onEditSet, onDi
         if (shown.length) body = <Grid fields={shown} />;
       } else if ("table" in group) {
         const field = get(group.table);
-        if (field) body = <>{before}<ArrayView field={field} countField={group.count ? get(group.count) : undefined} /></>;
+        const types = group.table === "timetables" ? get("fixed.timetable_types") : undefined;
+        if (field) body = <>{before}{types && <TimetableTypes types={types} rows={field.children?.length ?? 0} />}<ArrayView field={field} countField={group.count ? get(group.count) : undefined} /></>;
       } else if ("list" in group) {
         const field = get(group.list);
         if (field) body = <>{before}<ArrayView field={field} countField={group.count ? get(group.count) : undefined} /></>;
