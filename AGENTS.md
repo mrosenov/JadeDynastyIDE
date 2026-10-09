@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (158 at last run, ~2–3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (160 at last run, ~2–3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -81,6 +81,7 @@ Environment quirks (Windows 11, Git Bash):
 | `tasks/schema.rs`, `structures.rs`, `v165.rs`, `v172.rs`, `v184.rs` | Byte-preserving task schema engine and verified version layouts. |
 | `tasks/browser.rs` | Lazy tree loading, background search/reference index, field inspection and hierarchy summaries. |
 | `tasks/edit.rs` | In-memory task value edits, history, undo/redo, clone, delete and move/reparent operations. |
+| `tasks/ids.rs` | Changing a quest's ID: index-based reference lookup, root rewriting, hierarchy links, one journal entry. |
 | `tasks/dialogs.rs` | NPC talks as trees (`Dialog`/`DialogWindow`/`DialogOption`): read, validate, rewrite in the official editor's order. |
 | `tasks/search.rs` | Advanced task search: field catalog, conditions (same-row groups, `any:` fields), value anywhere, scopes, parallel byte scan with prefilter, cancel and progress. |
 | `tasks/save.rs` | Task-set staging, pack rebuilding, MD5/index updates, verification, backups and atomic replacement. |
@@ -300,6 +301,17 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `browser::set_task_field`, the same validation as inspector edits (`edit_field` calls it too).
   Additions append decoded `_raw` roots as `RootChange`s with empty `before`, after the edited
   roots, in pack/root order.
+- **Change quest ID** (`tasks/ids.rs`, `TaskIdDialog.tsx`, commands `preview_task_id_change`, `change_task_id`):
+  references come from the background index (non-element references to the old ID, dialog option
+  parameters included); each affected root is rewritten with `rewrite_internal_task_references` (the
+  clone remapping), the quest's own root gets `fixed.id` and `sync_hierarchy_links`; all roots are one
+  journal entry; `id_floor` moves past the old ID. With duplicate old IDs only the quest's own root is
+  rewritten. The ordinary `fixed.id` edit stays locked. elements.data: `Document::task_id_uses` scans
+  4-byte slots whose names pass `elements::edit::is_task_id_field` (checked against ForsakenJD: exactly
+  the C++ task fields, e.g. `NPC_TASK_OUT_SERVICE.id_tasks`, `MINE_ESSENCE.task_in`, `PIE_LOVE_CONFIG`;
+  not `id_task_set`, `Task_Start_Map`); `replace_task_id_uses` writes the ticked places as one elements
+  journal entry, refusing places that no longer hold the old ID. The commands lock tasks, release, then
+  lock the document (never both). TasksEditor passes the elements EditState to App's `afterEdits`.
 - **Dialog editor** (`tasks/dialogs.rs`, `TaskDialogEditor.tsx`, commands `task_dialogs`, `set_task_dialog`): the
   UI sends a whole talk (windows with texts and options; option `target` = window ID or `0x80000000 |
   function`), `set_dialog` checks it is a tree (every window opened by exactly one option, no missing

@@ -3,7 +3,7 @@ import { open, save } from "@tauri-apps/plugin-dialog";
 import { AlertTriangle, ArrowRight, BarChart3, Braces, Check, CircleAlert, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
 import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskArray, setTaskDialog, editTaskField, editTaskFields, exportTasksJson, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskReferencedBy, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskAnalysisReport, TaskArrayEdit, TaskDialog, TaskDeletePreview, TaskDeleteReference, TaskEditState as EditStateValue, TaskExportTarget, TaskImportReport, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchHit, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskAnalysisReport, TaskArrayEdit, TaskDialog, TaskIdChangeResult, EditState, TaskDeletePreview, TaskDeleteReference, TaskEditState as EditStateValue, TaskExportTarget, TaskImportReport, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchHit, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 import { TaskSaveDialog } from "./TaskSaveDialog";
 import { TaskSchemaDialog } from "./TaskSchemaDialog";
@@ -14,6 +14,7 @@ import { TaskMoveDialog } from "./TaskMoveDialog";
 import { TaskHistoryPanel } from "./TaskHistoryPanel";
 import { TaskProblemsPanel } from "./TaskProblemsPanel";
 import { TaskImportDialog } from "./TaskImportDialog";
+import { TaskIdDialog } from "./TaskIdDialog";
 import { TaskSearchPanel } from "./TaskSearchPanel";
 import { TaskComparePanel } from "./TaskComparePanel";
 import { TaskTranslateDialog } from "./TaskTranslateDialog";
@@ -70,6 +71,8 @@ interface Props {
   onEditSet?: (key: string) => void;
   /** Changes when enums or masks were edited. */
   setsVersion?: number;
+  /** elements.data changed here (a quest ID change updated its quest lists). */
+  onElementsEdited?: (state: EditState) => void;
 }
 
 const PAGE_SIZE = 200;
@@ -249,7 +252,8 @@ function FieldRow({ field, depth = 0, onReference, onEdit }: { field: TaskFieldV
   </div>;
 }
 
-export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEditor({ active, defaultPath, initialState, onStateChange, onOpenElement, onEditSet, setsVersion }, ref) {
+export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEditor({ active, defaultPath, initialState, onStateChange, onOpenElement, onEditSet, setsVersion, onElementsEdited }, ref) {
+  const [idChanging, setIdChanging] = useState(false);
   const initialFile = initialState?.loaded ? initialState.summary : null;
   const initialUnsupported = initialState?.loaded ? initialState.unsupported : null;
   const initialRoot = initialFile && initialState?.selection
@@ -476,6 +480,25 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       endOperation();
     }
   }, [refreshSelected, selectedPath, selectedRoot]);
+
+  /** After a quest ID change: the changed roots reload and the quest stays selected under its new ID. */
+  const idChanged = useCallback(async (result: TaskIdChangeResult, newId: number) => {
+    setIdChanging(false);
+    if (result.elements) onElementsEdited?.(result.elements);
+    if (!beginOperation()) return;
+    const focus = selectedRoot ? { root: selectedRoot, path: selectedPath, id: newId } : null;
+    try {
+      const affected = new Set([...editState.changedRoots, ...result.tasks.changedRoots].map((root) => `${root.pack}:${root.root}`));
+      setEditState(result.tasks);
+      await resync(affected, focus);
+      if (result.elementsError) setError(`The quest is now ${newId}, but elements.data was not updated: ${result.elementsError}`);
+      else showNote(`The quest is now ${newId}${result.elements ? "; elements.data was updated too (save it in the elements workspace)" : ""}.`);
+    } catch (problem) {
+      setError(problemText(problem));
+    } finally {
+      endOperation();
+    }
+  }, [editState.changedRoots, onElementsEdited, resync, selectedPath, selectedRoot, showNote]);
 
   /** Replaces one NPC talk of the selected task. */
   const editDialog = useCallback(async (dialog: TaskDialog, label: string) => {
@@ -1470,7 +1493,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
             </div>
           </header>
           <div className="task-form-tabs" role="tablist" aria-label="Task sections">{TASK_FORM_TABS.map((entry) => <button key={entry.key} role="tab" aria-selected={formTab === entry.key} className={formTab === entry.key ? "active" : ""} onClick={() => chooseFormTab(entry.key)}>{entry.label}</button>)}</div>
-          {formTab !== "advanced" ? <TaskForm key={`${detail.pack}:${detail.root}:${pathKey(detail.path)}`} detail={detail} tab={formTab} onEdit={editField} onBatch={editFields} onRows={editRows} onDialog={editDialog} onEditSet={onEditSet} setsVersion={setsVersion} renderReference={(reference) => <TaskReferenceView reference={reference} onOpen={followReference} />} referencedBy={referrersView} /> : <>
+          {formTab !== "advanced" ? <TaskForm key={`${detail.pack}:${detail.root}:${pathKey(detail.path)}`} detail={detail} tab={formTab} onEdit={editField} onBatch={editFields} onRows={editRows} onDialog={editDialog} onChangeId={() => !operation.current && setIdChanging(true)} onEditSet={onEditSet} setsVersion={setsVersion} renderReference={(reference) => <TaskReferenceView reference={reference} onOpen={followReference} />} referencedBy={referrersView} /> : <>
           <div className="task-fields-head"><span>Field</span><span>Value</span><span>Type</span><span>Offset</span></div>
           <div className="task-fields" key={`${detail.pack}:${detail.root}:${pathKey(detail.path)}`}>{categories.map((category) => <details className="task-category" key={category.key} open>
             <summary><span>{category.label}</span><span>{category.fields.length} fields</span></summary>
@@ -1488,5 +1511,5 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       getTaskEditState().then(setEditState).catch((problem) => setError(problemText(problem)));
       showNote(`Saved ${report.changedRoots} changed root${report.changedRoots === 1 ? "" : "s"} across ${report.changedPacks} pack${report.changedPacks === 1 ? "" : "s"}.${report.historyCleared ? " A new undo history starts here." : ""}`);
     }} />}
-  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {translating && file && <TaskTranslateDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, fields) => void translationApplied(next, fields)} onClose={() => setTranslating(false)} />} {importing && file && <TaskImportDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, report) => void bulkApplied(next, report, "Imported JSON")} onClose={() => setImporting(false)} />} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
+  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {translating && file && <TaskTranslateDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, fields) => void translationApplied(next, fields)} onClose={() => setTranslating(false)} />} {importing && file && <TaskImportDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, report) => void bulkApplied(next, report, "Imported JSON")} onClose={() => setImporting(false)} />} {idChanging && selectedRoot && detail && <TaskIdDialog task={{ pack: selectedRoot.pack, root: selectedRoot.root, path: selectedPath, id: detail.id, name: detail.name }} onApplied={(result, newId) => void idChanged(result, newId)} onClose={() => setIdChanging(false)} />} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
 });

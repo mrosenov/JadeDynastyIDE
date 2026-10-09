@@ -1568,3 +1568,42 @@ export interface TaskDialog {
   prompt: string;
   windows: TaskDialogWindow[];
 }
+
+/** A quest reference an ID change rewrites. */
+export interface TaskIdReference {
+  pack: number;
+  root: number;
+  path: number[];
+  taskId: number;
+  taskName: string;
+  field: string;
+}
+
+/** An elements.data field holding a quest ID. */
+export interface TaskIdUse {
+  list: number;
+  listName: string;
+  row: number;
+  id: number;
+  name: string;
+  field: string;
+  off: number;
+}
+
+export interface TaskIdChangePreview {
+  oldId: number;
+  newId: number;
+  name: string;
+  references: TaskIdReference[];
+  /** Other quests with the same old ID; their references stay. */
+  duplicates: number;
+  roots: number;
+  elementsPath: string | null;
+  elementUses: TaskIdUse[];
+}
+
+export interface TaskIdChangeResult {
+  tasks: TaskEditState;
+  elements: EditState | null;
+  elementsError: string | null;
+}

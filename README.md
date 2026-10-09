@@ -339,7 +339,7 @@ Click an editable value in the inspector to change it in memory. Known integers,
 names, quest text, existing array entries and dialog text are supported. Unknown fixed-width fields
 accept exact hexadecimal bytes and retain their declared width. Fields that control counts,
 conditions or task IDs stay locked so an ordinary value edit cannot change the record's binary
-shape or invalidate task links. Variable-length text updates its stored count automatically, and
+shape or invalidate task links (**Change ID…** next to the quest ID changes it safely, see below). Variable-length text updates its stored count automatically, and
 every edited root is decoded and byte-round-tripped before the change is accepted.
 
 Changed fields and roots are marked in green. Undo, redo and the edit history sit beside **Save…**
@@ -391,6 +391,26 @@ and references unchanged. The old and new parent counts are rebuilt, moving into
 subtree is rejected, and the complete move is one undoable operation. If undo or another edit moved
 either quest while the picker was open, the move is refused instead of acting on whatever quest now
 sits at the old position.
+
+**Change ID…** (next to the ID on the General tab) gives a quest, top-level or subquest, a new ID.
+Enter the ID and **Preview** first. The preview lists:
+
+- every quest reference that will be rewritten: prerequisites, exclusions, next quests, terminated
+  quests, finish counts, team and master/apprentice quests, global and co-tasks, and dialog option
+  parameters (Give quest, Complete quest, …). The quest's own references to itself change too, and
+  the parent, sibling and child hierarchy links follow;
+- every quest-ID field of the open elements.data that holds the old ID: the NPC give and complete
+  lists (`NPC_TASK_OUT_SERVICE`, `NPC_TASK_IN_SERVICE`), `NPC_TASK_MATTER_SERVICE`, mines
+  (`task_in`, `task_out`), interaction objects, battle and transcription rewards, buildings,
+  `PIE_LOVE_CONFIG` and others. Each place can be unticked.
+
+The new ID must not be used by any quest, and every quest must be indexed. The tasks.data change is
+one undo step; the ticked elements.data places are one undo step there and are saved from the
+elements workspace. When another quest has the same old ID (duplicate IDs), only references inside the
+quest's own tree are rewritten and the elements.data places start unticked, since they may mean the
+other quest. A freed ID is not reused by later clones. Players keep quest progress by ID, so changing
+the ID of a quest on a live server affects players who have it active or finished, and other files
+that name the quest (`task_npc.data`, server scripts) are not updated.
 
 **Save…** or Ctrl+S writes the task index and its numbered packs. JD IDE rebuilds only packs with
 edited roots when saving over the open task set, recalculates every affected root offset and pack

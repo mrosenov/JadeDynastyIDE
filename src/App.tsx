@@ -1075,6 +1075,7 @@ export default function App() {
             initialState={tasksEditorState}
             onStateChange={setTasksEditorState}
             setsVersion={setsVersion}
+            onElementsEdited={afterEdits}
             onEditSet={(key) => setSetsEditor({ key })}
             onOpenElement={(list, row) => {
               setWorkspace("elements");

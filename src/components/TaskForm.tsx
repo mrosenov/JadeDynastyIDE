@@ -35,6 +35,8 @@ interface Props {
   onEditSet?: (key: string) => void;
   /** Replaces one NPC talk of the shown task (one undo step). */
   onDialog: (dialog: TaskDialog, label: string) => Promise<void>;
+  /** Opens the Change quest ID dialog. */
+  onChangeId?: () => void;
   /** Changes when enums or masks were edited, so the names are loaded again. */
   setsVersion?: number;
   /** Shown at the end of the General tab. */
@@ -79,6 +81,7 @@ interface FormContext {
   onBatch: Props["onBatch"];
   onRows: Props["onRows"];
   onEditSet?: Props["onEditSet"];
+  onChangeId?: Props["onChangeId"];
   renderReference: Props["renderReference"];
   sets: Record<string, Map<number, string>>;
   /** Classes of the open elements.data (CHARACTER_CLASS_CONFIG). */
@@ -211,12 +214,13 @@ function Value({ field, wide }: { field: TaskFieldView; wide?: boolean }) {
 
 /** Labelled values in a compact multi-column grid; flags are checkboxes, text spans the full width. */
 function Grid({ fields }: { fields: TaskFieldView[] }) {
+  const { onChangeId } = useContext(Form);
   const shown = fields.filter((field) => !hidden(field));
   if (!shown.length) return null;
   return <div className="task-form-grid">{shown.map((field) => {
     const longText = field.ty.includes("wstring") && field.name !== "name" && field.name !== "signature";
     if (field.ty === "bool8") return <label key={dotted(field.path)} className={"task-form-check" + (field.changed ? " changed" : "")} title={dotted(field.path)}><Value field={field} />{fieldLabel(field.name)}</label>;
-    return <div key={dotted(field.path)} className={"task-form-cell" + (longText || isTime(field) || isVertex(field) || MASK_FIELDS[field.name] ? " wide" : "")}><span className="task-form-label" title={dotted(field.path)}>{fieldLabel(field.name)}</span><Value field={field} wide={longText} /></div>;
+    return <div key={dotted(field.path)} className={"task-form-cell" + (longText || isTime(field) || isVertex(field) || MASK_FIELDS[field.name] ? " wide" : "")}><span className="task-form-label" title={dotted(field.path)}>{fieldLabel(field.name)}</span>{dotted(field.path) === "fixed.id" && onChangeId ? <span className="task-form-value"><Value field={field} /><button className="link small" onClick={onChangeId} title="Give the quest a new ID and update every reference to it">Change ID…</button></span> : <Value field={field} wide={longText} />}</div>;
   })}</div>;
 }
 
@@ -693,7 +697,7 @@ export function describeTaskField(path: string): { tab: TaskFormTab; tabLabel: s
 }
 
 /** The quest as a form: labelled groups per tab, like the official editors. */
-export function TaskForm({ detail, tab, onEdit, onBatch, onRows, onEditSet, onDialog, setsVersion, renderReference, referencedBy }: Props) {
+export function TaskForm({ detail, tab, onEdit, onBatch, onRows, onEditSet, onDialog, onChangeId, setsVersion, renderReference, referencedBy }: Props) {
   const fields = useMemo(() => index(detail.fields), [detail]);
   const [sets, setSets] = useState<Record<string, Map<number, string>>>({});
   const [classes, setClasses] = useState<[number, string][]>([]);
@@ -708,7 +712,7 @@ export function TaskForm({ detail, tab, onEdit, onBatch, onRows, onEditSet, onDi
     characterClasses().then((list) => { if (!cancelled) setClasses(list); }).catch(() => {});
     return () => { cancelled = true; };
   }, [setsVersion]); // eslint-disable-line react-hooks/exhaustive-deps
-  const context = useMemo(() => ({ onEdit, onBatch, onRows, onEditSet, renderReference, sets, classes }), [classes, onBatch, onEdit, onEditSet, onRows, renderReference, sets]);
+  const context = useMemo(() => ({ onEdit, onBatch, onRows, onEditSet, onChangeId, renderReference, sets, classes }), [classes, onBatch, onChangeId, onEdit, onEditSet, onRows, renderReference, sets]);
   const get = (path: string) => fields.get(path);
   const all = (paths: string[] = []) => paths.map(get).filter((field): field is TaskFieldView => !!field);
 

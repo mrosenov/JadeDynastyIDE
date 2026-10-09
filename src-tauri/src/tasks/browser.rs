@@ -1254,7 +1254,7 @@ pub(crate) fn locked_field(locked: &HashSet<Vec<String>>, field_path: &[String])
         return Some("This value controls the binary structure and cannot be edited directly");
     }
     if field_path.len() == 2 && field_path[0] == "fixed" && field_path[1] == "id" {
-        return Some("Task IDs are locked until task-reference rewriting is implemented");
+        return Some("Use Change ID… to give a quest a new ID; it also rewrites every reference to it");
     }
     if field_path.len() == 2 && field_path[0] == "fixed" && LINK_FIELDS.contains(&field_path[1].as_str()) {
         return Some("Hierarchy links follow the task tree and are updated by clone, move and delete");
@@ -1497,7 +1497,7 @@ fn hierarchy_links_consistent(schema: &Schema, bytes: &[u8], version: u32) -> bo
 
 /// Rewrites every task's hierarchy links in `after` when the root they came
 /// from (`before`) kept them consistent; other roots are left untouched.
-fn sync_hierarchy_links(schema: &Schema, version: u32, before: &[&[u8]], after: Vec<u8>) -> Result<Vec<u8>, String> {
+pub(crate) fn sync_hierarchy_links(schema: &Schema, version: u32, before: &[&[u8]], after: Vec<u8>) -> Result<Vec<u8>, String> {
     if !before.iter().all(|bytes| hierarchy_links_consistent(schema, bytes, version)) {
         return Ok(after);
     }
@@ -1617,7 +1617,7 @@ fn replace_own_task_ids(task: &mut Node, replacements: &HashMap<u32, u32>) -> Re
     Ok(())
 }
 
-fn rewrite_internal_task_references(node: &mut Node, semantic: &str, replacements: &HashMap<u32, u32>) -> Result<(), String> {
+pub(crate) fn rewrite_internal_task_references(node: &mut Node, semantic: &str, replacements: &HashMap<u32, u32>) -> Result<(), String> {
     // Talk options that give, complete or drop a task carry its ID in `parameter`.
     if let Some(new) = option_task_parameter(node).and_then(|old| replacements.get(&old)).copied() {
         let parameter = node.child_mut("parameter").ok_or("Talk option has no parameter")?;

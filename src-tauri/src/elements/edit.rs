@@ -1133,6 +1133,84 @@ impl Document {
     }
 }
 
+/// A place in elements.data that holds a quest ID: NPC give/complete lists, quest item
+/// services, mines, interaction objects, battle and transcription rewards, …
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TaskIdUse {
+    pub list: usize,
+    pub list_name: String,
+    pub row: usize,
+    pub id: u32,
+    pub name: String,
+    /// `id_tasks[3]`
+    pub field: String,
+    pub off: usize,
+}
+
+/// Whether a field (lowercase name) holds a quest ID. Field names are what the layouts call
+/// them (`id_tasks`, `tasks.id_task`, `award_task_id`, `task_in`, `id_press_msg_task`, …);
+/// task libraries, storage types, counts and NPC service links are other things.
+pub fn is_task_id_field(name: &str) -> bool {
+    if !name.contains("task") || matches!(name, "id_task_set" | "task_storage_type" | "task_strategy" | "task_share") {
+        return false;
+    }
+    if ["map", "service", "count", "num", "type", "level", "time", "prob"].iter().any(|word| name.contains(word)) {
+        return false;
+    }
+    name.contains("id") || name == "task_in" || name == "task_out" || name.ends_with("_task")
+}
+
+impl Document {
+    /// Every quest-ID field of the file that holds `task_id`.
+    pub fn task_id_uses(&self, task_id: u32) -> Vec<TaskIdUse> {
+        let mut uses = Vec::new();
+        for (list, block) in self.file.lists.iter().enumerate() {
+            let Some((_, def)) = self.def(list) else { continue };
+            let slots: Vec<search::Slot> = search::slots(def, block.item_size).into_iter().filter(|slot| slot.size() == 4 && is_task_id_field(slot.name())).collect();
+            if slots.is_empty() {
+                continue;
+            }
+            for row in 0..block.count {
+                let Some(bytes) = self.file.record(list, row) else { continue };
+                for slot in &slots {
+                    if slot.int(bytes).is_some_and(|value| value as u32 == task_id) {
+                        uses.push(TaskIdUse {
+                            list,
+                            list_name: def.name.clone(),
+                            row,
+                            id: Self::record_id(bytes),
+                            name: Self::record_name(bytes, Self::name_field(Some(def))),
+                            field: slot.path.clone(),
+                            off: slot.off,
+                        });
+                    }
+                }
+            }
+        }
+        uses
+    }
+
+    /// Writes `new` over `old` at the given places (list, row, offset), as one undo step.
+    pub fn replace_task_id_uses(&mut self, places: &[(usize, usize, usize)], old: u32, new: u32) -> Result<EditState, String> {
+        let mut ops = Vec::new();
+        for &(list, row, off) in places {
+            let uid = self.uid_at(list, row)?;
+            let record = self.file.record(list, row).ok_or("No such record")?;
+            let current = record.get(off..off + 4).ok_or("The field runs past the record")?;
+            if current != old.to_le_bytes() {
+                return Err(format!("List {list} record {row} no longer holds quest ID {old}; preview the change again"));
+            }
+            ops.push(Op::Set { list, uid, off, old: current.to_vec(), new: new.to_le_bytes().to_vec() });
+        }
+        if ops.is_empty() {
+            return Ok(self.edit_state());
+        }
+        let entry = self.entry(&format!("Change quest ID {old} → {new}"), ops, None);
+        Ok(self.apply(entry))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1159,5 +1237,34 @@ mod tests {
         assert_eq!(encode(&Ty::Str { n: 4 }, "中").unwrap(), vec![0xd6, 0xd0, 0, 0]);
         assert_eq!(encode(&Ty::Str { n: 2 }, "中").unwrap(), vec![0xd6, 0xd0]);
         assert_eq!(encode(&Ty::Bytes { n: 3 }, "0b 05").unwrap(), vec![0x0b, 0x05, 0]);
+    }
+}
+#[cfg(test)]
+mod task_id_tests {
+    use super::*;
+    use crate::elements::format::Catalog;
+    use std::sync::Arc;
+
+    #[test]
+    fn finds_and_replaces_quest_ids_as_one_step() {
+        assert!(is_task_id_field("id_tasks") && is_task_id_field("award_task_id") && is_task_id_field("task_in") && is_task_id_field("id_press_msg_task"));
+        assert!(!is_task_id_field("id_task_set") && !is_task_id_field("task_start_map") && !is_task_id_field("taskmatter_service") && !is_task_id_field("task_storage_type"));
+        let path = r"E:/Games/ForsakenJD/element/data/elements.data";
+        if !std::path::Path::new(path).is_file() {
+            return;
+        }
+        let mut doc = Document::open(path.into(), Arc::new(Catalog::load(None))).unwrap();
+        let out = doc.file.lists.iter().enumerate().find(|(list, _)| doc.def(*list).is_some_and(|(_, def)| def.name == "NPC_TASK_OUT_SERVICE")).unwrap().0;
+        let task = u32::from_le_bytes(doc.file.record(out, 0).unwrap()[76..80].try_into().unwrap());
+        let uses = doc.task_id_uses(task);
+        assert!(uses.iter().any(|entry| entry.list == out && entry.row == 0 && entry.field == "id_tasks[0]"));
+        let before = doc.file.data.clone();
+        let places: Vec<_> = uses.iter().map(|entry| (entry.list, entry.row, entry.off)).collect();
+        doc.replace_task_id_uses(&places, task, 987_654).unwrap();
+        assert!(doc.task_id_uses(task).is_empty());
+        assert_eq!(doc.task_id_uses(987_654).len(), uses.len());
+        assert!(doc.replace_task_id_uses(&places, task, 5).is_err(), "stale places are refused");
+        doc.undo();
+        assert_eq!(doc.file.data, before);
     }
 }

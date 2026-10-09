@@ -81,7 +81,7 @@ import type {
   TaskCopySelection,
   TaskTextGroup,
   TaskTranslationReport,
-  TaskDeleteReference, TaskArrayEdit, TaskDialog, TaskSearchField, TaskSearchQuery, TaskSearchResults } from "./types";
+  TaskDeleteReference, TaskArrayEdit, TaskDialog, TaskIdChangePreview, TaskIdChangeResult, TaskSearchField, TaskSearchQuery, TaskSearchResults } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
 
@@ -136,6 +136,10 @@ export const editTaskFields = (pack: number, root: number, taskPath: number[], v
 /** Adds, clones or removes a row of a list of the task; `countPath` names the count of a fixed list. */
 export const editTaskArray = (pack: number, root: number, taskPath: number[], arrayPath: string[], countPath: string[] | null, edit: TaskArrayEdit) =>
   invoke<TaskEditState>("edit_task_array", { pack, root, taskPath, arrayPath, countPath, edit });
+/** What giving a quest a new ID would change in tasks.data and the open elements.data. */
+export const previewTaskIdChange = (pack: number, root: number, taskPath: number[], expectedId: number, newId: number) => invoke<TaskIdChangePreview>("preview_task_id_change", { pack, root, taskPath, expectedId, newId });
+/** Gives a quest a new ID; `elementPlaces` are the elements.data fields (list, row, offset) to update too. */
+export const changeTaskId = (pack: number, root: number, taskPath: number[], expectedId: number, newId: number, elementPlaces: [number, number, number][]) => invoke<TaskIdChangeResult>("change_task_id", { pack, root, taskPath, expectedId, newId, elementPlaces });
 /** The talks of a task as trees of windows and options. */
 export const taskDialogs = (pack: number, root: number, taskPath: number[]) => invoke<TaskDialog[]>("task_dialogs", { pack, root, taskPath });
 /** Replaces one talk of a task (one undo step). */

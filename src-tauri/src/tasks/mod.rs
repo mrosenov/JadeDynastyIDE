@@ -6,6 +6,7 @@ pub mod compare;
 pub mod container;
 pub mod dialogs;
 pub mod edit;
+pub mod ids;
 pub mod json;
 pub mod layout;
 pub mod problems;

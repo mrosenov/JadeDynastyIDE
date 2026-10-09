@@ -530,6 +530,57 @@ async fn open_task_compare(path: String, state: State<'_, AppState>) -> Result<t
     Ok(report)
 }
 
+/// What a quest ID change touches: references in tasks.data, and quest-ID fields of the open
+/// elements.data that hold the old ID.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct TaskIdChangePreview {
+    #[serde(flatten)]
+    tasks: tasks::ids::TaskIdChange,
+    /// The open elements.data, when one is open.
+    elements_path: Option<String>,
+    element_uses: Vec<elements::edit::TaskIdUse>,
+}
+
+#[tauri::command]
+async fn preview_task_id_change(pack: usize, root: usize, task_path: Vec<usize>, expected_id: u32, new_id: u32, state: State<'_, AppState>) -> Result<TaskIdChangePreview, String> {
+    let preview = state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.change_task_id(pack, root, &task_path, expected_id, new_id, false)?;
+    // The task lock is released before the elements document is read.
+    let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    let (elements_path, element_uses) = match document.as_ref() {
+        Some(document) => (Some(document.path.clone()), document.task_id_uses(preview.old_id)),
+        None => (None, Vec::new()),
+    };
+    Ok(TaskIdChangePreview { tasks: preview, elements_path, element_uses })
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct TaskIdChangeResult {
+    tasks: tasks::edit::EditState,
+    /// The elements.data edit state, when places there were changed.
+    elements: Option<elements::edit::EditState>,
+    /// Why the elements.data part failed (tasks.data was changed already).
+    elements_error: Option<String>,
+}
+
+/// Gives a quest a new ID, rewriting its references (one undo step in tasks.data) and the chosen
+/// elements.data places (`list, row, offset`; one undo step there).
+#[tauri::command]
+async fn change_task_id(pack: usize, root: usize, task_path: Vec<usize>, expected_id: u32, new_id: u32, element_places: Vec<(usize, usize, usize)>, state: State<'_, AppState>) -> Result<TaskIdChangeResult, String> {
+    let change = state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.change_task_id(pack, root, &task_path, expected_id, new_id, true)?;
+    let tasks = change.state.clone().ok_or("The ID change was not applied")?;
+    if element_places.is_empty() {
+        return Ok(TaskIdChangeResult { tasks, elements: None, elements_error: None });
+    }
+    let mut document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    let result = document.as_mut().ok_or_else(|| "elements.data is no longer open".to_string()).and_then(|document| document.replace_task_id_uses(&element_places, change.old_id, change.new_id));
+    Ok(match result {
+        Ok(elements) => TaskIdChangeResult { tasks, elements: Some(elements), elements_error: None },
+        Err(error) => TaskIdChangeResult { tasks, elements: None, elements_error: Some(error) },
+    })
+}
+
 /// The talks of a task as trees of windows and options.
 #[tauri::command]
 async fn task_dialogs(pack: usize, root: usize, task_path: Vec<usize>, state: State<'_, AppState>) -> Result<Vec<tasks::dialogs::Dialog>, String> {
@@ -1349,6 +1400,8 @@ pub fn run() {
             edit_task_array,
             task_search_fields,
             task_dialogs,
+            preview_task_id_change,
+            change_task_id,
             set_task_dialog,
             search_tasks_advanced,
             cancel_task_search,
