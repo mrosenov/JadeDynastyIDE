@@ -260,7 +260,7 @@ fn backup_path(target: &Path) -> PathBuf {
     target.with_file_name(format!("{name}.{stamp}.bak"))
 }
 
-fn write_replacing(target: &Path, data: &[u8]) -> Result<(), String> {
+pub(crate) fn write_replacing(target: &Path, data: &[u8]) -> Result<(), String> {
     let name = target.file_name().ok_or("The file has no name")?.to_string_lossy().into_owned();
     let temporary = target.with_file_name(format!("{name}.jdide-saving"));
     std::fs::write(&temporary, data).map_err(|error| format!("Could not write {}: {error}", temporary.display()))?;

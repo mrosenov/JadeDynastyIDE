@@ -311,7 +311,7 @@ Next steps when resuming:
   background index (duplicate and skipped IDs, broken and self references, stale hierarchy links,
   missing elements.data items/monsters, full packs) and the inspector's Referenced by section.
   Premise and mutex task lists are now named fields in every supported layout.
-- Separate editors for `dyn_tasks.data` and `task_npc.data`.
+- A separate editor for `task_npc.data`. (The `dyn_tasks.data` editor exists: its own workspace, see README.)
 - Optional developer-only loader tracing for versions that cannot be resolved by schema comparison.
 
 ## Recommended implementation order

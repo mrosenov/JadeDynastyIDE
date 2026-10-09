@@ -1660,3 +1660,165 @@ export interface TaskIdChangeResult {
   elements: EditState | null;
   elementsError: string | null;
 }
+
+// ── dyn_tasks.data (dynamic tasks the server sends to clients) ──
+
+export type DynAwardLayout = "classic" | "shifted" | "unknown";
+
+export interface DynVert { x: number; y: number; z: number }
+export interface DynTaskTime { year: number; month: number; day: number; hour: number; minute: number; weekday: number }
+
+/** The client's packed ITEM_WANTED (31 bytes). */
+export interface DynItem {
+  itemId: number;
+  commonItem: number;
+  amount: number;
+  probability: number;
+  bound: number;
+  period: number;
+  timetable: number;
+  dayOfWeek: number;
+  hour: number;
+  minute: number;
+  refineCondition: number;
+  refineLevel: number;
+  replacementItemId: number;
+}
+
+export interface DynMonster {
+  monsterId: number;
+  amount: number;
+  dropItemId: number;
+  dropItemAmount: number;
+  dropCommonItem: number;
+  dropProbability: number;
+  killerLevel: number;
+}
+
+export interface DynZone { flag: number; world: number; min: DynVert; max: DynVert }
+export interface DynTransfer { flag: number; world: number; point: DynVert }
+export interface DynGivenItems { commonCount: number; taskCount: number; items: DynItem[] }
+export interface DynTimetableEntry { kind: number; start: DynTaskTime; end: DynTaskTime }
+
+/** `method` decides which of the other fields are stored. */
+export interface DynGoal {
+  method: number;
+  monsters: DynMonster[];
+  items: DynItem[];
+  gold: number;
+  siteId: number;
+  siteMin: DynVert;
+  siteMax: DynVert;
+  wait: number;
+}
+
+export interface DynCandidate { random: number; items: DynItem[] }
+
+export interface DynAward {
+  gold: number | null;
+  experience: number | null;
+  sp: number | null;
+  reputation: number | null;
+  candidates: DynCandidate[] | null;
+  extraMask: number;
+}
+
+export interface DynOption { id: number; param: number; text: string }
+export interface DynWindow { id: number; parent: number; text: string; options: DynOption[] }
+export interface DynTalk { prompt: string; windows: DynWindow[] }
+
+export interface DynTask {
+  dynType: number;
+  specialAward: number;
+  id: number;
+  name: string;
+  flags: number[];
+  levelMin: number;
+  levelMax: number;
+  timeLimit: number | null;
+  reputation: number | null;
+  period: number | null;
+  premiseItems: DynItem[] | null;
+  zone: DynZone | null;
+  transfer: DynTransfer | null;
+  givenItems: DynGivenItems | null;
+  deposit: number | null;
+  premiseTasks: number[] | null;
+  gender: number | null;
+  occupations: number[] | null;
+  mutexTasks: number[] | null;
+  timetable: DynTimetableEntry[] | null;
+  goal: DynGoal;
+  finishType: number;
+  award: DynAward;
+  description: string;
+  okText: string;
+  noText: string;
+  talks: DynTalk[];
+  subtasks: DynTask[];
+  extraMask: number;
+  mask2: number;
+}
+
+export interface DynRow {
+  index: number;
+  uid: number;
+  id: number;
+  name: string;
+  dynType: number;
+  specialAward: number;
+  method: number;
+  subtasks: number;
+  status: "" | "changed" | "added";
+}
+
+export interface DynHistoryEntry {
+  id: number;
+  label: string;
+  time: number;
+  taskId: number;
+  taskName: string;
+  undone: boolean;
+}
+
+export interface DynView {
+  path: string;
+  size: number;
+  timeMark: number;
+  version: number;
+  layout: DynAwardLayout;
+  rows: DynRow[];
+  dirty: boolean;
+  canUndo: boolean;
+  canRedo: boolean;
+  history: DynHistoryEntry[];
+  savedEntries: number | null;
+  lastSaved: number | null;
+}
+
+export interface DynProblem {
+  severity: "error" | "warning";
+  index: number;
+  taskId: number;
+  taskName: string;
+  message: string;
+}
+
+export interface DynProblemReport {
+  problems: DynProblem[];
+  tasksChecked: boolean;
+  elementsChecked: boolean;
+}
+
+export interface DynLabels {
+  elements: Record<string, string>;
+  tasks: Record<string, string>;
+}
+
+export interface DynSaveReport {
+  path: string;
+  size: number;
+  tasks: number;
+  timeMark: number;
+  backup: string | null;
+}

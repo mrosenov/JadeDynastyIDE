@@ -70,6 +70,11 @@ import type {
   TaskLayoutPatch,
   TaskLayoutPatchReport,
   TaskLayoutProbe,
+  DynView,
+  DynTask,
+  DynProblemReport,
+  DynLabels,
+  DynSaveReport,
   TaskAlignProposal,
   TaskLayoutExportReport,
   TaskLayoutCondition,
@@ -329,3 +334,16 @@ export const deleteNamedSet = (key: string) => invoke<SetsChanged>("delete_named
 export const revertNamedSet = (key: string) => invoke<SetsChanged>("revert_named_set", { key });
 
 export const referencedBy = (list: number, row: number) => invoke<ReferencedBy>("referenced_by", { list, row });
+
+// dyn_tasks.data
+export const openDynTasks = (path: string) => invoke<DynView>("open_dyn_tasks", { path });
+export const dynTasksView = () => invoke<DynView | null>("dyn_tasks_view");
+export const getDynTask = (index: number, uid: number) => invoke<DynTask>("dyn_task", { index, uid });
+export const setDynTask = (index: number, uid: number, task: DynTask, label: string) => invoke<DynView>("set_dyn_task", { index, uid, task, label });
+export const cloneDynTask = (index: number, uid: number) => invoke<{ view: DynView; index: number }>("clone_dyn_task", { index, uid });
+export const deleteDynTask = (index: number, uid: number) => invoke<DynView>("delete_dyn_task", { index, uid });
+export const undoDynTask = () => invoke<DynView>("undo_dyn_task");
+export const redoDynTask = () => invoke<DynView>("redo_dyn_task");
+export const dynTaskProblems = () => invoke<DynProblemReport>("dyn_task_problems");
+export const dynTaskLabels = (elements: number[], tasks: number[]) => invoke<DynLabels>("dyn_task_labels", { elements, tasks });
+export const saveDynTasks = (target: string | null, backup: boolean, replaceChanged: boolean) => invoke<DynSaveReport>("save_dyn_tasks", { target, backup, replaceChanged });

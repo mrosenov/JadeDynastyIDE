@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (167 at last run, ~6 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (171 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -77,6 +77,7 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
+| `dyn_tasks/format.rs`, `dyn_tasks/mod.rs` | `dyn_tasks.data` reader/writer (client limits, read-back check) and the open pack: edit journal, clone, delete, problems, save. |
 | `tasks/container.rs` | Strict `tasks.data` index and numbered-pack reader: offsets, pack limits and MD5 validation. |
 | `tasks/schema.rs`, `structures.rs`, `v165.rs`, `v172.rs`, `v184.rs` | Byte-preserving task schema engine and verified version layouts. |
 | `tasks/browser.rs` | Lazy tree loading, background search/reference index, field inspection and hierarchy summaries. |
@@ -96,7 +97,8 @@ Environment quirks (Windows 11, Git Bash):
   `generate_handler!` in `lib.rs`, to `api.ts`, and its types to `types.ts`.**
 - `components/` — one component per panel/dialog (`AdvancedSearch`, `ProblemsPanel`,
   `ComparePanel`, `HistoryPanel`, `SaveDialog`, `SchemaEditor`, `RecordInspector`,
-  `FieldTree`, `InlineEditor`, `PathDataEditor`, `TasksEditor`, task hierarchy dialogs, …).
+  `FieldTree`, `InlineEditor`, `PathDataEditor`, `TasksEditor`, `DynTasksEditor`, task hierarchy dialogs, …).
+  `TaskDialogEditor` exports `DialogTreeEditor`, the talk tree editor both task editors use.
 - `schema/model.ts` — schema editor draft model; `schema/fieldList.ts` — pasted
   sELedit/Jade Editor field lists → fields.
 - `elements/money.ts`, `time.ts`, `text.ts`, `talk.ts` — display helpers.
@@ -439,6 +441,29 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 - XtremeJade v165 scan (official data): 15 duplicate IDs, 32 broken references (e.g. four "Join …"
   quests awarding missing task 2608), 1 self-reference, 0 stale links, 44 full packs.
 
+## dyn_tasks.data editor
+
+- Format from `ATaskTemplMan::UnmarshalDynTasks` / `ATaskTempl::UnmarshalDynTask`
+  (ZElementClient/Task): 12-byte header (pack_size = file size, time_mark, version 13, task_count),
+  then tasks: mask (bits 0–12 = optional sections), mask2, type, special award (top-level type 1),
+  id, u8-length UTF-16 name, 17 flag bytes, level min/max, sections, method + goal data (1 kill,
+  2 collect, 4/13 site, 5 wait), finish type, award (mask: gold, u64 exp, SP, reputation, item
+  groups), 3 i32-length texts, 5 talks (prompt and option texts by byte size without NUL; window
+  text by units with a NUL; window/parent IDs are signed bytes), i32 subtask count, subtasks.
+  ITEM_WANTED 31, MONSTER_WANTED 22, task_tm 24 bytes. HDN/Reborn move the item groups from award bit
+  4 to bit 5 (bit 4 there holds something of unknown size no pack uses); `format::read` tries both.
+- The official writer's deposit section reads instead of writing (`MarshalDynTask` bug); JD IDE
+  writes the value.
+- Client: `VerifyDynTasksPack("userdata\\dyn_tasks.data")`; on a time-mark mismatch the server sends
+  the pack and the client overwrites userdata. Dynamic tasks are mounted on NPC services 1403/1404
+  (`UpdateDynDataNPCService`). IDs share the task list with tasks.data (4928–38960 in ForsakenJD).
+- All packs are special-award gifts (诛仙的馈赠); special award numbers repeat in official data.
+- `DynDocument` keeps each top-level task's bytes; `set_task` writes the edited task and requires
+  `write_task_bytes` to read back equal (given-item counts are recounted). Journal entries hold
+  whole-task Replace/Insert/Remove changes. Clone IDs: above this pack, the open tasks.data
+  (`TaskDocument::task_names`, the background index) and `id_floor`.
+- Lock order: `tasks`/`document` are read first and released, then `dyn_tasks`.
+
 ## Sample files (for tests and repros)
 
 | Path | Version | Notes |
@@ -501,7 +526,7 @@ count as a minimum. Never write into these folders from tests. Tests save into `
 - Pick-aware export (export only the picked search results).
 - Task compare/translation/JSON workflows described in
   `TASKS_EDITOR_PLAN.md`.
-- More data files in the activity bar (`gshop.data`, `dyn_tasks.data`, `task_npc.data`, …).
+- More data files in the activity bar (`gshop.data`, `task_npc.data`, …).
 - v165: the 8 bytes before list 296 that layouts mark as a checksum slot look like an empty
   list header (record size 1468, count 0). Check whether the layout should treat them as a list.
 

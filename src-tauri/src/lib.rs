@@ -1,9 +1,11 @@
 mod client;
+mod dyn_tasks;
 mod elements;
 mod path_data;
 mod settings;
 pub mod tasks;
 
+use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::{Arc, Mutex, RwLock};
@@ -31,6 +33,8 @@ struct AppState {
     task_translation: Mutex<Option<tasks::translate::TranslationSource>>,
     /// Cancels and reports the running advanced task search.
     task_search: Arc<tasks::search::SearchControl>,
+    /// The open dyn_tasks.data (locked after `tasks` and `document`, never while holding them).
+    dyn_tasks: Mutex<Option<dyn_tasks::DynDocument>>,
     catalog: RwLock<Arc<Catalog>>,
     /// The user's data folder: `layouts/`, `enums/` and `masks/` written by the editors.
     user_dir: PathBuf,
@@ -774,6 +778,112 @@ async fn import_tasks_json(path: String, token: Option<String>, state: State<'_,
     state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.import_json(std::path::Path::new(&path), token.as_deref())
 }
 
+/// The open tasks.data's task names by ID, once its index is ready (dyn_tasks.data checks against it).
+fn quest_names(state: &AppState) -> Option<HashMap<u32, String>> {
+    state.tasks.lock().ok()?.as_ref()?.task_names()
+}
+
+#[tauri::command]
+async fn open_dyn_tasks(path: String, state: State<'_, AppState>) -> Result<dyn_tasks::DynView, String> {
+    let document = tauri::async_runtime::spawn_blocking(move || dyn_tasks::DynDocument::open(path)).await.map_err(|error| error.to_string())??;
+    let view = document.view();
+    *state.dyn_tasks.lock().map_err(|_| "State lock poisoned")? = Some(document);
+    Ok(view)
+}
+
+#[tauri::command]
+fn dyn_tasks_view(state: State<'_, AppState>) -> Result<Option<dyn_tasks::DynView>, String> {
+    Ok(state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().map(dyn_tasks::DynDocument::view))
+}
+
+#[tauri::command]
+fn dyn_task(index: usize, uid: u64, state: State<'_, AppState>) -> Result<dyn_tasks::format::DynTask, String> {
+    state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open dyn_tasks.data first")?.task(index, uid)
+}
+
+#[tauri::command]
+fn set_dyn_task(index: usize, uid: u64, task: dyn_tasks::format::DynTask, label: String, state: State<'_, AppState>) -> Result<dyn_tasks::DynView, String> {
+    let quests: Option<HashSet<u32>> = quest_names(&state).map(|names| names.into_keys().collect());
+    state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open dyn_tasks.data first")?.set_task(index, uid, task, &label, quests.as_ref())
+}
+
+#[derive(serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+struct DynCloneResult {
+    view: dyn_tasks::DynView,
+    index: usize,
+}
+
+#[tauri::command]
+fn clone_dyn_task(index: usize, uid: u64, state: State<'_, AppState>) -> Result<DynCloneResult, String> {
+    let quests: Option<HashSet<u32>> = quest_names(&state).map(|names| names.into_keys().collect());
+    let (view, index) = state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open dyn_tasks.data first")?.clone_task(index, uid, quests.as_ref())?;
+    Ok(DynCloneResult { view, index })
+}
+
+#[tauri::command]
+fn delete_dyn_task(index: usize, uid: u64, state: State<'_, AppState>) -> Result<dyn_tasks::DynView, String> {
+    state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open dyn_tasks.data first")?.delete_task(index, uid)
+}
+
+#[tauri::command]
+fn undo_dyn_task(state: State<'_, AppState>) -> Result<dyn_tasks::DynView, String> {
+    state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open dyn_tasks.data first")?.undo()
+}
+
+#[tauri::command]
+fn redo_dyn_task(state: State<'_, AppState>) -> Result<dyn_tasks::DynView, String> {
+    state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open dyn_tasks.data first")?.redo()
+}
+
+#[derive(serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+struct DynProblemReport {
+    problems: Vec<dyn_tasks::DynProblem>,
+    /// Whether task IDs were checked against an open tasks.data, and items against elements.data.
+    tasks_checked: bool,
+    elements_checked: bool,
+}
+
+#[tauri::command]
+async fn dyn_task_problems(state: State<'_, AppState>) -> Result<DynProblemReport, String> {
+    let quests: Option<HashSet<u32>> = quest_names(&state).map(|names| names.into_keys().collect());
+    // One lock at a time: the IDs to check, then elements.data, then the scan.
+    let wanted = state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open dyn_tasks.data first")?.element_ids();
+    let missing = {
+        let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+        document.as_ref().map(|document| wanted.into_iter().filter(|id| document.resolve_essence_id(*id).is_none()).collect::<HashSet<_>>())
+    };
+    let problems = state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open dyn_tasks.data first")?.problems(quests.as_ref(), missing.as_ref());
+    Ok(DynProblemReport { problems, tasks_checked: quests.is_some(), elements_checked: missing.is_some() })
+}
+
+#[derive(serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+struct DynLabels {
+    /// Items and monsters from the open elements.data ("List › name").
+    elements: HashMap<u32, String>,
+    /// Tasks from the open tasks.data.
+    tasks: HashMap<u32, String>,
+}
+
+#[tauri::command]
+fn dyn_task_labels(elements: Vec<u32>, tasks: Vec<u32>, state: State<'_, AppState>) -> Result<DynLabels, String> {
+    let names = quest_names(&state).unwrap_or_default();
+    let tasks = tasks.into_iter().filter_map(|id| names.get(&id).map(|name| (id, name.clone()))).collect();
+    let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    let elements = match document.as_ref() {
+        Some(document) => elements.into_iter().filter_map(|id| document.resolve_essence_id(id).map(|(_, _, label)| (id, label))).collect(),
+        None => HashMap::new(),
+    };
+    Ok(DynLabels { elements, tasks })
+}
+
+#[tauri::command]
+async fn save_dyn_tasks(target: Option<String>, backup: bool, replace_changed: bool, state: State<'_, AppState>) -> Result<dyn_tasks::DynSaveReport, String> {
+    state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open dyn_tasks.data first")?.save(target.as_deref(), backup, replace_changed)
+}
+
 #[tauri::command]
 async fn task_problems(state: State<'_, AppState>) -> Result<tasks::problems::Report, String> {
     // Element IDs are checked without holding both locks (document, then tasks elsewhere).
@@ -1411,6 +1521,7 @@ pub fn run() {
             let state = AppState {
                 document: Mutex::new(None),
                 tasks: Mutex::new(None),
+                dyn_tasks: Mutex::new(None),
                 compared: Mutex::new(None),
                 compared_tasks: Mutex::new(None),
                 task_translation: Mutex::new(None),
@@ -1471,6 +1582,17 @@ pub fn run() {
             edit_task_array,
             task_search_fields,
             probe_task_layouts,
+            open_dyn_tasks,
+            dyn_tasks_view,
+            dyn_task,
+            set_dyn_task,
+            clone_dyn_task,
+            delete_dyn_task,
+            undo_dyn_task,
+            redo_dyn_task,
+            dyn_task_problems,
+            dyn_task_labels,
+            save_dyn_tasks,
             propose_task_alignment,
             apply_task_alignment,
             task_dialogs,

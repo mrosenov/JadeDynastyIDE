@@ -273,6 +273,13 @@ impl TaskDocument {
         })
     }
 
+    /// Every task's name by ID, once the background index is ready (the dyn_tasks.data editor
+    /// checks its IDs against them).
+    pub fn task_names(&self) -> Option<HashMap<u32, String>> {
+        let index = self.search.read().ok()?;
+        index.indexed.then(|| index.by_id.values().map(|entry| (entry.id, entry.name.clone())).collect())
+    }
+
     /// Tasks whose prerequisite, exclusion, award or finish-count fields name \`id\`.
     pub fn referenced_by(&self, id: u32) -> Result<Vec<TaskDeleteReference>, String> {
         let index = self.search.read().map_err(|_| "Task search index lock poisoned")?;

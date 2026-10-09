@@ -544,6 +544,49 @@ the version to the read-only analyzer so the schema can be changed and verified 
 older baseline can also be accepted without adding operations when it already matches the newer
 file exactly.
 
+## dyn_tasks.data editor
+
+The gift icon in the activity bar opens `dyn_tasks.data`: the dynamic tasks the server hands out.
+In every known pack these are "special award" gift quests: a player can take one at the NPC with
+service 1403 when the special award number the server gave that player matches the task's number.
+
+**Open the server's copy** (for example `gamed/config/dyn_tasks.data`). Clients keep their own copy in
+`userdata\dyn_tasks.data` and replace it with the server's whenever the time marks differ, so the
+copy in a client's `element/data` folder is not read at all. Saving sets the time mark to now; restart
+or reload the server and clients download the new pack on their next login.
+
+The list shows every task with its ID, name and special award number (search by any of them). The
+form has six tabs:
+
+- **General**: ID, name (at most 29 characters), dynamic type, special award number, finish type,
+  level range and the 17 flags.
+- **Requirements**: optional time limit, reputation, period, gender, deposit, classes, quests that
+  must be finished first, exclusive quests, required and given items, delivery zone, transfer and
+  timetable. **Add** stores a section, **Remove** drops it, as the game only stores the ones a task uses.
+- **Goal**: the method and its data (monsters to kill, items and gold to collect, a site to reach or
+  leave, or a waiting time).
+- **Rewards**: gold, experience, SP, reputation and groups of item rewards.
+- **Texts**: description, success and failure texts.
+- **Dialogs**: the five NPC talks, with the same tree editor as `tasks.data`.
+
+Item and monster IDs show their names from the open `elements.data`, and task IDs their names from
+the open `tasks.data`. Every change is checked against the client's limits (for example 5 prerequisite
+quests, 3 monsters, 8 items to collect, 16 reward groups of 32 items, 63-character dialog options) and
+must read back as exactly the task that was sent; untouched tasks keep their bytes.
+
+**Clone** (Ctrl+D) copies a task with fresh IDs above this pack, the open `tasks.data` and every ID
+cloned or deleted this session, and gives it the next special award number; quest references to the
+task inside its own dialogs follow the copy. **Delete** (Del) asks first. Undo/redo (Ctrl+Z/Ctrl+Y)
+and **History** (Ctrl+H) cover every edit. **Problems** (Ctrl+Shift+M) lists duplicate IDs, IDs that
+clash with the open `tasks.data` (the game loads both into one task list), prerequisite or exclusive
+quests neither file has, items or monsters missing from the open `elements.data`, and empty level
+ranges. Saving writes a backup first (once per session, optional) and refuses to overwrite a file
+another program changed unless confirmed.
+
+The format matches the client's `UnmarshalDynTask` (pack version 13). All five known packs
+(XtremeJade, 1559, ForsakenJD, HDN, Reborn) read and write back byte-for-byte. Newer clients (HDN,
+Reborn) store item rewards in a different award bit; JD IDE detects which one a pack uses.
+
 ## path.data editor
 
 The folder-tree icon in the activity bar opens `path.data` as a separate data workspace. If

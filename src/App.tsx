@@ -27,6 +27,7 @@ import { DialogViewer } from "./components/DialogViewer";
 import { SaveDialog } from "./components/SaveDialog";
 import { UnsavedDialog } from "./components/UnsavedDialog";
 import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } from "./components/PathDataEditor";
+import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
 import { TasksEditor, type TasksEditorHandle, type TasksEditorState } from "./components/TasksEditor";
 import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
@@ -43,6 +44,7 @@ import {
   Download,
   FileUp,
   FileStack,
+  Gift,
   FolderTree,
   FolderOpen,
   Gauge,
@@ -69,7 +71,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "tasks";
+type DataWorkspace = "elements" | "paths" | "tasks" | "dyn";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -161,6 +163,10 @@ export default function App() {
   const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null, unsupported: null, analysis: null, comparison: null, fieldCandidates: null, layoutPatch: null, referencePath: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
   const tasksEditorStateRef = useRef(tasksEditorState);
   tasksEditorStateRef.current = tasksEditorState;
+  const dynEditor = useRef<DynTasksEditorHandle>(null);
+  const [dynEditorState, setDynEditorState] = useState<DynTasksEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, tasks: 0, timeMark: null, panel: null });
+  const dynEditorStateRef = useRef(dynEditorState);
+  dynEditorStateRef.current = dynEditorState;
   const [summary, setSummary] = useState<FileSummary | null>(null);
   const [fileKey, setFileKey] = useState(0);
   const [loading, setLoading] = useState<string | null>(null);
@@ -284,6 +290,10 @@ export default function App() {
         event.preventDefault();
         return;
       }
+      if (dynEditorStateRef.current.dirty && !window.confirm("dyn_tasks.data has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
       if (editCountOf(editsRef.current) === 0) return;
       event.preventDefault();
       setUnsaved({ action: "close JD IDE", proceed: () => void win.destroy() });
@@ -351,6 +361,7 @@ export default function App() {
       if (event.payload.type === "drop" && event.payload.paths.length) {
         if (workspaceRef.current === "paths") pathEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "tasks") tasksEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
         else loadFile(event.payload.paths[0]);
       }
     });
@@ -867,6 +878,40 @@ export default function App() {
         { label: "Enums & masks…", icon: Tags, onSelect: () => setSetsEditor({ key: null }), title: "Edit the names of task types, categories, classes, friendships and other task values" },
       ],
     },
+  ] : workspace === "dyn" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open dyn_tasks.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => dynEditor.current?.choose() },
+        { label: "Save", icon: Save, shortcut: "Ctrl+S", onSelect: () => dynEditor.current?.save(), disabled: !dynEditorState.loaded },
+        { label: "Save as…", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: () => dynEditor.current?.saveAs(), disabled: !dynEditorState.loaded },
+        "separator",
+        { label: "Problems", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => dynEditor.current?.toggleProblems(), disabled: !dynEditorState.loaded, checked: dynEditorState.panel === "problems" },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => dynEditor.current?.undo(), disabled: !dynEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => dynEditor.current?.redo(), disabled: !dynEditorState.canRedo },
+        "separator",
+        { label: "Clone task", icon: Copy, shortcut: "Ctrl+D", onSelect: () => dynEditor.current?.cloneSelected(), disabled: !dynEditorState.loaded },
+        { label: "Delete task…", icon: Trash2, shortcut: "Del", onSelect: () => dynEditor.current?.deleteSelected(), disabled: !dynEditorState.loaded },
+        "separator",
+        { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => dynEditor.current?.toggleHistory(), disabled: !dynEditorState.loaded, checked: dynEditorState.panel === "history" },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        { label: "Enums & masks…", icon: Tags, onSelect: () => setSetsEditor({ key: null }), title: "Edit the names of methods, classes and other task values" },
+      ],
+    },
   ] : elementMenus;
   const switchWorkspace = (next: DataWorkspace) => {
     if (next === workspace) return;
@@ -888,6 +933,10 @@ export default function App() {
       <button className={"activity" + (workspace === "tasks" ? " active" : "")} onClick={() => switchWorkspace("tasks")} title="tasks.data editor" aria-label="tasks.data">
         <FileStack size={19} />
         {tasksEditorState.dirty && <span className="activity-dirty" />}
+      </button>
+      <button className={"activity" + (workspace === "dyn" ? " active" : "")} onClick={() => switchWorkspace("dyn")} title="dyn_tasks.data editor (dynamic gift tasks)" aria-label="dyn_tasks.data">
+        <Gift size={19} />
+        {dynEditorState.dirty && <span className="activity-dirty" />}
       </button>
     </nav>
   );
@@ -1065,7 +1114,12 @@ export default function App() {
         </div>
       )}
 
-      {workspace === "tasks" ? (
+      {workspace === "dyn" ? (
+        <main className="workspace tasks-data-workspace">
+          {activityBar}
+          <DynTasksEditor ref={dynEditor} active onStateChange={setDynEditorState} />
+        </main>
+      ) : workspace === "tasks" ? (
         <main className="workspace tasks-data-workspace">
           {activityBar}
           <TasksEditor
@@ -1298,7 +1352,15 @@ export default function App() {
       )}
 
       <footer className="statusbar">
-        {workspace === "tasks" ? (
+        {workspace === "dyn" ? (
+          <>
+            <span>dyn_tasks.data</span>
+            {dynEditorState.path && <span className="mono truncate" title={dynEditorState.path}>{dynEditorState.path}</span>}
+            {dynEditorState.dirty && <button className="status-edits" onClick={() => dynEditor.current?.toggleHistory()} title="Show the edit history (Ctrl+H). Edits are kept in memory until saved."><span className="changed-dot" /> unsaved changes</button>}
+            <span className="spacer" />
+            {dynEditorState.loaded && <span>{count(dynEditorState.tasks)} dynamic tasks</span>}
+          </>
+        ) : workspace === "tasks" ? (
           <>
             <span>tasks.data</span>
             {tasksEditorState.path && <span className="mono truncate" title={tasksEditorState.path}>{tasksEditorState.path}</span>}

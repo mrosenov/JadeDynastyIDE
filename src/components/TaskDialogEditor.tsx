@@ -106,17 +106,43 @@ interface Props {
 /** The task's NPC talks as editable trees: windows, their options, and the windows options open. */
 export function TaskDialogEditor({ detail, fields, renderReference, onSave }: Props) {
   const [dialogs, setDialogs] = useState<TaskDialog[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    taskDialogs(detail.pack, detail.root, detail.path).then((next) => { if (!cancelled) setDialogs(next); }).catch((problem) => { if (!cancelled) setError(String(problem)); });
+    return () => { cancelled = true; };
+  }, [detail]);
+
+  // Option parameters link to quests through the form's fields, which follow the stored windows.
+  const renderParameter = (talk: TaskDialog["talk"], windowId: number, index: number, option: TaskDialogOption) => {
+    const stored = dialogs?.find((entry) => entry.talk === talk)?.windows.findIndex((window) => window.id === windowId) ?? -1;
+    const reference = stored >= 0 ? fields.get(`dialogs.${talk}.windows[${stored}].options[${index}].parameter`) : undefined;
+    return reference?.reference && Number(reference.value) === option.parameter ? renderReference(reference.reference) : null;
+  };
+
+  if (!dialogs) return error ? <div className="task-field-edit-error">{error}</div> : <div className="empty-note">Loading talks…</div>;
+  return <DialogTreeEditor dialogs={dialogs} taskId={detail.id} taskName={detail.name} renderParameter={renderParameter} onSave={onSave} />;
+}
+
+interface TreeProps {
+  /** The talks as stored; the editor keeps its own copy while saving. */
+  dialogs: TaskDialog[];
+  taskId: number;
+  taskName: string;
+  /** Extra content after a quest option's parameter (a link to the quest). */
+  renderParameter?: (talk: TaskDialog["talk"], windowId: number, index: number, option: TaskDialogOption) => ReactNode;
+  onSave: (dialog: TaskDialog, label: string) => Promise<void>;
+}
+
+/** NPC talks as editable trees (shared by tasks.data and dyn_tasks.data). */
+export function DialogTreeEditor({ dialogs: stored, taskId, taskName, renderParameter, onSave }: TreeProps) {
+  const [dialogs, setDialogs] = useState<TaskDialog[] | null>(stored);
+  useEffect(() => setDialogs(stored), [stored]);
   const [talk, setTalk] = useState<TaskDialog["talk"]>(() => { try { return (localStorage.getItem("jdide.tasks.talk") as TaskDialog["talk"] | null) ?? "delivery"; } catch { return "delivery"; } });
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState(false);
-  const [saved, setSaved] = useState<TaskDialog[] | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    taskDialogs(detail.pack, detail.root, detail.path).then((next) => { if (!cancelled) { setDialogs(next); setSaved(next); } }).catch((problem) => { if (!cancelled) setError(String(problem)); });
-    return () => { cancelled = true; };
-  }, [detail]);
 
   const chooseTalk = (next: TaskDialog["talk"]) => {
     setTalk(next);
@@ -126,7 +152,6 @@ export function TaskDialogEditor({ detail, fields, renderReference, onSave }: Pr
   const dialog = dialogs?.find((entry) => entry.talk === talk);
   const available = TALKS.filter((entry) => dialogs?.some((candidate) => candidate.talk === entry.key));
   const byId = useMemo(() => new Map((dialog?.windows ?? []).map((window) => [window.id, window])), [dialog]);
-  const storedIndex = useMemo(() => new Map((saved?.find((entry) => entry.talk === talk)?.windows ?? []).map((window, index) => [window.id, index])), [saved, talk]);
 
   const save = async (next: TaskDialog, label: string) => {
     const previous = dialogs;
@@ -143,7 +168,7 @@ export function TaskDialogEditor({ detail, fields, renderReference, onSave }: Pr
     }
   };
 
-  if (!dialogs) return error ? <div className="task-field-edit-error">{error}</div> : <div className="empty-note">Loading talks…</div>;
+  if (!dialogs) return <div className="empty-note">Loading talks…</div>;
   if (!available.length) return <div className="empty-note">This task layout has no talks.</div>;
 
   const removeWindows = (current: TaskDialog, root: number): TaskDialog | null => {
@@ -169,7 +194,7 @@ export function TaskDialogEditor({ detail, fields, renderReference, onSave }: Pr
     const id = Number(value);
     if (!isFunction(option.target)) next = removeWindows(dialog, option.target);
     if (!next) return;
-    const parameter = QUEST_FUNCTIONS.has(id) ? (option.parameter && isFunction(option.target) && QUEST_FUNCTIONS.has(option.target - FUNCTION) ? option.parameter : detail.id) : 0;
+    const parameter = QUEST_FUNCTIONS.has(id) ? (option.parameter && isFunction(option.target) && QUEST_FUNCTIONS.has(option.target - FUNCTION) ? option.parameter : taskId) : 0;
     next = withWindow(next, windowId, (window) => ({ ...window, options: window.options.map((entry, position) => position === index ? { ...entry, target: fn(id), parameter } : entry) }));
     void save(next, "Change dialog option");
   };
@@ -197,7 +222,6 @@ export function TaskDialogEditor({ detail, fields, renderReference, onSave }: Pr
 
   const renderWindow = (window: TaskDialogWindow, depth: number, seen: Set<number>): ReactNode => {
     seen.add(window.id);
-    const stored = storedIndex.get(window.id);
     return <div className={"task-dialog-window" + (depth === 0 ? " root" : "")} key={window.id}>
       <div className="task-dialog-window-head"><span className="task-dialog-window-id">Window {window.id}</span>{depth === 0 && <span className="muted small">first window</span>}</div>
       <DraftText value={window.text} multiline placeholder="What the NPC says…" onCommit={(text) => dialog && void save(withWindow(dialog, window.id, (entry) => ({ ...entry, text })), "Edit dialog text")} />
@@ -206,7 +230,6 @@ export function TaskDialogEditor({ detail, fields, renderReference, onSave }: Pr
           const functionId = isFunction(option.target) ? option.target - FUNCTION : null;
           const known = functionId === null || ACTIONS.some((action) => action.id === functionId);
           const quest = functionId !== null && QUEST_FUNCTIONS.has(functionId);
-          const reference = stored !== undefined ? fields.get(`dialogs.${talk}.windows[${stored}].options[${index}].parameter`) : undefined;
           const child = functionId === null ? byId.get(option.target) : undefined;
           return <div className="task-dialog-option-block" key={index}>
             <div className="task-dialog-option">
@@ -219,8 +242,8 @@ export function TaskDialogEditor({ detail, fields, renderReference, onSave }: Pr
               </select>
               {(quest || (functionId !== null && option.parameter !== 0)) && <span className="task-dialog-parameter">
                 <DraftText value={String(option.parameter)} className="mono" placeholder={quest ? "quest ID" : "parameter"} onCommit={(text) => { const value = Number(text.trim()); if (Number.isInteger(value) && value >= 0) setOption(window.id, index, { parameter: value >>> 0 }, "Edit dialog option"); }} />
-                {quest && option.parameter === detail.id ? <span className="muted small">this quest</span> : quest && <button className="link small" onClick={() => setOption(window.id, index, { parameter: detail.id }, "Edit dialog option")} title={`Set to this quest (${detail.id})`}>use this quest</button>}
-                {reference?.reference && Number(reference.value) === option.parameter && renderReference(reference.reference)}
+                {quest && option.parameter === taskId ? <span className="muted small">this quest</span> : quest && <button className="link small" onClick={() => setOption(window.id, index, { parameter: taskId }, "Edit dialog option")} title={`Set to this quest (${taskId})`}>use this quest</button>}
+                {renderParameter?.(talk, window.id, index, option)}
               </span>}
               <span className="task-form-row-actions">
                 <button className="icon-btn small" disabled={busy || index === 0} onClick={() => moveOption(window.id, index, -1)} title="Move up"><ArrowUp size={13} /></button>
@@ -249,7 +272,7 @@ export function TaskDialogEditor({ detail, fields, renderReference, onSave }: Pr
       <div className="muted small task-dialog-hint">{current.hint}</div>
       {!dialog || !root ? <div className="task-dialog-empty">
         <span className="muted">No {current.label.toLowerCase()} talk: the NPC shows nothing for this stage.</span>
-        <button className="btn small" disabled={busy} onClick={() => void save(starter(current.key, detail.id, detail.name), "Create dialog")}><MessageSquarePlus size={13} /> Create talk</button>
+        <button className="btn small" disabled={busy} onClick={() => void save(starter(current.key, taskId, taskName), "Create dialog")}><MessageSquarePlus size={13} /> Create talk</button>
       </div> : <>
         <div className="task-dialog-head">
           <label className="task-dialog-prompt"><span className="task-form-label">Prompt</span><DraftText value={dialog.prompt} maxLength={SHORT} placeholder="The NPC menu entry that starts the talk" onCommit={(prompt) => void save({ ...dialog, prompt }, "Edit dialog prompt")} /></label>
