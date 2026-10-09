@@ -606,7 +606,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [moveBusy, moveSource, resync, showNote]);
 
   const inspectDeleteSelected = useCallback(async () => {
-    if (!selectedRoot || !selectedPath.length || !beginOperation()) return;
+    if (!selectedRoot || !beginOperation()) return;
     try {
       setDeletePreview(await previewDeleteTaskSubtree(selectedRoot.pack, selectedRoot.root, selectedPath));
       setDeleteError(null);
@@ -617,23 +617,27 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     }
   }, [selectedPath, selectedRoot]);
 
-  const confirmDeleteSelected = useCallback(async () => {
+  const confirmDeleteSelected = useCallback(async (places: [number, number, number, number][]) => {
     if (!deletePreview || deleteBusy || !beginOperation()) return;
     setDeleteBusy(true);
     setDeleteError(null);
     try {
-      const report = await deleteTaskSubtree(deletePreview);
+      const topLevel = deletePreview.path.length === 0;
+      const report = await deleteTaskSubtree(deletePreview, places);
       setEditState(report.state);
       setDeletePreview(null);
+      if (report.elements) onElementsEdited?.(report.elements);
+      // A deleted top-level quest leaves the list; the quest that now holds its place is selected.
       await resync(new Set([`${report.pack}:${report.root}`]), { root: { pack: report.pack, root: report.root, index: selectedRoot?.index ?? 0 }, path: report.path, id: null });
-      showNote(report.tasks === 1 ? `Deleted subquest ${report.id}. Undo is available.` : `Deleted ${report.tasks} quests from subtree ${report.id}. Undo is available.`);
+      const elementsNote = report.elementsError ? ` elements.data was not changed: ${report.elementsError}` : report.elements ? " Its IDs were cleared in elements.data too (save it in the elements workspace)." : "";
+      showNote((topLevel ? `Deleted quest ${report.id}${report.tasks > 1 ? ` with ${report.tasks - 1} subquest${report.tasks === 2 ? "" : "s"}` : ""}. Undo is available until you save.` : report.tasks === 1 ? `Deleted subquest ${report.id}. Undo is available.` : `Deleted ${report.tasks} quests from subtree ${report.id}. Undo is available.`) + elementsNote);
     } catch (problem) {
       setDeleteError(problemText(problem));
     } finally {
       endOperation();
       setDeleteBusy(false);
     }
-  }, [deleteBusy, deletePreview, resync, selectedRoot?.index, showNote]);
+  }, [deleteBusy, deletePreview, onElementsEdited, resync, selectedRoot?.index, showNote]);
 
   const undo = useCallback(() => void runHistoryAction(undoTaskEdit), [runHistoryAction]);
   const redo = useCallback(() => void runHistoryAction(redoTaskEdit), [runHistoryAction]);
@@ -1489,7 +1493,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
               {selectedPath.length === 0 && <button className="btn small" onClick={() => void cloneSelectedRoot()} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Clone this complete top-level task with fresh task IDs" : "Task IDs are still being indexed"}><Copy size={13}/> {taskIndexReady ? "Clone task" : "Indexing IDs…"}</button>}
               {selectedPath.length > 0 && <button className="btn small" onClick={() => void cloneSelectedSubtree()} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Clone this subquest and all of its descendants beside the source" : "Task IDs are still being indexed"}><Copy size={13}/> {taskIndexReady ? "Clone subtree" : "Indexing IDs…"}</button>}
               {selectedPath.length > 0 && <button className="btn small" onClick={openMoveSelected} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Choose a new parent for this subquest tree" : "Task destinations are still being indexed"}><ArrowRight size={13}/> Move subtree</button>}
-              {selectedPath.length > 0 && <button className="btn small danger-outline" onClick={() => void inspectDeleteSelected()} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Review references and delete this subquest with all descendants" : "Task references are still being indexed"}><Trash2 size={13}/> Delete subtree</button>}
+              <button className="btn small danger-outline" onClick={() => void inspectDeleteSelected()} disabled={taskBusy || !taskIndexReady} title={!taskIndexReady ? "Task references are still being indexed" : selectedPath.length ? "Review references and delete this subquest with all descendants" : "Review references and delete this top-level quest with all of its subquests"}><Trash2 size={13}/> {selectedPath.length ? "Delete subtree" : "Delete quest"}</button>
             </div>
           </header>
           <div className="task-form-tabs" role="tablist" aria-label="Task sections">{TASK_FORM_TABS.map((entry) => <button key={entry.key} role="tab" aria-selected={formTab === entry.key} className={formTab === entry.key ? "active" : ""} onClick={() => chooseFormTab(entry.key)}>{entry.label}</button>)}</div>
@@ -1511,5 +1515,5 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       getTaskEditState().then(setEditState).catch((problem) => setError(problemText(problem)));
       showNote(`Saved ${report.changedRoots} changed root${report.changedRoots === 1 ? "" : "s"} across ${report.changedPacks} pack${report.changedPacks === 1 ? "" : "s"}.${report.historyCleared ? " A new undo history starts here." : ""}`);
     }} />}
-  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {translating && file && <TaskTranslateDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, fields) => void translationApplied(next, fields)} onClose={() => setTranslating(false)} />} {importing && file && <TaskImportDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, report) => void bulkApplied(next, report, "Imported JSON")} onClose={() => setImporting(false)} />} {idChanging && selectedRoot && detail && <TaskIdDialog task={{ pack: selectedRoot.pack, root: selectedRoot.root, path: selectedPath, id: detail.id, name: detail.name }} onApplied={(result, newId) => void idChanged(result, newId)} onClose={() => setIdChanging(false)} />} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={() => void confirmDeleteSelected()} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
+  </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {translating && file && <TaskTranslateDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, fields) => void translationApplied(next, fields)} onClose={() => setTranslating(false)} />} {importing && file && <TaskImportDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, report) => void bulkApplied(next, report, "Imported JSON")} onClose={() => setImporting(false)} />} {idChanging && selectedRoot && detail && <TaskIdDialog task={{ pack: selectedRoot.pack, root: selectedRoot.root, path: selectedPath, id: detail.id, name: detail.name }} onApplied={(result, newId) => void idChanged(result, newId)} onClose={() => setIdChanging(false)} />} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={(places) => void confirmDeleteSelected(places)} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
 });

@@ -148,7 +148,7 @@ impl TaskDocument {
             changed_packs,
             pack_count: self.container.packs.len(),
             size: self.summary.size,
-            clears_history: !self.added_roots.is_empty(),
+            clears_history: !self.added_roots.is_empty() || self.has_deleted_roots(),
             backup: (options.backup && target.is_file() && !self.backed_up.contains(&target)).then(|| backup_path(&target).display().to_string()),
         })
     }
@@ -169,7 +169,8 @@ impl TaskDocument {
         let staged_index = stage.join(target.file_name().ok_or("The target has no file name")?);
         let changed_packs = self.changed_root_keys().into_iter().map(|(pack, _)| pack).collect::<HashSet<_>>();
         let changed_roots = self.changed_root_keys().len();
-        let had_structural_roots = !self.added_roots.is_empty();
+        let had_structural_roots = !self.added_roots.is_empty() || self.has_deleted_roots();
+        let positions = self.closing_positions()?;
         let replaces = target.is_file();
         let result = self.stage(&staged_index, &changed_packs)
             .and_then(|_| self.validate_staged(&staged_index))
@@ -185,6 +186,9 @@ impl TaskDocument {
         self.disk = stamps(&self.container);
         self.modified.clear();
         self.added_roots.clear();
+        if !positions.is_empty() {
+            self.renumber_roots(&positions)?;
+        }
         if had_structural_roots {
             self.journal.clear();
         }
@@ -212,16 +216,18 @@ impl TaskDocument {
         for (pack_index, pack) in self.container.packs.iter().enumerate() {
             let staged = numbered(target, pack_index + 1);
             if changed_packs.contains(&pack_index) {
-                let count = self.root_count(pack_index)?;
+                // Deleted top-level quests leave the pack here; the others close up in order.
+                let roots = (0..self.root_count(pack_index)?).map(|root| self.current_root_optional(pack_index, root)).collect::<Result<Vec<_>, _>>()?.into_iter().flatten().collect::<Vec<_>>();
+                let count = roots.len();
                 let header_size = PACK_HEADER.checked_add(count.checked_mul(4).ok_or("Task pack header overflow")?).ok_or("Task pack header overflow")?;
                 let mut output = Vec::with_capacity(pack.size as usize);
                 output.extend_from_slice(&0x0693_4554u32.to_le_bytes());
                 output.extend_from_slice(&(count as u32).to_le_bytes());
                 output.resize(header_size, 0);
-                for root in 0..count {
+                for (root, bytes) in roots.iter().enumerate() {
                     let offset = u32::try_from(output.len()).map_err(|_| "Task pack exceeds the 32-bit offset limit")?;
                     output[PACK_HEADER + root * 4..PACK_HEADER + root * 4 + 4].copy_from_slice(&offset.to_le_bytes());
-                    output.extend_from_slice(&self.current_root(pack_index, root)?);
+                    output.extend_from_slice(bytes);
                 }
                 std::fs::write(&staged, &output).map_err(|error| format!("Could not write {}: {error}", staged.display()))?;
             } else {
@@ -377,6 +383,50 @@ mod tests {
         assert_eq!(reopened.packs[clone.pack].root_count(), 3);
         assert_eq!(reopened.root(clone.pack, clone.root).unwrap(), clone_bytes);
         assert!(document.edit_state().undo.is_none(), "saving a structural task clone starts a new undo history");
+        std::fs::remove_dir_all(folder).unwrap();
+    }
+
+    #[test]
+    fn deleted_top_level_task_leaves_the_pack_on_save() {
+        let source = Path::new(r"E:/Games/XtremeJade/element/data/tasks.data");
+        if !source.is_file() { return }
+        let source = TaskContainer::open(source).unwrap();
+        let roots = [source.root(0, 0).unwrap(), source.root(0, 1).unwrap(), source.root(0, 2).unwrap()];
+        let (folder, index) = write_fixture(&roots, source.header.export_version);
+        let mut document = TaskDocument::open(&index).unwrap();
+        while !document.search("", 0).indexed {
+            std::thread::sleep(std::time::Duration::from_millis(25));
+        }
+        let ids: Vec<u32> = document.summary().roots.iter().map(|root| root.id).collect();
+        let preview = document.delete_subtask_preview(0, 1, &[]).unwrap();
+        assert_eq!(preview.id, ids[1]);
+        let delete = |document: &mut TaskDocument| { let preview = document.delete_subtask_preview(0, 1, &[]).unwrap(); document.delete_subtask(0, 1, &[], &preview.token, true).unwrap() };
+        delete(&mut document);
+        let summary = document.summary();
+        assert_eq!((summary.root_count, summary.roots.iter().map(|root| root.id).collect::<Vec<_>>()), (2, vec![ids[0], ids[2]]));
+        assert!(document.current_root(0, 1).is_err());
+        assert!(!document.search(&ids[1].to_string(), 50).matches.iter().any(|task| task.id == ids[1] && task.path.is_empty() && task.root == 1));
+        assert!(document.save_plan(&SaveOptions { path: index.display().to_string(), backup: false }).unwrap().clears_history);
+
+        document.undo().unwrap();
+        assert_eq!(document.summary().roots.iter().map(|root| root.id).collect::<Vec<_>>(), ids, "undo puts the quest back in its place");
+        assert_eq!(document.current_root(0, 1).unwrap(), roots[1]);
+        delete(&mut document);
+        document.revert_all().unwrap();
+        assert_eq!(document.summary().root_count, 3);
+        assert!(document.edit_state().changed_roots.is_empty());
+
+        delete(&mut document);
+        document.edit_field(FieldEdit { pack: 0, root: 2, task_path: Vec::new(), field_path: vec!["fixed".into(), "name".into()], value: "After the gap".into() }).unwrap();
+        let edited = document.current_root(0, 2).unwrap();
+        let report = document.save(&SaveOptions { path: index.display().to_string(), backup: false }).unwrap();
+        assert!(report.history_cleared);
+        let reopened = TaskContainer::open(&index).unwrap();
+        assert_eq!((reopened.header.root_count, reopened.packs[0].root_count()), (2, 2));
+        assert_eq!(reopened.root(0, 0).unwrap(), roots[0]);
+        assert_eq!(reopened.root(0, 1).unwrap(), edited);
+        assert_eq!(document.summary().roots.iter().map(|root| (root.root, root.id)).collect::<Vec<_>>(), vec![(0, ids[0]), (1, ids[2])], "after saving, positions close up");
+        assert!(document.edit_state().undo.is_none());
         std::fs::remove_dir_all(folder).unwrap();
     }
 

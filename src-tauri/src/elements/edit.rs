@@ -1146,6 +1146,8 @@ pub struct TaskIdUse {
     /// `id_tasks[3]`
     pub field: String,
     pub off: usize,
+    /// The quest ID it holds.
+    pub task_id: u32,
 }
 
 /// Whether a field (lowercase name) holds a quest ID. Field names are what the layouts call
@@ -1161,13 +1163,21 @@ pub fn is_task_id_field(name: &str) -> bool {
     name.contains("id") || name == "task_in" || name == "task_out" || name.ends_with("_task")
 }
 
+/// Whether a field (lowercase path without indexes) holds a quest ID: a quest-ID name, or an `id`
+/// directly inside a group named for quests (`TASKDICE_ESSENCE.task_lists[].id`).
+pub fn is_task_id_path(plain: &str) -> bool {
+    let mut parts = plain.rsplit('.');
+    let leaf = parts.next().unwrap_or_default();
+    is_task_id_field(leaf) || (leaf == "id" && parts.next().is_some_and(|parent| parent.contains("task")))
+}
+
 impl Document {
     /// Every quest-ID field of the file that holds `task_id`.
     pub fn task_id_uses(&self, task_id: u32) -> Vec<TaskIdUse> {
         let mut uses = Vec::new();
         for (list, block) in self.file.lists.iter().enumerate() {
             let Some((_, def)) = self.def(list) else { continue };
-            let slots: Vec<search::Slot> = search::slots(def, block.item_size).into_iter().filter(|slot| slot.size() == 4 && is_task_id_field(slot.name())).collect();
+            let slots: Vec<search::Slot> = search::slots(def, block.item_size).into_iter().filter(|slot| slot.size() == 4 && is_task_id_path(slot.plain())).collect();
             if slots.is_empty() {
                 continue;
             }
@@ -1183,6 +1193,7 @@ impl Document {
                             name: Self::record_name(bytes, Self::name_field(Some(def))),
                             field: slot.path.clone(),
                             off: slot.off,
+                            task_id,
                         });
                     }
                 }
@@ -1193,20 +1204,32 @@ impl Document {
 
     /// Writes `new` over `old` at the given places (list, row, offset), as one undo step.
     pub fn replace_task_id_uses(&mut self, places: &[(usize, usize, usize)], old: u32, new: u32) -> Result<EditState, String> {
+        let places: Vec<_> = places.iter().map(|&(list, row, off)| (list, row, off, old)).collect();
+        self.set_task_id_places(&places, new, &format!("Change quest ID {old} → {new}"))
+    }
+
+    /// Clears quest IDs of deleted quests (0 means "no quest"; NPC lists skip it) at
+    /// (list, row, offset, ID it should hold), as one undo step.
+    pub fn clear_task_id_uses(&mut self, places: &[(usize, usize, usize, u32)]) -> Result<EditState, String> {
+        let ids: HashSet<u32> = places.iter().map(|place| place.3).collect();
+        self.set_task_id_places(places, 0, &format!("Clear {} deleted quest ID{}", ids.len(), if ids.len() == 1 { "" } else { "s" }))
+    }
+
+    fn set_task_id_places(&mut self, places: &[(usize, usize, usize, u32)], new: u32, label: &str) -> Result<EditState, String> {
         let mut ops = Vec::new();
-        for &(list, row, off) in places {
+        for &(list, row, off, old) in places {
             let uid = self.uid_at(list, row)?;
             let record = self.file.record(list, row).ok_or("No such record")?;
             let current = record.get(off..off + 4).ok_or("The field runs past the record")?;
             if current != old.to_le_bytes() {
-                return Err(format!("List {list} record {row} no longer holds quest ID {old}; preview the change again"));
+                return Err(format!("List {list} record {row} no longer holds quest ID {old}; preview again"));
             }
             ops.push(Op::Set { list, uid, off, old: current.to_vec(), new: new.to_le_bytes().to_vec() });
         }
         if ops.is_empty() {
             return Ok(self.edit_state());
         }
-        let entry = self.entry(&format!("Change quest ID {old} → {new}"), ops, None);
+        let entry = self.entry(label, ops, None);
         Ok(self.apply(entry))
     }
 }
@@ -1249,6 +1272,7 @@ mod task_id_tests {
     fn finds_and_replaces_quest_ids_as_one_step() {
         assert!(is_task_id_field("id_tasks") && is_task_id_field("award_task_id") && is_task_id_field("task_in") && is_task_id_field("id_press_msg_task"));
         assert!(!is_task_id_field("id_task_set") && !is_task_id_field("task_start_map") && !is_task_id_field("taskmatter_service") && !is_task_id_field("task_storage_type"));
+        assert!(is_task_id_path("task_lists.id") && is_task_id_path("tasks.id_task") && !is_task_id_path("id") && !is_task_id_path("tasks.taks_matters.id_matter") && !is_task_id_path("task_lists.probability"));
         let path = r"E:/Games/ForsakenJD/element/data/elements.data";
         if !std::path::Path::new(path).is_file() {
             return;
@@ -1266,5 +1290,16 @@ mod task_id_tests {
         assert!(doc.replace_task_id_uses(&places, task, 5).is_err(), "stale places are refused");
         doc.undo();
         assert_eq!(doc.file.data, before);
+
+        // Task dice keep quest IDs in task_lists[].id.
+        let dice = doc.file.lists.iter().enumerate().find(|(list, _)| doc.def(*list).is_some_and(|(_, def)| def.name == "TASKDICE_ESSENCE")).unwrap().0;
+        let found = (0..doc.file.lists[dice].count).find_map(|row| {
+            let bytes = doc.file.record(dice, row)?;
+            let slot = search::slots(doc.def(dice)?.1, doc.file.lists[dice].item_size).into_iter().find(|slot| slot.plain() == "task_lists.id" && slot.int(bytes).is_some_and(|value| value > 0))?;
+            Some((row, slot.int(bytes)? as u32))
+        });
+        if let Some((row, task)) = found {
+            assert!(doc.task_id_uses(task).iter().any(|entry| entry.list == dice && entry.row == row && entry.field.starts_with("task_lists[")));
+        }
     }
 }

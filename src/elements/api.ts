@@ -174,13 +174,15 @@ export const moveTaskSubtree = (source: { pack: number; root: number; path: numb
 export const getTaskSummary = () => invoke<TasksFileSummary>("task_summary");
 /** Finds surviving task references before removing a selected subquest tree. */
 export const previewDeleteTaskSubtree = (pack: number, root: number, path: number[]) => invoke<TaskDeletePreview>("preview_delete_task_subtree", { pack, root, path });
-/** Removes a previously previewed subquest tree as one undoable root edit. */
-export const deleteTaskSubtree = (preview: TaskDeletePreview) => invoke<TaskDeleteReport>("delete_task_subtree", {
+/** Removes a previously previewed quest tree (a subquest, or a top-level quest for an empty path) as
+ *  one undoable edit; `elementPlaces` (list, row, offset, quest ID) in elements.data are cleared to 0. */
+export const deleteTaskSubtree = (preview: TaskDeletePreview, elementPlaces: [number, number, number, number][] = []) => invoke<TaskDeleteReport>("delete_task_subtree", {
   pack: preview.pack,
   root: preview.root,
   path: preview.path,
   token: preview.token,
   allowReferenced: preview.referenceCount > 0,
+  elementPlaces,
 });
 export const getTaskEditState = () => invoke<TaskEditState>("task_edit_state");
 export const getTaskEditHistory = () => invoke<TaskHistoryEntry[]>("task_edit_history");

@@ -499,13 +499,51 @@ async fn move_task_subtree(source_pack: usize, source_root: usize, source_path: 
 }
 
 #[tauri::command]
-async fn preview_delete_task_subtree(pack: usize, root: usize, path: Vec<usize>, state: State<'_, AppState>) -> Result<tasks::browser::TaskDeletePreview, String> {
-    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.delete_subtask_preview(pack, root, &path)
+async fn preview_delete_task_subtree(pack: usize, root: usize, path: Vec<usize>, state: State<'_, AppState>) -> Result<TaskDeletionPreview, String> {
+    let preview = state.tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open tasks.data first")?.delete_subtask_preview(pack, root, &path)?;
+    // The task lock is released before the elements document is read.
+    let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    let (elements_path, element_uses) = match document.as_ref() {
+        Some(document) => (Some(document.path.clone()), preview.lost_ids.iter().flat_map(|id| document.task_id_uses(*id)).collect()),
+        None => (None, Vec::new()),
+    };
+    Ok(TaskDeletionPreview { tasks: preview, elements_path, element_uses })
+}
+
+/// A deletion preview with the elements.data places that name the deleted quests.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct TaskDeletionPreview {
+    #[serde(flatten)]
+    tasks: tasks::browser::TaskDeletePreview,
+    elements_path: Option<String>,
+    element_uses: Vec<elements::edit::TaskIdUse>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct TaskDeletionResult {
+    #[serde(flatten)]
+    tasks: tasks::browser::TaskDeleteReport,
+    elements: Option<elements::edit::EditState>,
+    elements_error: Option<String>,
 }
 
 #[tauri::command]
-async fn delete_task_subtree(pack: usize, root: usize, path: Vec<usize>, token: String, allow_referenced: bool, state: State<'_, AppState>) -> Result<tasks::browser::TaskDeleteReport, String> {
-    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.delete_subtask(pack, root, &path, &token, allow_referenced)
+/// Deletes a subquest or a top-level quest with everything below it; `element_places` (list, row,
+/// offset, quest ID) in the open elements.data are cleared to 0 as one undo step there.
+async fn delete_task_subtree(pack: usize, root: usize, path: Vec<usize>, token: String, allow_referenced: bool, element_places: Option<Vec<(usize, usize, usize, u32)>>, state: State<'_, AppState>) -> Result<TaskDeletionResult, String> {
+    let report = state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.delete_subtask(pack, root, &path, &token, allow_referenced)?;
+    let places = element_places.unwrap_or_default();
+    if places.is_empty() {
+        return Ok(TaskDeletionResult { tasks: report, elements: None, elements_error: None });
+    }
+    let mut document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    let result = document.as_mut().ok_or_else(|| "elements.data is no longer open".to_string()).and_then(|document| document.clear_task_id_uses(&places));
+    Ok(match result {
+        Ok(elements) => TaskDeletionResult { tasks: report, elements: Some(elements), elements_error: None },
+        Err(error) => TaskDeletionResult { tasks: report, elements: None, elements_error: Some(error) },
+    })
 }
 
 #[tauri::command]

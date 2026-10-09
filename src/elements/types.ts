@@ -634,10 +634,16 @@ export interface TaskDeletePreview {
   id: number;
   name: string;
   tasks: number;
+  /** Deleted IDs no surviving quest has. */
+  lostIds: number[];
   referenceCount: number;
   referencesTruncated: boolean;
   references: TaskDeleteReference[];
   token: string;
+  /** The open elements.data, when one is open. */
+  elementsPath: string | null;
+  /** elements.data places naming the deleted quests. */
+  elementUses: TaskIdUse[];
 }
 
 export interface TaskDeleteReport {
@@ -648,6 +654,9 @@ export interface TaskDeleteReport {
   id: number;
   name: string;
   tasks: number;
+  /** elements.data after clearing the deleted quests' IDs, when places were chosen. */
+  elements: EditState | null;
+  elementsError: string | null;
 }
 
 export interface TaskHistoryEntry {
@@ -1588,6 +1597,8 @@ export interface TaskIdUse {
   name: string;
   field: string;
   off: number;
+  /** The quest ID it holds. */
+  taskId: number;
 }
 
 export interface TaskIdChangePreview {

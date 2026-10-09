@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (160 at last run, ~2–3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (161 at last run, ~2–3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -256,10 +256,20 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   another existing pack below the 300-root limit. Creating a new numbered pack is not implemented.
 - **Clone subtree**, **Delete subtree** and **Move subtree** operate below an existing root. Delete
   previews references that would become unresolved; move supports destinations in other roots and
-  packs while preserving IDs. Top-level deletion is not implemented.
+  packs while preserving IDs.
+- **Top-level deletion** (`delete_subtask` with an empty path → `delete_root`): the root becomes a
+  tombstone, `modified[(pack, root)]` with an empty `current`. `current_root_optional` returns none for it,
+  its summary and index entries are removed (`forget_root_in_index` keeps it among `edited_roots` so a late
+  background index cannot bring it back), and undo/revert restore it in place (`insert_root_summary` keeps
+  (pack, root) order). Positions never shift during a session. On save, `stage` skips tombstones,
+  `closing_positions`/`renumber_roots` move later roots up in the summary and index, and the history is
+  cleared (`has_deleted_roots`). Unsaved appended clones are removed directly (last one only). The client
+  loads empty packs (TaskTemplMan::LoadTasksFromPack loops over `item_count`). The delete preview's
+  `lost_ids` drive the elements.data places (`Document::clear_task_id_uses`, set to 0; DlgNPC and
+  EC_NPCServer skip 0 in `id_tasks`). Covered by `deleted_top_level_task_leaves_the_pack_on_save`.
 - Saving a top-level clone rebuilds its destination pack's offset table and MD5 and increments the
-  index root count. Because the saved clone becomes a base root and root removal is unavailable,
-  a successful structural save starts a new task undo history.
+  index root count. A save that adds or deletes top-level quests changes root positions, so it starts a
+  new task undo history.
 - `cloned_top_level_task_rebuilds_the_pack_table_and_index_count` covers the structural save/reopen
   path. The full Rust library suite, TypeScript check and Vite build passed after this feature.
 - On October 8, 2026 the user cloned and saved a real v165 top-level task, then confirmed that both
@@ -307,9 +317,10 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   clone remapping), the quest's own root gets `fixed.id` and `sync_hierarchy_links`; all roots are one
   journal entry; `id_floor` moves past the old ID. With duplicate old IDs only the quest's own root is
   rewritten. The ordinary `fixed.id` edit stays locked. elements.data: `Document::task_id_uses` scans
-  4-byte slots whose names pass `elements::edit::is_task_id_field` (checked against ForsakenJD: exactly
-  the C++ task fields, e.g. `NPC_TASK_OUT_SERVICE.id_tasks`, `MINE_ESSENCE.task_in`, `PIE_LOVE_CONFIG`;
-  not `id_task_set`, `Task_Start_Map`); `replace_task_id_uses` writes the ticked places as one elements
+  4-byte slots whose paths pass `elements::edit::is_task_id_path`: a quest-ID name (`is_task_id_field`,
+  checked against ForsakenJD: exactly the C++ task fields, e.g. `NPC_TASK_OUT_SERVICE.id_tasks`,
+  `MINE_ESSENCE.task_in`, `PIE_LOVE_CONFIG`; not `id_task_set`, `Task_Start_Map`) or an `id` directly inside a
+  quest-named group (`TASKDICE_ESSENCE.task_lists[].id`, the only such field in any layout; user report); `replace_task_id_uses` writes the ticked places as one elements
   journal entry, refusing places that no longer hold the old ID. The commands lock tasks, release, then
   lock the document (never both). TasksEditor passes the elements EditState to App's `afterEdits`.
 - **Dialog editor** (`tasks/dialogs.rs`, `TaskDialogEditor.tsx`, commands `task_dialogs`, `set_task_dialog`): the
@@ -439,8 +450,9 @@ count as a minimum. Never write into these folders from tests. Tests save into `
   and never lock `document` after `compared` (lock order: document, then compared).
 - A task pack may contain at most 300 top-level roots. Root cloning searches existing packs for
   capacity; do not silently create a new numbered pack until that workflow is designed and verified.
-- Saving a newly cloned top-level task intentionally clears task undo history after the staged set
-  passes full reopen validation. Undoing that saved structural change would require root removal.
+- Saving a newly cloned or deleted top-level task intentionally clears task undo history after the
+  staged set passes full reopen validation (root positions changed). A saved clone can now be removed
+  with Delete quest.
 
 ## Open ideas / next steps
 

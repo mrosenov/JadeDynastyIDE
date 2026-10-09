@@ -375,12 +375,21 @@ v165, v172 and v184 fixtures has them exact; the game recomputes them after load
 and move rewrite these links for the whole affected root, so the saved tree matches what the
 official editor would write. Roots whose links were already inconsistent are left as they are.
 
-**Delete subtree** first checks the completed background quest index and shows every surviving task
-reference that would become unresolved. The user must explicitly confirm deletion when references
-exist. Cloning and deletion are each one undoable root edit and must pass an exact decode/encode
-check before being accepted. Top-level root deletion remains unavailable until pack-level removal is
-implemented. Saving a top-level clone rebuilds the changed pack and begins a new task
-undo history.
+**Delete subtree** (a subquest) and **Delete quest** (a whole top-level quest with its subquests)
+first check the completed background quest index and show every surviving task reference that would
+become unresolved (references to an ID another surviving quest also has still resolve). The user must
+explicitly confirm deletion when references exist. With an elements.data open, the dialog also lists
+its quest-ID fields that name the deleted quests (NPC give and complete lists, task dice, mines,
+interaction objects, …), all ticked: confirming clears them to 0, which the client's NPC quest lists skip, as one
+undo step in elements.data (saved from the elements workspace). Cloning and deletion are each one
+undoable edit and must pass an exact decode/encode check before being accepted.
+
+A deleted top-level quest leaves the list at once, but keeps its place in its pack until the next
+save, so undo, redo, revert and the history can bring it back exactly where it was. Saving rebuilds
+the pack without it (the quests after it move up, an emptied pack is valid), lowers the index's quest
+count, and, like saving a top-level clone, begins a new task undo history. Deleted IDs are not reused
+by later clones. A cloned quest that has not been saved yet can be deleted only while it is the last
+one added to its pack.
 
 Top-level cloning and saving were validated on a real v165 task set on October 8, 2026: the
 saved files started successfully in both the matching server and client without a crash.
@@ -400,8 +409,8 @@ Enter the ID and **Preview** first. The preview lists:
   parameters (Give quest, Complete quest, …). The quest's own references to itself change too, and
   the parent, sibling and child hierarchy links follow;
 - every quest-ID field of the open elements.data that holds the old ID: the NPC give and complete
-  lists (`NPC_TASK_OUT_SERVICE`, `NPC_TASK_IN_SERVICE`), `NPC_TASK_MATTER_SERVICE`, mines
-  (`task_in`, `task_out`), interaction objects, battle and transcription rewards, buildings,
+  lists (`NPC_TASK_OUT_SERVICE`, `NPC_TASK_IN_SERVICE`), `NPC_TASK_MATTER_SERVICE`, task dice
+  (`TASKDICE_ESSENCE` quest lists), mines (`task_in`, `task_out`), interaction objects, battle and transcription rewards, buildings,
   `PIE_LOVE_CONFIG` and others. Each place can be unticked.
 
 The new ID must not be used by any quest, and every quest must be indexed. The tasks.data change is

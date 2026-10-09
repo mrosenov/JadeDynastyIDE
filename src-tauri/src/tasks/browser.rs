@@ -216,6 +216,8 @@ pub struct TaskDeletePreview {
     pub id: u32,
     pub name: String,
     pub tasks: usize,
+    /// Deleted IDs no surviving quest has (what elements.data places may still name).
+    pub lost_ids: Vec<u32>,
     pub reference_count: usize,
     pub references_truncated: bool,
     pub references: Vec<TaskDeleteReference>,
@@ -901,10 +903,9 @@ impl TaskDocument {
         Ok(TaskMoveReport { state: self.edit_state(), pack: destination_pack, root: destination_root, path: selected_path, id, name, tasks })
     }
 
+    /// What deleting the quest at `path` (a subquest, or a whole top-level quest for an empty path)
+    /// with everything below it would leave behind.
     pub fn delete_subtask_preview(&self, pack: usize, root: usize, path: &[usize]) -> Result<TaskDeletePreview, String> {
-        if path.is_empty() {
-            return Err("Root-task deletion requires pack rebuilding and is not available yet".into());
-        }
         let before = self.current_root(pack, root)?;
         let decoded = decode_exact(&self.schema, &before, self.container.header.version)?;
         let selected = task_at(&decoded, path)?;
@@ -921,11 +922,14 @@ impl TaskDocument {
         if !index.indexed {
             return Err("Task references are still being indexed. Try deleting again in a moment".into());
         }
+        let inside = |task: &TaskSearchEntry| task.pack == pack && task.root == root && task.path.starts_with(path);
+        // An ID another surviving quest also has still resolves after the deletion.
+        let surviving: HashSet<u32> = index.entries.iter().filter(|task| !inside(task) && deleted_ids.contains(&task.id)).map(|task| task.id).collect();
         for task in &index.entries {
-            if task.pack == pack && task.root == root && task.path.starts_with(path) {
+            if inside(task) {
                 continue;
             }
-            for reference in task.references.iter().filter(|reference| !reference.element && deleted_ids.contains(&reference.target_id)) {
+            for reference in task.references.iter().filter(|reference| !reference.element && deleted_ids.contains(&reference.target_id) && !surviving.contains(&reference.target_id)) {
                 reference_count += 1;
                 if references.len() < 100 {
                     references.push(TaskDeleteReference {
@@ -941,12 +945,15 @@ impl TaskDocument {
             }
         }
         let token = delete_token(&before, path);
+        let mut lost_ids: Vec<u32> = deleted_ids.iter().filter(|id| !surviving.contains(id)).copied().collect();
+        lost_ids.sort_unstable();
         Ok(TaskDeletePreview {
             pack,
             root,
             path: path.to_vec(),
             id,
             name,
+            lost_ids,
             tasks: deleted_ids.len(),
             reference_count,
             references_truncated: reference_count > references.len(),
@@ -963,7 +970,10 @@ impl TaskDocument {
         if preview.reference_count > 0 && !allow_referenced {
             return Err(format!("{} surviving task reference(s) point into this subtree", preview.reference_count));
         }
-        let (&source_index, parent_path) = path.split_last().ok_or("Root-task deletion is not available yet")?;
+        if path.is_empty() {
+            return self.delete_root(pack, root, preview);
+        }
+        let (&source_index, parent_path) = path.split_last().ok_or("No quest was selected")?;
         let before = self.current_root(pack, root)?;
         let mut decoded = decode_exact(&self.schema, &before, self.container.header.version)?;
         let decoded_before = decoded.clone();
@@ -1002,6 +1012,71 @@ impl TaskDocument {
             new: "Deleted".into(),
         }, vec![change]);
         Ok(TaskDeleteReport { state: self.edit_state(), pack, root, path: parent_path.to_vec(), id: preview.id, name: preview.name, tasks: preview.tasks })
+    }
+
+    /// Removes a whole top-level quest. Its slot stays as a tombstone (an empty current root) until the
+    /// next save rebuilds the pack, so the positions of other roots and of the undo history do not shift.
+    fn delete_root(&mut self, pack: usize, root: usize, preview: TaskDeletePreview) -> Result<TaskDeleteReport, String> {
+        if root >= self.base_root_count(pack)? && root + 1 != self.root_count(pack)? {
+            return Err("This cloned quest is not the last one added to its pack; undo the later clones first, or save before deleting it".into());
+        }
+        let before = self.current_root(pack, root)?;
+        let decoded = decode_exact(&self.schema, &before, self.container.header.version)?;
+        let mut deleted_ids = Vec::new();
+        collect_task_ids(&decoded, &mut deleted_ids)?;
+        let change = RootChange { pack, root, before, after: Vec::new() };
+        self.apply_changes(std::slice::from_ref(&change))?;
+        self.id_floor = self.id_floor.max(deleted_ids.into_iter().max().unwrap_or(0));
+        self.journal.record(EntryDetails {
+            label: if preview.tasks == 1 { "Delete quest".into() } else { format!("Delete quest ({} quests)", preview.tasks) },
+            task_id: preview.id,
+            task_name: preview.name.clone(),
+            field: "Top-level quest".into(),
+            old: format!("{} quest{}", preview.tasks, if preview.tasks == 1 { "" } else { "s" }),
+            new: "Deleted".into(),
+        }, vec![change]);
+        Ok(TaskDeleteReport { state: self.edit_state(), pack, root, path: Vec::new(), id: preview.id, name: preview.name, tasks: preview.tasks })
+    }
+
+    /// Where each surviving root of a pack with deleted roots ends up once the pack is rebuilt.
+    pub(crate) fn closing_positions(&self) -> Result<HashMap<(usize, usize), usize>, String> {
+        let mut positions = HashMap::new();
+        let packs: HashSet<usize> = self.modified.iter().filter(|(_, root)| root.current.is_empty()).map(|((pack, _), _)| *pack).collect();
+        for pack in packs {
+            let mut next = 0;
+            for root in 0..self.root_count(pack)? {
+                if self.current_root_optional(pack, root)?.is_some() {
+                    positions.insert((pack, root), next);
+                    next += 1;
+                }
+            }
+        }
+        Ok(positions)
+    }
+
+    /// After a save removed roots: the root list and the search index follow the new positions.
+    pub(crate) fn renumber_roots(&mut self, positions: &HashMap<(usize, usize), usize>) -> Result<(), String> {
+        let packs: HashSet<usize> = positions.keys().map(|(pack, _)| *pack).collect();
+        let moved = |pack: usize, root: usize| if packs.contains(&pack) { positions.get(&(pack, root)).copied() } else { Some(root) };
+        for summary in &mut self.summary.roots {
+            summary.root = moved(summary.pack, summary.root).ok_or("A listed quest was deleted")?;
+        }
+        let mut index = self.search.write().map_err(|_| "Task search index lock poisoned")?;
+        for entry in &mut index.entries {
+            entry.root = moved(entry.pack, entry.root).ok_or("An indexed quest was deleted")?;
+        }
+        index.edited_roots = index.edited_roots.iter().filter_map(|&(pack, root)| moved(pack, root).map(|root| (pack, root))).collect();
+        index.by_id.clear();
+        for entry in index.entries.clone() {
+            index.by_id.insert(entry.id, entry);
+        }
+        self.cache = None;
+        Ok(())
+    }
+
+    /// Top-level quests deleted since the last save (their slots are kept until then).
+    pub(crate) fn has_deleted_roots(&self) -> bool {
+        self.modified.values().any(|root| root.current.is_empty())
     }
 
     pub fn undo(&mut self) -> Result<EditState, String> {
@@ -1090,10 +1165,15 @@ impl TaskDocument {
         Ok(root >= self.base_root_count(pack)? && self.current_root_optional(pack, root)?.is_some())
     }
 
-    fn current_root_optional(&self, pack: usize, root: usize) -> Result<Option<Vec<u8>>, String> {
+    /// A root's current bytes, or none for a deleted (or never appended) root.
+    pub(crate) fn current_root_optional(&self, pack: usize, root: usize) -> Result<Option<Vec<u8>>, String> {
         let base = self.base_root_count(pack)?;
         if root < base {
-            return Ok(Some(self.modified.get(&(pack, root)).map(|value| value.current.clone()).unwrap_or(self.container.root(pack, root)?)));
+            return match self.modified.get(&(pack, root)) {
+                Some(value) if value.current.is_empty() => Ok(None),
+                Some(value) => Ok(Some(value.current.clone())),
+                None => Ok(Some(self.container.root(pack, root)?)),
+            };
         }
         Ok(self.added_roots.get(&pack).and_then(|roots| roots.get(root - base)).cloned())
     }
@@ -1161,13 +1241,19 @@ impl TaskDocument {
             self.cache = Some(CachedRoot { pack, root, bytes: bytes.len(), node: node.clone(), original: node.clone() });
             return self.refresh_root(pack, root, &node, bytes.len());
         }
-        if bytes.is_empty() {
-            return Err("Removing an existing top-level task is not available yet".into());
-        }
         let original = match self.modified.get(&(pack, root)) {
             Some(value) => value.original.clone(),
             None => self.container.root(pack, root)?,
         };
+        if bytes.is_empty() {
+            // A deleted top-level quest: its slot stays until the pack is rebuilt on save.
+            self.modified.insert((pack, root), ModifiedRoot { original, current: Vec::new() });
+            self.remove_root_summary(pack, root);
+            self.forget_root_in_index(pack, root)?;
+            self.cache = None;
+            return Ok(());
+        }
+        let restored = !self.summary.roots.iter().any(|candidate| candidate.pack == pack && candidate.root == root);
         if bytes == original {
             self.modified.remove(&(pack, root));
         } else {
@@ -1175,6 +1261,9 @@ impl TaskDocument {
         }
         let node = decode_exact(&self.schema, &bytes, self.container.header.version)?;
         let original_node = decode_exact(&self.schema, &original, self.container.header.version)?;
+        if restored {
+            self.insert_root_summary(pack, root, &node, bytes.len())?;
+        }
         self.cache = Some(CachedRoot { pack, root, bytes: bytes.len(), node: node.clone(), original: original_node });
         self.refresh_root(pack, root, &node, bytes.len())
     }
@@ -1182,10 +1271,7 @@ impl TaskDocument {
     fn insert_root_summary(&mut self, pack: usize, root: usize, node: &Node, byte_size: usize) -> Result<(), String> {
         let (id, name) = task_heading(node)?;
         let child_count = node.child("subtasks").map(|children| children.children().len()).unwrap_or(0);
-        let at = self.summary.roots.iter().rposition(|candidate| candidate.pack == pack).map_or_else(
-            || self.summary.roots.iter().position(|candidate| candidate.pack > pack).unwrap_or(self.summary.roots.len()),
-            |index| index + 1,
-        );
+        let at = self.summary.roots.iter().position(|candidate| (candidate.pack, candidate.root) > (pack, root)).unwrap_or(self.summary.roots.len());
         self.summary.roots.insert(at, RootSummary { index: 0, pack, root, id, name, child_count, byte_size: byte_size as u64 });
         self.summary.root_count += 1;
         for (index, summary) in self.summary.roots.iter_mut().enumerate() {
@@ -1200,6 +1286,19 @@ impl TaskDocument {
         for (index, summary) in self.summary.roots.iter_mut().enumerate() {
             summary.index = index;
         }
+    }
+
+    /// Drops a deleted base root from the search index. It stays among the edited roots, so the
+    /// background index, if it finishes later, does not bring its quests back.
+    fn forget_root_in_index(&mut self, pack: usize, root: usize) -> Result<(), String> {
+        let mut index = self.search.write().map_err(|_| "Task search index lock poisoned")?;
+        index.edited_roots.insert((pack, root));
+        index.entries.retain(|entry| entry.pack != pack || entry.root != root);
+        index.by_id.clear();
+        for entry in index.entries.clone() {
+            index.by_id.insert(entry.id, entry);
+        }
+        Ok(())
     }
 
     fn remove_root_from_index(&mut self, pack: usize, root: usize) -> Result<(), String> {

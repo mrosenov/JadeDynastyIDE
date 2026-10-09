@@ -38,8 +38,8 @@ The XtremeJade v165 index is 740 bytes (`20 + 45 * 16`), all 45 packs are presen
 5. A no-edit save must reproduce every original pack byte-for-byte.
 6. Saving writes a complete temporary file set, verifies it by reopening it, then replaces the target files.
 7. Structural operations stay narrow and independently verified. Top-level and subtree cloning,
-   subtree deletion, and subtree reparenting are implemented; top-level deletion and explicit
-   sibling reordering remain disabled.
+   subtree and top-level deletion, and subtree reparenting are implemented; explicit sibling
+   reordering remains disabled.
 
 ## Milestone 1: container reader
 
@@ -250,7 +250,8 @@ round trip and is explicitly accepted.
   internal-reference remapping; a top-level clone appends to an existing pack with capacity and
   rebuilds its index data when saved. Deletion previews surviving references and requires explicit
   confirmation if any become unresolved; moving preserves IDs and updates both parent counts,
-  including across roots and packs. Top-level deletion and explicit sibling ordering remain later work.
+  including across roots and packs. Top-level deletion (October 2026) keeps a tombstone until save,
+  then rebuilds the pack. Explicit sibling ordering remains later work.
 - ~~Compare and transfer compatible fields between task files.~~ Done (October 2026): Compare panel
   pairing tasks by ID across versions, lazy field diffs, patch notes, and copying fields or whole
   top-level trees through the JSON import checks.
@@ -270,5 +271,6 @@ round trip and is explicitly accepted.
 ## Recommended implementation order
 
 Milestones 1–9, the problems scanner, JSON export/import, compare/transfer and translation are
-complete. Remaining: `dyn_tasks.data` and `task_npc.data` editors, top-level task deletion,
-creating a numbered pack when every pack is full, and optional loader tracing.
+complete, as are the dialog editor, quest ID changes and top-level deletion. Remaining:
+`dyn_tasks.data` and `task_npc.data` editors, creating a numbered pack when every pack is full, and
+optional loader tracing.

@@ -205,6 +205,11 @@ impl Slot {
         self.read(bytes).map(|v| v.show()).unwrap_or_default()
     }
 
+    /// The path without indexes (lowercase): `task_lists.id`.
+    pub(crate) fn plain(&self) -> &str {
+        &self.plain
+    }
+
     /// The field name (lowercase; an array's for its elements).
     pub(crate) fn name(&self) -> &str {
         &self.leaf

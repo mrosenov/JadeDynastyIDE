@@ -627,6 +627,7 @@ impl SearchSource {
             needed: probe_needed_names(&document.schema),
             version: document.container.header.version,
             modified: document.modified.iter().map(|(key, root)| (*key, root.current.clone())).collect(),
+            // (A deleted top-level quest is an empty root: skipped when scanning.)
             added: document.added_roots.clone(),
         }
     }
@@ -729,6 +730,9 @@ fn search_pack(source: &SearchSource, plan: &Plan, scope: &Scope, pack: usize, c
         };
         roots_seen += 1;
         control.scanned.fetch_add(1, Ordering::Relaxed);
+        if bytes.is_empty() {
+            continue;
+        }
         if !plan.required.iter().all(|options| bytes.windows(2).any(|pair| options.iter().any(|option| pair == option))) {
             continue;
         }
