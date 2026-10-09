@@ -1,9 +1,9 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { AlertTriangle, ArrowRight, BarChart3, Braces, Check, CircleAlert, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
-import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskField, exportTasksJson, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskReferencedBy, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
+import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskArray, editTaskField, editTaskFields, exportTasksJson, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskReferencedBy, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskAnalysisReport, TaskDeletePreview, TaskDeleteReference, TaskEditState as EditStateValue, TaskExportTarget, TaskImportReport, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskAnalysisReport, TaskArrayEdit, TaskDeletePreview, TaskDeleteReference, TaskEditState as EditStateValue, TaskExportTarget, TaskImportReport, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 import { TaskSaveDialog } from "./TaskSaveDialog";
 import { TaskSchemaDialog } from "./TaskSchemaDialog";
@@ -16,6 +16,7 @@ import { TaskProblemsPanel } from "./TaskProblemsPanel";
 import { TaskImportDialog } from "./TaskImportDialog";
 import { TaskComparePanel } from "./TaskComparePanel";
 import { TaskTranslateDialog } from "./TaskTranslateDialog";
+import { TaskForm, TASK_FORM_TABS, type BatchValue, type TaskFormTab } from "./TaskForm";
 
 export interface TasksEditorState {
   loaded: boolean;
@@ -63,6 +64,10 @@ interface Props {
   initialState?: TasksEditorState;
   onStateChange: (state: TasksEditorState) => void;
   onOpenElement?: (list: number, row: number) => void;
+  /** Opens Enums & masks at a set (task value names). */
+  onEditSet?: (key: string) => void;
+  /** Changes when enums or masks were edited. */
+  setsVersion?: number;
 }
 
 const PAGE_SIZE = 200;
@@ -180,7 +185,7 @@ function NestedTaskRow({ root, node, selected, expanded, onSelect, onToggle, dep
 function TaskReferenceView({ reference, onOpen }: { reference: TaskFieldReference; onOpen: (reference: TaskFieldReference) => void }) {
   const linked = reference.kind === "task" && reference.pack !== undefined || reference.kind === "element" && reference.list !== undefined;
   if (linked) {
-    return <button className="task-field-reference" onClick={() => onOpen(reference)} title={`Open ${reference.kind} ${reference.id}`}><Link2 size={11} /> {reference.label}</button>;
+    return <button className="task-field-reference" onClick={() => onOpen(reference)} title={`Open ${reference.kind} ${reference.id} · ${reference.label}`}><Link2 size={11} /> <span className="truncate">{reference.label}</span></button>;
   }
   if (reference.description && (reference.kind === "skill" || reference.kind === "buff" || reference.kind === "title")) {
     return <span className="task-field-reference static"><ResourceHint kind={reference.kind} name={reference.label} description={reference.description} /></span>;
@@ -242,7 +247,7 @@ function FieldRow({ field, depth = 0, onReference, onEdit }: { field: TaskFieldV
   </div>;
 }
 
-export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEditor({ active, defaultPath, initialState, onStateChange, onOpenElement }, ref) {
+export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEditor({ active, defaultPath, initialState, onStateChange, onOpenElement, onEditSet, setsVersion }, ref) {
   const initialFile = initialState?.loaded ? initialState.summary : null;
   const initialUnsupported = initialState?.loaded ? initialState.unsupported : null;
   const initialRoot = initialFile && initialState?.selection
@@ -297,6 +302,13 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const onProblemCounts = useCallback((errors: number, warnings: number) => setProblemCounts({ errors, warnings }), []);
   const [referrers, setReferrers] = useState<TaskDeleteReference[] | null>(null);
   const [importing, setImporting] = useState(false);
+  const [formTab, setFormTab] = useState<TaskFormTab>(() => {
+    try { return (localStorage.getItem("jdide.tasks.formTab") as TaskFormTab | null) ?? "general"; } catch { return "general"; }
+  });
+  const chooseFormTab = (tab: TaskFormTab) => {
+    setFormTab(tab);
+    try { localStorage.setItem("jdide.tasks.formTab", tab); } catch { /* Remembering the tab is optional. */ }
+  };
   const [translating, setTranslating] = useState(false);
   // The compare panel keeps its report while hidden; comparing two versions takes a while.
   const [compareMounted, setCompareMounted] = useState(false);
@@ -436,6 +448,36 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     if (!beginOperation()) throw new Error("Another task operation is still running");
     try {
       setEditState(await editTaskField({ pack: selectedRoot.pack, root: selectedRoot.root, taskPath: selectedPath, fieldPath: field.path, value }));
+      await refreshSelected();
+    } catch (problem) {
+      setError(problemText(problem));
+      throw problem;
+    } finally {
+      endOperation();
+    }
+  }, [refreshSelected, selectedPath, selectedRoot]);
+
+  /** Several values of the selected task as one undo step (class lists and their counts). */
+  const editFields = useCallback(async (values: BatchValue[], label: string) => {
+    if (!selectedRoot) return;
+    if (!beginOperation()) throw new Error("Another task operation is still running");
+    try {
+      setEditState(await editTaskFields(selectedRoot.pack, selectedRoot.root, selectedPath, values, label));
+      await refreshSelected();
+    } catch (problem) {
+      setError(problemText(problem));
+      throw problem;
+    } finally {
+      endOperation();
+    }
+  }, [refreshSelected, selectedPath, selectedRoot]);
+
+  /** Adds, clones or removes a list row of the selected task (monsters to kill, candidate items, …). */
+  const editRows = useCallback(async (field: TaskFieldView, countPath: string[] | null, change: TaskArrayEdit) => {
+    if (!selectedRoot) return;
+    if (!beginOperation()) throw new Error("Another task operation is still running");
+    try {
+      setEditState(await editTaskArray(selectedRoot.pack, selectedRoot.root, selectedPath, field.path, countPath, change));
       await refreshSelected();
     } catch (problem) {
       setError(problemText(problem));
@@ -1166,6 +1208,16 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const selectedBranch = selectedRoot ? branchKey(selectedRoot, selectedPath) : null;
   const changedRoots = useMemo(() => new Set(editState.changedRoots.map((root) => `${root.pack}:${root.root}`)), [editState.changedRoots]);
   const categories = useMemo(() => categorize(detail?.fields ?? []), [detail]);
+  const referrersView = detail && <>
+    <details className="task-category task-referrers" open>
+      <summary><span>Referenced by</span><span>{referrers === null ? (taskIndexReady ? "…" : "indexing") : `${referrers.length === 500 ? "500+" : referrers.length} task${referrers.length === 1 ? "" : "s"}`}</span></summary>
+      {referrers?.map((referrer, index) => <button className="task-referrer" key={`${referrer.pack}:${referrer.root}:${pathKey(referrer.path)}:${referrer.field}:${index}`} onClick={() => void openTaskAt(referrer.pack, referrer.root, referrer.path)} title="Select this task">
+        <span className="mono">{referrer.sourceId}</span><span className="truncate">{referrer.sourceName || "(unnamed task)"}</span><span className="mono muted truncate">{referrer.field}</span>
+      </button>)}
+      {referrers?.length === 0 && <div className="empty-note">No task names this task in a prerequisite, exclusion, award or finish-count field.</div>}
+      {!taskIndexReady && <div className="empty-note">Shown when every subquest is indexed.</div>}
+    </details>
+  </>;
   const followReference = useCallback((reference: TaskFieldReference) => {
     if (reference.kind === "task" && reference.pack !== undefined && reference.root !== undefined && file) {
       const root = file.roots.find((candidate) => candidate.pack === reference.pack && candidate.root === reference.root);
@@ -1367,20 +1419,15 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
               {selectedPath.length > 0 && <button className="btn small danger-outline" onClick={() => void inspectDeleteSelected()} disabled={taskBusy || !taskIndexReady} title={taskIndexReady ? "Review references and delete this subquest with all descendants" : "Task references are still being indexed"}><Trash2 size={13}/> Delete subtree</button>}
             </div>
           </header>
+          <div className="task-form-tabs" role="tablist" aria-label="Task sections">{TASK_FORM_TABS.map((entry) => <button key={entry.key} role="tab" aria-selected={formTab === entry.key} className={formTab === entry.key ? "active" : ""} onClick={() => chooseFormTab(entry.key)}>{entry.label}</button>)}</div>
+          {formTab !== "advanced" ? <TaskForm key={`${detail.pack}:${detail.root}:${pathKey(detail.path)}`} detail={detail} tab={formTab} onEdit={editField} onBatch={editFields} onRows={editRows} onEditSet={onEditSet} setsVersion={setsVersion} renderReference={(reference) => <TaskReferenceView reference={reference} onOpen={followReference} />} referencedBy={referrersView} /> : <>
           <div className="task-fields-head"><span>Field</span><span>Value</span><span>Type</span><span>Offset</span></div>
           <div className="task-fields" key={`${detail.pack}:${detail.root}:${pathKey(detail.path)}`}>{categories.map((category) => <details className="task-category" key={category.key} open>
             <summary><span>{category.label}</span><span>{category.fields.length} fields</span></summary>
             {category.fields.map((field, index) => <FieldRow key={`${field.name}:${field.offset}:${index}`} field={field} onReference={followReference} onEdit={editField} />)}
           </details>)}
-            <details className="task-category task-referrers" open>
-              <summary><span>Referenced by</span><span>{referrers === null ? (taskIndexReady ? "…" : "indexing") : `${referrers.length === 500 ? "500+" : referrers.length} task${referrers.length === 1 ? "" : "s"}`}</span></summary>
-              {referrers?.map((referrer, index) => <button className="task-referrer" key={`${referrer.pack}:${referrer.root}:${pathKey(referrer.path)}:${referrer.field}:${index}`} onClick={() => void openTaskAt(referrer.pack, referrer.root, referrer.path)} title="Select this task">
-                <span className="mono">{referrer.sourceId}</span><span className="truncate">{referrer.sourceName || "(unnamed task)"}</span><span className="mono muted truncate">{referrer.field}</span>
-              </button>)}
-              {referrers?.length === 0 && <div className="empty-note">No task names this task in a prerequisite, exclusion, award or finish-count field.</div>}
-              {!taskIndexReady && <div className="empty-note">Shown when every subquest is indexed.</div>}
-            </details>
-          </div>
+            {referrersView}
+          </div></>}
         </> : <div className="empty-note center">Select a task to inspect its fields.</div>}
       </section>
     </div>

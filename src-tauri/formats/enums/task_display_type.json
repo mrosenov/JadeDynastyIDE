@@ -1,0 +1,36 @@
+{
+  "key": "task_display_type",
+  "label": "Task display type",
+  "values": [
+    {
+      "value": 0,
+      "label": "Default",
+      "description": "Derived on load: key tasks show as JD Quest, others by task type (TaskTempl.cpp)"
+    },
+    {
+      "value": 1,
+      "label": "Daily",
+      "description": "日常 · string 13410"
+    },
+    {
+      "value": 2,
+      "label": "Event",
+      "description": "活动 · string 13411"
+    },
+    {
+      "value": 3,
+      "label": "JD Quest",
+      "description": "诛仙 (main story) · string 13412"
+    },
+    {
+      "value": 4,
+      "label": "Branch",
+      "description": "支线 · string 13413"
+    },
+    {
+      "value": 5,
+      "label": "Alliance",
+      "description": "帮派 · string 13414"
+    }
+  ]
+}

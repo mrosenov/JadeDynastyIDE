@@ -497,9 +497,26 @@ pub fn is_task_reference(semantic: &str) -> bool {
 }
 
 /// Field names whose values are elements.data essence IDs (items, monsters,
-/// interaction objects).
+/// NPCs, interaction objects).
 pub fn is_element_reference(semantic: &str) -> bool {
-    matches!(semantic, "item_id" | "drop_item_id" | "travel_item_id" | "replacement_item_id" | "monster_id" | "object_id")
+    matches!(
+        semantic,
+        "item_id" | "drop_item_id" | "travel_item_id" | "replacement_item_id" | "monster_id" | "object_id"
+            // Header fields named from TaskTempl.h: NPCs, monsters and items.
+            | "deliver_npc" | "award_npc" | "action_npc" | "npc_to_protect" | "npc_moving"
+            | "kill_fail_monsters" | "have_fail_items" | "not_have_fail_items"
+    )
+}
+
+/// NPC functions (`SERVICE_TYPE` in ExpTypes.h, minus the 0x80000000 flag) whose talk option
+/// `parameter` is a task ID: NPC_TALK, NPC_GIVE_TASK, NPC_COMPLETE_TASK,
+/// NPC_GIVE_TASK_MATTER and TALK_GIVEUP_TASK. On the fixtures every non-zero parameter of these
+/// options but three names an existing task.
+pub const TASK_OPTION_FUNCTIONS: [u64; 5] = [0, 6, 7, 8, 21];
+
+/// Whether a talk option ID runs a function whose parameter is a task ID.
+pub fn is_task_option_function(option_id: i128) -> bool {
+    option_id >= 0x8000_0000 && TASK_OPTION_FUNCTIONS.contains(&((option_id - 0x8000_0000) as u64))
 }
 
 /// The four hierarchy link fields at the end of every task's fixed block, in
@@ -562,7 +579,7 @@ pub fn probe_root_integer(schema: &Schema, bytes: &[u8], version: u32, field_nam
 pub(crate) fn probe_root_integer_validated(schema: &Schema, bytes: &[u8], version: u32, field_name: &str) -> Result<i128, String> {
     let definition = schema.structs.get(&schema.root)
         .ok_or_else(|| format!("unknown root structure {:?}", schema.root))?;
-    let mut decoder = ProbeDecoder { schema, bytes, version, limits: Limits::default(), position: 0, tasks: None, task_path: Vec::new(), task_stack: Vec::new(), task_bases: Vec::new() };
+    let mut decoder = ProbeDecoder { schema, bytes, version, limits: Limits::default(), position: 0, tasks: None, task_path: Vec::new(), task_stack: Vec::new(), task_bases: Vec::new(), needed: probe_needed_names(schema) };
     let mut scope = HashMap::<String, i128>::new();
     for field in &definition.fields {
         let path = format!("{}.{}", schema.root, field.name);
@@ -576,7 +593,7 @@ pub(crate) fn probe_root_integer_validated(schema: &Schema, bytes: &[u8], versio
                 _ => Err(format!("{path}: requested field is not an integer")),
             };
         }
-        collect_probe_numeric(&field.name, numeric, &mut scope);
+        collect_probe_numeric(&field.name, numeric, &mut scope, &decoder.needed);
     }
     Err(format!("root structure {:?} has no field {field_name:?}", schema.root))
 }
@@ -613,6 +630,7 @@ pub(crate) fn probe_task_index_validated(schema: &Schema, bytes: &[u8], version:
         task_path: Vec::new(),
         task_stack: Vec::new(),
         task_bases: Vec::new(),
+        needed: probe_needed_names(schema),
     };
     decoder.named(&root, &root, 0)?;
     if decoder.position != bytes.len() {
@@ -627,15 +645,62 @@ enum ProbeNumeric {
     Struct(HashMap<String, i128>),
 }
 
-fn collect_probe_numeric(name: &str, numeric: ProbeNumeric, scope: &mut HashMap<String, i128>) {
+/// Every name a condition or count can look up, with each dotted suffix
+/// (`fixed.has_signature` also needs `has_signature` inside `fixed`). The probe
+/// keeps only these, instead of every numeric field of the header.
+fn probe_needed_names(schema: &Schema) -> HashSet<String> {
+    fn add(name: &str, needed: &mut HashSet<String>) {
+        let mut rest = name;
+        loop {
+            needed.insert(rest.to_string());
+            match rest.split_once('.') {
+                Some((_, tail)) => rest = tail,
+                None => break,
+            }
+        }
+    }
+    fn walk(ty: &FieldType, needed: &mut HashSet<String>) {
+        match ty {
+            FieldType::CountedArray { count_field, item } => {
+                add(count_field, needed);
+                walk(item, needed);
+            }
+            FieldType::FixedArray { item, .. } => walk(item, needed),
+            FieldType::RecursiveArray { count_field, .. } | FieldType::CountedUtf16 { count_field, .. } | FieldType::CountedBytes { count_field } => add(count_field, needed),
+            _ => {}
+        }
+    }
+    let mut needed = HashSet::new();
+    add("subtask_count", &mut needed);
+    // Talk options: `parameter` is a task reference when `id` names a task function.
+    add("id", &mut needed);
+    for definition in schema.structs.values() {
+        for field in &definition.fields {
+            walk(&field.ty, &mut needed);
+            for condition in &field.when {
+                if let Condition::Field { field, .. } = condition {
+                    add(field, &mut needed);
+                }
+            }
+        }
+    }
+    needed
+}
+
+fn collect_probe_numeric(name: &str, numeric: ProbeNumeric, scope: &mut HashMap<String, i128>, needed: &HashSet<String>) {
     match numeric {
         ProbeNumeric::None => {}
         ProbeNumeric::Integer(value) => {
-            scope.insert(name.to_string(), value);
+            if needed.contains(name) {
+                scope.insert(name.to_string(), value);
+            }
         }
         ProbeNumeric::Struct(values) => {
             for (child, value) in values {
-                scope.insert(format!("{name}.{child}"), value);
+                let key = format!("{name}.{child}");
+                if needed.contains(&key) {
+                    scope.insert(key, value);
+                }
             }
         }
     }
@@ -651,6 +716,8 @@ struct ProbeDecoder<'a> {
     task_path: Vec<usize>,
     task_stack: Vec<usize>,
     task_bases: Vec<String>,
+    /// Names conditions and counts read (see `probe_needed_names`).
+    needed: HashSet<String>,
 }
 
 impl ProbeDecoder<'_> {
@@ -689,7 +756,7 @@ impl ProbeDecoder<'_> {
             }
             let child_path = format!("{path}.{}", field.name);
             let numeric = self.value(&field.ty, &child_path, &scope, depth + 1)?;
-            collect_probe_numeric(&field.name, numeric, &mut scope);
+            collect_probe_numeric(&field.name, numeric, &mut scope, &self.needed);
         }
         if let Some(index) = task_index {
             let count = scope.get("subtask_count").copied().unwrap_or(0);
@@ -751,7 +818,7 @@ impl ProbeDecoder<'_> {
                 self.take(count, path)?;
                 Ok(ProbeNumeric::None)
             }
-            _ => self.leaf(ty, path),
+            _ => self.leaf(ty, path, scope),
         }
     }
 
@@ -772,7 +839,7 @@ impl ProbeDecoder<'_> {
         Ok(())
     }
 
-    fn leaf(&mut self, ty: &FieldType, path: &str) -> Result<ProbeNumeric, String> {
+    fn leaf(&mut self, ty: &FieldType, path: &str, scope: &HashMap<String, i128>) -> Result<ProbeNumeric, String> {
         let numeric = match ty {
             FieldType::I8 => Some(i8::from_le_bytes(self.take_array(path)?) as i128),
             FieldType::U8 => Some(u8::from_le_bytes(self.take_array(path)?) as i128),
@@ -817,7 +884,8 @@ impl ProbeDecoder<'_> {
             let semantic = path.rsplit('.').next().unwrap_or(path).split('[').next().unwrap_or("");
             let element = is_element_reference(semantic);
             let link = LINK_FIELDS.iter().position(|name| *name == semantic);
-            if is_task_reference(semantic) || element || link.is_some() {
+            let option_task = semantic == "parameter" && path.contains(".options[") && scope.get("id").is_some_and(|id| is_task_option_function(*id));
+            if is_task_reference(semantic) || option_task || element || link.is_some() {
                 if let (Some(index), Ok(target_id)) = (self.task_stack.last().copied(), u32::try_from(value)) {
                     let base = self.task_bases.last().map(String::as_str).unwrap_or("");
                     let field = path.strip_prefix(base).unwrap_or(path).trim_start_matches('.').to_string();

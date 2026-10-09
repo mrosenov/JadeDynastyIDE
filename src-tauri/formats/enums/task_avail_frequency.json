@@ -1,0 +1,31 @@
+{
+  "key": "task_avail_frequency",
+  "label": "Task repeat frequency",
+  "values": [
+    {
+      "value": 0,
+      "label": "Normal",
+      "description": "TaskTempl.h enumTAFNormal"
+    },
+    {
+      "value": 1,
+      "label": "Each day",
+      "description": "TaskTempl.h enumTAFEachDay"
+    },
+    {
+      "value": 2,
+      "label": "Each week",
+      "description": "TaskTempl.h enumTAFEachWeek"
+    },
+    {
+      "value": 3,
+      "label": "Each month",
+      "description": "TaskTempl.h enumTAFEachMonth"
+    },
+    {
+      "value": 4,
+      "label": "Every N seconds",
+      "description": "TaskTempl.h enumTAFEverySeconds (interval in seconds)"
+    }
+  ]
+}

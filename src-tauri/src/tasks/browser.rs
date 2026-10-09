@@ -12,7 +12,7 @@ use crate::{client::Resources, elements::Document};
 
 use super::container::{Pack, TaskContainer, ROOTS_PER_PACK};
 use super::edit::{ChangedRoot, EditState, EntryDetails, HistoryEntry, Journal, RootChange};
-use super::schema::{decode_exact, is_element_reference, is_task_reference, LINK_FIELDS, probe_root_integer_validated, probe_task_index_validated, FieldType, Node, ProbedTaskReference, Schema, Value};
+use super::schema::{decode_exact, is_element_reference, is_task_option_function, is_task_reference, LINK_FIELDS, probe_root_integer_validated, probe_task_index_validated, FieldType, Node, ProbedTaskReference, Schema, Value};
 use super::schema_for_version;
 
 const ROOT_HEADING_BYTES: usize = 64;
@@ -148,6 +148,25 @@ pub struct FieldEdit {
     pub pack: usize,
     pub root: usize,
     pub task_path: Vec<usize>,
+    pub field_path: Vec<String>,
+    pub value: String,
+}
+
+/// A row operation on a variable-length list (monsters to kill, candidate items, …).
+#[derive(Debug, Clone, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum ArrayEdit {
+    /// Appends an empty row.
+    Add,
+    /// Inserts a copy of a row right after it.
+    Clone { index: usize },
+    Remove { index: usize },
+}
+
+/// One value of a batch edit (`edit_fields`).
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FieldValue {
     pub field_path: Vec<String>,
     pub value: String,
 }
@@ -416,8 +435,10 @@ impl TaskDocument {
     }
 
     fn field_view(&self, node: &Node, original: Option<&Node>, semantic: &str, path: Vec<String>, locked: &HashSet<Vec<String>>) -> FieldView {
+        // A talk option that gives, completes or drops a task links its parameter to that task.
+        let task_option = option_task_parameter(node).is_some();
         let children = node.children().iter().map(|child| {
-            let child_semantic = if child.name.starts_with('[') { semantic } else { &child.name };
+            let child_semantic = if task_option && child.name == "parameter" { "task_id" } else if child.name.starts_with('[') { semantic } else { &child.name };
             let mut child_path = path.clone();
             child_path.push(child.name.clone());
             let original_child = original.and_then(|candidate| candidate.child(&child.name));
@@ -453,7 +474,7 @@ impl TaskDocument {
             return None;
         }
         let semantic = semantic.to_ascii_lowercase();
-        if is_task_reference(&semantic) {
+        if is_task_reference(&semantic) || LINK_FIELDS.contains(&semantic.as_str()) {
             let (target, indexed) = self.search.read().ok().map_or((None, false), |index| (index.by_id.get(&id).cloned(), index.indexed));
             return Some(FieldReference {
                 kind: "task".into(),
@@ -590,6 +611,124 @@ impl TaskDocument {
             old,
             new,
         }, vec![RootChange { pack: edit.pack, root: edit.root, before, after }]);
+        Ok(self.edit_state())
+    }
+
+    /// Sets several values of one task as one undo step (a class list and its count, for example).
+    pub fn edit_fields(&mut self, pack: usize, root: usize, task_path: &[usize], values: &[FieldValue], label: &str) -> Result<EditState, String> {
+        let before = self.current_root(pack, root)?;
+        let mut decoded = decode_exact(&self.schema, &before, self.container.header.version)?;
+        let mut changes = Vec::new();
+        {
+            let index = self.search.read().map_err(|_| "Task search index lock poisoned")?;
+            let known = |id: u32| !index.indexed || index.by_id.contains_key(&id);
+            let selected = task_at_mut(&mut decoded, task_path)?;
+            for value in values {
+                if let Some((old, new)) = set_task_field(&self.schema, selected, &value.field_path, &value.value, &known)? {
+                    changes.push((value.field_path.iter().map(|part| label_path_part(part)).collect::<Vec<_>>().join(" › "), old, new));
+                }
+            }
+        }
+        let after = decoded.encode()?;
+        verify_task_root(&self.schema, &after, self.container.header.version, "The edit would make this task invalid")?;
+        if after == before {
+            return Ok(self.edit_state());
+        }
+        let (task_id, task_name) = task_heading(task_at(&decoded, task_path)?)?;
+        let change = RootChange { pack, root, before, after };
+        self.apply_changes(std::slice::from_ref(&change))?;
+        self.journal.record(EntryDetails {
+            label: label.into(),
+            task_id,
+            task_name,
+            field: changes.iter().map(|(field, _, _)| field.as_str()).collect::<Vec<_>>().join(", "),
+            old: changes.iter().map(|(_, old, _)| old.as_str()).collect::<Vec<_>>().join(", "),
+            new: changes.iter().map(|(_, _, new)| new.as_str()).collect::<Vec<_>>().join(", "),
+        }, vec![change]);
+        Ok(self.edit_state())
+    }
+
+    /// Adds, clones or removes a row of a list and keeps its count in step, as one undo step.
+    /// Variable-length lists grow and shrink with their count field. Fixed lists (`count_path`, relative
+    /// to the task, names their count) keep their size: the used slots come first and the rest are empty.
+    pub fn edit_array(&mut self, pack: usize, root: usize, task_path: &[usize], array_path: &[String], count_path: Option<&[String]>, edit: &ArrayEdit) -> Result<EditState, String> {
+        let version = self.container.header.version;
+        let before = self.current_root(pack, root)?;
+        let mut decoded = decode_exact(&self.schema, &before, version)?;
+        let task = task_at_mut(&mut decoded, task_path)?;
+        let (_, parent_path) = array_path.split_last().ok_or("No list was named")?;
+        let (count_reference, item, slots) = match (&node_at(task, array_path)?.ty, count_path) {
+            (FieldType::CountedArray { count_field, item }, _) => {
+                let mut reference = parent_path.to_vec();
+                reference.extend(count_field.split('.').map(str::to_string));
+                (reference, (**item).clone(), None)
+            }
+            (FieldType::FixedArray { len, item }, Some(count)) => (count.to_vec(), (**item).clone(), Some(*len)),
+            _ => return Err("This list has a fixed size and no count, so rows cannot be added or removed".into()),
+        };
+        // A fixed list's count is an ordinary value; one that shapes the task must not be named here.
+        if slots.is_some() && locked_field(&structural_paths(&self.schema, task), &count_reference).is_some() {
+            return Err("The count of this list is locked".into());
+        }
+        let used = integer(node_at(task, &count_reference)?).ok_or("The list count is not a number")?;
+        let used = usize::try_from(used).map_err(|_| "The list count is negative")?;
+        // A new row is decoded from zero bytes with the list's own item type, so it is well-formed.
+        let empty = || -> Result<Node, String> {
+            let mut structs = self.schema.structs.clone();
+            structs.insert("__row".into(), super::schema::StructDef { fields: vec![super::schema::FieldDef::new("[0]", item.clone())] });
+            let wrapper = Schema { root: "__row".into(), structs };
+            let (node, _) = super::schema::decode_prefix(&wrapper, &vec![0; 65536], version)?;
+            node.children().first().cloned().ok_or_else(|| "Could not build an empty row".to_string())
+        };
+        let label = fieldless_label(array_path);
+        let (count, action) = {
+            let rows = node_at_mut(task, array_path)?.array_mut().ok_or("The list is not an array")?;
+            let used = slots.map_or(rows.len(), |slots| used.min(slots));
+            let full = slots.is_some_and(|slots| used >= slots);
+            let missing = |index: usize| if index >= used { Err("That row no longer exists".to_string()) } else { Ok(()) };
+            let action = match edit {
+                ArrayEdit::Add => {
+                    if full {
+                        return Err(format!("All {used} slots of {label} are in use"));
+                    }
+                    if slots.is_some() { rows[used] = empty()?; } else { rows.push(empty()?); }
+                    format!("Add row to {label}")
+                }
+                ArrayEdit::Clone { index } => {
+                    missing(*index)?;
+                    if full {
+                        return Err(format!("All {used} slots of {label} are in use"));
+                    }
+                    let row = rows[*index].clone();
+                    rows.insert(index + 1, row);
+                    if slots.is_some() { rows.pop(); }
+                    format!("Clone row {} of {label}", index + 1)
+                }
+                ArrayEdit::Remove { index } => {
+                    missing(*index)?;
+                    rows.remove(*index);
+                    if slots.is_some() { rows.push(empty()?); }
+                    format!("Remove row {} of {label}", index + 1)
+                }
+            };
+            (if slots.is_some() { if matches!(edit, ArrayEdit::Remove { .. }) { used - 1 } else { used + 1 } } else { rows.len() }, action)
+        };
+        set_count(task, &count_reference.join("."), count)?;
+        if array_path == ["given_items"] {
+            // The official editor stores how many given items are common and how many are task items.
+            let common = task.child("given_items").map_or(0, |rows| rows.children().iter().filter(|row| row.child("common_item").is_some_and(|flag| matches!(flag.value, Value::Bool(true)))).count());
+            for (field, value) in [("given_common_item_count", common), ("given_task_item_count", count - common)] {
+                if task.child("fixed").and_then(|fixed| fixed.child(field)).is_some() {
+                    set_count(task, &format!("fixed.{field}"), value)?;
+                }
+            }
+        }
+        let after = decoded.encode()?;
+        verify_task_root(&self.schema, &after, version, "The list change would make this task invalid")?;
+        let (task_id, task_name) = task_heading(task_at(&decode_exact(&self.schema, &after, version)?, task_path)?)?;
+        let change = RootChange { pack, root, before, after };
+        self.apply_changes(std::slice::from_ref(&change))?;
+        self.journal.record(EntryDetails { label: action, task_id, task_name, field: label, old: format!("{used} row{}", if used == 1 { "" } else { "s" }), new: format!("{count} row{}", if count == 1 { "" } else { "s" }) }, vec![change]);
         Ok(self.edit_state())
     }
 
@@ -1476,6 +1615,16 @@ fn replace_own_task_ids(task: &mut Node, replacements: &HashMap<u32, u32>) -> Re
 }
 
 fn rewrite_internal_task_references(node: &mut Node, semantic: &str, replacements: &HashMap<u32, u32>) -> Result<(), String> {
+    // Talk options that give, complete or drop a task carry its ID in `parameter`.
+    if let Some(new) = option_task_parameter(node).and_then(|old| replacements.get(&old)).copied() {
+        let parameter = node.child_mut("parameter").ok_or("Talk option has no parameter")?;
+        let value = match parameter.value {
+            Value::U64(_) => Value::U64(u64::from(new)),
+            Value::I64(_) => Value::I64(i64::from(new)),
+            _ => return Err("Talk option parameter has an unexpected type".into()),
+        };
+        parameter.set_value(value)?;
+    }
     if node.children().is_empty() {
         if is_task_reference(semantic) {
             let old = match node.value {
@@ -1527,6 +1676,9 @@ fn collect_index_fields(node: &Node, semantic: &str, path: String, found: &mut d
         }
         return Ok(());
     }
+    if let Some(target) = option_task_parameter(node) {
+        found(target, format!("{path}.parameter"), "parameter");
+    }
     for child in node.children() {
         let (child_semantic, child_path) = if child.name.starts_with('[') {
             (semantic.to_string(), format!("{path}{}", child.name))
@@ -1536,6 +1688,26 @@ fn collect_index_fields(node: &Node, semantic: &str, path: String, found: &mut d
         collect_index_fields(child, &child_semantic, child_path, found)?;
     }
     Ok(())
+}
+
+fn integer(node: &Node) -> Option<i128> {
+    match node.value {
+        Value::U64(value) => Some(value as i128),
+        Value::I64(value) => Some(value as i128),
+        _ => None,
+    }
+}
+
+/// A talk option (`id`, `text`, `parameter`) whose function takes a task ID: that ID.
+fn option_task_parameter(node: &Node) -> Option<u32> {
+    let (id, parameter) = (node.child("id")?, node.child("parameter")?);
+    node.child("text")?;
+    is_task_option_function(integer(id)?).then(|| integer(parameter).and_then(|value| u32::try_from(value).ok())).flatten()
+}
+
+/// "monsters wanted" for messages about a list.
+fn fieldless_label(path: &[String]) -> String {
+    path.iter().map(|part| label_path_part(part)).collect::<Vec<_>>().join(" › ")
 }
 
 pub(crate) fn label_path_part(part: &str) -> String {
@@ -1929,6 +2101,101 @@ mod tests {
     }
 
     #[test]
+    fn cloning_remaps_task_dialog_option_parameters() {
+        let path = r"E:/Games/XtremeJade/element/data/tasks.data";
+        if !Path::new(path).is_file() {
+            return;
+        }
+        let mut document = TaskDocument::open(path).unwrap();
+        while !document.search("", 0).indexed {
+            std::thread::sleep(std::time::Duration::from_millis(50));
+        }
+        fn own_options(node: &Node, own: u32, found: &mut usize) {
+            if option_task_parameter(node) == Some(own) {
+                *found += 1;
+            }
+            for child in node.children().iter().filter(|child| child.name != "subtasks") {
+                own_options(child, own, found);
+            }
+        }
+        // A top-level task whose own talk gives or completes it.
+        let (root, original) = document.summary().roots.into_iter().find_map(|root| {
+            let node = decode_exact(&document.schema, &document.current_root(root.pack, root.root).ok()?, document.container.header.version).ok()?;
+            let mut found = 0;
+            own_options(&node, root.id, &mut found);
+            (found > 0).then_some((root, found))
+        }).unwrap();
+        let entry = document.search(&root.id.to_string(), 5).matches.into_iter().find(|task| task.id == root.id && task.path.is_empty()).unwrap();
+        assert!(entry.references.iter().any(|reference| reference.field.ends_with(".parameter") && reference.target_id == root.id), "the index records option parameters as task references");
+        let clone = document.clone_root_task(root.pack, root.root).unwrap();
+        let copy = decode_exact(&document.schema, &document.current_root(clone.pack, clone.root).unwrap(), document.container.header.version).unwrap();
+        let (mut to_copy, mut to_source) = (0, 0);
+        own_options(&copy, clone.id, &mut to_copy);
+        own_options(&copy, root.id, &mut to_source);
+        assert_eq!((to_copy, to_source), (original, 0), "the copy's options give and complete the copy, not the source");
+        document.undo().unwrap();
+    }
+
+    #[test]
+    fn list_rows_add_clone_and_remove_with_their_count() {
+        let path = r"E:/Games/XtremeJade/element/data/tasks.data";
+        if !Path::new(path).is_file() {
+            return;
+        }
+        let mut document = TaskDocument::open(path).unwrap();
+        let version = document.container.header.version;
+        let count = |document: &TaskDocument, pack: usize, root: usize| -> (u64, Vec<Node>) {
+            let node = decode_exact(&document.schema, &document.current_root(pack, root).unwrap(), version).unwrap();
+            let count = match node_at(&node, &["fixed".into(), "monster_wanted_count".into()]).unwrap().value { Value::U64(value) => value, _ => panic!("count type") };
+            (count, node.child("monsters_wanted").unwrap().children().to_vec())
+        };
+        // A top-level task that already wants monsters.
+        let root = document.summary().roots.into_iter().find(|root| count(&document, root.pack, root.root).0 > 0).unwrap();
+        let original = document.current_root(root.pack, root.root).unwrap();
+        let (start, rows) = count(&document, root.pack, root.root);
+        let list = ["monsters_wanted".to_string()];
+        document.edit_array(root.pack, root.root, &[], &list, None, &ArrayEdit::Clone { index: 0 }).unwrap();
+        let (cloned, after) = count(&document, root.pack, root.root);
+        assert_eq!(cloned, start + 1);
+        assert_eq!(after[1].encode().unwrap(), rows[0].encode().unwrap(), "the copy follows its source row");
+        document.edit_array(root.pack, root.root, &[], &list, None, &ArrayEdit::Add).unwrap();
+        let (added, after) = count(&document, root.pack, root.root);
+        assert_eq!(added, start + 2);
+        assert!(after.last().unwrap().encode().unwrap().iter().all(|byte| *byte == 0), "a new row is empty");
+        document.edit_array(root.pack, root.root, &[], &list, None, &ArrayEdit::Remove { index: 0 }).unwrap();
+        assert_eq!(count(&document, root.pack, root.root).0, start + 1);
+        assert!(document.edit_array(root.pack, root.root, &[], &["fixed".into(), "premise_tasks".into()], None, &ArrayEdit::Add).is_err(), "a fixed list needs its count");
+        for _ in 0..3 {
+            document.undo().unwrap();
+        }
+        assert_eq!(document.current_root(root.pack, root.root).unwrap(), original);
+
+        // Fixed lists keep their slots: the used ones first, the rest empty.
+        let premise = ["fixed".to_string(), "premise_tasks".to_string()];
+        let premise_count = ["fixed".to_string(), "premise_task_count".to_string()];
+        let slots = |document: &TaskDocument, pack: usize, root: usize| -> (u64, Vec<u64>) {
+            let node = decode_exact(&document.schema, &document.current_root(pack, root).unwrap(), version).unwrap();
+            let count = match node_at(&node, &premise_count).unwrap().value { Value::U64(value) => value, _ => panic!("count type") };
+            (count, node_at(&node, &premise).unwrap().children().iter().map(|slot| match slot.value { Value::U64(value) => value, _ => panic!("slot type") }).collect())
+        };
+        let root = document.summary().roots.into_iter().find(|root| slots(&document, root.pack, root.root).0 == 0).unwrap();
+        let original = document.current_root(root.pack, root.root).unwrap();
+        let length = slots(&document, root.pack, root.root).1.len();
+        document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &ArrayEdit::Add).unwrap();
+        document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &ArrayEdit::Clone { index: 0 }).unwrap();
+        let (used, values) = slots(&document, root.pack, root.root);
+        assert_eq!((used, values.len()), (2, length), "the slot count stays fixed");
+        document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &ArrayEdit::Remove { index: 1 }).unwrap();
+        assert_eq!(slots(&document, root.pack, root.root).0, 1);
+        assert!(document.edit_array(root.pack, root.root, &[], &premise, Some(&premise_count), &ArrayEdit::Remove { index: 1 }).is_err(), "only used slots can be removed");
+        assert!(document.edit_array(root.pack, root.root, &[], &list, None, &ArrayEdit::Remove { index: 99 }).is_err());
+        for _ in 0..3 {
+            document.undo().unwrap();
+        }
+        assert_eq!(document.current_root(root.pack, root.root).unwrap(), original);
+    }
+
+    #[test]
     fn variable_text_edit_rebuilds_and_undoes_the_containing_root() {
         let path = r"E:/Games/XtremeJade/element/data/tasks.data";
         if !Path::new(path).is_file() {
@@ -2005,8 +2272,10 @@ mod tests {
             assert_eq!(parent_detail.tree.children.len(), parent.child_count);
 
             // Full real-file tests scan four large task sets in parallel. Give
-            // the background index enough room when the same disk is saturated.
-            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
+            // the background index enough room when the same disk is saturated and
+            // other tests decode every task of every fixture at the same time (the
+            // index alone takes ~13 s for HDN in a debug build).
+            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(240);
             let report = loop {
                 let report = document.search("__no_such_task__", 1);
                 assert!(report.error.is_none(), "{:?}", report.error);

@@ -1,0 +1,641 @@
+{
+  "key": "task_occupation",
+  "label": "Task class",
+  "values": [
+    {
+      "value": 0,
+      "label": "Novice",
+      "description": "Before choosing a class"
+    },
+    {
+      "value": 1,
+      "label": "Vim Tier 1",
+      "description": "Humans · Vim"
+    },
+    {
+      "value": 2,
+      "label": "Vim Tier 2",
+      "description": "Humans · Vim"
+    },
+    {
+      "value": 3,
+      "label": "Vim Tier 3",
+      "description": "Humans · Vim"
+    },
+    {
+      "value": 4,
+      "label": "Lupin Tier 1",
+      "description": "Humans · Lupin"
+    },
+    {
+      "value": 5,
+      "label": "Lupin Tier 2",
+      "description": "Humans · Lupin"
+    },
+    {
+      "value": 6,
+      "label": "Lupin Tier 3",
+      "description": "Humans · Lupin"
+    },
+    {
+      "value": 7,
+      "label": "Jadeon Tier 1",
+      "description": "Humans · Jadeon"
+    },
+    {
+      "value": 8,
+      "label": "Jadeon Tier 2",
+      "description": "Humans · Jadeon"
+    },
+    {
+      "value": 9,
+      "label": "Jadeon Tier 3",
+      "description": "Humans · Jadeon"
+    },
+    {
+      "value": 10,
+      "label": "Skysong Tier 1",
+      "description": "Humans · Skysong"
+    },
+    {
+      "value": 11,
+      "label": "Skysong Tier 2",
+      "description": "Humans · Skysong"
+    },
+    {
+      "value": 12,
+      "label": "Skysong Tier 3",
+      "description": "Humans · Skysong"
+    },
+    {
+      "value": 13,
+      "label": "Vim Tier 4",
+      "description": "Humans · Vim"
+    },
+    {
+      "value": 14,
+      "label": "Vim Tier 5",
+      "description": "Humans · Vim"
+    },
+    {
+      "value": 15,
+      "label": "GM Tier 1",
+      "description": "GM"
+    },
+    {
+      "value": 16,
+      "label": "Lupin Tier 4",
+      "description": "Humans · Lupin"
+    },
+    {
+      "value": 17,
+      "label": "Lupin Tier 5",
+      "description": "Humans · Lupin"
+    },
+    {
+      "value": 18,
+      "label": "GM Tier 2",
+      "description": "GM"
+    },
+    {
+      "value": 19,
+      "label": "Jadeon Tier 4",
+      "description": "Humans · Jadeon"
+    },
+    {
+      "value": 20,
+      "label": "Jadeon Tier 5",
+      "description": "Humans · Jadeon"
+    },
+    {
+      "value": 21,
+      "label": "GM Tier 3",
+      "description": "GM"
+    },
+    {
+      "value": 22,
+      "label": "Skysong Tier 4",
+      "description": "Humans · Skysong"
+    },
+    {
+      "value": 23,
+      "label": "Skysong Tier 5",
+      "description": "Humans · Skysong"
+    },
+    {
+      "value": 24,
+      "label": "GM Tier 4",
+      "description": "GM"
+    },
+    {
+      "value": 25,
+      "label": "Modo Tier 1",
+      "description": "Humans · Modo"
+    },
+    {
+      "value": 26,
+      "label": "Modo Tier 2",
+      "description": "Humans · Modo"
+    },
+    {
+      "value": 27,
+      "label": "Modo Tier 3",
+      "description": "Humans · Modo"
+    },
+    {
+      "value": 28,
+      "label": "Modo Tier 4",
+      "description": "Humans · Modo"
+    },
+    {
+      "value": 29,
+      "label": "Modo Tier 5",
+      "description": "Humans · Modo"
+    },
+    {
+      "value": 30,
+      "label": "GM Tier 5",
+      "description": "GM"
+    },
+    {
+      "value": 33,
+      "label": "Balo Tier 1",
+      "description": "Athans · Balo"
+    },
+    {
+      "value": 34,
+      "label": "Balo Tier 2",
+      "description": "Athans · Balo"
+    },
+    {
+      "value": 35,
+      "label": "Balo Tier 3",
+      "description": "Athans · Balo"
+    },
+    {
+      "value": 36,
+      "label": "Balo Tier 4",
+      "description": "Athans · Balo"
+    },
+    {
+      "value": 37,
+      "label": "Balo Tier 5",
+      "description": "Athans · Balo"
+    },
+    {
+      "value": 39,
+      "label": "Arden Tier 1",
+      "description": "Athans · Arden"
+    },
+    {
+      "value": 40,
+      "label": "Arden Tier 2",
+      "description": "Athans · Arden"
+    },
+    {
+      "value": 41,
+      "label": "Arden Tier 3",
+      "description": "Athans · Arden"
+    },
+    {
+      "value": 42,
+      "label": "Arden Tier 4",
+      "description": "Athans · Arden"
+    },
+    {
+      "value": 43,
+      "label": "Arden Tier 5",
+      "description": "Athans · Arden"
+    },
+    {
+      "value": 45,
+      "label": "Rayan Tier 1",
+      "description": "Athans · Rayan"
+    },
+    {
+      "value": 46,
+      "label": "Rayan Tier 2",
+      "description": "Athans · Rayan"
+    },
+    {
+      "value": 47,
+      "label": "Rayan Tier 3",
+      "description": "Athans · Rayan"
+    },
+    {
+      "value": 48,
+      "label": "Rayan Tier 4",
+      "description": "Athans · Rayan"
+    },
+    {
+      "value": 49,
+      "label": "Rayan Tier 5",
+      "description": "Athans · Rayan"
+    },
+    {
+      "value": 51,
+      "label": "Celan Tier 1",
+      "description": "Athans · Celan"
+    },
+    {
+      "value": 52,
+      "label": "Celan Tier 2",
+      "description": "Athans · Celan"
+    },
+    {
+      "value": 53,
+      "label": "Celan Tier 3",
+      "description": "Athans · Celan"
+    },
+    {
+      "value": 54,
+      "label": "Celan Tier 4",
+      "description": "Athans · Celan"
+    },
+    {
+      "value": 55,
+      "label": "Celan Tier 5",
+      "description": "Athans · Celan"
+    },
+    {
+      "value": 56,
+      "label": "Voida Tier 1",
+      "description": "Athans · Voida"
+    },
+    {
+      "value": 57,
+      "label": "Voida Tier 2",
+      "description": "Athans · Voida"
+    },
+    {
+      "value": 58,
+      "label": "Voida Tier 3",
+      "description": "Athans · Voida"
+    },
+    {
+      "value": 59,
+      "label": "Voida Tier 4",
+      "description": "Athans · Voida"
+    },
+    {
+      "value": 60,
+      "label": "Voida Tier 5",
+      "description": "Athans · Voida"
+    },
+    {
+      "value": 64,
+      "label": "Incense Tier 1",
+      "description": "Humans · Incense"
+    },
+    {
+      "value": 65,
+      "label": "Incense Tier 2",
+      "description": "Humans · Incense"
+    },
+    {
+      "value": 66,
+      "label": "Incense Tier 3",
+      "description": "Humans · Incense"
+    },
+    {
+      "value": 67,
+      "label": "Incense Tier 4",
+      "description": "Humans · Incense"
+    },
+    {
+      "value": 68,
+      "label": "Incense Tier 5",
+      "description": "Humans · Incense"
+    },
+    {
+      "value": 71,
+      "label": "Seira Tier 1",
+      "description": "Etherkins · Seira"
+    },
+    {
+      "value": 72,
+      "label": "Seira Tier 2",
+      "description": "Etherkins · Seira"
+    },
+    {
+      "value": 73,
+      "label": "Seira Tier 3",
+      "description": "Etherkins · Seira"
+    },
+    {
+      "value": 74,
+      "label": "Seira Tier 4",
+      "description": "Etherkins · Seira"
+    },
+    {
+      "value": 75,
+      "label": "Seira Tier 5",
+      "description": "Etherkins · Seira"
+    },
+    {
+      "value": 77,
+      "label": "Gevrin Tier 1",
+      "description": "Etherkins · Gevrin"
+    },
+    {
+      "value": 78,
+      "label": "Gevrin Tier 2",
+      "description": "Etherkins · Gevrin"
+    },
+    {
+      "value": 79,
+      "label": "Gevrin Tier 3",
+      "description": "Etherkins · Gevrin"
+    },
+    {
+      "value": 80,
+      "label": "Gevrin Tier 4",
+      "description": "Etherkins · Gevrin"
+    },
+    {
+      "value": 81,
+      "label": "Gevrin Tier 5",
+      "description": "Etherkins · Gevrin"
+    },
+    {
+      "value": 83,
+      "label": "Sylia Tier 1",
+      "description": "Etherkins · Sylia"
+    },
+    {
+      "value": 84,
+      "label": "Sylia Tier 2",
+      "description": "Etherkins · Sylia"
+    },
+    {
+      "value": 85,
+      "label": "Sylia Tier 3",
+      "description": "Etherkins · Sylia"
+    },
+    {
+      "value": 86,
+      "label": "Sylia Tier 4",
+      "description": "Etherkins · Sylia"
+    },
+    {
+      "value": 87,
+      "label": "Sylia Tier 5",
+      "description": "Etherkins · Sylia"
+    },
+    {
+      "value": 96,
+      "label": "Forta Tier 1",
+      "description": "Athans · Forta"
+    },
+    {
+      "value": 97,
+      "label": "Forta Tier 2",
+      "description": "Athans · Forta"
+    },
+    {
+      "value": 98,
+      "label": "Forta Tier 3",
+      "description": "Athans · Forta"
+    },
+    {
+      "value": 99,
+      "label": "Forta Tier 4",
+      "description": "Athans · Forta"
+    },
+    {
+      "value": 100,
+      "label": "Forta Tier 5",
+      "description": "Athans · Forta"
+    },
+    {
+      "value": 102,
+      "label": "Psychea Tier 1",
+      "description": "Etherkins · Psychea"
+    },
+    {
+      "value": 103,
+      "label": "Psychea Tier 2",
+      "description": "Etherkins · Psychea"
+    },
+    {
+      "value": 104,
+      "label": "Psychea Tier 3",
+      "description": "Etherkins · Psychea"
+    },
+    {
+      "value": 105,
+      "label": "Psychea Tier 4",
+      "description": "Etherkins · Psychea"
+    },
+    {
+      "value": 106,
+      "label": "Psychea Tier 5",
+      "description": "Etherkins · Psychea"
+    },
+    {
+      "value": 108,
+      "label": "Kytos Tier 1",
+      "description": "Etherkins · Kytos"
+    },
+    {
+      "value": 109,
+      "label": "Kytos Tier 2",
+      "description": "Etherkins · Kytos"
+    },
+    {
+      "value": 110,
+      "label": "Kytos Tier 3",
+      "description": "Etherkins · Kytos"
+    },
+    {
+      "value": 111,
+      "label": "Kytos Tier 4",
+      "description": "Etherkins · Kytos"
+    },
+    {
+      "value": 112,
+      "label": "Kytos Tier 5",
+      "description": "Etherkins · Kytos"
+    },
+    {
+      "value": 117,
+      "label": "Hydran Tier 1",
+      "description": "Etherkins · Hydran"
+    },
+    {
+      "value": 118,
+      "label": "Hydran Tier 2",
+      "description": "Etherkins · Hydran"
+    },
+    {
+      "value": 119,
+      "label": "Hydran Tier 3",
+      "description": "Etherkins · Hydran"
+    },
+    {
+      "value": 120,
+      "label": "Hydran Tier 4",
+      "description": "Etherkins · Hydran"
+    },
+    {
+      "value": 121,
+      "label": "Hydran Tier 5",
+      "description": "Etherkins · Hydran"
+    },
+    {
+      "value": 215,
+      "label": "释罗 Tier 1",
+      "description": "Deikins · 释罗"
+    },
+    {
+      "value": 216,
+      "label": "释罗 Tier 2",
+      "description": "Deikins · 释罗"
+    },
+    {
+      "value": 217,
+      "label": "释罗 Tier 3",
+      "description": "Deikins · 释罗"
+    },
+    {
+      "value": 218,
+      "label": "释罗 Tier 4",
+      "description": "Deikins · 释罗"
+    },
+    {
+      "value": 219,
+      "label": "释罗 Tier 5",
+      "description": "Deikins · 释罗"
+    },
+    {
+      "value": 221,
+      "label": "百灵 Tier 1",
+      "description": "Deikins · 百灵"
+    },
+    {
+      "value": 222,
+      "label": "百灵 Tier 2",
+      "description": "Deikins · 百灵"
+    },
+    {
+      "value": 223,
+      "label": "百灵 Tier 3",
+      "description": "Deikins · 百灵"
+    },
+    {
+      "value": 224,
+      "label": "百灵 Tier 4",
+      "description": "Deikins · 百灵"
+    },
+    {
+      "value": 225,
+      "label": "百灵 Tier 5",
+      "description": "Deikins · 百灵"
+    },
+    {
+      "value": 228,
+      "label": "涅羽 Tier 1",
+      "description": "Deikins · 涅羽"
+    },
+    {
+      "value": 229,
+      "label": "涅羽 Tier 2",
+      "description": "Deikins · 涅羽"
+    },
+    {
+      "value": 230,
+      "label": "涅羽 Tier 3",
+      "description": "Deikins · 涅羽"
+    },
+    {
+      "value": 231,
+      "label": "涅羽 Tier 4",
+      "description": "Deikins · 涅羽"
+    },
+    {
+      "value": 232,
+      "label": "涅羽 Tier 5",
+      "description": "Deikins · 涅羽"
+    },
+    {
+      "value": 235,
+      "label": "昭冥 Tier 1",
+      "description": "Deikins · 昭冥"
+    },
+    {
+      "value": 236,
+      "label": "昭冥 Tier 2",
+      "description": "Deikins · 昭冥"
+    },
+    {
+      "value": 237,
+      "label": "昭冥 Tier 3",
+      "description": "Deikins · 昭冥"
+    },
+    {
+      "value": 238,
+      "label": "昭冥 Tier 4",
+      "description": "Deikins · 昭冥"
+    },
+    {
+      "value": 239,
+      "label": "昭冥 Tier 5",
+      "description": "Deikins · 昭冥"
+    },
+    {
+      "value": 243,
+      "label": "惊岚 Tier 1",
+      "description": "Deikins · 惊岚"
+    },
+    {
+      "value": 244,
+      "label": "惊岚 Tier 2",
+      "description": "Deikins · 惊岚"
+    },
+    {
+      "value": 245,
+      "label": "惊岚 Tier 3",
+      "description": "Deikins · 惊岚"
+    },
+    {
+      "value": 246,
+      "label": "惊岚 Tier 4",
+      "description": "Deikins · 惊岚"
+    },
+    {
+      "value": 247,
+      "label": "惊岚 Tier 5",
+      "description": "Deikins · 惊岚"
+    },
+    {
+      "value": 249,
+      "label": "逐霜 Pre-tier",
+      "description": "Deikins · 逐霜"
+    },
+    {
+      "value": 250,
+      "label": "逐霜 Tier 1",
+      "description": "Deikins · 逐霜"
+    },
+    {
+      "value": 251,
+      "label": "逐霜 Tier 2",
+      "description": "Deikins · 逐霜"
+    },
+    {
+      "value": 252,
+      "label": "逐霜 Tier 3",
+      "description": "Deikins · 逐霜"
+    },
+    {
+      "value": 253,
+      "label": "逐霜 Tier 4",
+      "description": "Deikins · 逐霜"
+    },
+    {
+      "value": 254,
+      "label": "逐霜 Tier 5",
+      "description": "Deikins · 逐霜"
+    }
+  ]
+}

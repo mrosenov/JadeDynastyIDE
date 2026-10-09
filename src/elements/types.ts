@@ -1495,3 +1495,6 @@ export interface BulkReport {
   samples: BulkSample[];
   state?: EditState;
 }
+
+/** A row operation on a task list (`edit_task_array`). */
+export type TaskArrayEdit = { kind: "add" } | { kind: "clone"; index: number } | { kind: "remove"; index: number };

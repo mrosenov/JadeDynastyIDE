@@ -11,21 +11,13 @@ const FIXED: &str = "TASK_FIXED_V172";
 const TIMETABLE: &str = "TASK_TIMETABLE_V172";
 
 /// v172 retains v165's section order. Its packed header adds the one-byte
-/// kermis flag and expands the zone-friendship array from 32 to 48 integers.
+/// kermis flag after `faction` and expands the zone-friendship array from 32 to 48 integers.
 pub fn schema() -> Schema {
     let mut fixed = v165::fixed_definition();
-    resize_raw(&mut fixed, "unknown_0102_0484", 384);
+    // Located on the fixtures: every flag reads 0/1 and same-ID tasks agree with v165 only here.
+    v165::insert_after(&mut fixed, "faction", super::schema::FieldDef::new("kermis", FieldType::Bool8));
     v165::set_friendship_count(&mut fixed, 48);
     v165::schema_with_fixed(FIXED, TIMETABLE, TASK, fixed)
-}
-
-fn resize_raw(definition: &mut super::schema::StructDef, name: &str, len: usize) {
-    let field = definition
-        .fields
-        .iter_mut()
-        .find(|field| field.name == name)
-        .unwrap_or_else(|| panic!("v172 schema cannot find inherited field {name}"));
-    field.ty = FieldType::Raw { len };
 }
 
 #[cfg(test)]

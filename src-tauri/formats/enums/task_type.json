@@ -1,0 +1,111 @@
+{
+  "key": "task_type",
+  "label": "Task type",
+  "values": [
+    {
+      "value": 0,
+      "label": "Career",
+      "description": "游历 · string 3101 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 1,
+      "label": "Challenge",
+      "description": "挑战 · string 3102 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 2,
+      "label": "Pacifier",
+      "description": "平妖 · string 3103 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 3,
+      "label": "Trial",
+      "description": "试炼 · string 3104 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 4,
+      "label": "Explorer",
+      "description": "探险 · string 3105 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 5,
+      "label": "Special Ops",
+      "description": "传功 · string 3106 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 6,
+      "label": "Classic",
+      "description": "经典 · string 3107 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 7,
+      "label": "Clan",
+      "description": "家族 in the English client (string 3108); 修真 (cultivation) in the C++ source · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 8,
+      "label": "Charity",
+      "description": "侠义 · string 3109 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 9,
+      "label": "Expertise",
+      "description": "师门 · string 3110 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 10,
+      "label": "Alliance",
+      "description": "帮会 · string 3111 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 11,
+      "label": "Treasure",
+      "description": "寻宝 · string 3112 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 12,
+      "label": "Voyage",
+      "description": "奇遇 · string 3113 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 13,
+      "label": "Romance",
+      "description": "情缘 · string 3114 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 14,
+      "label": "Vitalic",
+      "description": "封神 in the English client (string 3115); 跨服 (cross-server) in the C++ source · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 15,
+      "label": "Elysium Exorcism",
+      "description": "天界平妖 · string 3116 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 16,
+      "label": "Elysium Challenge",
+      "description": "天界挑战 · string 3117 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 17,
+      "label": "Elysium Trials",
+      "description": "天界试炼 · string 3118 · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 18,
+      "label": "Archaia (white)",
+      "description": "上古 white (TaskTempl.cpp); no client string · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 19,
+      "label": "Archaia (green)",
+      "description": "上古 green (TaskTempl.cpp); no client string · DlgTask.h TaskType minus 1"
+    },
+    {
+      "value": 20,
+      "label": "Archaia (red)",
+      "description": "上古 red (TaskTempl.cpp); no client string · DlgTask.h TaskType minus 1"
+    }
+  ]
+}

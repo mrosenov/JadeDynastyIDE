@@ -1,0 +1,21 @@
+{
+  "key": "task_gender",
+  "label": "Task gender",
+  "values": [
+    {
+      "value": 0,
+      "label": "Any",
+      "description": "TaskTempl.h TASK_GENDER_NONE"
+    },
+    {
+      "value": 1,
+      "label": "Male",
+      "description": "TaskTempl.h TASK_GENDER_MALE"
+    },
+    {
+      "value": 2,
+      "label": "Female",
+      "description": "TaskTempl.h TASK_GENDER_FEMALE"
+    }
+  ]
+}

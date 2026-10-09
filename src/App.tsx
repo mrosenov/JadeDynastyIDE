@@ -34,6 +34,7 @@ import { applyTheme } from "./theme";
 import "./App.css";
 import logo from "./assets/logo.png";
 import {
+  Tags,
   Braces,
   ChevronLeft,
   ChevronRight,
@@ -182,6 +183,8 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   // The enums & masks editor, open at a set (or none).
   const [setsEditor, setSetsEditor] = useState<{ key: string | null } | null>(null);
+  /** Bumped when enums or masks change, so the task form reloads its names. */
+  const [setsVersion, setSetsVersion] = useState(0);
   const started = useRef(false);
   const iconGen = settingsView?.client?.hasItemIcons ? settingsView.iconGeneration : null;
   const [findOpen, setFindOpen] = useState(false);
@@ -783,6 +786,8 @@ export default function App() {
         },
         { label: "Import JSON…", icon: FileUp, onSelect: () => setImporting(true), disabled: !summary, title: noFile },
         { label: "Translate from elements.data…", icon: Languages, onSelect: () => setTranslating(true), disabled: !summary, title: noFile },
+        "separator",
+        { label: "Enums & masks…", icon: Tags, onSelect: () => setSetsEditor({ key: null }), title: "Edit the named values and flags shared by elements.data and tasks.data" },
       ],
     },
   ];
@@ -857,6 +862,8 @@ export default function App() {
         "separator",
         { label: "Translate from tasks.data…", icon: Languages, onSelect: () => tasksEditor.current?.translate(), disabled: !tasksEditorState.summary, title: "Copy names, descriptions and dialog text from a translated task set" },
         { label: "Compare with another tasks.data…", icon: GitCompareArrows, onSelect: () => tasksEditor.current?.toggleCompare(), disabled: !tasksEditorState.summary, checked: tasksEditorState.panel === "compare" },
+        "separator",
+        { label: "Enums & masks…", icon: Tags, onSelect: () => setSetsEditor({ key: null }), title: "Edit the names of task types, categories, classes, friendships and other task values" },
       ],
     },
   ] : elementMenus;
@@ -1018,7 +1025,10 @@ export default function App() {
       {setsEditor && (
         <SetsEditor
           initialKey={setsEditor.key}
-          onChanged={(next) => next && onSchemaSaved(next)}
+          onChanged={(next) => {
+            setSetsVersion((version) => version + 1);
+            if (next) onSchemaSaved(next);
+          }}
           onClose={() => setSetsEditor(null)}
         />
       )}
@@ -1063,6 +1073,8 @@ export default function App() {
             defaultPath={tasksEditorState.path ?? settingsView?.client?.dataFiles.find((file) => file.name.toLowerCase() === "tasks.data")?.path ?? null}
             initialState={tasksEditorState}
             onStateChange={setTasksEditorState}
+            setsVersion={setsVersion}
+            onEditSet={(key) => setSetsEditor({ key })}
             onOpenElement={(list, row) => {
               setWorkspace("elements");
               openLocation({ list, row }, { pin: true });

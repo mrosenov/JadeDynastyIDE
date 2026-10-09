@@ -81,8 +81,7 @@ import type {
   TaskCopySelection,
   TaskTextGroup,
   TaskTranslationReport,
-  TaskDeleteReference,
-} from "./types";
+  TaskDeleteReference, TaskArrayEdit } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
 
@@ -131,6 +130,14 @@ export const getTask = (pack: number, root: number, path: number[]) => invoke<Ta
 export const searchTasks = (query: string, limit = 50_000) => invoke<TaskSearchReport>("search_tasks", { query, limit });
 /** Changes one safe leaf inside a task root in memory. */
 export const editTaskField = (edit: TaskFieldEdit) => invoke<TaskEditState>("edit_task_field", { edit });
+/** Sets several values of one task as one undo step. */
+export const editTaskFields = (pack: number, root: number, taskPath: number[], values: { fieldPath: string[]; value: string }[], label: string) =>
+  invoke<TaskEditState>("edit_task_fields", { pack, root, taskPath, values, label });
+/** Adds, clones or removes a row of a list of the task; `countPath` names the count of a fixed list. */
+export const editTaskArray = (pack: number, root: number, taskPath: number[], arrayPath: string[], countPath: string[] | null, edit: TaskArrayEdit) =>
+  invoke<TaskEditState>("edit_task_array", { pack, root, taskPath, arrayPath, countPath, edit });
+/** Character classes (ID, name) of the open elements.data. */
+export const characterClasses = () => invoke<[number, string][]>("character_classes");
 /** Clones a selected subquest and its descendants beside the source with fresh task IDs. */
 export const cloneTaskSubtree = (pack: number, root: number, path: number[]) => invoke<TaskCloneReport>("clone_task_subtree", { pack, root, path });
 /** Clones a complete top-level task tree into the same task pack with fresh task IDs. */

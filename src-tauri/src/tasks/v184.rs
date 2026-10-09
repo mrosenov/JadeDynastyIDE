@@ -15,9 +15,13 @@ const TIMETABLE: &str = "TASK_TIMETABLE_V184";
 /// introduced in v174 are stored after the dialog bundle.
 pub fn schema() -> Schema {
     let mut fixed = v165::fixed_definition();
-    resize_raw(&mut fixed, "unknown_0102_0484", 384);
+    v165::insert_after(&mut fixed, "faction", FieldDef::new("kermis", FieldType::Bool8));
     v165::set_friendship_count(&mut fixed, 48);
-    resize_raw(&mut fixed, "unknown_1786_1944", 171);
+    // Twelve bytes after the king premise: the only place where every completion
+    // method value stays plausible on the HDN fixture.
+    for index in (1..=3).rev() {
+        v165::insert_after(&mut fixed, "premise_has_king", FieldDef::new(format!("unknown_v184_{index}"), FieldType::U32));
+    }
     insert_after(
         &mut fixed,
         "signature_pointer",
@@ -38,15 +42,6 @@ pub fn schema() -> Schema {
         );
     }
     schema
-}
-
-fn resize_raw(definition: &mut super::schema::StructDef, name: &str, len: usize) {
-    let field = definition
-        .fields
-        .iter_mut()
-        .find(|field| field.name == name)
-        .unwrap_or_else(|| panic!("v184 schema cannot find inherited field {name}"));
-    field.ty = FieldType::Raw { len };
 }
 
 fn insert_after(definition: &mut super::schema::StructDef, after: &str, field: FieldDef) {

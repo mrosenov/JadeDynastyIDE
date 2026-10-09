@@ -1,0 +1,21 @@
+{
+  "key": "task_dynamic_type",
+  "label": "Dynamic task type",
+  "values": [
+    {
+      "value": 0,
+      "label": "None",
+      "description": "TaskTempl.h enumDTTNone"
+    },
+    {
+      "value": 1,
+      "label": "Special award",
+      "description": "TaskTempl.h enumDTTSpecialAward"
+    },
+    {
+      "value": 2,
+      "label": "Normal",
+      "description": "TaskTempl.h enumDTTNormal"
+    }
+  ]
+}

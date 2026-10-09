@@ -1,0 +1,121 @@
+{
+  "key": "task_method",
+  "label": "Task completion method",
+  "values": [
+    {
+      "value": 0,
+      "label": "None",
+      "description": "TaskTempl.h enumTMNone"
+    },
+    {
+      "value": 1,
+      "label": "Kill monsters",
+      "description": "TaskTempl.h enumTMKillNumMonster"
+    },
+    {
+      "value": 2,
+      "label": "Collect items",
+      "description": "TaskTempl.h enumTMCollectNumArticle"
+    },
+    {
+      "value": 3,
+      "label": "Talk to NPC",
+      "description": "TaskTempl.h enumTMTalkToNPC"
+    },
+    {
+      "value": 4,
+      "label": "Reach site",
+      "description": "TaskTempl.h enumTMReachSite"
+    },
+    {
+      "value": 5,
+      "label": "Wait time",
+      "description": "TaskTempl.h enumTMWaitTime"
+    },
+    {
+      "value": 6,
+      "label": "Answer question",
+      "description": "TaskTempl.h enumTMAnswerQuestion"
+    },
+    {
+      "value": 7,
+      "label": "Mini game",
+      "description": "TaskTempl.h enumTMTinyGame"
+    },
+    {
+      "value": 8,
+      "label": "Protect NPC",
+      "description": "TaskTempl.h enumTMProtectNPC"
+    },
+    {
+      "value": 9,
+      "label": "NPC reaches site",
+      "description": "TaskTempl.h enumTMNPCReachSite"
+    },
+    {
+      "value": 10,
+      "label": "Earn title",
+      "description": "TaskTempl.h enumTMTitle"
+    },
+    {
+      "value": 11,
+      "label": "Fixed time",
+      "description": "TaskTempl.h enumTMFixedTime"
+    },
+    {
+      "value": 12,
+      "label": "Achievement",
+      "description": "TaskTempl.h enumTMAchievement"
+    },
+    {
+      "value": 13,
+      "label": "Leave site",
+      "description": "TaskTempl.h enumTMLeaveSite"
+    },
+    {
+      "value": 14,
+      "label": "Friend count",
+      "description": "TaskTempl.h enumTMFriendNum"
+    },
+    {
+      "value": 15,
+      "label": "NPC action",
+      "description": "TaskTempl.h enumTMNPCAction"
+    },
+    {
+      "value": 16,
+      "label": "Special trigger",
+      "description": "TaskTempl.h enumTMSpecialTrigger"
+    },
+    {
+      "value": 17,
+      "label": "Total case add",
+      "description": "TaskTempl.h enumTMTotalCaseAdd"
+    },
+    {
+      "value": 18,
+      "label": "Faction property",
+      "description": "TaskTempl.h enumTMFactionProperty"
+    },
+    {
+      "value": 19,
+      "label": "Interaction reach site",
+      "description": "TaskTempl.h enumTMInterReachSite"
+    },
+    {
+      "value": 20,
+      "label": "Interaction leave site",
+      "description": "TaskTempl.h enumTMInterLeaveSite"
+    },
+    {
+      "value": 21,
+      "label": "Collect interaction objects",
+      "description": "TaskTempl.h enumTMCollectNumInterObj"
+    },
+    {
+      "value": 22,
+      "label": "Building to level",
+      "description": "TaskTempl.h enumTMBuildingToLevel"
+    }
+  ]
+}

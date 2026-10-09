@@ -506,6 +506,22 @@ impl Document {
         bytes.get(0..4).map(|b| u32::from_le_bytes(b.try_into().unwrap())).unwrap_or(0)
     }
 
+    /// Character classes from CHARACTER_CLASS_CONFIG: (character_class_id, name), in record order.
+    /// Task class requirements store these IDs.
+    pub fn character_classes(&self) -> Vec<(u32, String)> {
+        let Some(list) = (0..self.lists.len()).find(|&list| self.lists[list].struct_name.as_deref() == Some("CHARACTER_CLASS_CONFIG")) else { return Vec::new() };
+        let Some((_, def)) = self.def(list) else { return Vec::new() };
+        let Some(class) = def.fields.iter().find(|field| field.name == "character_class_id" && field.t.size() == 4) else { return Vec::new() };
+        let name_at = Self::name_field(Some(def));
+        (0..self.file.lists[list].count)
+            .filter_map(|row| {
+                let bytes = self.file.record(list, row)?;
+                let id = u32::from_le_bytes(bytes.get(class.off..class.off + 4)?.try_into().ok()?);
+                Some((id, Self::record_name(bytes, name_at)))
+            })
+            .collect()
+    }
+
     /// ID → row for a list. Later records win, as in the client.
     fn id_index(&self, list: usize) -> &HashMap<u32, usize> {
         self.ids[list].get_or_init(|| {

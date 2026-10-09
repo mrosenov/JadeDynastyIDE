@@ -1,0 +1,26 @@
+{
+  "key": "task_clear_receiver_type",
+  "label": "Receiver limit reset",
+  "values": [
+    {
+      "value": 0,
+      "label": "Each day",
+      "description": "TaskTempl.h enumClearEachDay"
+    },
+    {
+      "value": 1,
+      "label": "Each week",
+      "description": "TaskTempl.h enumClearEachWeek"
+    },
+    {
+      "value": 2,
+      "label": "Each month",
+      "description": "TaskTempl.h enumClearEachMonth"
+    },
+    {
+      "value": 3,
+      "label": "Every N seconds",
+      "description": "TaskTempl.h enumClearEverySeconds (interval in seconds)"
+    }
+  ]
+}

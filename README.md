@@ -212,6 +212,72 @@ terminator convention: v165 dialog texts end with a NUL character inside the tex
 do not. Applying the chosen groups is one undo step, and only re-reads the task roots it changes. If
 the open task set changes after the preview, preview again.
 
+The inspector shows a quest as a form with tabs, like the official editors: **General** (identity,
+time, flags, timetable, hierarchy and Referenced by), **Locations** (delivery and award NPCs, zones,
+transfer, receivers), **Requirements** (level, class, quests finished first, mutually exclusive
+quests, items, titles, costs, team and more), **Objectives** (completion method, monsters and items
+to collect, interaction objects, sites, escort, failure conditions), **Rewards** (success and failure
+awards and the scaled award tables) and **Texts & dialogs** (description, hints and every NPC talk
+with its windows and options). Every group lists all of its fields in a compact multi-column grid;
+flags are checkboxes, times and positions edit their parts in place, and lists and tables show item,
+monster, NPC and quest links. Completion method, finish type, award types, task type, quest log
+category (display type), dynamic type, repeat frequency, receiver limit reset, gender and co-task
+condition are dropdowns (`[1] Kill monsters`), and **Recommended for** (recommend type) is a row of
+checkboxes (Pinned, EXP, Cash, Affinity, Orb, Special item, Title, Gear). Names come from
+`TaskTempl.h`/`DlgTask.h` and the English client's interface strings; task types 7 and 14 follow the
+English client (Clan, Vitalic) where the C++ source says cultivation and cross-server, and 18–20 are
+the white, green and red Archaia quests. **Difficulty** is the 1–5 star rank. Editing works as before (click a value, Enter applies) with the
+same checks, undo and history. **Advanced** keeps the complete field tree with types and offsets.
+The last tab is remembered. Labels share one column width so values line up, and item, NPC and quest
+links stay on the value's line (long names are shortened; hover shows the full name).
+
+Tables and lists (monsters to kill, items to collect or give, timetables, candidate items, quests
+finished first, exclusive quests, failure monsters and items, …) are plain tables of input boxes:
+type a value and press Enter or leave the box to apply it, or Escape to restore it. Each row has
+**Clone** (inserts a copy below it) and **Remove**, and **Add row** appends an empty row. Lists that
+grow with the quest change size and their count; fixed lists (for example the 5 slots of quests
+finished first) fill their slots in order and show how many are used. Each row operation is one undo
+step. Adding or removing given items also updates the stored common/task item counts.
+
+In **Texts & dialogs** every option shows what it does (`→ window 3`, `→ Give quest (6)`,
+`→ Complete quest (7)`, `→ Exit (18)`, named from `SERVICE_TYPE`) and, for the quest functions
+(Talk, Give quest, Complete quest, Give quest item, Give up quest), its quest parameter as an
+editable box with the quest's link; "this quest" marks options that point at the quest itself.
+Cloning a quest moves these parameters to the copy, so its NPC gives and completes the copy, not the
+original. Option parameters also count as quest references in Problems, Referenced by and the
+delete preview.
+
+**Rewards** follows the official editors: a reward selector (award on success or failure, and the
+ratio, item-count and finish-count awards for each), the two award-type dropdowns, and for scaled
+awards their ratios or counts with one entry per scale. The selected award is split into sub-tabs
+(Dividends, Candidate items, Storage, Faction, Travel, Spawn, Quests, Character, Messages,
+Friendship, Other); a dot marks sources and sub-tabs that hold values. Candidate items list each
+candidate with its random-choice flag and an item table (item, common, amount, probability, bind,
+period, timetable, day, time, refine, replacement).
+
+**Classes** under Requirements is a table by race (Humans, Athans, Etherkins, Deikins) with one row
+per class and a checkbox per tier (pre-tier, tiers 1–5) showing its class ID
+(`CHARACTER_CLASS_CONFIG.character_class_id`, which task class requirements store). A class's
+checkbox ticks or clears all of its tiers and a race's checkbox all of its classes; a partly selected
+class or race shows a dash. Novice, GM and any other class the open elements.data defines are listed
+under **Other classes**. Every change rewrites the class list and its count as one undo step, up to
+the 45 slots a task has; no class selected means any class can take the quest. **Friendship** requirements and award friendships are listed by faction name. Class, friendship,
+completion-method, finish-type, award-type and the other task value names are named sets
+(`task_occupation`, `task_friendship`, `task_method`, `task_finish_type`, `task_award_type`,
+`task_type`, `task_display_type`, `task_dynamic_type`, `task_avail_frequency`,
+`task_clear_receiver_type`, `task_gender`, `task_cotask_condition`, and the mask
+`task_recommend_type`) that can be edited in
+**Enums & masks** (**Tools › Enums & masks…** in every workspace, or **Edit names…** in a task
+dropdown; the form picks up the new names straight away); `task_occupation` names every class in the table (for example `Arden Tier 1` = 39); classes it does
+not name show the elements.data name.
+
+Almost the whole 2,490-byte v165 task header is named from `ATaskTemplFixedData` in
+`TaskTempl.h`: offsets were computed from the declaration and match every previously verified field
+and the total size. v172 adds the `kermis` flag after `faction` and v184 adds twelve bytes after
+`premise_has_king`; both positions were found on the client fixtures. Only in-memory pointer
+slots remain raw. About 1,070 quests per client store a minimum level above the maximum (for example
+200 and 78); this is the game's own design, not a layout error.
+
 **Task schema** opens the effective binary layout for the current task version. It lists every
 structure, field type and condition and can search across all four. Verified v165, v172 and v184
 layouts are read-only. For an unsupported version, the same window shows the selected older

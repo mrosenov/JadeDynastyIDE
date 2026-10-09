@@ -1,0 +1,134 @@
+{
+  "key": "task_friendship",
+  "label": "Task friendship",
+  "values": [
+    {
+      "value": 0,
+      "label": "Modo Honor"
+    },
+    {
+      "value": 1,
+      "label": "Jadeon Honor"
+    },
+    {
+      "value": 2,
+      "label": "Skysong Honor"
+    },
+    {
+      "value": 3,
+      "label": "Vim Honor"
+    },
+    {
+      "value": 4,
+      "label": "Lupin Honor"
+    },
+    {
+      "value": 5,
+      "label": "Piety"
+    },
+    {
+      "value": 6,
+      "label": "Romance"
+    },
+    {
+      "value": 7,
+      "label": "Culture"
+    },
+    {
+      "value": 8,
+      "label": "Expertise"
+    },
+    {
+      "value": 9,
+      "label": "Dagos"
+    },
+    {
+      "value": 10,
+      "label": "Felkin"
+    },
+    {
+      "value": 11,
+      "label": "Fuwa"
+    },
+    {
+      "value": 12,
+      "label": "Cela Affinity"
+    },
+    {
+      "value": 13,
+      "label": "Balo Honor"
+    },
+    {
+      "value": 14,
+      "label": "Arden Honor"
+    },
+    {
+      "value": 15,
+      "label": "Voida Honor"
+    },
+    {
+      "value": 16,
+      "label": "Forta Honor"
+    },
+    {
+      "value": 17,
+      "label": "Rayan Honor"
+    },
+    {
+      "value": 18,
+      "label": "Celan Honor"
+    },
+    {
+      "value": 19,
+      "label": "Incense Honor"
+    },
+    {
+      "value": 20,
+      "label": "Feat"
+    },
+    {
+      "value": 21,
+      "label": "Exploit"
+    },
+    {
+      "value": 22,
+      "label": "Order of Heaven"
+    },
+    {
+      "value": 23,
+      "label": "Order of Earth"
+    },
+    {
+      "value": 24,
+      "label": "Order of Man"
+    },
+    {
+      "value": 25,
+      "label": "Sovereign Honor"
+    },
+    {
+      "value": 26,
+      "label": "Alliance Contribution"
+    },
+    {
+      "value": 27,
+      "label": "Psychea Honor"
+    },
+    {
+      "value": 28,
+      "label": "Kytos Honor"
+    },
+    {
+      "value": 29,
+      "label": "Hydran Honor"
+    },
+    {
+      "value": 31,
+      "label": "Seira Honor"
+    },
+    {
+      "value": 32,
+      "label": "Gevrin Honor"
+    }
+  ]
+}

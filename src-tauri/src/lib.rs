@@ -449,6 +449,22 @@ async fn edit_task_field(edit: tasks::browser::FieldEdit, state: State<'_, AppSt
 }
 
 #[tauri::command]
+async fn edit_task_array(pack: usize, root: usize, task_path: Vec<usize>, array_path: Vec<String>, count_path: Option<Vec<String>>, edit: tasks::browser::ArrayEdit, state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.edit_array(pack, root, &task_path, &array_path, count_path.as_deref(), &edit)
+}
+
+#[tauri::command]
+async fn edit_task_fields(pack: usize, root: usize, task_path: Vec<usize>, values: Vec<tasks::browser::FieldValue>, label: String, state: State<'_, AppState>) -> Result<tasks::edit::EditState, String> {
+    state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.edit_fields(pack, root, &task_path, &values, &label)
+}
+
+/// Character classes of the open elements.data, for task class requirements.
+#[tauri::command]
+async fn character_classes(state: State<'_, AppState>) -> Result<Vec<(u32, String)>, String> {
+    Ok(state.document.lock().map_err(|_| "State lock poisoned")?.as_ref().map(|document| document.character_classes()).unwrap_or_default())
+}
+
+#[tauri::command]
 async fn clone_task_subtree(pack: usize, root: usize, path: Vec<usize>, state: State<'_, AppState>) -> Result<tasks::browser::TaskCloneReport, String> {
     state.tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open tasks.data first")?.clone_subtask(pack, root, &path)
 }
@@ -1280,6 +1296,9 @@ pub fn run() {
             edit_task_field,
             clone_task_subtree,
             clone_task_root,
+            edit_task_fields,
+            edit_task_array,
+            character_classes,
             task_summary,
             revert_task_entry,
             task_problems,

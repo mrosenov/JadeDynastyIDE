@@ -1,0 +1,16 @@
+{
+  "key": "task_finish_type",
+  "label": "Task finish type",
+  "values": [
+    {
+      "value": 0,
+      "label": "Finish directly",
+      "description": "TaskTempl.h enumTFTDirect"
+    },
+    {
+      "value": 1,
+      "label": "Finish at an NPC",
+      "description": "TaskTempl.h enumTFTNPC"
+    }
+  ]
+}

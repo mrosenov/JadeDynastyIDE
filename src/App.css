@@ -6149,6 +6149,579 @@ select.sf-control {
   min-height: 0;
   overflow: auto;
 }
+/* ------------------------------------------------------------ task form */
+
+.task-form-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 6px 12px 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-pane);
+  overflow-x: auto;
+}
+.task-form-tabs > button {
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: none;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.task-form-tabs > button:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+.task-form-tabs > button.active {
+  margin-bottom: -1px;
+  border-color: var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 650;
+}
+.task-form {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  align-content: start;
+  gap: 12px;
+  padding: 12px;
+}
+.task-form > .task-referrers {
+  grid-column: 1 / -1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.task-form-group {
+  min-width: 0;
+  margin: 0;
+  padding: 6px 12px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-pane);
+}
+.task-form-group > legend {
+  padding: 0 6px;
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.task-form-label {
+  color: var(--text-dim);
+}
+/* A value and its link chip stay on one line; the chip shortens with an ellipsis. */
+.task-form-value {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+.task-form-value > .task-form-box {
+  flex: 0 0 auto;
+}
+.task-form-value > .task-field-reference {
+  flex: 0 1 auto;
+}
+.task-form-value.long,
+.task-form-value.editing {
+  display: flex;
+  flex-wrap: wrap;
+}
+.task-form-value.long > .task-form-box {
+  flex: 1 1 auto;
+}
+.task-form-box {
+  min-width: 70px;
+  max-width: 100%;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: text;
+}
+.task-form-box.mono {
+  font-family: var(--mono, ui-monospace, monospace);
+}
+.task-form-value.long .task-form-box {
+  flex: 1;
+  min-height: 46px;
+}
+.task-form-box:disabled {
+  border-style: dashed;
+  color: var(--text-dim);
+  cursor: default;
+}
+.task-form-box:not(:disabled):hover {
+  border-color: var(--accent);
+}
+.task-form-value.changed .task-form-box,
+.task-form-check.changed,
+input[type=checkbox].changed {
+  box-shadow: inset 3px 0 0 var(--warn);
+}
+.task-form-editor {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+}
+.task-form-editor > input,
+.task-form-editor > textarea {
+  flex: 1;
+  min-width: 120px;
+  padding: 3px 7px;
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+.task-form-editor > textarea {
+  flex-basis: 100%;
+  resize: vertical;
+}
+.task-form-parts {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.task-form-parts > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.task-form-parts > label > span {
+  color: var(--text-faint);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+.task-form-parts .task-form-box {
+  min-width: 46px;
+}
+.task-form-table-wrap {
+  overflow-x: auto;
+}
+.task-form-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.task-form-table th {
+  padding: 3px 6px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-faint);
+  font-size: 10px;
+  font-weight: 650;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.task-form-table td {
+  padding: 3px 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 52%, transparent);
+  vertical-align: middle;
+}
+.task-form-table tbody tr:hover td {
+  background: var(--bg-hover);
+}
+.task-form-table td.task-form-row-actions-cell {
+  width: 1%;
+  text-align: right;
+}
+/* Table and list values are plain inputs: Enter or leaving the box applies, Escape restores. */
+.task-form-cell-value {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
+}
+.task-form-cell-value > .task-field-reference {
+  max-width: 180px;
+}
+.task-form-input {
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+.task-form-input.mono {
+  font-family: var(--mono, ui-monospace, monospace);
+}
+.task-form-input:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+}
+.task-form-input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+.task-form-input:disabled {
+  border-style: dashed;
+  color: var(--text-dim);
+}
+.task-form-input.invalid {
+  border-color: var(--danger);
+}
+.task-form-cell-value.changed > .task-form-input {
+  box-shadow: inset 3px 0 0 var(--warn);
+}
+.task-form-row-actions {
+  display: inline-flex;
+  gap: 2px;
+  white-space: nowrap;
+}
+.task-form-row-actions .icon-btn.danger:hover:not(:disabled) {
+  color: var(--danger);
+}
+.task-form-rows-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.task-form-rows-foot.top {
+  margin: 0 0 8px;
+}
+.task-form-rows-foot .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.task-form-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.task-form-list-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.task-form-list-item > .mono {
+  width: 18px;
+  text-align: right;
+}
+.task-form-list-item.unused {
+  opacity: .6;
+}
+.task-form-sub {
+  margin-top: 8px;
+}
+.task-form-subtitle {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 650;
+}
+.task-form-window {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 6px 0 8px;
+  padding: 6px 8px;
+  border-left: 3px solid var(--border);
+}
+.task-form-group.wide {
+  grid-column: 1 / -1;
+}
+/* Label and value pairs flow into as many columns as fit, like the official editors. */
+.task-form-grid {
+  --task-label-w: 132px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 4px 18px;
+  align-items: start;
+}
+/* Every cell, normal or full-width, uses the same label column so values line up. */
+.task-form-cell {
+  display: grid;
+  grid-template-columns: var(--task-label-w) minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 27px;
+  font-size: 12px;
+}
+.task-form-cell.wide {
+  grid-column: 1 / -1;
+}
+.task-form-cell > .task-form-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Named bits (recommended type) as a row of checkboxes. */
+.task-form-mask {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+}
+.task-form-mask > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px 2px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.task-form-mask > label.checked {
+  background: var(--accent-soft);
+}
+.task-form-mask.changed {
+  box-shadow: inset 3px 0 0 var(--warn);
+}
+.task-form-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 27px;
+  padding-left: 2px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.task-form-select {
+  max-width: 100%;
+  padding: 3px 6px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+.task-form-table tr.unused td {
+  opacity: .55;
+}
+.task-form-friendships {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 2px 18px;
+}
+.task-form-friendships > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 90px;
+  align-items: center;
+  gap: 8px;
+  min-height: 26px;
+  font-size: 12px;
+}
+.task-form-friendships > div.unused > span:first-child {
+  color: var(--text-dim);
+}
+.task-form-classes-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0;
+}
+.task-form-classes-head .sf-control {
+  max-width: 220px;
+  margin-left: auto;
+}
+/* Class requirements: a race heading, then one row per class with a checkbox per tier. */
+.task-form-class-table {
+  width: auto;
+  min-width: 100%;
+}
+.task-form-class-table th:not(:first-child),
+.task-form-class-table td:not(:first-child) {
+  text-align: center;
+}
+.task-form-class-table tr.task-form-class-race > th {
+  padding-top: 8px;
+  color: var(--text);
+  font-size: 11px;
+  text-align: left;
+}
+.task-form-class-table label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.task-form-class-name {
+  font-weight: 600;
+}
+.task-form-class-tier {
+  padding: 1px 6px 1px 3px;
+  border-radius: 4px;
+}
+.task-form-class-tier.checked {
+  background: var(--accent-soft);
+}
+.task-form-classes-other {
+  margin-top: 10px;
+}
+.task-form-class-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 2px 12px;
+  max-height: 300px;
+  overflow: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+}
+.task-form-class-list > label {
+  display: grid;
+  grid-template-columns: auto 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 0 4px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.task-form-class-list > label.checked {
+  background: var(--accent-soft);
+}
+.task-award-tabs,
+.task-rewards-entries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+}
+.task-award-tabs > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: none;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.task-award-tabs > button:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+.task-award-tabs > button.active {
+  margin-bottom: -1px;
+  border-color: var(--border);
+  background: var(--bg-pane);
+  color: var(--text);
+  font-weight: 650;
+}
+.task-award-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.task-award-body {
+  padding: 10px 2px 2px;
+}
+.task-rewards-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+}
+.task-rewards-sources {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(190px, auto));
+  gap: 3px 18px;
+}
+.task-rewards-sources > label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 25px;
+  padding: 0 6px;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.task-rewards-sources > label.active {
+  background: var(--accent-soft);
+  font-weight: 650;
+}
+.task-rewards-types {
+  flex: 1;
+  min-width: 260px;
+}
+.task-rewards-entries {
+  margin-top: 8px;
+  border-bottom: 0;
+}
+.task-form-candidates > .segmented {
+  margin-bottom: 8px;
+}
+.task-form-candidate-body {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 12px;
+}
+.task-form-candidate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.task-form-candidate-list > button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.task-form-candidate-list > button.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.task-form-candidate-detail {
+  min-width: 0;
+}
+.task-form-option {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding-left: 10px;
+  font-size: 12px;
+}
+.task-form-option-target {
+  white-space: nowrap;
+}
+.task-form-option-parameter {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
 .task-category {
   border-bottom: 1px solid var(--border);
 }

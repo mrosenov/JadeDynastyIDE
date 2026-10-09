@@ -1,0 +1,16 @@
+{
+  "key": "task_cotask_condition",
+  "label": "Co-task condition",
+  "values": [
+    {
+      "value": 0,
+      "label": "Correspond",
+      "description": "TaskTempl.h COTASK_CORRESPOND"
+    },
+    {
+      "value": 1,
+      "label": "Once",
+      "description": "TaskTempl.h COTASK_ONCE"
+    }
+  ]
+}

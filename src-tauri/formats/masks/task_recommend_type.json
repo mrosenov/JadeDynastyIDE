@@ -1,0 +1,46 @@
+{
+  "key": "task_recommend_type",
+  "label": "Task recommended type",
+  "flags": [
+    {
+      "bit": 1,
+      "label": "Pinned",
+      "description": "置顶 RECOMMEND_TYPE_ONTOP: kept at the top of the list"
+    },
+    {
+      "bit": 2,
+      "label": "EXP",
+      "description": "经验 · string 13420"
+    },
+    {
+      "bit": 3,
+      "label": "Cash",
+      "description": "金钱 · string 13421"
+    },
+    {
+      "bit": 4,
+      "label": "Affinity",
+      "description": "造化 · string 13422"
+    },
+    {
+      "bit": 5,
+      "label": "Orb",
+      "description": "元神 · string 13423"
+    },
+    {
+      "bit": 6,
+      "label": "Special item",
+      "description": "特殊物品 · string 13425"
+    },
+    {
+      "bit": 7,
+      "label": "Title",
+      "description": "称号 · string 13426"
+    },
+    {
+      "bit": 8,
+      "label": "Gear",
+      "description": "装备 · string 13424"
+    }
+  ]
+}

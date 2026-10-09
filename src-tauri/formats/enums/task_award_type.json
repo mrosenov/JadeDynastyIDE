@@ -1,0 +1,31 @@
+{
+  "key": "task_award_type",
+  "label": "Task award type",
+  "values": [
+    {
+      "value": 0,
+      "label": "Normal",
+      "description": "TaskTempl.h enumTATNormal"
+    },
+    {
+      "value": 1,
+      "label": "Each",
+      "description": "TaskTempl.h enumTATEach"
+    },
+    {
+      "value": 2,
+      "label": "By ratio",
+      "description": "TaskTempl.h enumTATRatio"
+    },
+    {
+      "value": 3,
+      "label": "By item count",
+      "description": "TaskTempl.h enumTATItemCount"
+    },
+    {
+      "value": 4,
+      "label": "By finish count",
+      "description": "TaskTempl.h enumTATFinishCount"
+    }
+  ]
+}

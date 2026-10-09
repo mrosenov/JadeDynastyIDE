@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (152 at last run, ~2–3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (154 at last run, ~2–3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -104,7 +104,9 @@ Environment quirks (Windows 11, Git Bash):
 
 - `src-tauri/formats/layouts/<id>/` — built-in layouts (`layout.json` + `list_N.json`):
   v66, v112, v156, v156-signin, v158, v160, v165, v176. Embedded at build time.
-- `src-tauri/formats/enums/`, `masks/` — built-in named sets.
+- `src-tauri/formats/enums/`, `masks/` — built-in named sets. `build.rs` emits
+  `rerun-if-changed=formats`: `include_dir!` does not track files, so new set or layout files were
+  missing from `tauri dev` builds until a `.rs` file changed.
 - User overlays (schema editor, enums/masks editor): `%APPDATA%\com.jdide.app\layouts\…`,
   `enums\`, `masks\`. They override one list or one set; everything else stays built-in.
 - `tools/*.mjs` — layout generation/import pipeline (see README "Regenerating layouts").
@@ -309,6 +311,45 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   decodes paired roots in parallel and trial-applies each text with `set_task_field`; apply only
   replays the stored edits of the chosen groups on the unchanged roots. v165 from v172: ~16 s debug,
   718 names, 473 descriptions, 11,687 dialog texts, 23 talks skipped for shape.
+- **Fixed header names** come from parsing `ATaskTemplFixedData` (packed; pointers 4 bytes,
+  `vector`/`abase::vector` 16, `ZONE_VERT` 12, `task_tm` 24): all anchors and the 2,490-byte
+  total match. v172 `kermis` sits after `faction` (same-ID flag agreement with v165: 8 differences
+  of 67,250); v184's `unknown_v184_1..3` sit after `premise_has_king` (only placement where every
+  completion method is plausible). Pointer members stay `raw(4)` named `*_pointer`.
+- The byte probe keeps only scope values that conditions and counts read
+  (`probe_needed_names`); recording every header field slowed indexing by ~45%.
+- **Quest form** (`TaskForm.tsx`): `LAYOUT` maps tabs to groups of field paths (grids, tables, id
+  lists, the class checklist, friendship tables, dialogs, and "rest" predicates for unplaced header
+  fields); every field of a group is shown (the user preferred this over folding unused fields).
+  Rewards has its own view (`RewardsView`/`AwardEditor`, sub-tabs in `AWARD_TABS`). Single values go
+  through `editField`; multi-value edits (class list + count) through `edit_task_fields`, one journal
+  entry. The Advanced tab is the previous categorized field tree.
+- Form tables and lists use `Cell` (input, applies on Enter/blur). Row operations go through
+  `edit_task_array` (`TaskDocument::edit_array`, `ArrayEdit` add/clone/remove, one journal entry):
+  `CountedArray`s change length and their (locked) count field; `FixedArray`s need `count_path`
+  (a non-structural count, from the layout's `count`) and keep their length, used slots first. New
+  rows are decoded from zero bytes with the list's item type. `given_items` row operations recount
+  `given_common_item_count`/`given_task_item_count` (the client also recomputes them on load).
+- **Talk option parameters**: for functions 0, 6, 7, 8 and 21 (`TASK_OPTION_FUNCTIONS`; NPC_TALK,
+  GIVE_TASK, COMPLETE_TASK, GIVE_TASK_MATTER, GIVEUP_TASK) `parameter` is a task ID. Verified on
+  ForsakenJD (function 6: 8,834 options, 6,878 to their own task; 17/18 and window links never use
+  it). Clone remaps it (`rewrite_internal_task_references`), the index and probe record it as a task
+  reference, and the inspector links it. Before this, a cloned quest's NPC kept giving the original.
+- Task class IDs are `CHARACTER_CLASS_CONFIG.character_class_id` (verified: common class lists such
+  as 25–29 and 96–100 are whole factions there); `Document::character_classes` serves them. Jade
+  Editor's class list order does not equal these IDs, so its names are only used where the IDs are
+  certain (`formats/enums/task_occupation.json`). Friendship names are by index (`task_friendship`).
+- The class checklist is laid out by `CLASS_GROUPS` in `TaskForm.tsx` (race → class → pre-tier and
+  tiers 1–5), from the user's ID list (e.g. Arden Tier 1 = 39; Deikin 逐霜 has a pre-tier, 249). It
+  matches ForsakenJD and HDN elements.data. Tasks also use 0 (Novice), GM 15/18/21/24 and 32, 107,
+  122, which no client defines; they appear under Other classes.
+- Task value names (`TaskForm.tsx` `ENUM_FIELDS`/`MASK_FIELDS`, sets `formats/enums/task_*.json`,
+  `formats/masks/task_recommend_type.json`): `task_type` from `DlgTask.h` `TaskType` (template value =
+  TT − 1, 0–20) with English names from `interfaces.pck` strings 3101 + type; the English client
+  says Clan (7) and Vitalic (14) where the source says 修真 and 跨服. `display_type` strings
+  13410 + type − 1 (0 is derived on load, never stored by the official editor). `recommend_type` is a
+  bit mask, bits 1–8 (`RECOMMEND_TYPE_*`, strings 13420–13426). `rank` is 1–5 stars. Value ranges
+  in all three fixtures match these sets; `dynamic_task_type` is always 0.
 - XtremeJade v165 scan (official data): 15 duplicate IDs, 32 broken references (e.g. four "Join …"
   quests awarding missing task 2608), 1 self-reference, 0 stale links, 44 full packs.
 
