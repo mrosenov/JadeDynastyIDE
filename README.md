@@ -452,13 +452,45 @@ the saved set, so the save dialog warns that undo history starts again from the 
 
 If a task version has no verified layout, JD IDE opens a read-only **Task layout analyzer**
 instead of treating the file as editable. The outer index, numbered packs, offsets and MD5 values
-are still verified first. Choose v165, v172 or v184 as an older baseline and run **Analyze layout**
+are still verified first. Choose v165, v172 or v184 as a baseline (older or newer than the file) and run **Analyze layout**
 to test every root. The report separates byte-exact roots, roots where the baseline ends with
 trailing bytes, and structural failures; it shows root and byte coverage, the first stopping
 field and offset, and coverage for each pack. Analysis never changes the file, and saving remains
 disabled until the effective layout round-trips every root exactly and the user accepts it.
 
-The analyzer can also compare the newer file with an older supported `tasks.data`. Root tasks are
+When the analyzer opens, it first tries every built-in layout on about 150 quests spread over the
+file and shows how many each one reads byte-for-byte. Some versions only changed the version number:
+v170 (the 1559 server) reads exactly with the v172 layout. When one layout reads the whole sample,
+**Use the vN layout** runs the full analysis with it, and **Accept layout and open editor** follows
+as usual.
+
+**Align with a supported task set** proposes a complete layout patch. Choose a supported
+`tasks.data` (for example the closest older client). JD IDE pairs quests by ID, follows their values
+(numbers, IDs) through both files and records where the newer bytes move. Each structure is then
+solved field by field: every way of keeping, removing or shortening its fields, or inserting bytes
+between them, is scored by how many of the older file's values reappear in the paired newer quests,
+and where the next structure starts shows changes in tails that hold no values. Nested fixed-size
+structures with no evidence of their own are solved from the structures around them. Texts are left
+out of the comparison, since translations differ between servers. Where the newer file has extra bytes
+it proposes a new raw field named `unknown_v<version>_N` (or a longer fixed list); where bytes are
+missing it proposes removing a field or giving a fixed list fewer items; where several neighbouring
+fields cannot be told apart they are replaced by one raw unknown block of the newer width. When the
+bytes cannot decide (fields that are zero in every quest), unknown fields, pointers and vector
+capacities are removed first, as later and pre-release versions often do not store them. The proposal
+lists every change with its structure, position, byte difference (and old → new item count for lists)
+and evidence (how many paired quests agree), the share of sampled quests the proposed layout reads
+exactly, and the spots it could not place safely. **Apply proposal** stores it as the user layout
+patch (replacing an existing one after a confirmation) and analyzes every root; nothing in the file
+changes. Continue from the first stopping point with the tools below, then accept the layout.
+Unknown fields are raw bytes: editing and saving keep them as they are, and they can be edited as hex
+under **Advanced** once their meaning is known. Tested on real data: v172 from v165 (four changes:
+`kermis` after `faction`, the friendship tables growing from 32 to 48 entries, five bytes after
+auctions; every sampled quest exact), v170 from v172 (no change needed), and the pre-release Jade
+Dynasty Reborn v186 from HDN v184. Every v186 quest is 679 bytes smaller: shorter class and item lists,
+no stored pointers or vector capacities. The proposal reads about a third of its quests exactly and
+leaves the end of the award block for manual work.
+
+The analyzer can also compare root sizes of the newer file with an older supported `tasks.data`. Root tasks are
 matched by ID rather than file order. The comparison counts matching, added, removed, renamed and
 duplicate IDs, then groups matching roots by their old and new byte sizes. A repeated pattern such
 as `8,468 B → 8,472 B` across thousands of IDs is strong evidence that a four-byte field was added

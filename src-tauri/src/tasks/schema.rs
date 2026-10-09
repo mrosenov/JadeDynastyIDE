@@ -262,6 +262,23 @@ fn apply_patch(schema: &mut Schema, operation: &PatchOperation) -> Result<(), St
 }
 
 impl Schema {
+    /// The schema as it reads `version`: version conditions are settled, so fields of later
+    /// versions are left out and the rest no longer depend on the version decoded with. User layouts
+    /// start from a built-in version this way, whatever version their own file is.
+    pub fn frozen_at(&self, version: u32) -> Self {
+        let mut schema = self.clone();
+        for definition in schema.structs.values_mut() {
+            definition.fields.retain(|field| field.when.iter().all(|condition| match condition {
+                Condition::Version { min, max } => min.map_or(true, |minimum| version >= minimum) && max.map_or(true, |maximum| version <= maximum),
+                Condition::Field { .. } => true,
+            }));
+            for field in &mut definition.fields {
+                field.when.retain(|condition| !matches!(condition, Condition::Version { .. }));
+            }
+        }
+        schema
+    }
+
     pub fn with_operations(&self, operations: &[PatchOperation]) -> Result<Self, String> {
         let mut schema = self.clone();
         for operation in operations {

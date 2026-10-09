@@ -515,6 +515,48 @@ export interface TaskLayoutPatch {
   verifiedBytes?: number;
 }
 
+/** How well one built-in layout reads a sample of an unsupported task set. */
+export interface TaskLayoutProbe {
+  version: number;
+  sampled: number;
+  exact: number;
+}
+
+/** One layout change found by aligning a newer task set with a supported one. */
+export interface TaskAlignChange {
+  structure: string;
+  kind: "insert" | "remove" | "resize" | "array_length" | "unknown_block";
+  fields: string[];
+  after?: string;
+  width?: number;
+  delta: number;
+  support: number;
+  seen: number;
+  /** For "array_length": the reference and the newer number of items. */
+  items?: [number, number];
+}
+
+export interface TaskAlignUnresolved {
+  structure: string;
+  after: string;
+  before: string;
+  delta: number;
+  reason: string;
+}
+
+/** A proposed user layout patch; `operations` go back unchanged to apply_task_alignment. */
+export interface TaskAlignProposal {
+  targetVersion: number;
+  referenceVersion: number;
+  pairs: number;
+  changes: TaskAlignChange[];
+  unresolved: TaskAlignUnresolved[];
+  operations: unknown[];
+  sampleExact: number;
+  sampleTested: number;
+  elapsedMs: number;
+}
+
 export interface TaskLayoutPatchReport {
   patch: TaskLayoutPatch;
   analysis: TaskAnalysisReport;

@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (164 at last run, ~2–3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (167 at last run, ~6 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -85,7 +85,8 @@ Environment quirks (Windows 11, Git Bash):
 | `tasks/dialogs.rs` | NPC talks as trees (`Dialog`/`DialogWindow`/`DialogOption`): read, validate, rewrite in the official editor's order. |
 | `tasks/search.rs` | Advanced task search: field catalog, conditions (same-row groups, `any:` fields), value anywhere, scopes, parallel byte scan with prefilter, cancel and progress. |
 | `tasks/save.rs` | Task-set staging, pack rebuilding, MD5/index updates, verification, backups and atomic replacement. |
-| `tasks/analyze.rs`, `layout.rs` | Unsupported-version analysis and validated user task-layout patches. |
+| `tasks/analyze.rs`, `layout.rs` | Unsupported-version analysis, the built-in layout probe, and validated user task-layout patches. |
+| `tasks/align.rs` | Proposes a user layout patch by aligning an unsupported task set with a supported one. |
 
 ### UI (`src/`)
 
@@ -414,6 +415,27 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   as `Bytes` so task JSON schema digests do not change). Masks: premise_cult/cultivation → `god_devil_mask`,
   premise_nation_position_mask → `nation_position_mask`, selected_role → `task_selected_role`
   (DeliverAwardToSpecifyRole). clear_cultivation_skill bits are unknown (skill library not in the source).
+- **Unsupported versions.** `probe_layouts` decodes ~150 spread roots with every built-in
+  layout. User layouts are frozen: `Schema::frozen_at(base)` settles `since/until` version
+  conditions, so a layout based on a newer version reads an older file the same way (v170 reads
+  exactly with v172). `align::propose` pairs roots by ID (400 spread plus quests where rare fields
+  are set), walks the reference leaves with a running byte shift (strong ≥2-byte non-zero values
+  re-anchor, one-byte values only confirm, texts carry their length difference, counted lists with
+  other counts are skipped) and records per-instance marks. The event solver (support ≥ 10) is now
+  only the fallback (and the source for the task record itself, `schema.root`). `solve_all` solves
+  structures with a DP (`solve_structure`/`solve_flat`): anchor = record start (roots), first field, or
+  the earliest well-matched field whose value does not usually equal a neighbour's (three 1.0
+  coefficients shifted results by 4 bytes); forward and backward passes keep/remove/shorten fields
+  and insert bytes, scored by 2·matched − compared non-zero reference bytes (texts blanked) minus a
+  cost per change; end marks (where the next instance starts, second round) reward the right total.
+  Inner structures first; their changes become per-pair byte adjustments for the outer ones.
+  Unsolved fixed-size nested structures are flattened (`flatten`); the majority answer per inner
+  structure wins. Count/condition fields are never removed (`referenced_names`). Tie-breaks: inserts
+  earliest; removals prefer `unknown_*`, `*_pointer(s)`, `*_capacity`, then later fields. Results:
+  v172 from v165 exact (kermis after faction, friendship 32→48); v170 none; v186 Reborn from v184:
+  header −387 (pointers gone, have_fail_items 16→4, life_again lists 45→1, …), awards −148 with an
+  ambiguous 4-byte split, 406/1111 sample and ~30% of all roots exact; most failures stop at
+  `success_award.extra_tribute` (v186 has 8 more bytes after the candidate list).
 - XtremeJade v165 scan (official data): 15 duplicate IDs, 32 broken references (e.g. four "Join …"
   quests awarding missing task 2608), 1 self-reference, 0 stale links, 44 full packs.
 

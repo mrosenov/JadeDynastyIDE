@@ -1,9 +1,9 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, ArrowRight, BarChart3, Braces, Check, CircleAlert, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
-import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskArray, setTaskDialog, editTaskField, editTaskFields, exportTasksJson, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskReferencedBy, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
+import { AlertTriangle, ArrowRight, WandSparkles, BarChart3, Braces, Check, CircleAlert, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
+import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, applyTaskAlignment, probeTaskLayouts, proposeTaskAlignment, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskArray, setTaskDialog, editTaskField, editTaskFields, exportTasksJson, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskReferencedBy, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskAnalysisReport, TaskArrayEdit, TaskDialog, TaskIdChangeResult, EditState, TaskDeletePreview, TaskDeleteReference, TaskEditState as EditStateValue, TaskExportTarget, TaskImportReport, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchHit, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskAlignProposal, TaskLayoutProbe, TaskAnalysisReport, TaskArrayEdit, TaskDialog, TaskIdChangeResult, EditState, TaskDeletePreview, TaskDeleteReference, TaskEditState as EditStateValue, TaskExportTarget, TaskImportReport, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchHit, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 import { TaskSaveDialog } from "./TaskSaveDialog";
 import { TaskSchemaDialog } from "./TaskSchemaDialog";
@@ -272,6 +272,10 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   const [candidatesBusy, setCandidatesBusy] = useState(false);
   const [layoutBusy, setLayoutBusy] = useState(false);
   const [layoutNote, setLayoutNote] = useState<string | null>(null);
+  const [probes, setProbes] = useState<TaskLayoutProbe[] | null>(null);
+  const [probeBusy, setProbeBusy] = useState(false);
+  const [proposal, setProposal] = useState<TaskAlignProposal | null>(null);
+  const [alignBusy, setAlignBusy] = useState(false);
   const [schemaOpen, setSchemaOpen] = useState(false);
   const [arrayOpen, setArrayOpen] = useState(false);
   const [baselineFieldOpen, setBaselineFieldOpen] = useState(false);
@@ -785,6 +789,8 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setCandidateDraft(null);
     setConditionDraft(null);
     setLayoutNote(null);
+    setProbes(null);
+    setProposal(null);
     setSchemaOpen(false);
     setArrayOpen(false);
     setBaselineFieldOpen(false);
@@ -945,6 +951,80 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       setAnalysisBusy(false);
     }
   }, [analysisBusy, baseline, layoutPatch, unsupported]);
+
+  // An unsupported set may still match a built-in layout exactly (e.g. a version number bump):
+  // try each one on a sample as soon as the analyzer opens.
+  const unsupportedPath = unsupported?.path;
+  useEffect(() => {
+    if (!unsupportedPath) return;
+    let current = true;
+    setProbes(null);
+    setProbeBusy(true);
+    probeTaskLayouts(unsupportedPath)
+      .then((result) => { if (current) setProbes(result); })
+      .catch(() => { if (current) setProbes([]); })
+      .finally(() => { if (current) setProbeBusy(false); });
+    return () => { current = false; };
+  }, [unsupportedPath]);
+
+  const useBuiltInLayout = useCallback(async (version: number) => {
+    if (!unsupported || analysisBusy || layoutPatch) return;
+    setBaseline(version);
+    setAnalysisBusy(true);
+    setError(null);
+    try {
+      setAnalysis(await analyzeTasks(unsupported.path, version));
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setAnalysisBusy(false);
+    }
+  }, [analysisBusy, layoutPatch, unsupported]);
+
+  const proposeAlignment = useCallback(async (pick: boolean) => {
+    if (!unsupported || alignBusy) return;
+    let reference = referencePath;
+    if (pick || !reference) {
+      const picked = await open({ multiple: false, directory: false, defaultPath: referencePath ?? unsupported.path, title: "Choose a supported tasks.data", filters: [{ name: "tasks.data", extensions: ["data"] }] });
+      if (typeof picked !== "string") return;
+      reference = picked;
+      if (picked !== referencePath) {
+        setReferencePath(picked);
+        setComparison(null);
+        setFieldCandidates(null);
+      }
+    }
+    setAlignBusy(true);
+    setProposal(null);
+    setError(null);
+    try {
+      setProposal(await proposeTaskAlignment(unsupported.path, reference));
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setAlignBusy(false);
+    }
+  }, [alignBusy, referencePath, unsupported]);
+
+  const applyAlignment = useCallback(async () => {
+    if (!unsupported || !proposal?.operations.length || layoutBusy) return;
+    if (layoutPatch && !window.confirm(`Replace the current v${unsupported.version} user layout (${layoutPatch.operations.length} operation${layoutPatch.operations.length === 1 ? "" : "s"}) with this proposal?`)) return;
+    setLayoutBusy(true);
+    setError(null);
+    setLayoutNote(null);
+    try {
+      const report = await applyTaskAlignment(unsupported.path, proposal.referenceVersion, proposal.operations);
+      setLayoutPatch(report.patch);
+      setAnalysis(report.analysis);
+      setBaseline(proposal.referenceVersion);
+      setFieldCandidates(null);
+      setLayoutNote(report.analysis.exactRoundTrip ? "The proposed layout reads every root exactly. Review the patch, then accept it." : `The proposed layout is stored. ${count(report.analysis.exactRoots)} of ${count(report.analysis.source.rootCount)} roots decode exactly; continue from the first stopping point.`);
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setLayoutBusy(false);
+    }
+  }, [layoutBusy, layoutPatch, proposal, unsupported]);
 
   const acceptLayout = useCallback(async () => {
     if (!unsupported || !analysis?.exactRoundTrip || layoutBusy) return;
@@ -1324,6 +1404,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
             <button className="btn" onClick={() => void importLayoutPatch()} disabled={layoutBusy || analysisBusy}><Upload size={14}/> Import patch…</button>
             <span className="muted small">No data is changed.</span>
           </section>
+          <LayoutProbes probes={probes} busy={probeBusy} fileVersion={unsupported.version} patched={!!layoutPatch} disabled={analysisBusy || layoutBusy} onUse={(version) => void useBuiltInLayout(version)}/>
           {error && <div className="path-data-message error">{error}</div>}
           {layoutNote && <div className="path-data-message ok">{layoutNote}</div>}
           {analysis && <>
@@ -1365,6 +1446,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
             </div>}
             <footer>Adding, removing, changing a field type or changing its conditions reruns the entire file. Type changes keep the same byte width. Exact whole-file coverage enables the Accept layout action above.</footer>
           </section>}
+          <AlignmentSection proposal={proposal} busy={alignBusy} referencePath={referencePath} patched={!!layoutPatch} disabled={layoutBusy || analysisBusy} onPropose={(pick) => void proposeAlignment(pick)} onApply={() => void applyAlignment()} onUseLayout={(version) => void useBuiltInLayout(version)}/>
           <section className="task-id-comparison">
             <header><div><b>Compare matching root-task IDs</b><span>Choose an older supported task set. Repeated record-size deltas are evidence of fields added to the newer task structure.</span></div><button className="btn" onClick={() => void chooseComparison()} disabled={comparisonBusy}>{comparisonBusy ? <Loader2 size={14} className="spin"/> : <FolderOpen size={14}/>} {comparisonBusy ? "Comparing task sets…" : comparison ? "Choose another…" : "Choose older tasks.data…"}</button></header>
             {referencePath && <div className="task-compare-path mono truncate" title={referencePath}>{referencePath}</div>}
@@ -1517,3 +1599,67 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     }} />}
   </section>{schemaOpen && <TaskSchemaDialog version={file.version} baselineVersion={file.version} onClose={() => setSchemaOpen(false)}/>} {moveSource && <TaskMoveDialog source={moveSource} busy={moveBusy} error={moveError} onConfirm={(destination) => void confirmMoveSelected(destination)} onClose={() => { if (!moveBusy) { setMoveSource(null); setMoveError(null); } }}/>} {translating && file && <TaskTranslateDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, fields) => void translationApplied(next, fields)} onClose={() => setTranslating(false)} />} {importing && file && <TaskImportDialog defaultPath={file.path.replace(/[\\/][^\\/]*$/, "")} onApplied={(next, report) => void bulkApplied(next, report, "Imported JSON")} onClose={() => setImporting(false)} />} {idChanging && selectedRoot && detail && <TaskIdDialog task={{ pack: selectedRoot.pack, root: selectedRoot.root, path: selectedPath, id: detail.id, name: detail.name }} onApplied={(result, newId) => void idChanged(result, newId)} onClose={() => setIdChanging(false)} />} {deletePreview && <TaskDeleteDialog preview={deletePreview} busy={deleteBusy} error={deleteError} onConfirm={(places) => void confirmDeleteSelected(places)} onClose={() => { if (!deleteBusy) { setDeletePreview(null); setDeleteError(null); } }}/>}</>;
 });
+
+function LayoutProbes({ probes, busy, fileVersion, patched, disabled, onUse }: { probes: TaskLayoutProbe[] | null; busy: boolean; fileVersion: number; patched: boolean; disabled: boolean; onUse: (version: number) => void }) {
+  if (busy) return <section className="task-layout-probes"><Loader2 size={15} className="spin"/><span>Trying the built-in layouts on a sample of quests…</span></section>;
+  if (!probes?.length) return null;
+  const best = probes[0];
+  const fits = best.sampled > 0 && best.exact === best.sampled;
+  return <section className={`task-layout-probes${fits ? " fits" : ""}`}>
+    {fits ? <ShieldCheck size={16}/> : <FlaskConical size={16}/>}
+    <div>
+      <b>{fits ? `The v${best.version} layout reads every sampled quest exactly` : "No built-in layout reads this file as it is"}</b>
+      <span>{probes.map((probe) => <span className="task-layout-probe" key={probe.version}>v{probe.version}: {probe.exact} / {probe.sampled}</span>)}</span>
+      {fits && <small>{patched ? `A v${fileVersion} user layout patch exists; remove its operations to start from the built-in layout instead.` : "Using it runs the full analysis on every root; then accept it as usual."}</small>}
+      {!fits && <small>Align the file with a supported task set below to propose the layout changes.</small>}
+    </div>
+    {fits && !patched && <button className="btn primary" onClick={() => onUse(best.version)} disabled={disabled}><Check size={14}/> Use the v{best.version} layout</button>}
+  </section>;
+}
+
+const ALIGN_KINDS: Record<string, string> = { insert: "new field", remove: "removed", resize: "resized", array_length: "list length", unknown_block: "unknown block" };
+
+function AlignmentSection({ proposal, busy, referencePath, patched, disabled, onPropose, onApply, onUseLayout }: { proposal: TaskAlignProposal | null; busy: boolean; referencePath: string | null; patched: boolean; disabled: boolean; onPropose: (pick: boolean) => void; onApply: () => void; onUseLayout: (version: number) => void }) {
+  const signed = (value: number) => `${value > 0 ? "+" : ""}${value.toLocaleString()} B`;
+  return <section className="task-alignment">
+    <header>
+      <div><b>Align with a supported task set</b><span>Pairs quests by ID, follows their values through both files and proposes the layout changes: new fields become raw <span className="mono">unknown_v…</span> blocks that stay untouched (editable as hex under Advanced).</span></div>
+      {referencePath && !busy && <button className="btn" onClick={() => onPropose(false)} disabled={disabled}><FlaskConical size={14}/> {proposal ? "Run again" : "Propose layout"}</button>}
+      <button className={`btn${referencePath ? "" : " primary"}`} onClick={() => onPropose(true)} disabled={busy || disabled}>{busy ? <Loader2 size={14} className="spin"/> : <FolderOpen size={14}/>} {busy ? "Aligning quests…" : referencePath ? "Choose another…" : "Choose supported tasks.data…"}</button>
+    </header>
+    {referencePath && <div className="task-compare-path mono truncate" title={referencePath}>{referencePath}</div>}
+    {proposal && <>
+      <div className="task-compare-summary">
+        <div><span>Reference</span><b>v{proposal.referenceVersion}</b><small>for v{proposal.targetVersion}</small></div>
+        <div><span>Quest pairs</span><b>{count(proposal.pairs)}</b><small>same ID in both files</small></div>
+        <div><span>Changes</span><b>{proposal.changes.length}</b><small>{proposal.unresolved.length ? `${proposal.unresolved.length} unresolved` : "nothing unresolved"}</small></div>
+        <div><span>Sample read exactly</span><b>{count(proposal.sampleExact)} / {count(proposal.sampleTested)}</b><small>{(proposal.sampleTested ? proposal.sampleExact * 100 / proposal.sampleTested : 0).toFixed(1)}% · {(proposal.elapsedMs / 1000).toFixed(1)} s</small></div>
+      </div>
+      {proposal.changes.length > 0 && <div className="task-alignment-table">
+        <div className="task-alignment-head"><span>Structure</span><span>Change</span><span>Fields</span><span>After</span><span>Bytes</span><span>Evidence</span></div>
+        {proposal.changes.map((change, index) => <div key={`${change.structure}:${index}`}>
+          <span className="mono truncate" title={change.structure}>{change.structure}</span>
+          <span className={`tag ${change.kind === "insert" || change.kind === "array_length" ? "ok" : "warn"}`}>{ALIGN_KINDS[change.kind] ?? change.kind}</span>
+          <span className="mono truncate" title={change.fields.join(", ")}>{change.kind === "unknown_block" ? <>{change.fields[0]} <span className="muted">replaces {change.fields.slice(1).join(", ")}</span></> : change.fields.join(", ")}</span>
+          <span className="mono truncate" title={change.after}>{change.after ?? "(start)"}</span>
+          <span className={change.delta > 0 ? "positive" : "negative"} title={change.items ? `${change.items[0]} → ${change.items[1]} items` : undefined}>{signed(change.delta)}{change.items ? ` · ${change.items[0]} → ${change.items[1]} items` : change.width !== undefined && change.kind !== "insert" ? ` → ${change.width} B` : ""}</span>
+          <span title="Quest instances that agree, of those that showed this boundary">{count(change.support)} / {count(change.seen)}</span>
+        </div>)}
+      </div>}
+      {proposal.unresolved.length > 0 && <div className="task-alignment-unresolved">
+        <b>Not placed automatically</b>
+        {proposal.unresolved.map((item, index) => <div key={`${item.structure}:${index}`}><span className="mono truncate" title={`${item.structure}: ${item.after} … ${item.before}`}>{item.structure}: {item.after} … {item.before}</span><span className={item.delta > 0 ? "positive" : "negative"}>{signed(item.delta)}</span><span className="muted">{item.reason}</span></div>)}
+        <small>These stay as they are. After applying, the analysis shows where reading still stops; continue there with Baseline field…, Counted array… or the candidates below.</small>
+      </div>}
+      <footer>
+        {proposal.operations.length ? <>
+          <span>{proposal.operations.length} layout operation{proposal.operations.length === 1 ? "" : "s"} on v{proposal.referenceVersion}. Applying {patched ? "replaces the current user layout patch, " : ""}stores the patch and checks every root; nothing in the file changes.</span>
+          <button className="btn primary" onClick={onApply} disabled={disabled}><WandSparkles size={14}/> Apply proposal</button>
+        </> : proposal.unresolved.length ? <span>No change could be placed safely. See the list above.</span> : <>
+          <span>The quests line up without any layout change.</span>
+          {!patched && <button className="btn primary" onClick={() => onUseLayout(proposal.referenceVersion)} disabled={disabled}><Check size={14}/> Use the v{proposal.referenceVersion} layout</button>}
+        </>}
+      </footer>
+    </>}
+  </section>;
+}

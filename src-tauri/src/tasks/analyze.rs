@@ -203,6 +203,33 @@ pub fn source_version(path: impl AsRef<Path>) -> Result<SourceVersion, String> {
     Ok(SourceVersion { version, supported: supported_versions().contains(&version) })
 }
 
+/// How well one built-in layout reads a sample of a task set.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LayoutProbe {
+    pub version: u32,
+    pub sampled: usize,
+    pub exact: usize,
+}
+
+/// Tries every built-in layout on quests spread over the file (as each reads its own version), best first.
+pub fn probe_layouts(path: impl AsRef<Path>) -> Result<Vec<LayoutProbe>, String> {
+    const SAMPLE: usize = 150;
+    let container = TaskContainer::open(path)?;
+    let roots: Vec<(usize, usize)> = container.packs.iter().enumerate().flat_map(|(pack, info)| (0..info.root_count()).map(move |root| (pack, root))).collect();
+    let step = (roots.len() / SAMPLE).max(1);
+    let sample: Vec<Vec<u8>> = roots.iter().step_by(step).take(SAMPLE).map(|&(pack, root)| container.root(pack, root)).collect::<Result<_, _>>()?;
+    let version = container.header.version;
+    let mut probes = Vec::new();
+    for &candidate in supported_versions() {
+        let schema = schema_for_version(candidate)?.frozen_at(candidate);
+        let exact = sample.iter().filter(|bytes| decode_exact(&schema, bytes, version).is_ok_and(|node| node.encode().is_ok_and(|encoded| &encoded == *bytes))).count();
+        probes.push(LayoutProbe { version: candidate, sampled: sample.len(), exact });
+    }
+    probes.sort_by_key(|probe| (std::cmp::Reverse(probe.exact), probe.version.abs_diff(version)));
+    Ok(probes)
+}
+
 pub fn analyze(path: impl AsRef<Path>, baseline_version: u32) -> Result<AnalysisReport, String> {
     let schema = schema_for_version(baseline_version)
         .map_err(|_| format!("v{baseline_version} is not a supported task-analysis baseline"))?;

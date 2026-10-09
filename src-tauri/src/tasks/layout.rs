@@ -171,9 +171,7 @@ impl UserTaskLayout {
         if !supported_versions().contains(&self.base_version) {
             return Err(format!("v{} is not a verified task-layout baseline", self.base_version));
         }
-        if self.base_version > self.task_version {
-            return Err(format!("base v{} is newer than target v{}", self.base_version, self.task_version));
-        }
+        // The base may be newer than the file: a newer built-in layout can read an older export.
         for operation in &self.operations {
             let field = match operation {
                 PatchOperation::InsertAfter { field, .. } => Some(field),
@@ -188,7 +186,7 @@ impl UserTaskLayout {
                 return Err(format!("Task field {:?} cannot use a version condition in a version-specific user layout", field.name));
             }
         }
-        schema_for_version(self.base_version)?.with_operations(&self.operations)
+        schema_for_version(self.base_version)?.frozen_at(self.base_version).with_operations(&self.operations)
     }
 
     pub fn add_fixed(&mut self, structure: String, after_field: String, name: String, width: usize, field_type: &str) -> Result<Schema, String> {
@@ -420,9 +418,6 @@ pub fn schema_view(root: &Path, version: u32, baseline_version: u32) -> Result<S
     } else {
         if !supported_versions().contains(&baseline_version) {
             return Err(format!("v{baseline_version} is not a verified task-layout baseline"));
-        }
-        if baseline_version > version {
-            return Err(format!("base v{baseline_version} is newer than target v{version}"));
         }
         (baseline_version, "baseline".to_string(), schema_for_version(baseline_version)?, Vec::new())
     };

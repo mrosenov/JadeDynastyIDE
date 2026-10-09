@@ -203,6 +203,11 @@ both the matching server and client started successfully without a crash.
 
 ## Milestone 9: unsupported-version analyzer and schema editor
 
+Update (October 2026): the analyzer first probes every built-in layout on a sample and offers one that
+reads it exactly, and **Align with a supported task set** (`tasks/align.rs`) proposes a complete user
+patch (new raw `unknown_v<ver>_N` fields, removals, resizes, unknown blocks) with evidence and an
+unresolved list. User layouts are frozen at their base version, so the base may be newer than the file.
+
 **Complete (October 2026).** Unsupported files now open in a read-only analyzer with selectable
 v165/v172/v184 baselines, parallel whole-file root and byte coverage, first-failure offsets and
 per-pack results. A second supported task set can be compared by root ID, with added/removed/renamed
@@ -242,6 +247,47 @@ Build the workflow for future task versions after the known parsers and saver ar
 
 Saving remains unavailable until the candidate schema parses every record, passes an exact no-edit
 round trip and is explicitly accepted.
+
+### Paused: v186 (Jade Dynasty Reborn) alignment — status October 9, 2026
+
+Work stopped here at the user's request; nothing is committed yet. Files: `tasks/align.rs` (new),
+`tasks/analyze.rs` (`probe_layouts`), `lib.rs` (`probe_task_layouts`, `propose_task_alignment`,
+`apply_task_alignment`), `TasksEditor.tsx` (`LayoutProbes`, `AlignmentSection`), `api.ts`, `types.ts`,
+`App.css`. All 167 Rust tests, `tsc` and the Vite build passed at the pause.
+
+Fixtures: target `E:/Games/Jade Dynasty Reborn/element/data/tasks.data` (v186, 18,160 roots),
+reference `E:/Games/Elite Jade Dynasty - HDN/element/data/tasks.data` (v184). The user's friend has a
+v186 tool but cannot share its layout; they say v186 is a pre-release build from before the x64 client.
+
+What the data shows (v186 vs v184):
+
+- Every single-task root is exactly 679 bytes smaller (10,284 of 17,882 paired roots); roots with
+  subtasks are smaller by exact multiples. The change is purely in the fixed layout.
+- Header (`TASK_FIXED_V184`): about −387 bytes. Nearly all `*_pointer` fields and vector
+  pointers/capacities are absent; `have_fail_items` 16 → 4, `life_again_*_occupation` 45 → 1,
+  `title_wanted` shorter. The four `COMPARE_EXPRESSION` blocks (finish/premise compares) lose their
+  vector pointers too (solved by flattening).
+- Each `AWARD_DATA`: −144 measured by hand (quest 30): −68 before `transform_id`, −84 between
+  `transform_id` and `candidates`, **+8 after the candidate list**. The solver gets −148 with no tail
+  insertion, because its anchor (`experience_coefficient_2`) sits among three equal 1.0 coefficients
+  and can match one field off (4 bytes); `experience` (u64) does not match in v186 either, so the
+  award's first fields probably changed too.
+- The task record gets a compensating `+4 after change_types` from the event fallback.
+- Texts, dialogs, scaled awards and timetables are unchanged.
+
+Result at the pause: 406/1,111 sampled quests exact, about 30% of all roots
+(`finds_shorter_lists_and_missing_pointers_in_v186`). About 12,000 of the failures stop at
+`success_award.extra_tribute`.
+
+Next steps when resuming:
+
+1. Settle the award block: pick quests whose award tail (after `transform_id`, and after
+   `candidates`) holds non-zero values, and dump both files side by side (the probe pattern in
+   AGENTS.md). Find the 8 extra bytes after `candidates` and the true head change (gold/experience).
+2. Then either fix the anchor ambiguity in `solve_flat` (an anchor from a later distinctive field,
+   or the backward pass reaching the start) or add the confirmed facts as manual patch operations.
+3. Rerun the decode statistics over all roots (decode every root with the patched schema and group
+   `decode_prefix_diagnostic` failures by field), aiming for 100% before accepting the layout.
 
 ## Later work
 

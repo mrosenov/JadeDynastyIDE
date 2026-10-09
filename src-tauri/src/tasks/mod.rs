@@ -1,5 +1,6 @@
 //! Static task templates stored in `tasks.data` and its numbered packs.
 
+pub mod align;
 pub mod analyze;
 pub mod browser;
 pub mod compare;

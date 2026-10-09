@@ -69,6 +69,8 @@ import type {
   TaskFieldCandidateReport,
   TaskLayoutPatch,
   TaskLayoutPatchReport,
+  TaskLayoutProbe,
+  TaskAlignProposal,
   TaskLayoutExportReport,
   TaskLayoutCondition,
   TaskSchemaView,
@@ -123,6 +125,9 @@ export const setTaskLayoutOperationConditions = (path: string, index: number, co
   invoke<TaskLayoutPatchReport>("set_task_layout_operation_conditions", { path, index, conditions: conditions.map(({ field, operator, value }) => ({ field, operator, value })) });
 export const exportTaskLayoutPatch = (version: number, targetPath: string) => invoke<TaskLayoutExportReport>("export_task_layout_patch", { version, targetPath });
 export const importTaskLayoutPatch = (tasksPath: string, patchPath: string) => invoke<TaskLayoutPatchReport>("import_task_layout_patch", { tasksPath, patchPath });
+export const probeTaskLayouts = (path: string) => invoke<TaskLayoutProbe[]>("probe_task_layouts", { path });
+export const proposeTaskAlignment = (path: string, referencePath: string) => invoke<TaskAlignProposal>("propose_task_alignment", { path, referencePath });
+export const applyTaskAlignment = (path: string, baseVersion: number, operations: unknown[]) => invoke<TaskLayoutPatchReport>("apply_task_alignment", { path, baseVersion, operations });
 export const removeTaskLayoutOperation = (path: string, index: number) => invoke<TaskLayoutPatchReport>("remove_task_layout_operation", { path, index });
 /** Decodes one root lazily, then selects a task in its recursive hierarchy. */
 export const getTask = (pack: number, root: number, path: number[]) => invoke<TaskDetail>("get_task", { pack, root, path });

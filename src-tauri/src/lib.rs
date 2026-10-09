@@ -179,6 +179,39 @@ async fn task_source_version(path: String, state: State<'_, AppState>) -> Result
     }).await.map_err(|error| error.to_string())?
 }
 
+/// How well each built-in layout reads a sample of an unsupported task set.
+#[tauri::command]
+async fn probe_task_layouts(path: String) -> Result<Vec<tasks::analyze::LayoutProbe>, String> {
+    tauri::async_runtime::spawn_blocking(move || tasks::analyze::probe_layouts(path)).await.map_err(|error| error.to_string())?
+}
+
+/// Proposes a layout patch by aligning the open unsupported task set with a supported one.
+#[tauri::command]
+async fn propose_task_alignment(path: String, reference_path: String) -> Result<tasks::align::AlignProposal, String> {
+    tauri::async_runtime::spawn_blocking(move || tasks::align::propose(std::path::Path::new(&path), std::path::Path::new(&reference_path))).await.map_err(|error| error.to_string())?
+}
+
+/// Replaces the user layout patch with `operations` on `base_version` and checks every root.
+#[tauri::command]
+async fn apply_task_alignment(path: String, base_version: u32, operations: Vec<tasks::schema::PatchOperation>, state: State<'_, AppState>) -> Result<tasks::layout::LayoutReport, String> {
+    let user_dir = state.user_dir.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let source = tasks::analyze::source_version(&path)?;
+        if source.supported {
+            return Err(format!("tasks.data v{} already has a verified built-in layout", source.version));
+        }
+        if operations.is_empty() {
+            return Err("The proposal has no layout changes; analyze with the reference layout instead".into());
+        }
+        let mut layout = tasks::layout::UserTaskLayout::new(source.version, base_version)?;
+        layout.operations = operations;
+        let schema = layout.validate()?;
+        let analysis = tasks::analyze::analyze_with_schema(&path, &schema, source.version, layout.base_version)?;
+        tasks::layout::save(&user_dir, &layout)?;
+        Ok(tasks::layout::LayoutReport { patch: tasks::layout::summary(&user_dir, &layout), analysis })
+    }).await.map_err(|error| error.to_string())?
+}
+
 #[tauri::command]
 async fn analyze_tasks(path: String, baseline_version: u32) -> Result<tasks::analyze::AnalysisReport, String> {
     tauri::async_runtime::spawn_blocking(move || tasks::analyze::analyze(path, baseline_version)).await.map_err(|error| error.to_string())?
@@ -1437,6 +1470,9 @@ pub fn run() {
             edit_task_fields,
             edit_task_array,
             task_search_fields,
+            probe_task_layouts,
+            propose_task_alignment,
+            apply_task_alignment,
             task_dialogs,
             preview_task_id_change,
             change_task_id,
