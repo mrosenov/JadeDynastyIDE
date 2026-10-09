@@ -573,27 +573,31 @@ pub fn decode_prefix_with_limits(
 /// root task's `subtask_count`.
 pub fn probe_root_integer(schema: &Schema, bytes: &[u8], version: u32, field_name: &str) -> Result<i128, String> {
     schema.validate()?;
-    probe_root_integer_validated(schema, bytes, version, field_name)
+    probe_root_integer_validated(schema, bytes, version, field_name, &probe_needed_names(schema))
 }
 
-pub(crate) fn probe_root_integer_validated(schema: &Schema, bytes: &[u8], version: u32, field_name: &str) -> Result<i128, String> {
+/// `needed` is `probe_needed_names(schema)`, built once for a whole scan.
+pub(crate) fn probe_root_integer_validated(schema: &Schema, bytes: &[u8], version: u32, field_name: &str, needed: &NameSet) -> Result<i128, String> {
     let definition = schema.structs.get(&schema.root)
         .ok_or_else(|| format!("unknown root structure {:?}", schema.root))?;
-    let mut decoder = ProbeDecoder { schema, bytes, version, limits: Limits::default(), position: 0, tasks: None, task_path: Vec::new(), task_stack: Vec::new(), task_bases: Vec::new(), needed: probe_needed_names(schema) };
+    let mut decoder = ProbeDecoder::new(schema, bytes, version, needed, false);
     let mut scope = HashMap::<String, i128>::new();
     for field in &definition.fields {
         let path = format!("{}.{}", schema.root, field.name);
         if !conditions_match(&field.when, version, &scope, &path)? {
             continue;
         }
-        let numeric = decoder.value(&field.ty, &path, &scope, 1)?;
+        decoder.segments.push(Segment::Name(&field.name));
+        let numeric = decoder.value(&field.ty, &scope, 1);
+        decoder.segments.pop();
+        let numeric = numeric?;
         if field.name == field_name {
             return match numeric {
                 ProbeNumeric::Integer(value) => Ok(value),
                 _ => Err(format!("{path}: requested field is not an integer")),
             };
         }
-        collect_probe_numeric(&field.name, numeric, &mut scope, &decoder.needed);
+        collect_probe_numeric(&field.name, numeric, &mut scope, decoder.needed);
     }
     Err(format!("root structure {:?} has no field {field_name:?}", schema.root))
 }
@@ -618,21 +622,37 @@ pub(crate) struct ProbedTaskReference {
     pub element: bool,
 }
 
-pub(crate) fn probe_task_index_validated(schema: &Schema, bytes: &[u8], version: u32) -> Result<Vec<ProbedTask>, String> {
-    let root = schema.root.clone();
-    let mut decoder = ProbeDecoder {
-        schema,
-        bytes,
-        version,
-        limits: Limits::default(),
-        position: 0,
-        tasks: Some(Vec::new()),
-        task_path: Vec::new(),
-        task_stack: Vec::new(),
-        task_bases: Vec::new(),
-        needed: probe_needed_names(schema),
-    };
-    decoder.named(&root, &root, 0)?;
+/// `needed` is `probe_needed_names(schema)`, built once for a whole scan.
+pub(crate) fn probe_task_index_validated(schema: &Schema, bytes: &[u8], version: u32, needed: &NameSet) -> Result<Vec<ProbedTask>, String> {
+    let mut decoder = ProbeDecoder::new(schema, bytes, version, needed, true);
+    decoder.named(&schema.root, 0)?;
+    if decoder.position != bytes.len() {
+        return Err(format!("task record has {} trailing bytes after byte {}", bytes.len() - decoder.position, decoder.position));
+    }
+    Ok(decoder.tasks.unwrap_or_default())
+}
+
+/// A stored value met by `visit_task_leaves`.
+pub(crate) enum LeafValue<'b> {
+    /// Integers and flags (false 0, true 1).
+    Int(i128),
+    Float(f64),
+    /// UTF-16LE text, possibly followed by a terminator and padding.
+    Text(&'b [u8]),
+    /// Raw bytes, pointers and other blocks.
+    Bytes,
+}
+
+/// Called for every stored value with the task's index in the returned list, the
+/// field path from that task (`monsters_wanted[1].monster_id`) and the value.
+pub(crate) type LeafVisitor<'v> = dyn FnMut(usize, &LeafPath<'_, '_>, LeafValue<'_>) + 'v;
+
+/// Walks a root like the index probe, without building a tree, and hands every
+/// value of every task and subtask to `visitor`. Returns the tasks in visit order.
+pub(crate) fn visit_task_leaves(schema: &Schema, bytes: &[u8], version: u32, needed: &NameSet, visitor: &mut LeafVisitor<'_>) -> Result<Vec<ProbedTask>, String> {
+    let mut decoder = ProbeDecoder::new(schema, bytes, version, needed, true);
+    decoder.visitor = Some(visitor);
+    decoder.named(&schema.root, 0)?;
     if decoder.position != bytes.len() {
         return Err(format!("task record has {} trailing bytes after byte {}", bytes.len() - decoder.position, decoder.position));
     }
@@ -648,8 +668,31 @@ enum ProbeNumeric {
 /// Every name a condition or count can look up, with each dotted suffix
 /// (`fixed.has_signature` also needs `has_signature` inside `fixed`). The probe
 /// keeps only these, instead of every numeric field of the header.
-fn probe_needed_names(schema: &Schema) -> HashSet<String> {
-    fn add(name: &str, needed: &mut HashSet<String>) {
+/// FNV-1a: the probe looks up a field name for every field it reads, and SipHash
+/// dominated that in debug builds.
+#[derive(Default, Clone, Copy)]
+pub(crate) struct NameHasher(u64);
+
+impl std::hash::Hasher for NameHasher {
+    fn finish(&self) -> u64 {
+        self.0
+    }
+
+    fn write(&mut self, bytes: &[u8]) {
+        let mut hash = if self.0 == 0 { 0xcbf2_9ce4_8422_2325 } else { self.0 };
+        for byte in bytes {
+            hash ^= u64::from(*byte);
+            hash = hash.wrapping_mul(0x0100_0000_01b3);
+        }
+        self.0 = hash;
+    }
+}
+
+/// Field names the probe keeps (`probe_needed_names`).
+pub(crate) type NameSet = HashSet<String, std::hash::BuildHasherDefault<NameHasher>>;
+
+pub(crate) fn probe_needed_names(schema: &Schema) -> NameSet {
+    fn add(name: &str, needed: &mut NameSet) {
         let mut rest = name;
         loop {
             needed.insert(rest.to_string());
@@ -659,7 +702,7 @@ fn probe_needed_names(schema: &Schema) -> HashSet<String> {
             }
         }
     }
-    fn walk(ty: &FieldType, needed: &mut HashSet<String>) {
+    fn walk(ty: &FieldType, needed: &mut NameSet) {
         match ty {
             FieldType::CountedArray { count_field, item } => {
                 add(count_field, needed);
@@ -670,7 +713,7 @@ fn probe_needed_names(schema: &Schema) -> HashSet<String> {
             _ => {}
         }
     }
-    let mut needed = HashSet::new();
+    let mut needed = NameSet::default();
     add("subtask_count", &mut needed);
     // Talk options: `parameter` is a task reference when `id` names a task function.
     add("id", &mut needed);
@@ -687,7 +730,7 @@ fn probe_needed_names(schema: &Schema) -> HashSet<String> {
     needed
 }
 
-fn collect_probe_numeric(name: &str, numeric: ProbeNumeric, scope: &mut HashMap<String, i128>, needed: &HashSet<String>) {
+fn collect_probe_numeric(name: &str, numeric: ProbeNumeric, scope: &mut HashMap<String, i128>, needed: &NameSet) {
     match numeric {
         ProbeNumeric::None => {}
         ProbeNumeric::Integer(value) => {
@@ -706,7 +749,100 @@ fn collect_probe_numeric(name: &str, numeric: ProbeNumeric, scope: &mut HashMap<
     }
 }
 
-struct ProbeDecoder<'a> {
+/// One step of a probe path: a field name or an array index.
+#[derive(Debug, Clone, Copy)]
+pub(crate) enum Segment<'a> {
+    Name(&'a str),
+    Index(usize),
+}
+
+fn write_segments(segments: &[Segment<'_>], out: &mut String) {
+    for segment in segments {
+        match segment {
+            Segment::Name(name) => {
+                if !out.is_empty() {
+                    out.push('.');
+                }
+                out.push_str(name);
+            }
+            Segment::Index(index) => {
+                out.push('[');
+                out.push_str(&index.to_string());
+                out.push(']');
+            }
+        }
+    }
+}
+
+/// The path of a value from the task that holds it (`monsters_wanted[1].monster_id`),
+/// kept as segments so a visitor only builds the strings it needs.
+pub(crate) struct LeafPath<'s, 'a> {
+    segments: &'s [Segment<'a>],
+}
+
+impl LeafPath<'_, '_> {
+    /// The last field name (`monster_id`; `premise_tasks` for `fixed.premise_tasks[3]`).
+    pub fn last_name(&self) -> &str {
+        self.segments.iter().rev().find_map(|segment| match segment {
+            Segment::Name(name) => Some(*name),
+            Segment::Index(_) => None,
+        }).unwrap_or("")
+    }
+
+    pub fn has_name(&self, name: &str) -> bool {
+        self.segments.iter().any(|segment| matches!(segment, Segment::Name(candidate) if *candidate == name))
+    }
+
+    /// Without indexes: `monsters_wanted.monster_id`.
+    pub fn plain(&self) -> String {
+        let mut out = String::new();
+        for segment in self.segments {
+            if let Segment::Name(name) = segment {
+                if !out.is_empty() {
+                    out.push('.');
+                }
+                out.push_str(name);
+            }
+        }
+        out
+    }
+
+    /// With indexes: `monsters_wanted[1].monster_id`.
+    pub fn indexed(&self) -> String {
+        let mut out = String::new();
+        write_segments(self.segments, &mut out);
+        out
+    }
+
+    /// How many field names the path has (indexes not counted).
+    pub fn name_count(&self) -> usize {
+        self.segments.iter().filter(|segment| matches!(segment, Segment::Name(_))).count()
+    }
+
+    pub fn is_indexed(&self) -> bool {
+        self.segments.iter().any(|segment| matches!(segment, Segment::Index(_)))
+    }
+
+    /// The indexed path through the first `names` field names and their indexes:
+    /// the row of a list (`success_award.candidates[2].items[0]` for 3 names).
+    pub fn prefix(&self, names: usize) -> String {
+        let mut seen = 0;
+        let mut end = 0;
+        for (position, segment) in self.segments.iter().enumerate() {
+            match segment {
+                Segment::Name(_) if seen == names => break,
+                Segment::Name(_) => seen += 1,
+                Segment::Index(_) => {}
+            }
+            end = position + 1;
+        }
+        let mut out = String::new();
+        write_segments(&self.segments[..end], &mut out);
+        out
+    }
+}
+
+struct ProbeDecoder<'a, 'v> {
     schema: &'a Schema,
     bytes: &'a [u8],
     version: u32,
@@ -715,19 +851,62 @@ struct ProbeDecoder<'a> {
     tasks: Option<Vec<ProbedTask>>,
     task_path: Vec<usize>,
     task_stack: Vec<usize>,
-    task_bases: Vec<String>,
+    /// Where each open task starts in `segments`.
+    task_depths: Vec<usize>,
+    /// The current path, built as the walk goes (strings only on demand).
+    segments: Vec<Segment<'a>>,
     /// Names conditions and counts read (see `probe_needed_names`).
-    needed: HashSet<String>,
+    needed: &'a NameSet,
+    /// Receives every value (advanced search); the index probe leaves it out.
+    visitor: Option<&'v mut LeafVisitor<'v>>,
 }
 
-impl ProbeDecoder<'_> {
-    fn named(&mut self, structure: &str, path: &str, depth: usize) -> Result<HashMap<String, i128>, String> {
-        self.check_depth(depth, path)?;
-        let definition = self.schema.structs.get(structure)
-            .ok_or_else(|| format!("{path}: unknown structure {structure:?}"))?;
-        let task_index = if self.tasks.is_some() && structure == self.schema.root {
-            let heading = self.bytes.get(self.position..self.position.saturating_add(64))
-                .ok_or_else(|| format!("{path}: task heading is truncated at byte {}", self.position))?;
+impl<'a> ProbeDecoder<'a, '_> {
+    fn new(schema: &'a Schema, bytes: &'a [u8], version: u32, needed: &'a NameSet, tasks: bool) -> Self {
+        Self {
+            schema,
+            bytes,
+            version,
+            limits: Limits::default(),
+            position: 0,
+            tasks: tasks.then(Vec::new),
+            task_path: Vec::new(),
+            task_stack: Vec::new(),
+            task_depths: Vec::new(),
+            segments: vec![Segment::Name(&schema.root)],
+            needed,
+            visitor: None,
+        }
+    }
+
+    /// The full current path, for messages.
+    fn path(&self) -> String {
+        let mut out = String::new();
+        write_segments(&self.segments, &mut out);
+        out
+    }
+
+    /// Prefixes a message of a path-less helper (": …") with the current path.
+    fn locate(&self, error: String) -> String {
+        format!("{}{error}", self.path())
+    }
+
+    fn fail<T>(&self, message: impl std::fmt::Display) -> Result<T, String> {
+        Err(format!("{}: {message}", self.path()))
+    }
+
+    /// Hands a value to the visitor with its path from the task that holds it.
+    fn visit(&mut self, value: LeafValue<'_>) {
+        let (Some(visitor), Some(&index), Some(&depth)) = (self.visitor.as_mut(), self.task_stack.last(), self.task_depths.last()) else { return };
+        visitor(index, &LeafPath { segments: &self.segments[depth..] }, value);
+    }
+
+    fn named(&mut self, structure: &'a str, depth: usize) -> Result<HashMap<String, i128>, String> {
+        self.check_depth(depth)?;
+        let schema = self.schema;
+        let Some(definition) = schema.structs.get(structure) else { return self.fail(format!("unknown structure {structure:?}")) };
+        let task_index = if self.tasks.is_some() && structure == schema.root {
+            let Some(heading) = self.bytes.get(self.position..self.position.saturating_add(64)) else { return self.fail(format!("task heading is truncated at byte {}", self.position)) };
             let units = heading[4..].chunks_exact(2)
                 .map(|pair| u16::from_le_bytes([pair[0], pair[1]]))
                 .collect::<Vec<_>>();
@@ -744,57 +923,54 @@ impl ProbeDecoder<'_> {
             tasks.push(task);
             let index = tasks.len() - 1;
             self.task_stack.push(index);
-            self.task_bases.push(path.to_string());
+            self.task_depths.push(self.segments.len());
             Some(index)
         } else {
             None
         };
         let mut scope = HashMap::<String, i128>::new();
         for field in &definition.fields {
-            if !conditions_match(&field.when, self.version, &scope, path)? {
+            if !field.when.is_empty() && !conditions_match(&field.when, self.version, &scope, "").map_err(|error| self.locate(error))? {
                 continue;
             }
-            let child_path = format!("{path}.{}", field.name);
-            let numeric = self.value(&field.ty, &child_path, &scope, depth + 1)?;
-            collect_probe_numeric(&field.name, numeric, &mut scope, &self.needed);
+            self.segments.push(Segment::Name(&field.name));
+            let numeric = self.value(&field.ty, &scope, depth + 1);
+            self.segments.pop();
+            collect_probe_numeric(&field.name, numeric?, &mut scope, self.needed);
         }
         if let Some(index) = task_index {
             let count = scope.get("subtask_count").copied().unwrap_or(0);
-            let child_count = usize::try_from(count).map_err(|_| format!("{path}: invalid subtask count {count}"))?;
+            let Ok(child_count) = usize::try_from(count) else { return self.fail(format!("invalid subtask count {count}")) };
             self.tasks.as_mut().unwrap()[index].child_count = child_count;
             self.task_stack.pop();
-            self.task_bases.pop();
+            self.task_depths.pop();
         }
         Ok(scope)
     }
 
-    fn value(
-        &mut self,
-        ty: &FieldType,
-        path: &str,
-        scope: &HashMap<String, i128>,
-        depth: usize,
-    ) -> Result<ProbeNumeric, String> {
-        self.check_depth(depth, path)?;
+    fn value(&mut self, ty: &'a FieldType, scope: &HashMap<String, i128>, depth: usize) -> Result<ProbeNumeric, String> {
+        self.check_depth(depth)?;
         match ty {
-            FieldType::Named { name } => Ok(ProbeNumeric::Struct(self.named(name, path, depth)?)),
+            FieldType::Named { name } => Ok(ProbeNumeric::Struct(self.named(name, depth)?)),
             FieldType::FixedArray { len, item } => {
-                self.array(*len, item, path, scope, depth)?;
+                self.array(*len, item, scope, depth)?;
                 Ok(ProbeNumeric::None)
             }
             FieldType::CountedArray { count_field, item } => {
-                let count = array_count(scope, count_field, path, self.limits.max_array_items)?;
-                self.array(count, item, path, scope, depth)?;
+                let count = array_count(scope, count_field, "", self.limits.max_array_items).map_err(|error| self.locate(error))?;
+                self.array(count, item, scope, depth)?;
                 Ok(ProbeNumeric::None)
             }
             FieldType::RecursiveArray { count_field, target } => {
-                let count = array_count(scope, count_field, path, self.limits.max_array_items)?;
+                let count = array_count(scope, count_field, "", self.limits.max_array_items).map_err(|error| self.locate(error))?;
                 for index in 0..count {
                     let tracks_task = self.tasks.is_some() && target == &self.schema.root;
                     if tracks_task {
                         self.task_path.push(index);
                     }
-                    let result = self.named(target, &format!("{path}[{index}]"), depth + 1);
+                    self.segments.push(Segment::Index(index));
+                    let result = self.named(target, depth + 1);
+                    self.segments.pop();
                     if tracks_task {
                         self.task_path.pop();
                     }
@@ -803,92 +979,109 @@ impl ProbeDecoder<'_> {
                 Ok(ProbeNumeric::None)
             }
             FieldType::CountedUtf16 { count_field, unit } => {
-                let count = array_count(scope, count_field, path, self.limits.max_text_units.saturating_mul(2))?;
+                let count = array_count(scope, count_field, "", self.limits.max_text_units.saturating_mul(2)).map_err(|error| self.locate(error))?;
                 let units = match unit {
                     TextLengthUnit::Utf16Units => count,
                     TextLengthUnit::Bytes if count % 2 == 0 => count / 2,
-                    TextLengthUnit::Bytes => return Err(format!("{path}: odd UTF-16 byte length {count}")),
+                    TextLengthUnit::Bytes => return self.fail(format!("odd UTF-16 byte length {count}")),
                 };
-                self.check_text(units, path)?;
-                self.take(units.checked_mul(2).ok_or_else(|| format!("{path}: UTF-16 byte length overflow"))?, path)?;
+                self.check_text(units)?;
+                let Some(length) = units.checked_mul(2) else { return self.fail("UTF-16 byte length overflow") };
+                let text = self.take(length)?;
+                self.visit(LeafValue::Text(text));
                 Ok(ProbeNumeric::None)
             }
             FieldType::CountedBytes { count_field } => {
-                let count = array_count(scope, count_field, path, self.limits.max_blob_bytes)?;
-                self.take(count, path)?;
+                let count = array_count(scope, count_field, "", self.limits.max_blob_bytes).map_err(|error| self.locate(error))?;
+                self.take(count)?;
+                self.visit(LeafValue::Bytes);
                 Ok(ProbeNumeric::None)
             }
-            _ => self.leaf(ty, path, scope),
+            _ => self.leaf(ty, scope),
         }
     }
 
-    fn array(
-        &mut self,
-        count: usize,
-        item: &FieldType,
-        path: &str,
-        scope: &HashMap<String, i128>,
-        depth: usize,
-    ) -> Result<(), String> {
+    fn array(&mut self, count: usize, item: &'a FieldType, scope: &HashMap<String, i128>, depth: usize) -> Result<(), String> {
         if count > self.limits.max_array_items {
-            return Err(format!("{path}: array has {count} items; limit is {}", self.limits.max_array_items));
+            return self.fail(format!("array has {count} items; limit is {}", self.limits.max_array_items));
         }
         for index in 0..count {
-            self.value(item, &format!("{path}[{index}]"), scope, depth + 1)?;
+            self.segments.push(Segment::Index(index));
+            let result = self.value(item, scope, depth + 1);
+            self.segments.pop();
+            result?;
         }
         Ok(())
     }
 
-    fn leaf(&mut self, ty: &FieldType, path: &str, scope: &HashMap<String, i128>) -> Result<ProbeNumeric, String> {
+    fn leaf(&mut self, ty: &FieldType, scope: &HashMap<String, i128>) -> Result<ProbeNumeric, String> {
         let numeric = match ty {
-            FieldType::I8 => Some(i8::from_le_bytes(self.take_array(path)?) as i128),
-            FieldType::U8 => Some(u8::from_le_bytes(self.take_array(path)?) as i128),
-            FieldType::Bool8 => Some((u8::from_le_bytes(self.take_array(path)?) != 0) as i128),
-            FieldType::I16 => Some(i16::from_le_bytes(self.take_array(path)?) as i128),
-            FieldType::U16 => Some(u16::from_le_bytes(self.take_array(path)?) as i128),
-            FieldType::I32 => Some(i32::from_le_bytes(self.take_array(path)?) as i128),
-            FieldType::U32 => Some(u32::from_le_bytes(self.take_array(path)?) as i128),
-            FieldType::I64 => Some(i64::from_le_bytes(self.take_array(path)?) as i128),
-            FieldType::U64 => Some(u64::from_le_bytes(self.take_array(path)?) as i128),
-            FieldType::F32 => { self.take(4, path)?; None }
-            FieldType::F64 => { self.take(8, path)?; None }
+            FieldType::I8 => Some(i8::from_le_bytes(self.take_array()?) as i128),
+            FieldType::U8 => Some(u8::from_le_bytes(self.take_array()?) as i128),
+            FieldType::Bool8 => Some((u8::from_le_bytes(self.take_array()?) != 0) as i128),
+            FieldType::I16 => Some(i16::from_le_bytes(self.take_array()?) as i128),
+            FieldType::U16 => Some(u16::from_le_bytes(self.take_array()?) as i128),
+            FieldType::I32 => Some(i32::from_le_bytes(self.take_array()?) as i128),
+            FieldType::U32 => Some(u32::from_le_bytes(self.take_array()?) as i128),
+            FieldType::I64 => Some(i64::from_le_bytes(self.take_array()?) as i128),
+            FieldType::U64 => Some(u64::from_le_bytes(self.take_array()?) as i128),
+            FieldType::F32 => {
+                let value = f32::from_le_bytes(self.take_array()?);
+                self.visit(LeafValue::Float(value as f64));
+                None
+            }
+            FieldType::F64 => {
+                let value = f64::from_le_bytes(self.take_array()?);
+                self.visit(LeafValue::Float(value));
+                None
+            }
             FieldType::FixedUtf16 { units } => {
-                self.check_text(*units, path)?;
-                self.take(units.checked_mul(2).ok_or_else(|| format!("{path}: UTF-16 byte length overflow"))?, path)?;
+                self.check_text(*units)?;
+                let Some(length) = units.checked_mul(2) else { return self.fail("UTF-16 byte length overflow") };
+                let text = self.take(length)?;
+                self.visit(LeafValue::Text(text));
                 None
             }
             FieldType::PrefixedUtf16 { prefix, unit, terminated } => {
-                let count = self.read_count(*prefix, path)?;
+                let count = self.read_count(*prefix)?;
                 let units = match unit {
                     TextLengthUnit::Utf16Units => count,
                     TextLengthUnit::Bytes if count % 2 == 0 => count / 2,
-                    TextLengthUnit::Bytes => return Err(format!("{path}: odd UTF-16 byte length {count}")),
+                    TextLengthUnit::Bytes => return self.fail(format!("odd UTF-16 byte length {count}")),
                 };
-                self.check_text(units, path)?;
-                let value = self.take(units.checked_mul(2).ok_or_else(|| format!("{path}: UTF-16 byte length overflow"))?, path)?;
+                self.check_text(units)?;
+                let Some(length) = units.checked_mul(2) else { return self.fail("UTF-16 byte length overflow") };
+                let value = self.take(length)?;
                 if *terminated && value.get(value.len().saturating_sub(2)..) != Some(&[0, 0]) {
-                    return Err(format!("{path}: length-prefixed text has no terminator"));
+                    return self.fail("length-prefixed text has no terminator");
                 }
+                self.visit(LeafValue::Text(value));
                 None
             }
             FieldType::Bytes { len } | FieldType::Raw { len } => {
                 if *len > self.limits.max_blob_bytes {
-                    return Err(format!("{path}: byte block has {len} bytes; limit is {}", self.limits.max_blob_bytes));
+                    return self.fail(format!("byte block has {len} bytes; limit is {}", self.limits.max_blob_bytes));
                 }
-                self.take(*len, path)?;
+                self.take(*len)?;
+                self.visit(LeafValue::Bytes);
                 None
             }
-            _ => return Err(format!("{path}: expected a leaf type")),
+            _ => return self.fail("expected a leaf type"),
         };
-        if let Some(value) = numeric {
-            let semantic = path.rsplit('.').next().unwrap_or(path).split('[').next().unwrap_or("");
+        let Some(value) = numeric else { return Ok(ProbeNumeric::None) };
+        if self.visitor.is_some() {
+            self.visit(LeafValue::Int(value));
+            return Ok(ProbeNumeric::Integer(value));
+        }
+        if let (Some(&index), Some(&depth)) = (self.task_stack.last(), self.task_depths.last()) {
+            let here = LeafPath { segments: &self.segments[depth..] };
+            let semantic = here.last_name();
             let element = is_element_reference(semantic);
             let link = LINK_FIELDS.iter().position(|name| *name == semantic);
-            let option_task = semantic == "parameter" && path.contains(".options[") && scope.get("id").is_some_and(|id| is_task_option_function(*id));
+            let option_task = semantic == "parameter" && here.has_name("options") && scope.get("id").is_some_and(|id| is_task_option_function(*id));
             if is_task_reference(semantic) || option_task || element || link.is_some() {
-                if let (Some(index), Ok(target_id)) = (self.task_stack.last().copied(), u32::try_from(value)) {
-                    let base = self.task_bases.last().map(String::as_str).unwrap_or("");
-                    let field = path.strip_prefix(base).unwrap_or(path).trim_start_matches('.').to_string();
+                if let Ok(target_id) = u32::try_from(value) {
+                    let field = here.indexed();
                     let task = &mut self.tasks.as_mut().unwrap()[index];
                     match link {
                         Some(slot) if field == format!("fixed.{semantic}") => task.links.get_or_insert([0; 4])[slot] = target_id,
@@ -897,47 +1090,48 @@ impl ProbeDecoder<'_> {
                     }
                 }
             }
-            Ok(ProbeNumeric::Integer(value))
-        } else {
-            Ok(ProbeNumeric::None)
         }
+        Ok(ProbeNumeric::Integer(value))
     }
 
-    fn check_depth(&self, depth: usize, path: &str) -> Result<(), String> {
+    fn check_depth(&self, depth: usize) -> Result<(), String> {
         if depth > self.limits.max_depth {
-            Err(format!("{path}: nesting is deeper than {} levels", self.limits.max_depth))
+            self.fail(format!("nesting is deeper than {} levels", self.limits.max_depth))
         } else {
             Ok(())
         }
     }
 
-    fn check_text(&self, units: usize, path: &str) -> Result<(), String> {
+    fn check_text(&self, units: usize) -> Result<(), String> {
         if units > self.limits.max_text_units {
-            Err(format!("{path}: text has {units} UTF-16 units; limit is {}", self.limits.max_text_units))
+            self.fail(format!("text has {units} UTF-16 units; limit is {}", self.limits.max_text_units))
         } else {
             Ok(())
         }
     }
 
-    fn take(&mut self, len: usize, path: &str) -> Result<&[u8], String> {
-        let end = self.position.checked_add(len).ok_or_else(|| format!("{path}: byte offset overflow"))?;
-        let bytes = self.bytes.get(self.position..end).ok_or_else(|| {
-            format!("{path}: needs {len} bytes at offset {}, but the record ends at {}", self.position, self.bytes.len())
-        })?;
+    fn take(&mut self, len: usize) -> Result<&'a [u8], String> {
+        let Some(end) = self.position.checked_add(len) else { return self.fail("byte offset overflow") };
+        let bytes: &'a [u8] = self.bytes;
+        let Some(bytes) = bytes.get(self.position..end) else {
+            return self.fail(format!("needs {len} bytes at offset {}, but the record ends at {}", self.position, self.bytes.len()));
+        };
         self.position = end;
         Ok(bytes)
     }
 
-    fn take_array<const N: usize>(&mut self, path: &str) -> Result<[u8; N], String> {
-        Ok(self.take(N, path)?.try_into().unwrap())
+    fn take_array<const N: usize>(&mut self) -> Result<[u8; N], String> {
+        Ok(self.take(N)?.try_into().unwrap())
     }
 
-    fn read_count(&mut self, width: CountWidth, path: &str) -> Result<usize, String> {
+    fn read_count(&mut self, width: CountWidth) -> Result<usize, String> {
         match width {
-            CountWidth::U8 => Ok(u8::from_le_bytes(self.take_array(path)?) as usize),
-            CountWidth::U16 => Ok(u16::from_le_bytes(self.take_array(path)?) as usize),
-            CountWidth::U32 => usize::try_from(u32::from_le_bytes(self.take_array(path)?))
-                .map_err(|_| format!("{path}: text length does not fit this computer")),
+            CountWidth::U8 => Ok(u8::from_le_bytes(self.take_array()?) as usize),
+            CountWidth::U16 => Ok(u16::from_le_bytes(self.take_array()?) as usize),
+            CountWidth::U32 => match usize::try_from(u32::from_le_bytes(self.take_array()?)) {
+                Ok(count) => Ok(count),
+                Err(_) => self.fail("text length does not fit this computer"),
+            },
         }
     }
 }
@@ -1286,6 +1480,20 @@ fn encode_leaf(ty: &FieldType, value: &Value) -> Result<Vec<u8>, String> {
 mod tests {
     use super::*;
 
+    #[test]
+    fn leaf_paths_build_strings_on_demand() {
+        let segments = [Segment::Name("success_award"), Segment::Name("candidates"), Segment::Index(2), Segment::Name("items"), Segment::Index(0), Segment::Name("item_id")];
+        let path = LeafPath { segments: &segments };
+        assert_eq!(path.indexed(), "success_award.candidates[2].items[0].item_id");
+        assert_eq!(path.plain(), "success_award.candidates.items.item_id");
+        assert_eq!(path.last_name(), "item_id");
+        assert_eq!(path.prefix(3), "success_award.candidates[2].items[0]");
+        assert_eq!(path.prefix(2), "success_award.candidates[2]");
+        let list = [Segment::Name("fixed"), Segment::Name("premise_tasks"), Segment::Index(3)];
+        let path = LeafPath { segments: &list };
+        assert_eq!((path.last_name(), path.indexed(), path.is_indexed()), ("premise_tasks", "fixed.premise_tasks[3]".to_string(), true));
+    }
+
     fn field(name: &str, ty: FieldType) -> FieldDef {
         FieldDef::new(name, ty)
     }
@@ -1453,7 +1661,7 @@ mod tests {
         task(&mut bytes, 1, "Root", 99, 1);
         task(&mut bytes, 2, "Child", 1, 0);
 
-        let tasks = probe_task_index_validated(&layout, &bytes, 165).unwrap();
+        let tasks = probe_task_index_validated(&layout, &bytes, 165, &probe_needed_names(&layout)).unwrap();
         assert_eq!(tasks.len(), 2);
         assert_eq!(tasks[0].references, vec![ProbedTaskReference { field: "task_id".into(), target_id: 99, element: false }]);
         assert_eq!(tasks[1].references, vec![ProbedTaskReference { field: "task_id".into(), target_id: 1, element: false }]);

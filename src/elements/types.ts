@@ -1498,3 +1498,51 @@ export interface BulkReport {
 
 /** A row operation on a task list (`edit_task_array`). */
 export type TaskArrayEdit = { kind: "add" } | { kind: "clone"; index: number } | { kind: "remove"; index: number };
+
+/** A searchable task field (`task_search_fields`). */
+export interface TaskSearchField {
+  /** `success_award.candidates.items.item_id` */
+  path: string;
+  kind: "int" | "float" | "bool" | "text";
+  /** The lists the field sits in, outermost first. */
+  arrays: string[];
+  reference?: "task" | "element";
+  /** The same field in every award or dialog (`any:award:candidates.items.item_id`). */
+  any?: string;
+}
+
+export type TaskSearchOp = "eq" | "ne" | "lt" | "le" | "gt" | "ge" | "in" | "not_in" | "contains" | "starts" | "ends" | "has_flags" | "lacks_flags" | "empty" | "not_empty";
+
+export interface TaskSearchCondition {
+  /** A field path or an `any:` field. */
+  field: string;
+  op: TaskSearchOp;
+  value: string;
+  /** Must hold on the same list row as the condition before it. */
+  sameRow: boolean;
+}
+
+export type TaskSearchScope = { kind: "all" } | { kind: "top_level" } | { kind: "under"; pack: number; root: number; path: number[] };
+
+export type TaskSearchQuery =
+  | { mode: "conditions"; conditions: TaskSearchCondition[]; matchAll: boolean; scope: TaskSearchScope }
+  | { mode: "value"; value: string; referencesOnly: boolean; caseSensitive: boolean; scope: TaskSearchScope };
+
+export interface TaskSearchHit {
+  pack: number;
+  root: number;
+  path: number[];
+  id: number;
+  name: string;
+  matches: { field: string; value: string }[];
+  more: number;
+}
+
+export interface TaskSearchResults {
+  hits: TaskSearchHit[];
+  total: number;
+  scannedTasks: number;
+  scannedRoots: number;
+  truncated: boolean;
+  elapsedMs: number;
+}

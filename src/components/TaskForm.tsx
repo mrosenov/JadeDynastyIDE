@@ -58,7 +58,8 @@ const ENUM_FIELDS: Record<string, string> = {
 const MASK_FIELDS: Record<string, string> = { recommend_type: "task_recommend_type" };
 const SET_KEYS = [...new Set([...Object.values(ENUM_FIELDS), ...Object.values(MASK_FIELDS), "task_occupation", "task_friendship"])];
 const setCache = new Map<string, Promise<Map<number, string>>>();
-function loadSet(key: string) {
+/** A named set's names by value (enums) or by bit (masks); cached until `setsVersion` changes. */
+export function loadSet(key: string) {
   if (!setCache.has(key)) {
     // Enums map values to names, masks map bit numbers to names.
     setCache.set(key, namedSet(key).then((detail) => new Map(detail.set.flags ? detail.set.flags.map((flag) => [Number(flag.bit), flag.label] as [number, string]) : (detail.set.values ?? []).map((entry) => [Number(entry.value), entry.label] as [number, string]))).catch(() => {
@@ -694,6 +695,49 @@ const PLACED = new Set(Object.values(LAYOUT).flat().flatMap((group) => [
   ...("table" in group ? [group.table, group.count ?? ""] : []),
   ...("friendship" in group ? [group.friendship] : []),
 ]).concat(f("award_type_s", "award_type_f", "special_award", "life_again_one_occupation", "life_again_two_occupation", "life_again_thr_occupation")));
+
+/** The named set of a field, by its last name: enums, masks (`mask`), and class lists. */
+export function taskValueSet(name: string): { key: string; mask: boolean } | null {
+  if (ENUM_FIELDS[name]) return { key: ENUM_FIELDS[name], mask: false };
+  if (MASK_FIELDS[name]) return { key: MASK_FIELDS[name], mask: true };
+  if (name === "occupations" || name === "occupation") return { key: "task_occupation", mask: false };
+  return null;
+}
+
+const TAB_LABEL = Object.fromEntries(TASK_FORM_TABS.map((entry) => [entry.key, entry.label])) as Record<TaskFormTab, string>;
+const labelParts = (parts: string[]) => parts.filter((part) => part !== "awards").map(fieldLabel).join(" › ");
+
+/**
+ * Where a task field sits in the form: its tab, group and label. Used by the advanced search to name
+ * fields (`Objectives › Monsters to kill › Monster ID`) and to open a result on the right tab.
+ * Paths have no indexes; `any:award:…` and `any:dialog:…` stand for every award or dialog.
+ */
+export function describeTaskField(path: string): { tab: TaskFormTab; tabLabel: string; group: string; label: string } {
+  const result = (tab: TaskFormTab, group: string, label: string) => ({ tab, tabLabel: TAB_LABEL[tab], group, label });
+  const any = path.match(/^any:(award|dialog):(.+)$/);
+  if (any) return any[1] === "award" ? result("rewards", "Any award", labelParts(any[2].split("."))) : result("texts", "Any dialog", labelParts(any[2].split(".")));
+  const parts = path.split(".");
+  if (parts[0] === "texts") return result("texts", "Texts", labelParts(parts.slice(1)));
+  if (parts[0] === "dialogs") return result("texts", `Dialogs › ${fieldLabel(parts[1] ?? "")}`, labelParts(parts.slice(2)));
+  const source = AWARD_SOURCES.find((entry) => entry.field === parts[0]);
+  if (source) return result("rewards", source.label, labelParts(parts.slice(1)));
+  for (const [tab, groups] of Object.entries(LAYOUT) as [Exclude<TaskFormTab, "advanced" | "rewards">, Group[]][]) {
+    for (const group of groups) {
+      const exact = [...("grid" in group ? group.grid : []), ...("before" in group && group.before ? group.before : [])];
+      if (exact.includes(path)) return result(tab, group.title, fieldLabel(parts[parts.length - 1]));
+      const list = "table" in group ? group.table : "list" in group ? group.list : "classes" in group ? group.classes : "friendship" in group ? group.friendship : null;
+      if (list && (path === list || path.startsWith(list + "."))) return result(tab, group.title, path === list ? fieldLabel(parts[parts.length - 1]) : labelParts(path.slice(list.length + 1).split(".")));
+      if ("count" in group && group.count === path) return result(tab, group.title, fieldLabel(parts[parts.length - 1]));
+    }
+  }
+  if (["fixed.award_type_s", "fixed.award_type_f", "fixed.special_award"].includes(path)) return result("rewards", "Reward selector", fieldLabel(parts[1]));
+  if (parts[0] === "fixed") {
+    const rest = LAYOUT.requirements.find((group) => "rest" in group);
+    if (rest && "rest" in rest && rest.rest(parts[1])) return result("requirements", rest.title, labelParts(parts.slice(1)));
+    return result("advanced", "Header", labelParts(parts.slice(1)));
+  }
+  return result("advanced", "Other", labelParts(parts));
+}
 
 /** The quest as a form: labelled groups per tab, like the official editors. */
 export function TaskForm({ detail, tab, onEdit, onBatch, onRows, onEditSet, setsVersion, renderReference, referencedBy }: Props) {

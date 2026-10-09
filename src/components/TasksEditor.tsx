@@ -3,7 +3,7 @@ import { open, save } from "@tauri-apps/plugin-dialog";
 import { AlertTriangle, ArrowRight, BarChart3, Braces, Check, CircleAlert, Copy, Download, FileCheck2, FlaskConical, FolderOpen, GitBranch, History, Link2, ListTree, Loader2, Minus, Pencil, Plus, Redo2, Search, ShieldCheck, Trash2, Undo2, Upload, X } from "lucide-react";
 import { addTaskLayoutCountedArray, addTaskLayoutField, analyzeTaskLayoutPatch, analyzeTasks, cloneTaskRoot, cloneTaskSubtree, compareTaskIds, deleteTaskSubtree, editTaskArray, editTaskField, editTaskFields, exportTasksJson, editTaskLayout, exportTaskLayoutPatch, getTask, getTaskEditState, getTaskLayoutPatch, getTaskReferencedBy, getTaskSummary, importTaskLayoutPatch, inspectTasks, moveTaskSubtree, openTasks, previewDeleteTaskSubtree, redoTaskEdit, removeTaskLayoutField, removeTaskLayoutOperation, replaceTaskLayoutFieldType, revertTaskEdits, revertTaskEntry, scoreTaskFields, searchTasks, setTaskLayoutOperationConditions, setTaskLayoutOperationType, taskSourceVersion, undoTaskEdit, verifyTaskLayout } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { TaskAnalysisReport, TaskArrayEdit, TaskDeletePreview, TaskDeleteReference, TaskEditState as EditStateValue, TaskExportTarget, TaskImportReport, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
+import type { TaskAnalysisReport, TaskArrayEdit, TaskDeletePreview, TaskDeleteReference, TaskEditState as EditStateValue, TaskExportTarget, TaskImportReport, TaskProblem, TaskDetail, TaskEditState, TaskFieldCandidate, TaskFieldCandidateReport, TaskFieldReference, TaskFieldView, TaskIdComparisonReport, TaskLayoutCondition, TaskLayoutPatch, TaskRootSummary, TaskSearchEntry, TaskSearchHit, TaskSearchReport, TaskSourceInfo, TasksFileSummary, TaskTreeNode } from "../elements/types";
 import { ResourceHint } from "./FieldTree";
 import { TaskSaveDialog } from "./TaskSaveDialog";
 import { TaskSchemaDialog } from "./TaskSchemaDialog";
@@ -14,6 +14,7 @@ import { TaskMoveDialog } from "./TaskMoveDialog";
 import { TaskHistoryPanel } from "./TaskHistoryPanel";
 import { TaskProblemsPanel } from "./TaskProblemsPanel";
 import { TaskImportDialog } from "./TaskImportDialog";
+import { TaskSearchPanel } from "./TaskSearchPanel";
 import { TaskComparePanel } from "./TaskComparePanel";
 import { TaskTranslateDialog } from "./TaskTranslateDialog";
 import { TaskForm, TASK_FORM_TABS, type BatchValue, type TaskFormTab } from "./TaskForm";
@@ -37,7 +38,7 @@ export interface TasksEditorState {
   panel?: TaskPanel;
 }
 
-export type TaskPanel = "history" | "problems" | "compare" | null;
+export type TaskPanel = "history" | "problems" | "compare" | "search" | null;
 
 export interface TasksEditorHandle {
   choose: () => void;
@@ -50,6 +51,7 @@ export interface TasksEditorHandle {
   showHistory: () => void;
   toggleProblems: () => void;
   toggleCompare: () => void;
+  toggleSearch: () => void;
   /** Exports the selected task, it with its subquests, or every task in the list. */
   exportJson: (scope: TaskExportScope) => void;
   importJson: () => void;
@@ -313,6 +315,9 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   // The compare panel keeps its report while hidden; comparing two versions takes a while.
   const [compareMounted, setCompareMounted] = useState(false);
   useEffect(() => { if (panel === "compare") setCompareMounted(true); }, [panel]);
+  // The advanced search keeps its conditions and results while hidden.
+  const [searchMounted, setSearchMounted] = useState(false);
+  useEffect(() => { if (panel === "search") setSearchMounted(true); }, [panel]);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedNote, setSavedNote] = useState<string | null>(null);
@@ -601,6 +606,23 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [editState.changedRoots.length, runHistoryAction]);
   const revertEntry = useCallback((id: number) => runHistoryAction(() => revertTaskEntry(id)), [runHistoryAction]);
 
+  /** Writes the given tasks as versioned JSON next to the task set by default. */
+  const exportTargets = useCallback(async (targets: TaskExportTarget[], name: string, subtrees: boolean) => {
+    if (!file || operation.current || !targets.length) return;
+    if (targets.length > 2000 && !window.confirm(`Export ${count(targets.length)} tasks? Each top-level task includes its complete data, so the file can be very large.`)) return;
+    const folder = file.path.replace(/[\\/][^\\/]*$/, "");
+    const target = await save({ defaultPath: `${folder}/${name}`, title: "Export tasks as JSON", filters: [{ name: "JSON", extensions: ["json"] }] });
+    if (!target || !beginOperation()) return;
+    try {
+      const report = await exportTasksJson(targets, subtrees, target);
+      showNote(`Exported ${count(report.tasks)} task${report.tasks === 1 ? "" : "s"} (${bytes(report.bytes)}) to ${report.path.split(/[\\/]/).pop()}.`);
+    } catch (problem) {
+      setError(problemText(problem));
+    } finally {
+      endOperation();
+    }
+  }, [file, showNote]);
+
   /** Writes tasks as versioned JSON next to the task set by default. */
   const exportJson = useCallback(async (scope: TaskExportScope) => {
     if (!file || operation.current) return;
@@ -670,6 +692,11 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     await selectTask(root, taskPath);
   }, [expandTo, file, selectTask]);
   const openProblem = useCallback((problem: TaskProblem) => problem.root !== undefined && openTaskAt(problem.pack, problem.root, problem.path), [openTaskAt]);
+  /** Opens a search result on the form tab that holds its first match. */
+  const openSearchHit = useCallback(async (hit: TaskSearchHit, tab: TaskFormTab | null) => {
+    await openTaskAt(hit.pack, hit.root, hit.path);
+    if (tab) chooseFormTab(tab);
+  }, [openTaskAt]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Referenced by follows the selected task and every edit.
   useEffect(() => {
@@ -739,6 +766,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     setImporting(false);
     setTranslating(false);
     setCompareMounted(false);
+    setSearchMounted(false);
     try {
       const sourceVersion = await taskSourceVersion(path);
       if (!sourceVersion.supported) {
@@ -800,14 +828,14 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
   }, [defaultPath, file?.path, load, unsupported?.path]);
 
   const openSave = useCallback(() => file && !busy && !taskBusy && setSaving(true), [busy, file, taskBusy]);
-  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave, toggleHistory: () => togglePanel("history"), showHistory: () => setPanel("history"), toggleProblems: () => togglePanel("problems"), toggleCompare: () => togglePanel("compare"), exportJson: (scope) => void exportJson(scope), importJson: () => file && !operation.current && setImporting(true), translate: () => file && !operation.current && setTranslating(true) }), [choose, exportJson, file, load, openSave, redo, revertAll, togglePanel, undo]);
+  useImperativeHandle(ref, () => ({ choose, openPath: (path) => void load(path), undo, redo, revertAll, save: openSave, toggleHistory: () => togglePanel("history"), showHistory: () => setPanel("history"), toggleProblems: () => togglePanel("problems"), toggleCompare: () => togglePanel("compare"), toggleSearch: () => togglePanel("search"), exportJson: (scope) => void exportJson(scope), importJson: () => file && !operation.current && setImporting(true), translate: () => file && !operation.current && setTranslating(true) }), [choose, exportJson, file, load, openSave, redo, revertAll, togglePanel, undo]);
 
   useEffect(() => {
     if (!active) return;
     const onKey = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey)) return;
       const key = event.key.toLowerCase();
-      if (key !== "o" && key !== "s" && key !== "z" && key !== "y" && key !== "h" && !(key === "m" && event.shiftKey)) return;
+      if (key !== "o" && key !== "s" && key !== "z" && key !== "y" && key !== "h" && !((key === "m" || key === "f") && event.shiftKey)) return;
       const typing = event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement;
       if (typing && (key === "z" || key === "y")) return;
       event.preventDefault();
@@ -818,6 +846,7 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
       if (key === "y") redo();
       if (key === "h" && file) togglePanel("history");
       if (key === "m" && file) togglePanel("problems");
+      if (key === "f" && file) togglePanel("search");
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
@@ -1359,10 +1388,16 @@ export const TasksEditor = forwardRef<TasksEditorHandle, Props>(function TasksEd
     </header>
     {error && <div className="path-data-message error">{error}</div>}
     {historyOpen && <div className="tasks-body tasks-history-body"><TaskHistoryPanel edits={editState} busy={taskBusy} onUndo={undo} onRedo={redo} onRevertAll={revertAll} onRevert={revertEntry} onOpen={(taskId) => void openHistoryTask(taskId)} onClose={() => setPanel(null)} /></div>}
-    <div className={"tasks-body" + (panel === "problems" || panel === "compare" ? " problems-open" : "")} hidden={historyOpen}>
+    <div className={"tasks-body" + (panel === "problems" || panel === "compare" || panel === "search" ? " problems-open" : "")} hidden={historyOpen}>
       {panel === "problems" && <TaskProblemsPanel edits={editState} indexReady={taskIndexReady} onOpen={(problem) => void openProblem(problem)} onCounts={onProblemCounts} onClose={() => setPanel(null)} />}
       {compareMounted && <div className="task-compare-slot" hidden={panel !== "compare"}><TaskComparePanel currentPath={file.path} suggestions={defaultPath ? [defaultPath] : []} onOpen={(pack, root, taskPath) => void openTaskAt(pack, root, taskPath)} onCopied={(next, report) => bulkApplied(next, report, "Copied from the compared file")} onClose={() => setPanel(null)} /></div>}
-      <aside className="tasks-roots" hidden={panel === "problems" || panel === "compare"}>
+      {searchMounted && <div className="task-search-slot" hidden={panel !== "search"}><TaskSearchPanel
+        selection={selectedRoot && detail ? { pack: selectedRoot.pack, root: selectedRoot.root, path: selectedPath, id: detail.id, name: detail.name } : null}
+        rootLabel={(pack, rootIndex) => { const root = file.roots.find((candidate) => candidate.pack === pack && candidate.root === rootIndex); return root ? `${root.name || "quest"} (${root.id})` : "a quest"; }}
+        onOpen={(hit, tab) => void openSearchHit(hit, tab)}
+        onExport={(targets) => void exportTargets(targets, "tasks-search-results.json", false)}
+        onClose={() => setPanel(null)} /></div>}
+      <aside className="tasks-roots" hidden={panel === "problems" || panel === "compare" || panel === "search"}>
         <div className="tasks-search"><Search size={14} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search all quests by ID or name…" autoComplete="off" /></div>
         <div className="tasks-root-list">
           {shown.map((match) => {

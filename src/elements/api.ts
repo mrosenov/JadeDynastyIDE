@@ -81,7 +81,7 @@ import type {
   TaskCopySelection,
   TaskTextGroup,
   TaskTranslationReport,
-  TaskDeleteReference, TaskArrayEdit } from "./types";
+  TaskDeleteReference, TaskArrayEdit, TaskSearchField, TaskSearchQuery, TaskSearchResults } from "./types";
 
 export const openElements = (path: string) => invoke<FileSummary>("open_elements", { path });
 
@@ -136,6 +136,14 @@ export const editTaskFields = (pack: number, root: number, taskPath: number[], v
 /** Adds, clones or removes a row of a list of the task; `countPath` names the count of a fixed list. */
 export const editTaskArray = (pack: number, root: number, taskPath: number[], arrayPath: string[], countPath: string[] | null, edit: TaskArrayEdit) =>
   invoke<TaskEditState>("edit_task_array", { pack, root, taskPath, arrayPath, countPath, edit });
+/** The searchable fields of the open task layout. */
+export const taskSearchFields = () => invoke<TaskSearchField[]>("task_search_fields");
+/** Advanced task search over the whole set, unsaved edits included. */
+export const searchTasksAdvanced = (query: TaskSearchQuery) => invoke<TaskSearchResults>("search_tasks_advanced", { query });
+/** Stops the running advanced task search. */
+export const cancelTaskSearch = () => invoke<void>("cancel_task_search");
+/** Roots scanned so far by the running advanced task search. */
+export const taskSearchProgress = () => invoke<{ scanned: number; total: number }>("task_search_progress");
 /** Character classes (ID, name) of the open elements.data. */
 export const characterClasses = () => invoke<[number, string][]>("character_classes");
 /** Clones a selected subquest and its descendants beside the source with fresh task IDs. */

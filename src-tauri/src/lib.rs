@@ -29,6 +29,8 @@ struct AppState {
     compared_tasks: Mutex<Option<tasks::compare::ComparedTasks>>,
     /// The translated task set and its previewed plan (lock order: tasks, then task_translation).
     task_translation: Mutex<Option<tasks::translate::TranslationSource>>,
+    /// Cancels and reports the running advanced task search.
+    task_search: Arc<tasks::search::SearchControl>,
     catalog: RwLock<Arc<Catalog>>,
     /// The user's data folder: `layouts/`, `enums/` and `masks/` written by the editors.
     user_dir: PathBuf,
@@ -526,6 +528,40 @@ async fn open_task_compare(path: String, state: State<'_, AppState>) -> Result<t
     let report = tasks.as_ref().ok_or("Open tasks.data first")?.compare_with(&compared)?;
     *state.compared_tasks.lock().map_err(|_| "State lock poisoned")? = Some(compared);
     Ok(report)
+}
+
+/// The searchable fields of the open task layout.
+#[tauri::command]
+async fn task_search_fields(state: State<'_, AppState>) -> Result<Vec<tasks::search::SearchField>, String> {
+    let tasks = state.tasks.lock().map_err(|_| "State lock poisoned")?;
+    let document = tasks.as_ref().ok_or("Open tasks.data first")?;
+    Ok(tasks::search::field_catalog(&document.schema, document.container.header.version))
+}
+
+/// Advanced task search. Reads a snapshot of the task set (unsaved edits included) and scans it
+/// without holding the document lock; a newer search or `cancel_task_search` stops it.
+#[tauri::command]
+async fn search_tasks_advanced(query: tasks::search::TaskQuery, state: State<'_, AppState>) -> Result<tasks::search::TaskSearchResults, String> {
+    let control = state.task_search.clone();
+    let generation = control.generation.fetch_add(1, std::sync::atomic::Ordering::SeqCst) + 1;
+    let source = {
+        let tasks = state.tasks.lock().map_err(|_| "State lock poisoned")?;
+        tasks::search::SearchSource::of(tasks.as_ref().ok_or("Open tasks.data first")?)
+    };
+    tauri::async_runtime::spawn_blocking(move || tasks::search::run(&source, &query, &control, generation))
+        .await
+        .map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn cancel_task_search(state: State<'_, AppState>) -> Result<(), String> {
+    state.task_search.generation.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+    Ok(())
+}
+
+#[tauri::command]
+async fn task_search_progress(state: State<'_, AppState>) -> Result<tasks::search::SearchProgress, String> {
+    Ok(state.task_search.progress())
 }
 
 #[tauri::command]
@@ -1244,6 +1280,7 @@ pub fn run() {
                 compared: Mutex::new(None),
                 compared_tasks: Mutex::new(None),
                 task_translation: Mutex::new(None),
+                task_search: Arc::new(tasks::search::SearchControl::default()),
                 catalog: RwLock::new(catalog),
                 user_dir,
                 settings: Mutex::new(settings.clone()),
@@ -1298,6 +1335,10 @@ pub fn run() {
             clone_task_root,
             edit_task_fields,
             edit_task_array,
+            task_search_fields,
+            search_tasks_advanced,
+            cancel_task_search,
+            task_search_progress,
             character_classes,
             task_summary,
             revert_task_entry,

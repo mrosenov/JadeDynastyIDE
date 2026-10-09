@@ -7075,6 +7075,94 @@ button.task-field-reference:hover {
 .tasks-roots[hidden] {
   display: none;
 }
+/* Advanced task search: in place of the quest list, the inspector stays beside it. */
+.task-search-slot {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+}
+.task-search-slot[hidden] {
+  display: none;
+}
+/* Two rows per condition: the field, then operator and value. */
+.task-search-cond {
+  grid-template-columns: 46px 118px minmax(0, 1fr) 28px;
+}
+.task-search-cond > .sf-field-cell {
+  grid-column: 2 / 4;
+}
+.task-search-cond > :nth-child(3) {
+  grid-column: 2;
+  grid-row: 2;
+}
+.task-search-cond > :nth-child(4) {
+  grid-column: 3;
+  grid-row: 2;
+}
+.task-search-cond > .sf-remove {
+  grid-column: 4;
+  grid-row: 1;
+}
+.task-search-field-name {
+  min-width: 0;
+  text-align: left;
+}
+.task-search-option-name {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  text-align: left;
+}
+.task-search-field-menu {
+  min-width: min(440px, 90vw);
+}
+.task-search-same-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  color: var(--text-dim);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.task-search-same-row.on {
+  color: var(--accent);
+  font-weight: 600;
+}
+.task-search-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+}
+.task-search-flags > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px 2px 3px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.task-search-flags > label.checked {
+  background: var(--accent-soft);
+}
+.task-search-templates {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.task-search-templates > .link {
+  align-self: flex-start;
+}
+.task-search-template-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.task-search-hit .search-hit-match {
+  font-size: 11.5px;
+}
 .task-compare-slot {
   display: flex;
   min-width: 0;

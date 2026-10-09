@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (154 at last run, ~2–3 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (157 at last run, ~2–3 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -81,6 +81,7 @@ Environment quirks (Windows 11, Git Bash):
 | `tasks/schema.rs`, `structures.rs`, `v165.rs`, `v172.rs`, `v184.rs` | Byte-preserving task schema engine and verified version layouts. |
 | `tasks/browser.rs` | Lazy tree loading, background search/reference index, field inspection and hierarchy summaries. |
 | `tasks/edit.rs` | In-memory task value edits, history, undo/redo, clone, delete and move/reparent operations. |
+| `tasks/search.rs` | Advanced task search: field catalog, conditions (same-row groups, `any:` fields), value anywhere, scopes, parallel byte scan with prefilter, cancel and progress. |
 | `tasks/save.rs` | Task-set staging, pack rebuilding, MD5/index updates, verification, backups and atomic replacement. |
 | `tasks/analyze.rs`, `layout.rs` | Unsupported-version analysis and validated user task-layout patches. |
 
@@ -298,6 +299,19 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `browser::set_task_field`, the same validation as inspector edits (`edit_field` calls it too).
   Additions append decoded `_raw` roots as `RootChange`s with empty `before`, after the edited
   roots, in pack/root order.
+- **Advanced task search** (`tasks/search.rs`, `TaskSearchPanel.tsx`, commands `task_search_fields`,
+  `search_tasks_advanced`, `cancel_task_search`, `task_search_progress`): `SearchSource::of` snapshots the
+  container, schema and unsaved roots under the lock; `run` scans packs on all cores without it, using
+  `visit_task_leaves` (the index probe with a visitor; no `Node` trees). `field_catalog` lists leaf paths
+  without indexes; structures listed in `ANY_ROOTS` (`AWARD_DATA`, `TASK_TALK`) give `any:award:…` /
+  `any:dialog:…` fields covering every copy; a structure nested in itself (selected-role awards) is listed
+  one level deep (otherwise 32,942 fields instead of 3,734). Same-row groups use the innermost list all
+  fields share, in each condition's own suffix terms, and compare row prefixes (`LeafPath::prefix`). With
+  "all", `= ID`/`is one of` on integers ≥ 256 skip roots lacking the value's low two bytes. Speed in a debug
+  build: ~3.5 s for a full ForsakenJD scan, ~0.6 s for an ID. The probe keeps its path as `Segment`s (strings
+  only on demand), takes `probe_needed_names` built once per scan (it was rebuilt per root) and hashes
+  names with FNV (`NameSet`); in visitor mode it skips reference collection. These halved the walk.
+  `describeTaskField` (`TaskForm.tsx`) names fields and picks the tab a result opens on.
 - **Task compare** (`tasks/compare.rs`, `TaskComparePanel.tsx`): `ComparedTasks` opens and indexes
   the other set (`AppState.compared_tasks`; lock order tasks, then compared_tasks). `compare_with`
   pairs unique IDs, skips byte-identical roots at the same path, decodes the rest in parallel, and
@@ -418,7 +432,7 @@ count as a minimum. Never write into these folders from tests. Tests save into `
 - v165: the 8 bytes before list 296 that layouts mark as a checksum slot look like an empty
   list header (record size 1468, count 0). Check whether the layout should treat them as a list.
 
-Shortcuts, for reference: Ctrl+O open, Ctrl+S save, Ctrl+Shift+S save as, Ctrl+G find,
+Shortcuts, for reference (tasks: Ctrl+Shift+F advanced search, Ctrl+Shift+M problems, Ctrl+H history): Ctrl+O open, Ctrl+S save, Ctrl+Shift+S save as, Ctrl+G find,
 F3/Shift+F3 next/previous hit, Ctrl+Shift+F advanced search, Ctrl+Shift+M problems, Ctrl+H
 history, Ctrl+L list picker, Ctrl+D clone, Del delete, Ctrl+Z/Ctrl+Y undo/redo, Ctrl+W close
 tab, Ctrl+Tab/Ctrl+1–9 tabs, Alt+← back.

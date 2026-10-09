@@ -828,6 +828,7 @@ export default function App() {
         { label: "Save tasks.data…", icon: Save, shortcut: "Ctrl+S", onSelect: () => tasksEditor.current?.save(), disabled: !tasksEditorState.summary },
         "separator",
         { label: "Problems", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => tasksEditor.current?.toggleProblems(), disabled: !tasksEditorState.summary, checked: tasksEditorState.panel === "problems" },
+        { label: "Advanced search", icon: ListFilter, shortcut: "Ctrl+Shift+F", onSelect: () => tasksEditor.current?.toggleSearch(), disabled: !tasksEditorState.summary, checked: tasksEditorState.panel === "search" },
         "separator",
         { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
       ],

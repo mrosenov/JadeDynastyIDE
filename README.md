@@ -118,6 +118,35 @@ buff and title values use the configured client's names and descriptions. Until 
 index is complete, links to subquests show *Indexing quests…*; the open task refreshes once it is.
 One decoded root is cached, so moving among its subtasks does not reread or decode the pack.
 
+**Advanced search** (Tools › Advanced search or Ctrl+Shift+F) finds every quest, subquests included,
+that has something specific. It opens in place of the quest list, beside the inspector, and keeps
+its conditions and results while hidden. It reads the task set as it is in memory, so unsaved edits
+count. A search takes a few seconds (searches for an ID are faster), shows its progress and can
+be cancelled.
+
+- **Conditions on fields**: rows of field, operator and value, matching all or any. The field list
+  names fields as the form does (*Objectives › Monsters to kill › Monster ID*) and can be searched.
+  **Any award** and **Any dialog** fields stand for the same field in every award (success, failure
+  and each ratio, item-count and finish-count entry) or every talk, e.g. *Any award › Candidates ›
+  Items › Item ID*. Named values (type, class, completion method, …) are dropdowns, recommended
+  types are checkboxes with *has flags*, and flags are true/false. On a list, = and the other
+  positive operators need one row to match; ≠, *is none of*, *lacks flags* and *is empty* must hold
+  for every row.
+- **On the same row**: a condition on a field of the same list as the one above can require the same
+  row, e.g. a candidate reward with item 12345 *and* an amount above 5 in that one row.
+- **Start from a common search**: Rewards item, Requires item, Gives item on accept, Collect item,
+  Kill monster, Given by NPC, Completed at NPC, Requires class, Requires quest, Leads to quest, Dialog
+  option gives quest, Quest type, Level between and Name contains fill in editable conditions.
+- **A value anywhere**: a number matches number fields (IDs, amounts, …); other text is searched in
+  names, texts and dialogs. *Only ID fields* limits it to quest, item, monster and NPC fields and
+  dialog option parameters.
+- **Look in** all quests and subquests, top-level quests only, or one quest and everything below it.
+
+Each result shows the quest, whether it is a subquest (and of which quest), and its first matching
+field and value (hover for all). Clicking opens the quest on the form tab that holds the match.
+Results can be picked; **Copy IDs** and **Export** (task JSON) use the picked results, or all listed
+ones. Up to 500 results are listed; the total is always counted.
+
 **Problems** (File › Problems or Ctrl+Shift+M) scans the task set once every subquest is indexed and
 shows its results in place of the quest list, beside the inspector. Clicking a problem selects the
 task. The header button shows the error and warning counts, and every edit rescans at once because

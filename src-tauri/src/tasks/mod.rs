@@ -10,6 +10,7 @@ pub mod layout;
 pub mod problems;
 pub mod schema;
 pub mod save;
+pub mod search;
 pub mod structures;
 pub mod translate;
 pub mod v165;

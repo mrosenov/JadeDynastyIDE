@@ -12,7 +12,7 @@ use crate::{client::Resources, elements::Document};
 
 use super::container::{Pack, TaskContainer, ROOTS_PER_PACK};
 use super::edit::{ChangedRoot, EditState, EntryDetails, HistoryEntry, Journal, RootChange};
-use super::schema::{decode_exact, is_element_reference, is_task_option_function, is_task_reference, LINK_FIELDS, probe_root_integer_validated, probe_task_index_validated, FieldType, Node, ProbedTaskReference, Schema, Value};
+use super::schema::{decode_exact, is_element_reference, is_task_option_function, is_task_reference, LINK_FIELDS, probe_needed_names, probe_root_integer_validated, probe_task_index_validated, FieldType, Node, ProbedTaskReference, Schema, Value};
 use super::schema_for_version;
 
 const ROOT_HEADING_BYTES: usize = 64;
@@ -1780,6 +1780,7 @@ fn read_root_summaries(container: &TaskContainer, schema: &Schema) -> Result<Vec
 fn read_pack_summaries(pack: &Pack, pack_index: usize, first_index: usize, schema: &Schema, version: u32) -> Result<Vec<RootSummary>, String> {
     let data = std::fs::read(pack.path()).map_err(|error| format!("{}: {error}", pack.path().display()))?;
     let mut result = Vec::with_capacity(pack.root_count());
+    let needed = probe_needed_names(schema);
     for root in 0..pack.root_count() {
         let range = pack.root_range(root)?;
         if range.end - range.start < ROOT_HEADING_BYTES as u64 {
@@ -1789,7 +1790,7 @@ fn read_pack_summaries(pack: &Pack, pack_index: usize, first_index: usize, schem
         let end = usize::try_from(range.end).map_err(|_| format!("{}: root {} end is too large", pack.path().display(), root + 1))?;
         let bytes = data.get(start..end).ok_or_else(|| format!("{}: root {} range is outside the pack", pack.path().display(), root + 1))?;
         let heading = &bytes[..ROOT_HEADING_BYTES];
-        let count = probe_root_integer_validated(schema, bytes, version, "subtask_count")
+        let count = probe_root_integer_validated(schema, bytes, version, "subtask_count", &needed)
             .map_err(|error| format!("{}: root {}: {error}", pack.path().display(), root + 1))?;
         let child_count = usize::try_from(count)
             .map_err(|_| format!("{}: root {} has an invalid subtask count {count}", pack.path().display(), root + 1))?;
@@ -1839,13 +1840,14 @@ pub(crate) fn read_nested_index(container: &TaskContainer, schema: &Schema) -> R
 
 fn read_pack_nested_index(pack: &Pack, pack_index: usize, schema: &Schema, version: u32) -> Result<Vec<TaskSearchEntry>, String> {
     let data = std::fs::read(pack.path()).map_err(|error| format!("{}: {error}", pack.path().display()))?;
+    let needed = probe_needed_names(schema);
     let mut result = Vec::new();
     for root in 0..pack.root_count() {
         let range = pack.root_range(root)?;
         let start = usize::try_from(range.start).map_err(|_| format!("{}: root {} offset is too large", pack.path().display(), root + 1))?;
         let end = usize::try_from(range.end).map_err(|_| format!("{}: root {} end is too large", pack.path().display(), root + 1))?;
         let bytes = data.get(start..end).ok_or_else(|| format!("{}: root {} range is outside the pack", pack.path().display(), root + 1))?;
-        let mut tasks = probe_task_index_validated(schema, bytes, version)
+        let mut tasks = probe_task_index_validated(schema, bytes, version, &needed)
             .map_err(|error| format!("{}: root {}: {error}", pack.path().display(), root + 1))?;
         result.extend(tasks.drain(..).map(|task| TaskSearchEntry {
             pack: pack_index,
