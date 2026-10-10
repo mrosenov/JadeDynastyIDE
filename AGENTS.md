@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (178 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (181 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -79,7 +79,8 @@ Environment quirks (Windows 11, Git Bash):
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
 | `npcgen.rs` | `npcgen.data` (one server map's spawns): versions 1–14 reader/writer, document with journal (whole-item Replace/Insert/Remove per section), save. |
 | `task_npc.rs` | `task_npc.data` reader/writer (12-byte header, 16-byte NPC_INFO records), save with backup and changed-on-disk guard. |
-| `client/instances.rs` | Map names from configs.pck `Configs/instance.txt` (UTF-16 `"Name" { id … }` blocks, `//` comments). |
+| `client/game.rs` | Character position from a running `elementclient.exe` (read-only): exe code scan for the pointer chain, process list, ReadProcessMemory. |
+| `client/instances.rs` | Maps from configs.pck `Configs/instance.txt` (UTF-16 `"Name" { id zone "path" "data path" "detail" rows, cols … }` blocks, `//` comments): name, path, data path, rows, cols. |
 | `dyn_tasks/format.rs`, `dyn_tasks/mod.rs` | `dyn_tasks.data` reader/writer (client limits, read-back check) and the open pack: edit journal, clone, delete, problems, save. |
 | `tasks/container.rs` | Strict `tasks.data` index and numbered-pack reader: offsets, pack limits and MD5 validation. |
 | `tasks/schema.rs`, `structures.rs`, `v165.rs`, `v172.rs`, `v184.rs` | Byte-preserving task schema engine and verified version layouts. |
@@ -504,6 +505,37 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 - 519 sample files (zxserver, 1559, ForsakenJD) round-trip; versions 4, 8, 9, 11, 12, 13, 14.
   `encode` refuses values a version cannot store. Controller names keep their raw bytes while unchanged.
 - Picker kind `mine` = MINE_ESSENCE. The plot draws x and −z.
+- Map image (`client_maps` command, `jdmap://localhost/<generation>-<path>` protocol,
+  `Resources::midmap_png`, a few PNGs cached): `Surfaces/MidMaps/<path>.dds` (DXT3/5, 524 or 1036 px
+  for 1 or 2 rows; the 12 extra pixels are part of the scaled image). `CDlgMidMap` maps the whole
+  texture onto x and z from −rows × 512 to +rows × 512 (it uses rows for both axes), north at the top.
+  Minimaps (the radar, `CDlgMiniMap`) use a padded `2 + 2·cols` layout and are not used.
+- **From game** (`client/game.rs`, commands `game_clients`, `game_position`): position =
+  `[[[g_pGame] + game_run] + host_player] + 0x3C` (A3DCoordinate: vtable, class ID, AString name, then
+  `m_matAbsoluteTM`; row 3 = position). `g_pGame` and both member offsets differ per build, so
+  `find_chain` scans the exe's code for `mov r,[abs]` → `mov r,[r+X]` → `mov r,[r+Y]` → a read of
+  +0x3C/0x40/0x44 (mov, fld, movss) and takes the clear winner (≥ 4 votes, ≥ 3× the runner-up).
+  Results: XtremeJade 0xCF5E24 +1C +2C, ForsakenJD 0xE18F9C +20 +2C, HDN 0xFBC704 +20 +30, Reborn
+  0x1130DB4 +20 +30 (13/10 votes vs 1). Our source matches XtremeJade only (ForsakenJD's CECGame and
+  HDN's CECGameRun have one extra member). All four exes have a fixed base (no ASLR); relocatable exes
+  use the module base from a Toolhelp snapshot. Chains are cached per exe path, size and mtime.
+  Facing: row 2 at +0x2C (`GetDir`, what the client sends to the server via `glb_CompressDirH`), read
+  together with the position and normalized. Spawn areas store that vector (on the ground plane).
+  Resource areas and objects store axis + angle (AIGenExportor: `quat.ConvertToAxisAngle`,
+  `a3d_CompressDir(axis)`, `_RadianToChar(angle)` = angle / 2π × 255 truncated; the Rust field
+  `radius` is this angle, `rad` in the C++). From Angelica3D_s.lib (dumpbin /disasm):
+  `a3d_DecompressDir(b1, b2)` = (cos a·sin e, cos e, sin a·sin e) with a = b1, e = b2 in 1/256 turns, so
+  upright = (0, 0); `a3d_CompressDir` = (atan2(z, x), acos(y)); quaternions are D3DX
+  (`AxisAngleToQuad` standard, `QuadToMatrix` = D3DXMatrixRotationQuaternion). An upright turn θ
+  faces row 2 = (sin θ, 0, cos θ), so turn = atan2(x, z). Unrotated items carry axis (192, 64/63) with
+  turn 0 (the axis of an identity quaternion).
+  `follow` rejects null pointers ("not in the world") and non-finite or huge values. Opens the process
+  with PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ only (`windows-sys`, Windows only). No
+  anti-cheat DLLs in the four client folders. Not yet checked against a live client.
+- Servers name map folders by the instance's **data path**, images use its **path** (`e12` vs `z12`
+  for Foxhill). `detectMap` (NpcGenEditor) tries `npcgen_<map>.data`, then the folder, data path
+  first; zxserver/1559: 99/139 map folders match (83/119 with an image); `b31`, `d12`, `t01–t03`
+  and `empty` do not. The per-file choice is in localStorage (`jdide.npcgen.mapFor`).
 - Server semantics (zgame/gs/npcgenerator.cpp `LoadGenData`, value names from ZElementEditor
   SceneAIGenerator.cpp/NpcPropertyDlg.cpp/AIGenExportor.cpp):
   - Extents are **full sizes**: `rect = pos ± ext × 0.5` (areas and resource areas). The editor writes

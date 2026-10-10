@@ -1,5 +1,8 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
+  GamePosition,
+  RunningClient,
+  ClientMap,
   FindResult,
   BulkEdit,
   BulkReport,
@@ -369,6 +372,12 @@ export const openTaskNpc = (path: string) => invoke<TaskNpcFile>("open_task_npc"
 export const saveTaskNpc = (request: TaskNpcSaveRequest) => invoke<TaskNpcSaveReport>("save_task_npc", { request });
 /** Map names of the configured client (configs.pck instance.txt); empty without a client. */
 export const clientMapNames = () => invoke<[number, string][]>("client_map_names");
+export const clientMaps = () => invoke<ClientMap[]>("client_maps");
+export const gameClients = () => invoke<RunningClient[]>("game_clients");
+/** The character's position in a running game client (read-only). */
+export const gamePosition = (pid: number) => invoke<GamePosition>("game_position", { pid });
+/** URL of a map's full-map image (Surfaces/MidMaps/<path>.dds as a PNG), by the client's map path. */
+export const midmapUrl = (generation: number, path: string) => convertFileSrc(`${generation}-${path}`, "jdmap");
 
 // npcgen.data
 export const openNpcGen = (path: string) => invoke<NpcGenView>("open_npcgen", { path });

@@ -215,7 +215,42 @@ async fn save_task_npc(request: task_npc::SaveRequest) -> Result<task_npc::SaveR
 #[tauri::command]
 async fn client_map_names(state: State<'_, AppState>) -> Result<Vec<(i32, String)>, String> {
     let Some(resources) = state.resources() else { return Ok(Vec::new()) };
-    tauri::async_runtime::spawn_blocking(move || resources.instances().cloned()).await.map_err(|error| error.to_string())?
+    tauri::async_runtime::spawn_blocking(move || resources.instances().map(|maps| maps.iter().map(|map| (map.id, map.name.clone())).collect()))
+        .await
+        .map_err(|error| error.to_string())?
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ClientMap {
+    #[serde(flatten)]
+    instance: client::instances::Instance,
+    /// `Surfaces/MidMaps/<path>.dds` exists.
+    has_image: bool,
+}
+
+/// Running game clients (elementclient.exe), for taking the character's position.
+#[tauri::command]
+async fn game_clients() -> Result<Vec<client::game::RunningClient>, String> {
+    tauri::async_runtime::spawn_blocking(client::game::running_clients).await.map_err(|error| error.to_string())
+}
+
+/// The character's position in a running game client (read-only; the exe is scanned once for where it keeps it).
+#[tauri::command]
+async fn game_position(pid: u32) -> Result<client::game::Position, String> {
+    tauri::async_runtime::spawn_blocking(move || client::game::read_position(pid)).await.map_err(|error| error.to_string())?
+}
+
+/// The configured client's maps with whether each has a full-map image (for the npcgen.data plot).
+#[tauri::command]
+async fn client_maps(state: State<'_, AppState>) -> Result<Vec<ClientMap>, String> {
+    let resources = state.resources().ok_or("Set the game client folder in Settings to show map images")?;
+    tauri::async_runtime::spawn_blocking(move || {
+        let maps = resources.instances()?;
+        Ok(maps.iter().map(|instance| ClientMap { has_image: resources.has_midmap(&instance.path), instance: instance.clone() }).collect())
+    })
+    .await
+    .map_err(|error| error.to_string())?
 }
 
 #[tauri::command]
@@ -1504,6 +1539,41 @@ fn icon_response(app: &tauri::AppHandle, uri_path: &str) -> tauri::http::Respons
     }
 }
 
+/// Decodes %XX escapes (UTF-8) in a URL path segment.
+fn percent_decode(text: &str) -> String {
+    let bytes = text.as_bytes();
+    let mut out = Vec::with_capacity(bytes.len());
+    let mut at = 0;
+    while at < bytes.len() {
+        if bytes[at] == b'%' && at + 2 < bytes.len() {
+            if let Some(value) = std::str::from_utf8(&bytes[at + 1..at + 3]).ok().and_then(|hex| u8::from_str_radix(hex, 16).ok()) {
+                out.push(value);
+                at += 3;
+                continue;
+            }
+        }
+        out.push(bytes[at]);
+        at += 1;
+    }
+    String::from_utf8_lossy(&out).into_owned()
+}
+
+/// `jdmap://localhost/<generation>-<map path>` → the map's midmap as a PNG.
+fn map_response(app: &tauri::AppHandle, uri_path: &str) -> tauri::http::Response<Vec<u8>> {
+    let not_found = || tauri::http::Response::builder().status(404).body(Vec::new()).unwrap();
+    let decoded = percent_decode(uri_path.trim_start_matches('/'));
+    let Some((_, path)) = decoded.split_once('-') else { return not_found() };
+    let Some(res) = app.state::<AppState>().resources() else { return not_found() };
+    match res.midmap_png(path) {
+        Ok(png) => tauri::http::Response::builder()
+            .header("Content-Type", "image/png")
+            .header("Cache-Control", "max-age=31536000, immutable")
+            .body(png.to_vec())
+            .unwrap(),
+        Err(_) => not_found(),
+    }
+}
+
 /// `jdimage://localhost/<generation>-<path id>` → a standalone client image.
 fn image_response(app: &tauri::AppHandle, uri_path: &str) -> tauri::http::Response<Vec<u8>> {
     let not_found = || tauri::http::Response::builder().status(404).body(Vec::new()).unwrap();
@@ -1672,6 +1742,11 @@ pub fn run() {
             let path = request.uri().path().to_string();
             std::thread::spawn(move || responder.respond(image_response(&app, &path)));
         })
+        .register_asynchronous_uri_scheme_protocol("jdmap", |ctx, request, responder| {
+            let app = ctx.app_handle().clone();
+            let path = request.uri().path().to_string();
+            std::thread::spawn(move || responder.respond(map_response(&app, &path)));
+        })
         .invoke_handler(tauri::generate_handler![
             open_elements,
             open_path_data,
@@ -1717,6 +1792,9 @@ pub fn run() {
             save_npcgen,
             save_task_npc,
             client_map_names,
+            client_maps,
+            game_clients,
+            game_position,
             dyn_tasks_view,
             dyn_task,
             set_dyn_task,

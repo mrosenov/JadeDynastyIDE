@@ -1996,6 +1996,33 @@ export type NpcGenItem =
   | { section: "objects"; item: NpcGenObject }
   | { section: "controllers"; item: NpcGenController };
 
+/** The character in a running game client: position and (unit) facing direction. */
+export interface GamePosition {
+  x: number;
+  y: number;
+  z: number;
+  direction: { x: number; y: number; z: number } | null;
+}
+
+/** A running elementclient.exe. */
+export interface RunningClient {
+  pid: number;
+  path: string | null;
+}
+
+/** A map of the configured client (configs.pck instance.txt). */
+export interface ClientMap {
+  id: number;
+  name: string;
+  /** Names the client's map images (Surfaces/MidMaps/<path>.dds). */
+  path: string;
+  /** Names the server's map folder. */
+  dataPath: string;
+  rows: number;
+  cols: number;
+  hasImage: boolean;
+}
+
 export interface NpcGenSummary {
   index: number;
   x: number;

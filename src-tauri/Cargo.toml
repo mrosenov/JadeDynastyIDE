@@ -31,6 +31,10 @@ md-5 = "0.10"
 chrono = { version = "0.4", default-features = false, features = ["clock"] }
 reqwest = { version = "0.13", default-features = false, features = ["json", "native-tls-no-alpn"] }
 
+# Reading the character position from a running game client (read-only).
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_System_Diagnostics_Debug", "Win32_System_Diagnostics_ToolHelp", "Win32_System_Threading"] }
+
 
 # Dependencies (zlib, PNG, JSON) build optimized in dev too; our own code stays
 # debuggable. This keeps reading packages and icons fast under `tauri dev`.

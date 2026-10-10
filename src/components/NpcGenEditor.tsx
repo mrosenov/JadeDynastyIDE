@@ -1,10 +1,10 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { Copy, FolderOpen, Loader2, Map as MapIcon, Plus, Redo2, Save, Search, Trash2, Undo2, Users, X } from "lucide-react";
-import { cloneNpcGenItem, deleteNpcGenItem, dynTaskLabels, getNpcGenItem, npcGenView, openNpcGen, pickEssence, redoNpcGen, saveNpcGen, setNpcGenItem, undoNpcGen } from "../elements/api";
+import { ChevronDown, Copy, Crosshair, FolderOpen, Loader2, Map as MapIcon, Plus, Redo2, Save, Search, Trash2, Undo2, Users, X } from "lucide-react";
+import { clientMaps, cloneNpcGenItem, deleteNpcGenItem, dynTaskLabels, gameClients, gamePosition, midmapUrl, getNpcGenItem, npcGenView, openNpcGen, pickEssence, redoNpcGen, saveNpcGen, setNpcGenItem, undoNpcGen } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatDuration } from "../elements/time";
-import type { NpcGenArea, NpcGenController, NpcGenGenerator, NpcGenItem, NpcGenObject, NpcGenResource, NpcGenResourceArea, NpcGenSection, NpcGenSummary, NpcGenTime, NpcGenVec3, NpcGenView } from "../elements/types";
+import type { ClientMap, GamePosition, RunningClient, NpcGenArea, NpcGenController, NpcGenGenerator, NpcGenItem, NpcGenObject, NpcGenResource, NpcGenResourceArea, NpcGenSection, NpcGenSummary, NpcGenTime, NpcGenVec3, NpcGenView } from "../elements/types";
 import { NumberInput, TextInput, VertInput } from "./DynTasksEditor";
 import { ValuePicker } from "./ValuePicker";
 
@@ -35,6 +35,8 @@ interface Props {
   icon?: (pathId?: number | null) => string | undefined;
   /** The open elements.data, for NPC, monster and mine names. */
   elementsPath?: string | null;
+  /** Changes when the client folder changes; null without one (no map images). */
+  mapGeneration?: number | null;
 }
 
 type PickKind = "npc" | "mine";
@@ -57,6 +59,39 @@ const BASE_RESPAWN = 15;
 const U8 = 255, I32_MIN = -2147483648, I32_MAX = 2147483647, F = 1e9;
 const BACKUP_KEY = "jdide.npcgen.backup";
 const MAP_KEY = "jdide.npcgen.map";
+/** The map chosen per file path (instance ID, −1 = none); files without an entry use the detected map. */
+const MAP_FOR_KEY = "jdide.npcgen.mapFor";
+const BACKGROUND_KEY = "jdide.npcgen.background";
+
+function readStored<T extends object>(key: string, fallback: T): T {
+  try {
+    const text = localStorage.getItem(key);
+    return text ? { ...fallback, ...JSON.parse(text) } : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function store(key: string, value: unknown) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* optional */ }
+}
+
+/**
+ * The map of an npcgen.data: from `npcgen_<map>.data`, else its folder (servers keep one per map folder,
+ * named by the instance's data path, e.g. `e12` for Foxhill, whose images are `z12`).
+ */
+function detectMap(file: string, maps: ClientMap[]): ClientMap | null {
+  const parts = file.split(/[\\/]/);
+  const stem = /^npcgen[_-](.+)\.data$/i.exec(parts[parts.length - 1] ?? "")?.[1];
+  for (const key of [stem, parts[parts.length - 2]]) {
+    if (!key) continue;
+    const lower = key.toLowerCase();
+    const rank = (map: ClientMap) => (map.dataPath.toLowerCase() === lower ? 0 : 2) + (map.hasImage ? 0 : 1);
+    const found = maps.filter((map) => map.dataPath.toLowerCase() === lower || map.path.toLowerCase() === lower).sort((a, b) => rank(a) - rank(b));
+    if (found.length) return found[0];
+  }
+  return null;
+}
 const newGenerator = (): NpcGenGenerator => ({ id: 0, count: 1, refresh: 30, diedTimes: 0, aggressive: 0, offsetWater: 0, offsetTerrain: 0, faction: 0, factionHelper: 0, factionAccept: 0, needHelp: 0, defaultFaction: 1, defaultFactionHelper: 1, defaultFactionAccept: 1, pathId: 0, loopType: 0, speedFlag: 0, deadTime: 0 });
 const newResource = (): NpcGenResource => ({ kind: 0, template: 0, refresh: 30, count: 1, heightOffset: 0 });
 const noTime = (): NpcGenTime => ({ year: -1, month: -1, week: -1, day: -1, hours: -1, minutes: 0 });
@@ -115,6 +150,29 @@ function IdChips({ ids, onCommit, placeholder }: { ids: number[]; onCommit: (ids
 }
 
 /** Facing as a compass angle: 0° = +Z (north on the map), 90° = +X. Keeps the vertical part of the direction. */
+/** A unit facing on the ground plane, from the character's direction (spawn areas store this vector). */
+function facingVector(position: GamePosition): NpcGenVec3 | null {
+  const direction = position.direction;
+  const length = direction ? Math.hypot(direction.x, direction.z) : 0;
+  return direction && length > 1e-3 ? { x: Math.fround(direction.x / length), y: 0, z: Math.fround(direction.z / length) } : null;
+}
+
+/**
+ * Resource areas and objects store a rotation as an axis (a3d_CompressDir: two 1/256-turn angles, 0, 0 =
+ * upright) and a turn of rad / 255 × 2π (the client's CECMatter). An upright turn of θ faces (sin θ, cos θ).
+ */
+function facingRotation(position: GamePosition): { direction: [number, number]; radius: number } | null {
+  const facing = facingVector(position);
+  if (!facing) return null;
+  const turn = (Math.atan2(facing.x, facing.z) / (2 * Math.PI) + 1) % 1;
+  return { direction: [0, 0], radius: Math.round(turn * 255) % 255 };
+}
+
+function facingNote(direction: [number, number], radius: number) {
+  if (direction[0] === 0 && direction[1] === 0) return `facing ${Math.round((radius / 255) * 360) % 360}°`;
+  return radius === 0 ? "not turned" : "tilted axis";
+}
+
 function FacingInput({ value, onCommit }: { value: NpcGenVec3; onCommit: (value: NpcGenVec3) => void }) {
   const flat = Math.hypot(value.x, value.z);
   const degrees = flat > 1e-6 ? Math.round(((Math.atan2(value.x, value.z) * 180) / Math.PI + 360) % 360) : 0;
@@ -134,6 +192,20 @@ interface FormProps<T> {
   controllers: NpcGenSummary[];
   onCommit: (value: T, label: string) => void;
   pick: (kind: PickKind, current: number) => Promise<number | null>;
+  /** The character's position in a running game client; null when it could not be read (the editor shows why). */
+  fromGame: (choose: boolean) => Promise<GamePosition | null>;
+}
+
+/** Takes the position of the character in the running game client. */
+function FromGame({ read, onPosition, label = "From game" }: { read: (choose: boolean) => Promise<GamePosition | null>; onPosition: (position: GamePosition) => void; label?: string }) {
+  const [busy, setBusy] = useState(false);
+  return <button className="btn small" disabled={busy} title={label === "From game" ? "Put it where your character stands, facing the same way, in the running game client (Shift+click: choose the client when several run)" : "Turn it the way your character faces in the running game client (Shift+click: choose the client when several run)"}
+    onClick={(event) => {
+      setBusy(true);
+      void read(event.shiftKey).then((position) => { if (position) onPosition(position); }).finally(() => setBusy(false));
+    }}>
+    {busy ? <Loader2 size={12} className="spin" /> : <Crosshair size={12} />} {label}
+  </button>;
 }
 
 /** Areas, resource areas and objects name a controller by its `id` (not its trigger ID). */
@@ -197,7 +269,7 @@ function GeneratorDetail({ generator, onCommit }: { generator: NpcGenGenerator; 
   </div>;
 }
 
-function AreaForm({ value: area, version, labels, elementsOpen, controllers, onCommit, pick }: FormProps<NpcGenArea>) {
+function AreaForm({ value: area, version, labels, elementsOpen, controllers, onCommit, pick, fromGame }: FormProps<NpcGenArea>) {
   const [current, setCurrent] = useState(0);
   const set = (change: Partial<NpcGenArea>, label: string) => onCommit({ ...area, ...change }, label);
   const setGen = (index: number, change: Partial<NpcGenGenerator>, label = "Edit generator") => set({ generators: area.generators.map((generator, position) => position === index ? { ...generator, ...change } : generator) }, label);
@@ -225,8 +297,8 @@ function AreaForm({ value: area, version, labels, elementsOpen, controllers, onC
       </Card>
     </div>
     <Card title="Location" hint="Size is the full width, height and depth of the spawn area; 0 is a single point" wide>
-      <Row label="Position"><VertInput value={area.position} onCommit={(position) => set({ position }, "Move area")} /></Row>
-      <Row label="Direction" note={<>facing <FacingInput value={area.direction} onCommit={(direction) => set({ direction }, "Turn area")} /> °</>}><VertInput value={area.direction} onCommit={(direction) => set({ direction }, "Turn area")} /></Row>
+      <Row label="Position"><VertInput value={area.position} onCommit={(position) => set({ position }, "Move area")} /><FromGame read={fromGame} onPosition={(found) => { const direction = facingVector(found); set({ position: { x: found.x, y: found.y, z: found.z }, ...(direction ? { direction } : {}) }, "Move area to the character"); }} /></Row>
+      <Row label="Direction" note={<>facing <FacingInput value={area.direction} onCommit={(direction) => set({ direction }, "Turn area")} /> °</>}><VertInput value={area.direction} onCommit={(direction) => set({ direction }, "Turn area")} /><FromGame read={fromGame} label="Facing" onPosition={(found) => { const direction = facingVector(found); if (direction) set({ direction }, "Turn area like the character"); }} /></Row>
       <Row label="Size"><VertInput value={area.extents} onCommit={(extents) => set({ extents }, "Resize area")} /></Row>
     </Card>
     <section className="dyn-section"><header><b>Generators</b><span className="muted small">What spawns here · {area.generators.length} row{area.generators.length === 1 ? "" : "s"}, {count(area.generators.reduce((total, entry) => total + entry.count, 0))} spawned</span></header>
@@ -254,7 +326,7 @@ function AreaForm({ value: area, version, labels, elementsOpen, controllers, onC
   </div>;
 }
 
-function ResourceForm({ value: area, version, labels, elementsOpen, controllers, onCommit, pick }: FormProps<NpcGenResourceArea>) {
+function ResourceForm({ value: area, version, labels, elementsOpen, controllers, onCommit, pick, fromGame }: FormProps<NpcGenResourceArea>) {
   const set = (change: Partial<NpcGenResourceArea>, label: string) => onCommit({ ...area, ...change }, label);
   const setRes = (index: number, change: Partial<NpcGenResource>, label = "Edit resource") => set({ resources: area.resources.map((resource, position) => position === index ? { ...resource, ...change } : resource) }, label);
   return <div className="dyn-form npcgen-form">
@@ -274,9 +346,9 @@ function ResourceForm({ value: area, version, labels, elementsOpen, controllers,
       </Card>
     </div>
     <Card title="Location" hint="Size is the full width and depth" wide>
-      <Row label="Position"><VertInput value={area.position} onCommit={(position) => set({ position }, "Move resource area")} /></Row>
+      <Row label="Position"><VertInput value={area.position} onCommit={(position) => set({ position }, "Move resource area")} /><FromGame read={fromGame} onPosition={(found) => set({ position: { x: found.x, y: found.y, z: found.z }, ...(version >= 6 ? facingRotation(found) ?? {} : {}) }, "Move resource area to the character")} /></Row>
       <Row label="Size X / Z"><span className="dyn-vert"><NumberInput float min={-F} max={F} value={area.extentX} onCommit={(extentX) => set({ extentX }, "Resize resource area")} /><NumberInput float min={-F} max={F} value={area.extentZ} onCommit={(extentZ) => set({ extentZ }, "Resize resource area")} /></span></Row>
-      <Row label="Direction / radius" hint="Two direction bytes and a radius byte, as the official editor stores them"><Gate since={6} version={version}><span className="dyn-vert">{[0, 1].map((part) => <NumberInput key={part} max={U8} value={area.direction[part]} onCommit={(value) => set({ direction: part === 0 ? [value, area.direction[1]] : [area.direction[0], value] }, "Edit direction")} />)}<NumberInput max={U8} value={area.radius} onCommit={(radius) => set({ radius }, "Edit direction")} /></span></Gate></Row>
+      {version >= 6 ? <Row label="Rotation" hint="Axis (two angles) and turn (1/255 of a full turn), as the official editor stores them. Axis 0, 0 is upright; the turn is then the facing (0° = north)." note={facingNote(area.direction, area.radius)}><span className="dyn-vert">{[0, 1].map((part) => <NumberInput key={part} max={U8} value={area.direction[part]} title={part === 0 ? "Axis direction (1/256 turns)" : "Axis tilt from upright (1/256 turns)"} onCommit={(value) => set({ direction: part === 0 ? [value, area.direction[1]] : [area.direction[0], value] }, "Edit rotation")} />)}<NumberInput max={U8} value={area.radius} title="Turn about the axis (1/255 turns)" onCommit={(radius) => set({ radius }, "Edit rotation")} /></span><FromGame read={fromGame} label="Facing" onPosition={(found) => { const facing = facingRotation(found); if (facing) set(facing, "Turn resource area like the character"); }} /></Row> : <Row label="Rotation"><Gate since={6} version={version}>{null}</Gate></Row>}
     </Card>
     <section className="dyn-section"><header><b>Resources</b><span className="muted small">Mines and herbs</span></header>
       <div className="dyn-section-body"><div className="dyn-table-wrap"><table className="dyn-table">
@@ -296,7 +368,7 @@ function ResourceForm({ value: area, version, labels, elementsOpen, controllers,
   </div>;
 }
 
-function ObjectForm({ value: object, version, controllers, onCommit }: FormProps<NpcGenObject>) {
+function ObjectForm({ value: object, version, controllers, onCommit, fromGame }: FormProps<NpcGenObject>) {
   const set = (change: Partial<NpcGenObject>, label: string) => onCommit({ ...object, ...change }, label);
   return <div className="dyn-form npcgen-form"><div className="npcgen-cards">
     <Card title="General">
@@ -305,8 +377,8 @@ function ObjectForm({ value: object, version, controllers, onCommit }: FormProps
       <Row label="Phase" hint="0: everyone sees it; otherwise only players in this phase"><Gate since={14} version={version}><NumberInput min={I32_MIN} max={I32_MAX} value={object.phase} onCommit={(phase) => set({ phase }, "Edit phase")} /></Gate></Row>
     </Card>
     <Card title="Location">
-      <Row label="Position"><VertInput value={object.position} onCommit={(position) => set({ position }, "Move object")} /></Row>
-      <Row label="Direction / radius"><span className="dyn-vert">{[0, 1].map((part) => <NumberInput key={part} max={U8} value={object.direction[part]} onCommit={(value) => set({ direction: part === 0 ? [value, object.direction[1]] : [object.direction[0], value] }, "Edit direction")} />)}<NumberInput max={U8} value={object.radius} onCommit={(radius) => set({ radius }, "Edit direction")} /></span></Row>
+      <Row label="Position"><VertInput value={object.position} onCommit={(position) => set({ position }, "Move object")} /><FromGame read={fromGame} onPosition={(found) => set({ position: { x: found.x, y: found.y, z: found.z }, ...(facingRotation(found) ?? {}) }, "Move object to the character")} /></Row>
+      <Row label="Rotation" hint="Axis (two angles) and turn (1/255 of a full turn), as the official editor stores them. Axis 0, 0 is upright; the turn is then the facing (0° = north)." note={facingNote(object.direction, object.radius)}><span className="dyn-vert">{[0, 1].map((part) => <NumberInput key={part} max={U8} value={object.direction[part]} title={part === 0 ? "Axis direction (1/256 turns)" : "Axis tilt from upright (1/256 turns)"} onCommit={(value) => set({ direction: part === 0 ? [value, object.direction[1]] : [object.direction[0], value] }, "Edit rotation")} />)}<NumberInput max={U8} value={object.radius} title="Turn about the axis (1/255 turns)" onCommit={(radius) => set({ radius }, "Edit rotation")} /></span><FromGame read={fromGame} label="Facing" onPosition={(found) => { const facing = facingRotation(found); if (facing) set(facing, "Turn object like the character"); }} /></Row>
       <Row label="Scale" hint="16 = 1.0" note={version >= 9 && `${(object.scale / 16).toFixed(2)}×`}><Gate since={9} version={version}><NumberInput max={U8} value={object.scale} onCommit={(scale) => set({ scale }, "Edit scale")} /></Gate></Row>
     </Card>
   </div></div>;
@@ -351,11 +423,81 @@ function ControllerForm({ value: controller, version, onCommit }: FormProps<NpcG
 
 // ── Map plot ──
 
+const mapLabel = (map: ClientMap) => `${map.name} (${map.dataPath || map.path})`;
+
+/** A map list with a search box: name, server folder, image name or ID; arrow keys and Enter choose. */
+function MapChooser({ maps, value, detected, onChoose }: { maps: ClientMap[]; value: ClientMap | null; detected: ClientMap | null; onChoose: (id: number) => void }) {
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
+  const [cursor, setCursor] = useState(0);
+  const root = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (event: MouseEvent) => { if (!root.current?.contains(event.target as Node)) setOpen(false); };
+    window.addEventListener("mousedown", onDown);
+    return () => window.removeEventListener("mousedown", onDown);
+  }, [open]);
+  const needle = text.trim().toLowerCase();
+  // None and the detected map first; while searching, exact folder, image or ID matches first.
+  const options = useMemo<(ClientMap | null)[]>(() => {
+    const sorted = [...maps].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }) || a.id - b.id);
+    if (!needle) return [null, ...(detected ? [detected] : []), ...sorted.filter((map) => map !== detected)];
+    const exact = (map: ClientMap) => map.dataPath.toLowerCase() === needle || map.path.toLowerCase() === needle || String(map.id) === needle;
+    const found = sorted.filter((map) => [map.name, map.dataPath, map.path, String(map.id)].some((part) => part.toLowerCase().includes(needle)));
+    return [...found.filter(exact), ...found.filter((map) => !exact(map))];
+  }, [detected, maps, needle]);
+  useEffect(() => { (list.current?.children[cursor] as HTMLElement | undefined)?.scrollIntoView({ block: "nearest" }); }, [cursor, open]);
+  const choose = (map: ClientMap | null) => {
+    onChoose(map?.id ?? -1);
+    setOpen(false);
+  };
+  const toggle = () => {
+    setText("");
+    setCursor(0);
+    setOpen((current) => !current);
+  };
+  return <div className="npcgen-map-chooser" ref={root}>
+    <button className="btn small npcgen-map-button" onClick={toggle} title={value ? `Map ${value.id}: server folder ${value.dataPath}, images ${value.path}` : "No map image"}>
+      <span className="truncate">{value ? mapLabel(value) : "None"}</span><ChevronDown size={12} />
+    </button>
+    {open && <div className="npcgen-map-menu">
+      <div className="npcgen-map-search"><Search size={13} /><input autoFocus value={text} placeholder="Map name, folder or ID" onChange={(event) => { setText(event.target.value); setCursor(0); }}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown") { event.preventDefault(); setCursor((current) => Math.min(options.length - 1, current + 1)); }
+          else if (event.key === "ArrowUp") { event.preventDefault(); setCursor((current) => Math.max(0, current - 1)); }
+          else if (event.key === "Enter" && options.length) { event.preventDefault(); choose(options[Math.min(cursor, options.length - 1)]); }
+          else if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); }
+        }} /></div>
+      <div className="npcgen-map-options" role="listbox" ref={list}>
+        {options.map((entry, index) => <button key={entry ? `${entry.id}:${index}` : "none"} role="option" aria-selected={(entry?.id ?? -1) === (value?.id ?? -1)}
+          className={"npcgen-map-option" + (index === cursor ? " cursor" : "") + ((entry?.id ?? -1) === (value?.id ?? -1) ? " selected" : "")}
+          onMouseEnter={() => setCursor(index)} onClick={() => choose(entry)}>
+          {entry ? <>
+            <span className="truncate">{entry.name}{entry.id === detected?.id && <span className="tag ok">detected</span>}{!entry.hasImage && <span className="muted small"> · no image</span>}</span>
+            <span className="mono muted small">{entry.dataPath || entry.path}</span>
+            <span className="mono muted small">{entry.id}</span>
+          </> : <span className="muted">None (no map image)</span>}
+        </button>)}
+        {!options.length && <div className="empty-note">No map matches.</div>}
+      </div>
+    </div>}
+  </div>;
+}
+
 const COLORS = { areas: ["#d9534f", "#3b82c4", "#9b59b6"], resources: "#2e9e5b", objects: "#888" };
 
-function MapPlot({ view, section, selected, onSelect }: { view: NpcGenView; section: NpcGenSection; selected: number | null; onSelect: (section: NpcGenSection, index: number) => void }) {
+/** The client's midmap of the map: it spans ±rows × 512 on both axes, north up (CDlgMidMap). */
+interface Background {
+  url: string;
+  half: number;
+  opacity: number;
+}
+
+function MapPlot({ view, section, selected, onSelect, background, controls, onImageError }: { view: NpcGenView; section: NpcGenSection; selected: number | null; onSelect: (section: NpcGenSection, index: number) => void; background: Background | null; controls?: ReactNode; onImageError?: () => void }) {
   const points = useMemo(() => [...view.areas, ...view.resources, ...view.objects], [view]);
   const bounds = useMemo(() => {
+    if (background) return { x: -background.half, y: -background.half, w: background.half * 2, h: background.half * 2 };
     if (!points.length) return { x: -512, y: -512, w: 1024, h: 1024 };
     let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
     for (const point of points) {
@@ -364,9 +506,11 @@ function MapPlot({ view, section, selected, onSelect }: { view: NpcGenView; sect
     }
     const pad = Math.max(20, (maxX - minX + maxZ - minZ) * 0.03);
     return { x: minX - pad, y: -maxZ - pad, w: maxX - minX + pad * 2, h: maxZ - minZ + pad * 2 };
-  }, [points]);
+  }, [background, points]);
   const [box, setBox] = useState(bounds);
-  useEffect(() => setBox(bounds), [bounds]);
+  // Fit when another file or map is shown, not after every edit.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => setBox(bounds), [view.path, background?.half, !!background]);
   const svg = useRef<SVGSVGElement>(null);
   const drag = useRef<{ x: number; y: number; box: typeof box } | null>(null);
   const toWorld = (clientX: number, clientY: number, current = box) => {
@@ -385,13 +529,17 @@ function MapPlot({ view, section, selected, onSelect }: { view: NpcGenView; sect
       : <circle key={`${kind}:${point.index}`} {...common} cx={point.x} cy={-point.z} r={unit * (active ? 6 : 3)} fill={active ? "var(--accent)" : color}><title>{SECTIONS.find((entry) => entry.key === kind)?.one} {point.index + 1}</title></circle>;
   };
   return <div className="npcgen-map">
+    {controls && <div className="npcgen-mapbar">{controls}</div>}
     <svg ref={svg} viewBox={`${box.x} ${box.y} ${box.w} ${box.h}`} preserveAspectRatio="xMidYMid meet"
       onWheel={(event) => { const at = toWorld(event.clientX, event.clientY); const factor = event.deltaY > 0 ? 1.2 : 1 / 1.2; setBox((current) => ({ x: at.x - (at.x - current.x) * factor, y: at.y - (at.y - current.y) * factor, w: current.w * factor, h: current.h * factor })); }}
       onMouseDown={(event) => { drag.current = { x: event.clientX, y: event.clientY, box }; }}
       onMouseMove={(event) => { const start = drag.current; if (!start || !svg.current) return; const scale = toWorld(0, 0, start.box).scale; setBox({ ...start.box, x: start.box.x - (event.clientX - start.x) * scale, y: start.box.y - (event.clientY - start.y) * scale }); }}
       onMouseUp={() => { drag.current = null; }} onMouseLeave={() => { drag.current = null; }} onDoubleClick={() => setBox(bounds)}>
-      <line x1={box.x} x2={box.x + box.w} y1={0} y2={0} className="npcgen-axis" vectorEffect="non-scaling-stroke" />
-      <line y1={box.y} y2={box.y + box.h} x1={0} x2={0} className="npcgen-axis" vectorEffect="non-scaling-stroke" />
+      {background && <image href={background.url} x={-background.half} y={-background.half} width={background.half * 2} height={background.half * 2} opacity={background.opacity} preserveAspectRatio="none" pointerEvents="none" onError={onImageError} />}
+      {!background && <>
+        <line x1={box.x} x2={box.x + box.w} y1={0} y2={0} className="npcgen-axis" vectorEffect="non-scaling-stroke" />
+        <line y1={box.y} y2={box.y + box.h} x1={0} x2={0} className="npcgen-axis" vectorEffect="non-scaling-stroke" />
+      </>}
       {view.resources.map((point) => shape(point, "resources", COLORS.resources))}
       {view.objects.map((point) => shape(point, "objects", COLORS.objects))}
       {view.areas.map((point) => shape(point, "areas", COLORS.areas[point.kind] ?? "#c08a2e"))}
@@ -402,7 +550,7 @@ function MapPlot({ view, section, selected, onSelect }: { view: NpcGenView; sect
 
 // ── The workspace ──
 
-export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGenEditor({ active, onStateChange, icon, elementsPath = null }, ref) {
+export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGenEditor({ active, onStateChange, icon, elementsPath = null, mapGeneration = null }, ref) {
   const [view, setView] = useState<NpcGenView | null>(null);
   const [section, setSection] = useState<NpcGenSection>("areas");
   const [selected, setSelected] = useState<number | null>(null);
@@ -424,6 +572,21 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
 
   // Names of every spawned template (once per file and elements.data).
   useEffect(() => setLabels({}), [elementsPath]);
+
+  // The client's maps, for the plot's background.
+  const [maps, setMaps] = useState<ClientMap[] | null>(null);
+  const [mapsError, setMapsError] = useState<string | null>(null);
+  const [mapFor, setMapFor] = useState<Record<string, number>>(() => readStored(MAP_FOR_KEY, {}));
+  const [backgroundStyle, setBackgroundStyle] = useState(() => readStored(BACKGROUND_KEY, { on: true, opacity: 70 }));
+  const [failedImage, setFailedImage] = useState<string | null>(null);
+  useEffect(() => {
+    setMaps(null);
+    setMapsError(null);
+    if (mapGeneration === null) return;
+    let cancelled = false;
+    clientMaps().then((found) => { if (!cancelled) setMaps(found); }).catch((problem) => { if (!cancelled) setMapsError(String(problem).replace(/^Error: /, "")); });
+    return () => { cancelled = true; };
+  }, [mapGeneration]);
   useEffect(() => {
     if (!view || !elementsPath) return;
     const ids = [...new Set([...view.areas, ...view.resources].flatMap((entry) => entry.ids))].filter((id) => id && !(String(id) in labels));
@@ -473,6 +636,34 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     void run(() => setNpcGenItem(selected, next, label));
   }, [run, selected]);
   const pick = useCallback((kind: PickKind, current: number) => new Promise<number | null>((resolve) => setPicking({ kind, current, resolve })), []);
+
+  // The character's position in a running game client; with several clients, the one chosen last.
+  const [choosingClient, setChoosingClient] = useState<{ clients: RunningClient[]; resolve: (pid: number | null) => void } | null>(null);
+  const lastClient = useRef<number | null>(null);
+  const fromGame = useCallback(async (choose: boolean): Promise<GamePosition | null> => {
+    setError(null);
+    setNote(null);
+    try {
+      const clients = await gameClients();
+      if (!clients.length) {
+        setError("No game client is running. Start elementclient.exe, enter the world and stand where it should go.");
+        return null;
+      }
+      let pid = clients.length === 1 ? clients[0].pid : choose ? undefined : clients.find((client) => client.pid === lastClient.current)?.pid;
+      if (pid === undefined) {
+        const chosen = await new Promise<number | null>((resolve) => setChoosingClient({ clients, resolve }));
+        setChoosingClient(null);
+        if (chosen === null) return null;
+        pid = chosen;
+      }
+      lastClient.current = pid;
+      const position = await gamePosition(pid);
+      return position;
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+      return null;
+    }
+  }, []);
   const pickSearch = useMemo(() => picking ? (text: string, page: number) => pickEssence(picking.kind, text, page, picking.current || null) : undefined, [picking]);
 
   const undo = useCallback(() => { if (view?.canUndo) void run(undoNpcGen); }, [run, view?.canUndo]);
@@ -555,6 +746,30 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     </div>
   </section>;
 
+  const detected = maps ? detectMap(view.path, maps) : null;
+  const storedMap = mapFor[view.path];
+  const map = !maps ? null : storedMap === undefined ? detected : storedMap === -1 ? null : maps.find((entry) => entry.id === storedMap) ?? detected;
+  const chooseMap = (id: number) => {
+    const next = { ...mapFor };
+    if (id === (detected?.id ?? -1)) delete next[view.path];
+    else next[view.path] = id;
+    setMapFor(next);
+    store(MAP_FOR_KEY, next);
+  };
+  const setStyle = (change: Partial<typeof backgroundStyle>) => setBackgroundStyle((current) => { const next = { ...current, ...change }; store(BACKGROUND_KEY, next); return next; });
+  const imageUrl = map?.hasImage && map.rows > 0 && mapGeneration !== null ? midmapUrl(mapGeneration, map.path) : null;
+  const background = imageUrl && backgroundStyle.on && failedImage !== imageUrl ? { url: imageUrl, half: map!.rows * 512, opacity: backgroundStyle.opacity / 100 } : null;
+  const mapControls = mapGeneration === null ? <span className="muted small">Set the game client folder in Settings to show the map image.</span>
+    : mapsError ? <span className="muted small" title={mapsError}>Map images are not available: {mapsError}</span>
+    : !maps ? <span className="muted small"><Loader2 size={12} className="spin" /> Reading the client's maps…</span>
+    : <>
+      <span className="npcgen-flag">Map <MapChooser maps={maps} value={map} detected={detected} onChoose={chooseMap} /></span>
+      {!detected && storedMap === undefined && <span className="muted small" title="Name the file npcgen_<map>.data or keep it in the server's map folder">not detected</span>}
+      <label className="npcgen-flag"><input type="checkbox" checked={backgroundStyle.on} disabled={!imageUrl} onChange={(event) => setStyle({ on: event.target.checked })} /> Map image</label>
+      <input type="range" className="npcgen-opacity" min={10} max={100} step={5} value={backgroundStyle.opacity} disabled={!background} title={`Image opacity ${backgroundStyle.opacity}%`} onChange={(event) => setStyle({ opacity: Number(event.target.value) })} />
+      {map && !map.hasImage && <span className="muted small">This map has no image in surfaces.pck.</span>}
+      {imageUrl && failedImage === imageUrl && <span className="muted small">The map image could not be read.</span>}
+    </>;
   const generators = view.areas.reduce((total, entry) => total + entry.ids.length, 0);
   const rowLabel = (entry: NpcGenSummary) => {
     if (section === "controllers") return <><span className="mono">{entry.ids[0]}</span><span className="truncate">{entry.label || <span className="muted">(no name)</span>}{entry.controller !== 0 && <span className="muted small"> · trigger {entry.controller}</span>}</span>{entry.kind !== 0 ? <span className="tag ok">on</span> : <span />}<span /></>;
@@ -572,7 +787,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
   };
   const form = item && selected !== null ? (() => {
     const key = `${item.section}:${selected}`;
-    const common = { version: view.version, labels, elementsOpen: !!elementsPath, controllers: view.controllers, pick };
+    const common = { version: view.version, labels, elementsOpen: !!elementsPath, controllers: view.controllers, pick, fromGame };
     switch (item.section) {
       case "areas": return <AreaForm key={key} {...common} value={item.item} onCommit={(value, label) => commit({ section: "areas", item: value }, label)} />;
       case "resources": return <ResourceForm key={key} {...common} value={item.item} onCommit={(value, label) => commit({ section: "resources", item: value }, label)} />;
@@ -586,6 +801,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
       <div><h2>NPC generator {view.dirty && <span className="tag warn">unsaved</span>}</h2><div className="tasks-file-line">
         <span className="mono truncate" title={view.path}>{view.path}</span>
         <span className="path-data-badge"><b>Version:</b> {view.version}</span>
+        {map && <span className="path-data-badge" title={`Map ${map.id}: server folder ${map.dataPath}, images ${map.path}`}><b>Map:</b> {map.name}</span>}
         <span className="path-data-badge"><b>Spawn areas:</b> {count(view.areas.length)}</span>
         <span className="path-data-badge"><b>Generators:</b> {count(generators)}</span>
         <span className="path-data-badge"><b>Size:</b> {bytes(view.size)}</span>
@@ -616,13 +832,23 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
         </footer>
       </aside>
       <div className={"npcgen-main" + (showMap && section !== "controllers" ? " with-map" : "")}>
-        {showMap && section !== "controllers" && <MapPlot view={view} section={section} selected={selected} onSelect={(kind, index) => { setSection(kind); setSelected(index); }} />}
+        {showMap && section !== "controllers" && <MapPlot view={view} section={section} selected={selected} onSelect={(kind, index) => { setSection(kind); setSelected(index); }} background={background} controls={mapControls} onImageError={() => setFailedImage(imageUrl)} />}
         <div className="dyn-task-form-scroll">
           {selected === null ? <div className="empty-note">Select a {SECTIONS.find((entry) => entry.key === section)!.one}{section !== "controllers" ? " in the list or on the map" : ""}.</div>
             : <><div className="dyn-task-title"><h3>{SECTIONS.find((entry) => entry.key === section)!.one} {selected + 1}</h3></div>{form ?? <div className="empty-note">Loading…</div>}</>}
         </div>
       </div>
     </div>
+    {choosingClient && <div className="modal-backdrop" onMouseDown={() => choosingClient.resolve(null)}>
+      <div className="modal dyn-save-dialog" onMouseDown={(event) => event.stopPropagation()}>
+        <h3>Which game client?</h3>
+        <p className="muted small">Several clients are running. The position comes from the character in the one you choose; later clicks use it again (Shift+click asks again).</p>
+        <div className="npcgen-clients">{choosingClient.clients.map((client) => <button key={client.pid} className="btn" onClick={() => choosingClient.resolve(client.pid)}>
+          <b>Process {client.pid}</b><span className="mono muted small truncate" title={client.path ?? undefined}>{client.path ?? "elementclient.exe"}</span>
+        </button>)}</div>
+        <footer><span className="spacer" /><button className="btn" onClick={() => choosingClient.resolve(null)}>Cancel</button></footer>
+      </div>
+    </div>}
     {picking && pickSearch && <ValuePicker search={pickSearch} icon={icon} onApply={async (value) => { picking.resolve(Number(value)); return null; }} onClose={() => { picking.resolve(null); setPicking(null); }} />}
     {saving && <div className="modal-backdrop" onMouseDown={() => !busy && setSaving(null)}>
       <div className="modal dyn-save-dialog" onMouseDown={(event) => event.stopPropagation()}>

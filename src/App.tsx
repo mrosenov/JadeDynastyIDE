@@ -1213,7 +1213,7 @@ export default function App() {
       {workspace === "gen" ? (
         <main className="workspace tasks-data-workspace">
           {activityBar}
-          <NpcGenEditor ref={genEditor} active onStateChange={setGenEditorState} icon={icon} elementsPath={summary?.path ?? null} />
+          <NpcGenEditor ref={genEditor} active onStateChange={setGenEditorState} icon={icon} elementsPath={summary?.path ?? null} mapGeneration={settingsView?.client ? settingsView.iconGeneration : null} />
         </main>
       ) : workspace === "npc" ? (
         <main className="workspace path-data-workspace">

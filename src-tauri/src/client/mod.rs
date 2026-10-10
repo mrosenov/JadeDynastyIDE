@@ -2,6 +2,7 @@
 //! path table (`path.data`) and the item icon atlas.
 
 pub mod dds;
+pub mod game;
 pub mod instances;
 pub mod pck;
 pub mod strings;
@@ -267,8 +268,10 @@ pub struct Resources {
     images: Mutex<VecDeque<(u32, Arc<ResourceImage>)>>,
     /// Title definitions from interfaces.pck, read on first use.
     titles: OnceLock<Result<titles::TitleTable, String>>,
-    /// Map names from configs.pck instance.txt, read on first use.
-    instances: OnceLock<Result<Vec<(i32, String)>, String>>,
+    /// Maps from configs.pck instance.txt, read on first use.
+    instances: OnceLock<Result<Vec<instances::Instance>, String>>,
+    /// Recently converted midmaps (PNG) by image path.
+    midmaps: Mutex<VecDeque<(String, Arc<Vec<u8>>)>>,
 }
 
 pub struct ResourceImage {
@@ -306,6 +309,7 @@ impl Resources {
             images: Mutex::new(VecDeque::new()),
             titles: OnceLock::new(),
             instances: OnceLock::new(),
+            midmaps: Mutex::new(VecDeque::new()),
         }
     }
 
@@ -352,12 +356,41 @@ impl Resources {
             .map_err(Clone::clone)
     }
 
-    /// Map names by ID (configs.pck Configs/instance.txt), in file order.
-    pub fn instances(&self) -> Result<&Vec<(i32, String)>, String> {
+    /// Maps (configs.pck Configs/instance.txt), in file order.
+    pub fn instances(&self) -> Result<&Vec<instances::Instance>, String> {
         self.instances
             .get_or_init(|| self.package("configs").and_then(|pck| pck.read_path("configs/instance.txt")).and_then(|bytes| instances::parse(&bytes)))
             .as_ref()
             .map_err(Clone::clone)
+    }
+
+    /// The package path of a map's full-map image (the client's M map, `CDlgMidMap::Render`).
+    pub fn midmap_path(path: &str) -> String {
+        format!("surfaces/midmaps/{path}.dds")
+    }
+
+    pub fn has_midmap(&self, path: &str) -> bool {
+        !path.is_empty() && self.package("surfaces").is_ok_and(|pck| pck.find(&Self::midmap_path(path)).is_some())
+    }
+
+    /// A map's midmap as a PNG, converted on first use (a few are kept).
+    pub fn midmap_png(&self, path: &str) -> Result<Arc<Vec<u8>>, String> {
+        if path.is_empty() || path.contains(['/', '\\']) || path.contains("..") {
+            return Err(format!("{path:?} is not a map path"));
+        }
+        let key = path.to_lowercase();
+        if let Some((_, hit)) = self.midmaps.lock().map_err(|_| "map cache poisoned")?.iter().find(|(name, _)| *name == key) {
+            return Ok(hit.clone());
+        }
+        let image = Dds::parse(self.package("surfaces")?.read_path(&Self::midmap_path(path))?)?;
+        let png = Arc::new(dds::png(&image.rect(0, 0, image.width, image.height), image.width, image.height)?);
+        let mut cache = self.midmaps.lock().map_err(|_| "map cache poisoned")?;
+        cache.retain(|(name, _)| *name != key);
+        cache.push_back((key, png.clone()));
+        while cache.len() > 3 {
+            cache.pop_front();
+        }
+        Ok(png)
     }
 
     /// A string table of configs.pck (see [`table`]), read once.
@@ -603,6 +636,23 @@ mod tests {
         let decoder = png::Decoder::new(&png[..]);
         let reader = decoder.read_info().unwrap();
         assert_eq!((reader.info().width, reader.info().height), (36, 36));
+    }
+
+    #[test]
+    fn converts_map_overviews() {
+        let Some(dir) = client() else { return };
+        let res = Resources::new(inspect(&dir).unwrap());
+        let maps = res.instances().unwrap();
+        let x1 = maps.iter().find(|map| map.data_path == "x1").unwrap();
+        assert_eq!((x1.rows, x1.cols), (2, 2));
+        assert!(res.has_midmap(&x1.path) && !res.has_midmap("no_such_map") && !res.has_midmap(""));
+        // Server folders use the data path, images the path.
+        assert!(maps.iter().any(|map| map.data_path == "e12" && map.path == "z12" && res.has_midmap(&map.path)));
+        let png = res.midmap_png(&x1.path).unwrap();
+        let reader = png::Decoder::new(&png[..]).read_info().unwrap();
+        assert_eq!((reader.info().width, reader.info().height), (1036, 1036));
+        assert!(Arc::ptr_eq(&png, &res.midmap_png("X1").unwrap()), "cached");
+        assert!(res.midmap_png("../x1").is_err());
     }
 
     #[test]

@@ -659,6 +659,25 @@ resources green, objects grey. Wheel zooms, dragging moves, double-click fits; c
 it. **Clone** (Ctrl+D) copies the selected item below it, **Delete** (Del) asks first, and undo/redo
 cover every change.
 
+With the game client folder set in Settings, the plot draws the map's own image underneath: the client's
+full map (the one the M key opens, `surfaces.pck` › `Surfaces/MidMaps`). The map is found from the
+file's folder (a server keeps each map's npcgen.data in a folder named after it, for example `x1` or
+`e12`) or from a file named `npcgen_<map>.data`, such as `npcgen_x1.data`, for loose copies. The
+header shows the map's name. The **Map** button above the plot picks another map (or None) and remembers
+the choice for that file: type part of a name, a folder such as `e12`, or an ID, then click or use the
+arrow keys and Enter; **Map image** and the slider turn the image off or fade it. A few maps have
+no image in the client.
+
+**From game** next to a Position (spawn areas, resource areas and objects) puts the item where your
+character stands in the running game client, facing the same way: start `elementclient.exe`, enter the
+world, walk to the spot, turn and click the button. **Facing** next to the direction or rotation only
+turns the item. Resource areas and objects store their rotation as an axis and a turn (the official
+editor's three bytes); an upright axis (0, 0) shows its facing in degrees, 0° being north. JD IDE only reads the client's memory; it finds where this client build keeps
+the position by examining its `elementclient.exe` once (XtremeJade, ForsakenJD, HDN and Reborn are
+recognised, and other builds of the same game usually are too). With several clients running it asks
+which one and remembers it; Shift+click asks again. A client that blocks other programs, a character that
+is not in the world yet or an unrecognised build gives a message instead of a position.
+
 The file keeps its version when saved. Real files use versions 4 to 14; a field a version does not
 store (for example the phase before version 14) shows "not in vN" and cannot be set. Saving checks that
 the file reads back exactly, can back up the old file and warns when another program changed it. All
