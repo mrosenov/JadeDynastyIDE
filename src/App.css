@@ -9434,3 +9434,186 @@ select.ie-control {
   display: inline-block;
   width: 36px;
 }
+
+/* ── npcgen.data editor (reuses the dyn_tasks list and form styles) ── */
+.npcgen-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 8px 0;
+}
+.npcgen-row {
+  grid-template-columns: 40px auto minmax(0, 1fr) auto auto auto;
+}
+.npcgen-kind {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+.npcgen-kind.k0 { background: #d9534f; }
+.npcgen-kind.k1 { background: #3b82c4; }
+.npcgen-kind.k2 { background: #9b59b6; }
+.npcgen-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.npcgen-main.with-map > .npcgen-map {
+  flex: 0 0 44%;
+}
+.npcgen-map {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-pane);
+}
+.npcgen-map svg {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  cursor: grab;
+}
+.npcgen-map svg:active {
+  cursor: grabbing;
+}
+.npcgen-shape {
+  cursor: pointer;
+}
+.npcgen-shape:hover {
+  stroke: var(--text);
+}
+.npcgen-axis {
+  stroke: var(--border);
+  stroke-dasharray: 4 4;
+}
+.npcgen-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 4px 10px;
+  font-size: 11px;
+}
+.npcgen-legend i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 4px;
+  border-radius: 2px;
+  vertical-align: -1px;
+}
+.npcgen-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 12px;
+}
+.npcgen-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.npcgen-time {
+  display: inline-flex;
+  gap: 3px;
+}
+.npcgen-time .dyn-input {
+  width: 50px;
+}
+.npcgen-segment {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+.npcgen-form {
+  max-width: 1180px;
+}
+.npcgen-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+.npcgen-detail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+.npcgen-card > header {
+  border-bottom: 1px solid var(--border);
+}
+.npcgen-rows {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 12px;
+  align-items: center;
+  padding: 8px 10px 10px;
+  font-size: 12px;
+}
+.npcgen-label {
+  color: var(--text-dim);
+  text-align: right;
+  white-space: nowrap;
+}
+.npcgen-label[title] {
+  cursor: help;
+}
+.npcgen-hint {
+  display: inline-grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-dim);
+  font-size: 9px;
+  vertical-align: 1px;
+}
+.npcgen-value,
+.npcgen-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  min-width: 0;
+}
+.npcgen-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.npcgen-wide-select {
+  max-width: 100%;
+}
+.npcgen-missing {
+  color: var(--danger);
+  font-size: 11px;
+  font-weight: 600;
+}
+.npcgen-generators tbody tr {
+  cursor: pointer;
+}
+.npcgen-generators tbody tr.selected td {
+  background: var(--accent-soft);
+}
+.npcgen-detail-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+}

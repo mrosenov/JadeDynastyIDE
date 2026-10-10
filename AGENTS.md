@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (176 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (178 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -77,6 +77,7 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
+| `npcgen.rs` | `npcgen.data` (one server map's spawns): versions 1–14 reader/writer, document with journal (whole-item Replace/Insert/Remove per section), save. |
 | `task_npc.rs` | `task_npc.data` reader/writer (12-byte header, 16-byte NPC_INFO records), save with backup and changed-on-disk guard. |
 | `client/instances.rs` | Map names from configs.pck `Configs/instance.txt` (UTF-16 `"Name" { id … }` blocks, `//` comments). |
 | `dyn_tasks/format.rs`, `dyn_tasks/mod.rs` | `dyn_tasks.data` reader/writer (client limits, read-back check) and the open pack: edit journal, clone, delete, problems, save. |
@@ -102,6 +103,8 @@ Environment quirks (Windows 11, Git Bash):
   `FieldTree`, `InlineEditor`, `PathDataEditor`, `TasksEditor`, `DynTasksEditor`, task hierarchy dialogs, …).
   `TaskDialogEditor` exports `DialogTreeEditor`, the talk tree editor both task editors use.
   `TaskNpcEditor` follows `PathDataEditor` (rows and undo history in the component).
+  `NpcGenEditor` keeps the map in the backend (files up to ~1.4 MB) and fetches one item at a time; it
+  reuses `NumberInput`, `TextInput`, `Field` and `VertInput` exported from `DynTasksEditor`.
 - `schema/model.ts` — schema editor draft model; `schema/fieldList.ts` — pasted
   sELedit/Jade Editor field lists → fields.
 - `elements/money.ts`, `time.ts`, `text.ts`, `talk.ts` — display helpers.
@@ -486,6 +489,37 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 - Six fixtures (XtremeJade, 1559, ForsakenJD, HDN, Reborn, zxserver) round-trip; ~45% of records have map 0.
 - Map names: `Resources::instances`; HDN's instance.txt has comments after values. ForsakenJD has
   295 maps (401 = New Main City). Picker kind `npc` = NPC_ESSENCE + MONSTER_ESSENCE.
+
+## npcgen.data editor
+
+- Format from `CNPCGenMan::Load` (ZElementEditor/NPCGenData.*, the same code as the server's
+  zgame/gs/template/npcgendata.*): `#pragma pack(1)`, `size_t` = 4 bytes. u32 version; header counts
+  (dynamic objects v6+, controllers v7+); areas (+ctrl/life/max v7+, export/attach v12+, phase v14;
+  60-byte generators; attached export IDs when attach_num > 0, −1 = this area is attached); resource
+  areas (dir/rad v6+, ctrl/max v7+, export/attach v12+, phase v14; 20-byte resources); dynamic objects
+  (scale v9+, controller v10+, phase v14); controllers (128-byte GBK name; range v8+, repeat v11+, v13+
+  i32 segment count in the low 16 bits with logic in the high bits, then 2 × 24-byte times per segment).
+- Only the server loads it (gs.conf `NPCGenFile`, one per map folder; `instance_manager.cpp`). The
+  client's `element/data/npcgen.data` is identical in all three clients and unused.
+- 519 sample files (zxserver, 1559, ForsakenJD) round-trip; versions 4, 8, 9, 11, 12, 13, 14.
+  `encode` refuses values a version cannot store. Controller names keep their raw bytes while unchanged.
+- Picker kind `mine` = MINE_ESSENCE. The plot draws x and −z.
+- Server semantics (zgame/gs/npcgenerator.cpp `LoadGenData`, value names from ZElementEditor
+  SceneAIGenerator.cpp/NpcPropertyDlg.cpp/AIGenExportor.cpp):
+  - Extents are **full sizes**: `rect = pos ± ext × 0.5` (areas and resource areas). The editor writes
+    EdgeLen/EdgeHei/EdgeWth. Area `kind` (iType): 0 follows the terrain, 1 plane or box (fixed height;
+    older tools say "Fly").
+  - `npc_type`: 1 server NPC, 2 interaction (mobactive), else monster; `group_type` (monsters): 0 mobs,
+    1 group, 2 boss spawner. `revive` (cReviveType): 0 none, 1 after disappearing, 2 when switched on
+    (the editor refuses 2 for NPCs). `phase` = SetPhaseID; older tools label it "Buff Region"
+    (x1 export 415 holds 26).
+  - Area/resource/object `controller` (idCtrl) refers to `Controller.id`; `controller_id` is the
+    trigger ID (TranslateCtrlID).
+  - Generators: aggressive 0 template / 1 aggressive / 2 passive; respawn = 15 (BASE_REBORN_TIME) +
+    refresh, clamped 15 s–30 days; corpse delay 0 = default, else 5–1800; `loop_type` 0 stop at end,
+    1 back along the path, 2 loop; `speed_flag` 0 walk, 1 run; faction overrides apply when the
+    `default_*` flag is 0 (server bug: accept-help takes the flag, not the value). `died_times`
+    (editor default 50), `offset_water` and `need_help` are not read by the server.
 
 ## Sample files (for tests and repros)
 

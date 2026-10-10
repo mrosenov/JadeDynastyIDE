@@ -624,6 +624,46 @@ refuses ID 0 and duplicate IDs (the game would keep only the last), sets the tim
 the records in their order, can back up the replaced file and warns when another program changed it.
 All six known files read and write back byte-for-byte.
 
+## npcgen.data editor
+
+**NPC Gen** in the activity bar opens one map's `npcgen.data`: what spawns on that map. Only the
+**server** reads these files, one per map folder (for example `gamed/config/z1/npcgen.data`, named by
+`NPCGenFile` in gs.conf); the copy in a client's `element/data` folder is not used. Restart the map's
+server after saving.
+
+The list on the left has four sections:
+
+- **Spawns**: areas where monsters, NPCs or interaction objects appear. The form is grouped like the
+  official editor's: **General** (type, placement on the terrain or at a fixed height, group type
+  normal/group/boss, the controller that switches the area on, chosen by name, life time, export ID,
+  attached areas and phase), **Spawning** (revive type, max count, generator ID, spawn at start, valid
+  once) and **Location** (position, direction with its compass facing, and size: the full width, height
+  and depth of the area, 0 for a single point). The **Generators** table lists what spawns; click a row
+  for its details: count, respawn (the server adds 15 seconds; the real time is shown), how long the
+  corpse stays, death count, aggressive (as the template, aggressive or passive), patrol path, path type
+  (stop at the end, back along the path, loop), walk or run, terrain and water offsets, and faction
+  overrides (unticked = the monster template's values). Hover a label with **?** for what the server
+  does with it; fields the server ignores say so.
+- The phase is what some older tools call **Buff Region**: 0 means everyone sees the spawn; otherwise
+  only players in that phase do.
+- List rows show the first NPC or monster ID, its name and the number spawned; with an `elements.data`
+  open, an ID it does not contain shows **not found** in red.
+- **Resources**: mine and herb areas with their mines (picker over `MINE_ESSENCE`), counts and respawn.
+- **Objects**: dynamic objects (decorations, gates) with position, direction, scale and controller.
+- **Controllers**: named event triggers: trigger ID, wait and stop times, start and stop dates
+  (−1 = any), repeat and time segments.
+
+Search by NPC or mine name or ID, controller or number. **Map** shows every spawn area, resource area
+and object on a plan of the map (north up): monsters red, NPCs blue, interaction objects purple,
+resources green, objects grey. Wheel zooms, dragging moves, double-click fits; clicking a shape selects
+it. **Clone** (Ctrl+D) copies the selected item below it, **Delete** (Del) asks first, and undo/redo
+cover every change.
+
+The file keeps its version when saved. Real files use versions 4 to 14; a field a version does not
+store (for example the phase before version 14) shows "not in vN" and cannot be set. Saving checks that
+the file reads back exactly, can back up the old file and warns when another program changed it. All
+519 npcgen.data files of the sample servers read and write back byte-for-byte.
+
 ## path.data editor
 
 The folder-tree icon in the activity bar opens `path.data` as a separate data workspace. If

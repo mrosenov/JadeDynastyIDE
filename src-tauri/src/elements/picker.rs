@@ -169,6 +169,7 @@ impl Document {
             let wanted = match kind {
                 "monster" => name == "MONSTER_ESSENCE",
                 "npc" => name == "NPC_ESSENCE" || name == "MONSTER_ESSENCE",
+                "mine" => name == "MINE_ESSENCE",
                 _ => refs::list_space(&name) == IdSpace::Essence && refs::registry_space(&name) == IdSpace::Essence && !NOT_ITEMS.iter().any(|prefix| name.starts_with(prefix)) && !name.ends_with("_CONFIG"),
             };
             wanted.then_some(list)
@@ -179,6 +180,7 @@ impl Document {
         let (title, scope) = match kind {
             "monster" => ("Choose a monster", "MONSTER_ESSENCE"),
             "npc" => ("Choose an NPC or monster", "NPC_ESSENCE and MONSTER_ESSENCE"),
+            "mine" => ("Choose a mine or herb", "MINE_ESSENCE"),
             _ => ("Choose an item", "Item lists of elements.data"),
         };
         Ok(Spec { source: Source::Records(targets), kind: "reference".into(), title: title.into(), scope: scope.into(), current })

@@ -78,6 +78,10 @@ import type {
   DynOverviewRow,
   DynComparison,
   TaskNpcFile,
+  NpcGenView,
+  NpcGenItem,
+  NpcGenSection,
+  NpcGenSaveReport,
   TaskNpcSaveRequest,
   TaskNpcSaveReport,
   TaskAlignProposal,
@@ -358,10 +362,21 @@ export const compareDynTasks = (path: string | null) => invoke<DynComparison>("c
 export const copyDynTasks = (ids: number[]) => invoke<DynView>("copy_dyn_tasks", { ids });
 export const closeDynComparison = () => invoke<void>("close_dyn_comparison");
 /** Items or monsters of the open elements.data. */
-export const pickEssence = (kind: "item" | "monster" | "npc", query: string, page: number, current: number | null) => invoke<PickerResult>("pick_essence", { kind, query, page, current });
+export const pickEssence = (kind: "item" | "monster" | "npc" | "mine", query: string, page: number, current: number | null) => invoke<PickerResult>("pick_essence", { kind, query, page, current });
 
 // task_npc.data
 export const openTaskNpc = (path: string) => invoke<TaskNpcFile>("open_task_npc", { path });
 export const saveTaskNpc = (request: TaskNpcSaveRequest) => invoke<TaskNpcSaveReport>("save_task_npc", { request });
 /** Map names of the configured client (configs.pck instance.txt); empty without a client. */
 export const clientMapNames = () => invoke<[number, string][]>("client_map_names");
+
+// npcgen.data
+export const openNpcGen = (path: string) => invoke<NpcGenView>("open_npcgen", { path });
+export const npcGenView = () => invoke<NpcGenView | null>("npcgen_view");
+export const getNpcGenItem = (section: NpcGenSection, index: number) => invoke<NpcGenItem>("npcgen_item", { section, index });
+export const setNpcGenItem = (index: number, item: NpcGenItem, label: string) => invoke<NpcGenView>("set_npcgen_item", { index, item, label });
+export const cloneNpcGenItem = (section: NpcGenSection, index: number) => invoke<{ view: NpcGenView; index: number }>("clone_npcgen_item", { section, index });
+export const deleteNpcGenItem = (section: NpcGenSection, index: number) => invoke<NpcGenView>("delete_npcgen_item", { section, index });
+export const undoNpcGen = () => invoke<NpcGenView>("undo_npcgen");
+export const redoNpcGen = () => invoke<NpcGenView>("redo_npcgen");
+export const saveNpcGen = (target: string | null, backup: boolean, replaceChanged: boolean) => invoke<NpcGenSaveReport>("save_npcgen", { target, backup, replaceChanged });

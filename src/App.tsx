@@ -29,6 +29,7 @@ import { UnsavedDialog } from "./components/UnsavedDialog";
 import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } from "./components/PathDataEditor";
 import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
 import { TaskNpcEditor, type TaskNpcEditorHandle, type TaskNpcEditorState } from "./components/TaskNpcEditor";
+import { NpcGenEditor, type NpcGenEditorHandle, type NpcGenEditorState } from "./components/NpcGenEditor";
 import { TasksEditor, type TasksEditorHandle, type TasksEditorState } from "./components/TasksEditor";
 import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
@@ -47,6 +48,8 @@ import {
   FileStack,
   Gift,
   MapPin,
+  Map as MapIcon,
+  Users,
   Eraser,
   Plus,
   Table2,
@@ -76,7 +79,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "tasks" | "dyn" | "npc";
+type DataWorkspace = "elements" | "paths" | "tasks" | "dyn" | "npc" | "gen";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -176,6 +179,10 @@ export default function App() {
   const [npcEditorState, setNpcEditorState] = useState<TaskNpcEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, rows: 0 });
   const npcEditorStateRef = useRef(npcEditorState);
   npcEditorStateRef.current = npcEditorState;
+  const genEditor = useRef<NpcGenEditorHandle>(null);
+  const [genEditorState, setGenEditorState] = useState<NpcGenEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, version: null });
+  const genEditorStateRef = useRef(genEditorState);
+  genEditorStateRef.current = genEditorState;
   const [summary, setSummary] = useState<FileSummary | null>(null);
   const [fileKey, setFileKey] = useState(0);
   const [loading, setLoading] = useState<string | null>(null);
@@ -307,6 +314,10 @@ export default function App() {
         event.preventDefault();
         return;
       }
+      if (genEditorStateRef.current.dirty && !window.confirm("npcgen.data has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
       if (editCountOf(editsRef.current) === 0) return;
       event.preventDefault();
       setUnsaved({ action: "close JD IDE", proceed: () => void win.destroy() });
@@ -376,6 +387,7 @@ export default function App() {
         else if (workspaceRef.current === "tasks") tasksEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "npc") npcEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "gen") genEditor.current?.openPath(event.payload.paths[0]);
         else loadFile(event.payload.paths[0]);
       }
     });
@@ -892,6 +904,31 @@ export default function App() {
         { label: "Enums & masks…", icon: Tags, onSelect: () => setSetsEditor({ key: null }), title: "Edit the names of task types, categories, classes, friendships and other task values" },
       ],
     },
+  ] : workspace === "gen" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open npcgen.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => genEditor.current?.choose() },
+        { label: "Save", icon: Save, shortcut: "Ctrl+S", onSelect: () => genEditor.current?.save(), disabled: !genEditorState.loaded },
+        { label: "Save as…", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: () => genEditor.current?.saveAs(), disabled: !genEditorState.loaded },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => genEditor.current?.undo(), disabled: !genEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => genEditor.current?.redo(), disabled: !genEditorState.canRedo },
+        "separator",
+        { label: "Clone", icon: Copy, shortcut: "Ctrl+D", onSelect: () => genEditor.current?.cloneSelected(), disabled: !genEditorState.loaded },
+        { label: "Delete…", icon: Trash2, shortcut: "Del", onSelect: () => genEditor.current?.deleteSelected(), disabled: !genEditorState.loaded },
+        "separator",
+        { label: "Map", icon: MapIcon, onSelect: () => genEditor.current?.toggleMap(), disabled: !genEditorState.loaded },
+      ],
+    },
   ] : workspace === "npc" ? [
     {
       label: "File",
@@ -991,6 +1028,11 @@ export default function App() {
         <MapPin size={18} />
         <span className="activity-label">Task NPC</span>
         {npcEditorState.dirty && <span className="activity-dirty" />}
+      </button>
+      <button className={"activity" + (workspace === "gen" ? " active" : "")} onClick={() => switchWorkspace("gen")} title="npcgen.data editor (a server map's spawns)" aria-label="npcgen.data">
+        <Users size={18} />
+        <span className="activity-label">NPC Gen</span>
+        {genEditorState.dirty && <span className="activity-dirty" />}
       </button>
     </nav>
   );
@@ -1168,7 +1210,12 @@ export default function App() {
         </div>
       )}
 
-      {workspace === "npc" ? (
+      {workspace === "gen" ? (
+        <main className="workspace tasks-data-workspace">
+          {activityBar}
+          <NpcGenEditor ref={genEditor} active onStateChange={setGenEditorState} icon={icon} elementsPath={summary?.path ?? null} />
+        </main>
+      ) : workspace === "npc" ? (
         <main className="workspace path-data-workspace">
           {activityBar}
           <TaskNpcEditor
@@ -1417,7 +1464,15 @@ export default function App() {
       )}
 
       <footer className="statusbar">
-        {workspace === "npc" ? (
+        {workspace === "gen" ? (
+          <>
+            <span>npcgen.data</span>
+            {genEditorState.path && <span className="mono truncate" title={genEditorState.path}>{genEditorState.path}</span>}
+            {genEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
+            <span className="spacer" />
+            {genEditorState.version !== null && <span>version {genEditorState.version}</span>}
+          </>
+        ) : workspace === "npc" ? (
           <>
             <span>task_npc.data</span>
             {npcEditorState.path && <span className="mono truncate" title={npcEditorState.path}>{npcEditorState.path}</span>}

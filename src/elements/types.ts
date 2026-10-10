@@ -1899,3 +1899,130 @@ export interface TaskNpcSaveReport {
   token: string;
   backup: string | null;
 }
+
+// ── npcgen.data (one server map's spawns) ──
+
+export interface NpcGenVec3 { x: number; y: number; z: number }
+
+export interface NpcGenGenerator {
+  id: number;
+  count: number;
+  refresh: number;
+  diedTimes: number;
+  aggressive: number;
+  offsetWater: number;
+  offsetTerrain: number;
+  faction: number;
+  factionHelper: number;
+  factionAccept: number;
+  needHelp: number;
+  defaultFaction: number;
+  defaultFactionHelper: number;
+  defaultFactionAccept: number;
+  pathId: number;
+  loopType: number;
+  speedFlag: number;
+  deadTime: number;
+}
+
+export interface NpcGenArea {
+  kind: number;
+  position: NpcGenVec3;
+  direction: NpcGenVec3;
+  extents: NpcGenVec3;
+  npcType: number;
+  groupType: number;
+  initGen: number;
+  revive: number;
+  validOnce: number;
+  genId: number;
+  controller: number;
+  lifeTime: number;
+  maxCount: number;
+  exportId: number;
+  attachNum: number;
+  attached: number[];
+  phase: number;
+  generators: NpcGenGenerator[];
+}
+
+export interface NpcGenResource { kind: number; template: number; refresh: number; count: number; heightOffset: number }
+
+export interface NpcGenResourceArea {
+  position: NpcGenVec3;
+  extentX: number;
+  extentZ: number;
+  initGen: number;
+  autoRevive: number;
+  validOnce: number;
+  genId: number;
+  direction: [number, number];
+  radius: number;
+  controller: number;
+  maxCount: number;
+  exportId: number;
+  attachNum: number;
+  attached: number[];
+  phase: number;
+  resources: NpcGenResource[];
+}
+
+export interface NpcGenObject { id: number; position: NpcGenVec3; direction: [number, number]; radius: number; scale: number; controller: number; phase: number }
+
+export interface NpcGenTime { year: number; month: number; week: number; day: number; hours: number; minutes: number }
+
+export interface NpcGenController {
+  id: number;
+  controllerId: number;
+  name: string;
+  nameRaw: number[];
+  active: number;
+  waitTime: number;
+  stopTime: number;
+  activeTimeInvalid: number;
+  stopTimeInvalid: number;
+  activeTime: NpcGenTime;
+  stopTimeAt: NpcGenTime;
+  activeTimeRange: number;
+  repeat: number;
+  segmentLogic: number;
+  segments: [NpcGenTime, NpcGenTime][];
+}
+
+export type NpcGenSection = "areas" | "resources" | "objects" | "controllers";
+export type NpcGenItem =
+  | { section: "areas"; item: NpcGenArea }
+  | { section: "resources"; item: NpcGenResourceArea }
+  | { section: "objects"; item: NpcGenObject }
+  | { section: "controllers"; item: NpcGenController };
+
+export interface NpcGenSummary {
+  index: number;
+  x: number;
+  z: number;
+  extX: number;
+  extZ: number;
+  kind: number;
+  ids: number[];
+  count: number;
+  controller: number;
+  label: string;
+  changed: boolean;
+}
+
+export interface NpcGenView {
+  path: string;
+  version: number;
+  size: number;
+  areas: NpcGenSummary[];
+  resources: NpcGenSummary[];
+  objects: NpcGenSummary[];
+  controllers: NpcGenSummary[];
+  dirty: boolean;
+  canUndo: boolean;
+  canRedo: boolean;
+  history: { id: number; label: string; time: number; undone: boolean }[];
+  savedEntries: number | null;
+}
+
+export interface NpcGenSaveReport { path: string; size: number; backup: string | null }

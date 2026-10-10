@@ -2,6 +2,7 @@ mod client;
 mod dyn_tasks;
 mod elements;
 mod path_data;
+mod npcgen;
 mod settings;
 mod task_npc;
 pub mod tasks;
@@ -38,6 +39,8 @@ struct AppState {
     dyn_tasks: Mutex<Option<dyn_tasks::DynDocument>>,
     /// Another dyn_tasks.data opened for comparing (locked after `dyn_tasks`).
     compared_dyn: Mutex<Option<dyn_tasks::ComparedPack>>,
+    /// The open npcgen.data (one server map).
+    npcgen: Mutex<Option<npcgen::Document>>,
     catalog: RwLock<Arc<Catalog>>,
     /// The user's data folder: `layouts/`, `enums/` and `masks/` written by the editors.
     user_dir: PathBuf,
@@ -140,6 +143,62 @@ async fn open_elements(path: String, state: State<'_, AppState>) -> Result<FileS
     let summary = doc.summary();
     *state.document.lock().map_err(|_| "State lock poisoned")? = Some(doc);
     Ok(summary)
+}
+
+#[tauri::command]
+async fn open_npcgen(path: String, state: State<'_, AppState>) -> Result<npcgen::View, String> {
+    let document = tauri::async_runtime::spawn_blocking(move || npcgen::Document::open(path)).await.map_err(|error| error.to_string())??;
+    let view = document.view();
+    *state.npcgen.lock().map_err(|_| "State lock poisoned")? = Some(document);
+    Ok(view)
+}
+
+#[tauri::command]
+fn npcgen_view(state: State<'_, AppState>) -> Result<Option<npcgen::View>, String> {
+    Ok(state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_ref().map(npcgen::Document::view))
+}
+
+#[tauri::command]
+fn npcgen_item(section: npcgen::Section, index: usize, state: State<'_, AppState>) -> Result<npcgen::Item, String> {
+    state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open npcgen.data first")?.item(section, index)
+}
+
+#[tauri::command]
+fn set_npcgen_item(index: usize, item: npcgen::Item, label: String, state: State<'_, AppState>) -> Result<npcgen::View, String> {
+    state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open npcgen.data first")?.set_item(index, item, &label)
+}
+
+#[derive(serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+struct NpcGenCloneResult {
+    view: npcgen::View,
+    index: usize,
+}
+
+#[tauri::command]
+fn clone_npcgen_item(section: npcgen::Section, index: usize, state: State<'_, AppState>) -> Result<NpcGenCloneResult, String> {
+    let (view, index) = state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open npcgen.data first")?.clone_item(section, index)?;
+    Ok(NpcGenCloneResult { view, index })
+}
+
+#[tauri::command]
+fn delete_npcgen_item(section: npcgen::Section, index: usize, state: State<'_, AppState>) -> Result<npcgen::View, String> {
+    state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open npcgen.data first")?.delete_item(section, index)
+}
+
+#[tauri::command]
+fn undo_npcgen(state: State<'_, AppState>) -> Result<npcgen::View, String> {
+    state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open npcgen.data first")?.undo()
+}
+
+#[tauri::command]
+fn redo_npcgen(state: State<'_, AppState>) -> Result<npcgen::View, String> {
+    state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open npcgen.data first")?.redo()
+}
+
+#[tauri::command]
+async fn save_npcgen(target: Option<String>, backup: bool, replace_changed: bool, state: State<'_, AppState>) -> Result<npcgen::SaveReport, String> {
+    state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open npcgen.data first")?.save(target.as_deref(), backup, replace_changed)
 }
 
 #[tauri::command]
@@ -1584,6 +1643,7 @@ pub fn run() {
                 tasks: Mutex::new(None),
                 dyn_tasks: Mutex::new(None),
                 compared_dyn: Mutex::new(None),
+                npcgen: Mutex::new(None),
                 compared: Mutex::new(None),
                 compared_tasks: Mutex::new(None),
                 task_translation: Mutex::new(None),
@@ -1646,6 +1706,15 @@ pub fn run() {
             probe_task_layouts,
             open_dyn_tasks,
             open_task_npc,
+            open_npcgen,
+            npcgen_view,
+            npcgen_item,
+            set_npcgen_item,
+            clone_npcgen_item,
+            delete_npcgen_item,
+            undo_npcgen,
+            redo_npcgen,
+            save_npcgen,
             save_task_npc,
             client_map_names,
             dyn_tasks_view,

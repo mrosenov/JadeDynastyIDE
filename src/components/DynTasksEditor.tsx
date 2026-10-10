@@ -149,7 +149,7 @@ function referencedIds(task: DynTask) {
 
 // ── Small inputs that apply on Enter or when they lose focus ──
 
-function NumberInput({ value, onCommit, min = 0, max = U32, float, title, placeholder, wide }: { value: number; onCommit: (value: number) => void; min?: number; max?: number; float?: boolean; title?: string; placeholder?: string; wide?: boolean }) {
+export function NumberInput({ value, onCommit, min = 0, max = U32, float, title, placeholder, wide }: { value: number; onCommit: (value: number) => void; min?: number; max?: number; float?: boolean; title?: string; placeholder?: string; wide?: boolean }) {
   const shown = float ? f32(value) : String(value);
   const [draft, setDraft] = useState(shown);
   useEffect(() => setDraft(shown), [shown]);
@@ -174,7 +174,7 @@ function MoneyInput({ value, onCommit }: { value: number; onCommit: (value: numb
   return <input className="dyn-input mono wide" value={draft} title="Copper; 1G 50S or 1 Gold 50 Silver also work" onChange={(event) => setDraft(event.target.value)} onBlur={commit} onKeyDown={(event) => { if (event.key === "Enter") event.currentTarget.blur(); if (event.key === "Escape") setDraft(shown); }} />;
 }
 
-function TextInput({ value, max, multiline, placeholder, onCommit }: { value: string; max?: number; multiline?: boolean; placeholder?: string; onCommit: (value: string) => void }) {
+export function TextInput({ value, max, multiline, placeholder, onCommit }: { value: string; max?: number; multiline?: boolean; placeholder?: string; onCommit: (value: string) => void }) {
   const [draft, setDraft] = useState(value);
   useEffect(() => setDraft(value), [value]);
   const commit = () => { if (draft !== value) onCommit(draft); };
@@ -189,7 +189,7 @@ function Select({ value, set, onCommit, fallback }: { value: number; set?: Map<n
   return <select className="task-form-select" value={value} onChange={(event) => onCommit(Number(event.target.value))}>{entries.map(([key, label]) => <option key={key} value={key}>{key} · {label}</option>)}</select>;
 }
 
-function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return <label className="dyn-field" title={hint}><span className="task-form-label">{label}</span><span className="dyn-field-value">{children}</span></label>;
 }
 
@@ -208,7 +208,7 @@ function Label({ id, labels, kind }: { id: number; labels: DynLabels; kind: "ele
   return label ? <span className="dyn-label truncate" title={label}>{label}</span> : null;
 }
 
-function VertInput({ value, onCommit }: { value: DynVert; onCommit: (value: DynVert) => void }) {
+export function VertInput({ value, onCommit }: { value: DynVert; onCommit: (value: DynVert) => void }) {
   return <span className="dyn-vert">{(["x", "y", "z"] as const).map((axis) => <NumberInput key={axis} float min={-1e9} max={1e9} value={value[axis]} title={axis.toUpperCase()} onCommit={(number) => onCommit({ ...value, [axis]: number })} />)}</span>;
 }
 
