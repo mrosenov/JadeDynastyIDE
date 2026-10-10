@@ -2004,6 +2004,39 @@ export interface GamePosition {
   direction: { x: number; y: number; z: number } | null;
 }
 
+/** How a nearby thing was classified (elements.data decides NPC/monster and mine/item). */
+export type NearbyClass = "npc" | "monster" | "unknown" | "mine" | "dynamic" | "item";
+
+/** Something the running game client has loaded. */
+export interface NearbyRow {
+  kind: "npc" | "matter" | "dynamic";
+  runtimeId: number;
+  template: number;
+  position: { x: number; y: number; z: number };
+  direction: { x: number; y: number; z: number } | null;
+  rotation: [number, number, number] | null;
+  dropper: number;
+  /** Null while this client build's phase offset is unknown. */
+  phase: number | null;
+  class: NearbyClass;
+  label: string | null;
+}
+
+export interface NearbyFetch {
+  player: GamePosition;
+  rows: NearbyRow[];
+}
+
+/** One row to add to npcgen.data. */
+export interface NearbyImport {
+  kind: "npc" | "monster" | "mine" | "dynamic";
+  template: number;
+  position: { x: number; y: number; z: number };
+  direction: { x: number; y: number; z: number } | null;
+  rotation: [number, number, number] | null;
+  phase: number | null;
+}
+
 /** A running elementclient.exe. */
 export interface RunningClient {
   pid: number;

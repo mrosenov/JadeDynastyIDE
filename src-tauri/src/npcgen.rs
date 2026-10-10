@@ -559,7 +559,7 @@ pub struct Summary {
     pub index: usize,
     pub x: f32,
     pub z: f32,
-    /// Half sizes on the map (0 for points).
+    /// Full sizes on the map (0 for points; the server's area is position ± size / 2).
     pub ext_x: f32,
     pub ext_z: f32,
     /// Areas: NPC type; resources: 0; objects: 0; controllers: active.
@@ -572,6 +572,32 @@ pub struct Summary {
     pub label: String,
     pub changed: bool,
 }
+
+/// Something seen in the running game client, to add as a point spawn, a resource area or an object.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NearbyImport {
+    /// "npc", "monster", "mine" or "dynamic".
+    pub kind: String,
+    pub template: u32,
+    pub position: Vec3,
+    /// Spawns: where it faces.
+    pub direction: Option<Vec3>,
+    /// Mines and objects: axis bytes and turn, as the client received them.
+    pub rotation: Option<[u8; 3]>,
+    pub phase: Option<i32>,
+}
+
+/// Count and respawn time for imported monsters and mines (NPCs: one, no extra delay).
+#[derive(Debug, Clone, Copy, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NearbyOptions {
+    pub count: u32,
+    pub refresh: u32,
+}
+
+/// What resource rows store as their type (`DT_MINE_ESSENCE`; the server does not read it).
+const MINE_DATA_TYPE: i32 = 47;
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -678,19 +704,112 @@ impl Document {
     }
 
     fn record(&mut self, label: String, change: Change) -> Result<View, String> {
-        self.apply(&change, true);
+        self.record_all(label, vec![change])
+    }
+
+    /// Applies changes in order as one journal entry.
+    fn record_all(&mut self, label: String, changes: Vec<Change>) -> Result<View, String> {
+        for change in &changes {
+            self.apply(change, true);
+        }
         // The whole file must still write (version limits, names, attached areas).
         if let Err(error) = encode(&self.file) {
-            self.apply(&change, false);
+            for change in changes.iter().rev() {
+                self.apply(change, false);
+            }
             return Err(error);
         }
         if self.saved_entries.is_some_and(|saved| saved > self.done.len()) {
             self.saved_entries = None;
         }
         self.undone.clear();
-        self.done.push(JournalEntry { id: self.next_entry, label, time: Local::now().timestamp(), changes: vec![change] });
+        self.done.push(JournalEntry { id: self.next_entry, label, time: Local::now().timestamp(), changes });
         self.next_entry += 1;
         Ok(self.view())
+    }
+
+    /// Adds what the game client showed: NPCs and monsters as point spawns, mines as point resource
+    /// areas, dynamic objects as objects, each at the end of its section, as one journal entry. Defaults
+    /// follow official point spawns (fixed height, spawn at start, revive, valid once); new export IDs
+    /// continue after the section's highest; the phase is kept from version 14.
+    pub fn import_nearby(&mut self, rows: Vec<NearbyImport>, options: NearbyOptions) -> Result<View, String> {
+        if rows.is_empty() {
+            return Err("Nothing to import".into());
+        }
+        let version = self.file.version;
+        let next_export = |ids: &mut dyn Iterator<Item = i32>| ids.max().unwrap_or(0).max(0) + 1;
+        let mut area_export = next_export(&mut self.file.areas.iter().map(|area| area.export_id));
+        let mut resource_export = next_export(&mut self.file.resource_areas.iter().map(|area| area.export_id));
+        let mut lengths = [self.file.areas.len(), self.file.resource_areas.len(), self.file.dynamic_objects.len()];
+        let phase = |row: &NearbyImport| if version >= 14 { row.phase.unwrap_or(0) } else { 0 };
+        let export = |next: &mut i32| {
+            if version < 12 {
+                return 0;
+            }
+            *next += 1;
+            *next - 1
+        };
+        let mut changes = Vec::with_capacity(rows.len());
+        for row in &rows {
+            let (slot, item) = match row.kind.as_str() {
+                "npc" | "monster" => {
+                    let npc = row.kind == "npc";
+                    let facing = row.direction.and_then(|d| {
+                        let length = (d.x * d.x + d.z * d.z).sqrt();
+                        (length > 1e-3).then(|| Vec3 { x: d.x / length, y: 0.0, z: d.z / length })
+                    });
+                    let generator = Generator {
+                        id: row.template,
+                        count: if npc { 1 } else { options.count.max(1) },
+                        refresh: if npc { 0 } else { options.refresh },
+                        default_faction: 1,
+                        default_faction_helper: 1,
+                        default_faction_accept: 1,
+                        ..Default::default()
+                    };
+                    let area = Area {
+                        kind: 1,
+                        position: row.position,
+                        direction: facing.unwrap_or(Vec3 { x: 0.0, y: 0.0, z: 1.0 }),
+                        npc_type: if npc { 1 } else { 0 },
+                        init_gen: 1,
+                        revive: 1,
+                        valid_once: 1,
+                        export_id: export(&mut area_export),
+                        phase: phase(row),
+                        generators: vec![generator],
+                        ..Default::default()
+                    };
+                    (0, Item::Areas(area))
+                }
+                "mine" => {
+                    let [axis0, axis1, turn] = row.rotation.unwrap_or([192, 64, 0]);
+                    let resource = Resource { kind: MINE_DATA_TYPE, template: row.template as i32, refresh: options.refresh, count: options.count.max(1), height_offset: 0.0 };
+                    let area = ResourceArea {
+                        position: row.position,
+                        init_gen: 1,
+                        auto_revive: 1,
+                        valid_once: 1,
+                        direction: if version >= 6 { [axis0, axis1] } else { [0, 0] },
+                        radius: if version >= 6 { turn } else { 0 },
+                        export_id: export(&mut resource_export),
+                        phase: phase(row),
+                        resources: vec![resource],
+                        ..Default::default()
+                    };
+                    (1, Item::Resources(area))
+                }
+                "dynamic" => {
+                    let [axis0, axis1, turn] = row.rotation.unwrap_or([0, 0, 0]);
+                    (2, Item::Objects(DynamicObject { id: row.template, position: row.position, direction: [axis0, axis1], radius: turn, scale: 16, controller: 0, phase: phase(row) }))
+                }
+                other => return Err(format!("Cannot import a {other:?} from the game")),
+            };
+            changes.push(Change { index: lengths[slot], before: None, after: Some(item) });
+            lengths[slot] += 1;
+        }
+        let label = if rows.len() == 1 { "Import 1 item from the game".to_string() } else { format!("Import {} items from the game", rows.len()) };
+        self.record_all(label, changes)
     }
 
     pub fn set_item(&mut self, index: usize, item: Item, label: &str) -> Result<View, String> {
@@ -907,5 +1026,44 @@ mod tests {
         assert_eq!(reopened.item(Section::Areas, 0).unwrap(), Item::Areas(area));
         assert_eq!(reopened.view().areas.len(), areas);
         let _ = std::fs::remove_dir_all(&copy);
+    }
+
+    #[test]
+    fn imports_what_the_game_showed_as_one_step() {
+        // z1 (version 13, no phases) and x1 (version 14) of the zxserver sample.
+        for map in ["z1", "x1"] {
+            let path = std::path::PathBuf::from(format!("E:/Game Dev/JD/zxserver/zgame/gs/config/{map}/npcgen.data"));
+            if !path.is_file() {
+                continue;
+            }
+            let mut document = Document::open(&path).unwrap();
+            let version = document.file.version;
+            let before = document.view();
+            let max_export = document.file.areas.iter().map(|area| area.export_id).max().unwrap_or(0);
+            let at = Vec3 { x: 185.4, y: 164.9, z: 104.5 };
+            let row = |kind: &str, template, rotation, phase| NearbyImport { kind: kind.into(), template, position: at, direction: Some(Vec3 { x: 3.0, y: 0.5, z: 4.0 }), rotation, phase };
+            let rows = vec![row("npc", 1173, None, Some(26)), row("monster", 3001, None, None), row("mine", 18892, Some([192, 63, 0]), None), row("dynamic", 154, Some([0, 0, 26]), Some(7))];
+            let view = document.import_nearby(rows, NearbyOptions { count: 2, refresh: 60 }).unwrap();
+            assert_eq!((view.areas.len(), view.resources.len(), view.objects.len()), (before.areas.len() + 2, before.resources.len() + 1, before.objects.len() + 1), "{map}");
+            assert_eq!(view.history.len(), 1);
+            let Item::Areas(npc) = document.item(Section::Areas, before.areas.len()).unwrap() else { panic!() };
+            assert_eq!((npc.kind, npc.npc_type, npc.init_gen, npc.revive, npc.valid_once, npc.position), (1, 1, 1, 1, 1, at));
+            assert_eq!((npc.direction.x, npc.direction.y, npc.direction.z), (0.6, 0.0, 0.8));
+            assert_eq!((npc.generators[0].id, npc.generators[0].count, npc.generators[0].refresh, npc.generators[0].default_faction), (1173, 1, 0, 1));
+            assert_eq!(npc.export_id, if version >= 12 { max_export + 1 } else { 0 });
+            assert_eq!(npc.phase, if version >= 14 { 26 } else { 0 }, "{map}");
+            let Item::Areas(monster) = document.item(Section::Areas, before.areas.len() + 1).unwrap() else { panic!() };
+            assert_eq!((monster.npc_type, monster.generators[0].count, monster.generators[0].refresh), (0, 2, 60));
+            assert_eq!(monster.export_id, if version >= 12 { max_export + 2 } else { 0 });
+            let Item::Resources(mine) = document.item(Section::Resources, before.resources.len()).unwrap() else { panic!() };
+            assert_eq!((mine.direction, mine.radius, mine.resources[0].template, mine.resources[0].kind, mine.resources[0].refresh), ([192, 63], 0, 18892, 47, 60));
+            let Item::Objects(object) = document.item(Section::Objects, before.objects.len()).unwrap() else { panic!() };
+            assert_eq!((object.id, object.direction, object.radius, object.scale), (154, [0, 0], 26, 16));
+            assert!(encode(&document.file).is_ok());
+            // One undo removes all four.
+            let view = document.undo().unwrap();
+            assert_eq!((view.areas.len(), view.resources.len(), view.objects.len()), (before.areas.len(), before.resources.len(), before.objects.len()));
+            assert!(document.import_nearby(vec![row("tree", 1, None, None)], NearbyOptions { count: 1, refresh: 0 }).is_err());
+        }
     }
 }

@@ -3,6 +3,7 @@
 
 pub mod dds;
 pub mod game;
+pub mod nearby;
 pub mod instances;
 pub mod pck;
 pub mod strings;

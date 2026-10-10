@@ -9720,3 +9720,88 @@ select.ie-control {
   max-width: 100%;
   text-align: left;
 }
+.npcgen-tool {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+}
+.npcgen-tool > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.npcgen-tool-pane {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+.npcgen-nearby {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+.npcgen-nearby-bar,
+.npcgen-nearby-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.npcgen-nearby-bar {
+  border-bottom: 1px solid var(--border);
+}
+.npcgen-nearby-foot {
+  border-top: 1px solid var(--border);
+}
+.npcgen-nearby-filters {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.npcgen-nearby-table {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0 12px;
+}
+.npcgen-nearby-table table {
+  width: 100%;
+}
+.npcgen-nearby-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bg-pane);
+}
+.npcgen-nearby-table tbody tr {
+  cursor: pointer;
+}
+.npcgen-nearby-table tbody tr.selected td {
+  background: var(--accent-soft);
+}
+.npcgen-nearby-table td.truncate {
+  max-width: 220px;
+}
+.npcgen-nearby-known td {
+  color: var(--text-dim);
+}
+.npcgen-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+.npcgen-legend-diamond {
+  transform: rotate(45deg) scale(0.85);
+  border: 1px solid var(--text-dim);
+  background: transparent !important;
+}
+.npcgen-marker {
+  pointer-events: none;
+}

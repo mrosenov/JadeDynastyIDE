@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (181 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (183 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -80,6 +80,7 @@ Environment quirks (Windows 11, Git Bash):
 | `npcgen.rs` | `npcgen.data` (one server map's spawns): versions 1–14 reader/writer, document with journal (whole-item Replace/Insert/Remove per section), save. |
 | `task_npc.rs` | `task_npc.data` reader/writer (12-byte header, 16-byte NPC_INFO records), save with backup and changed-on-disk guard. |
 | `client/game.rs` | Character position from a running `elementclient.exe` (read-only): exe code scan for the pointer chain, process list, ReadProcessMemory. |
+| `client/nearby.rs` | Entities a running client has loaded (NPC and matter hash tables): layout search, phase detection, collect. |
 | `client/instances.rs` | Maps from configs.pck `Configs/instance.txt` (UTF-16 `"Name" { id zone "path" "data path" "detail" rows, cols … }` blocks, `//` comments): name, path, data path, rows, cols. |
 | `dyn_tasks/format.rs`, `dyn_tasks/mod.rs` | `dyn_tasks.data` reader/writer (client limits, read-back check) and the open pack: edit journal, clone, delete, problems, save. |
 | `tasks/container.rs` | Strict `tasks.data` index and numbered-pack reader: offsets, pack limits and MD5 validation. |
@@ -532,6 +533,21 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `follow` rejects null pointers ("not in the world") and non-finite or huge values. Opens the process
   with PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ only (`windows-sys`, Windows only). No
   anti-cheat DLLs in the four client folders. Not yet checked against a live client.
+- **Nearby fetch** (`client/nearby.rs`, `NpcGenNearby.tsx`, commands `game_nearby`, `import_npcgen_nearby`):
+  `CECGameRun::m_pWorld` → `CECWorld::m_aManagers[6]` (player, NPC, matter, ornament, skill gfx, decal) →
+  `abase::hashtab<Object*, int>` (`{hash, count, vector{data, finish, max, size}}`, nodes `{next, value,
+  key}`). Keys: NPC IDs `0x8…` without `0x4…`, matter IDs `0xC…`. `CECNPC::INFO {nid, tid}`,
+  `CECMatter::INFO {mid, tid, dropper_id, dir0, dir1, rad}`; dynamic objects are matters with tid
+  `0x80000000 | id`. `find_layout` accepts six distinct manager pointers, a table whose walk equals its
+  count, and an info offset where 12 objects store their own key; `find_phase` needs the only offset with
+  `bool m_bPhase`/`short m_iPhaseId` semantics and ≥ 2 phased objects (unverified live: no phases in z1).
+  Layouts are cached per exe for the session. Live ForsakenJD (z1, Oct 10 2026): world +0x08, managers
+  +0x24, NPC table +0x10 / info +0x11C, matter table +0x10 / info +0x10C; search 35 ms, collect < 1 ms;
+  collected NPC positions equal the zxserver/1559 z1 npcgen.data spawns. Classification (`lib.rs`):
+  `Document::essence_struct` (MONSTER_ESSENCE → monster, other → npc, missing → unknown; matters:
+  dropper or non-MINE_ESSENCE → item). `Document::import_nearby` (one journal entry, `record_all`):
+  point spawns as official ones (kind 1, init/revive/valid once 1, NPC refresh 0), resource type 47
+  (`DT_MINE_ESSENCE`; the server ignores it), export IDs after the section's highest (v12+), phase v14.
 - Servers name map folders by the instance's **data path**, images use its **path** (`e12` vs `z12`
   for Foxhill). `detectMap` (NpcGenEditor) tries `npcgen_<map>.data`, then the folder, data path
   first; zxserver/1559: 99/139 map folders match (83/119 with an image); `b31`, `d12`, `t01–t03`

@@ -745,6 +745,12 @@ impl Document {
         None
     }
 
+    /// The structure name (e.g. `MONSTER_ESSENCE`, upper case) and label of the record an Essence ID resolves to.
+    pub fn essence_struct(&self, id: u32) -> Option<(String, String)> {
+        let (list, _, label) = self.resolve_essence_id(id)?;
+        Some((self.lists[list].struct_name.as_deref().unwrap_or("").to_ascii_uppercase(), label))
+    }
+
     // ------------------------------------------------------------ schema editing
 
     /// Id of the layout schema edits for this file are saved into: the file's

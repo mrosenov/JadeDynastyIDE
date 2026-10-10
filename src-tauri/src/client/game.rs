@@ -159,24 +159,36 @@ pub struct Position {
     pub direction: Option<Vec3>,
 }
 
+const UNREADABLE: &str = "The game client's memory could not be read";
+const NOT_PLAYING: &str = "No character is in the game yet: log in and enter the world first";
+
+fn pointer(read: &impl Fn(u32, &mut [u8]) -> bool, address: u32) -> Result<u32, String> {
+    let mut bytes = [0u8; 4];
+    if !read(address, &mut bytes) {
+        return Err(UNREADABLE.into());
+    }
+    Ok(u32::from_le_bytes(bytes))
+}
+
+/// The address of `CECGameRun` (`[g_pGame] + game_run`), when the game is running.
+pub fn game_run(chain: &Chain, module_base: u32, read: &impl Fn(u32, &mut [u8]) -> bool) -> Result<u32, String> {
+    let game = pointer(read, chain.global.wrapping_sub(chain.image_base).wrapping_add(module_base))?;
+    if game == 0 {
+        return Err(NOT_PLAYING.into());
+    }
+    let run = pointer(read, game.wrapping_add(chain.game_run as u32))?;
+    if run == 0 {
+        return Err(NOT_PLAYING.into());
+    }
+    Ok(run)
+}
+
 /// Follows the chain with a memory reader (`read(address, buffer)` fills the buffer or fails).
 pub fn follow(chain: &Chain, module_base: u32, read: impl Fn(u32, &mut [u8]) -> bool) -> Result<Position, String> {
-    let pointer = |address: u32| {
-        let mut bytes = [0u8; 4];
-        read(address, &mut bytes).then(|| u32::from_le_bytes(bytes))
-    };
-    let global = chain.global.wrapping_sub(chain.image_base).wrapping_add(module_base);
-    let unreadable = "The game client's memory could not be read";
-    let not_playing = "No character is in the game yet: log in and enter the world first";
-    let game = pointer(global).ok_or(unreadable)?;
-    if game == 0 {
-        return Err(not_playing.into());
-    }
-    let run = pointer(game.wrapping_add(chain.game_run as u32)).ok_or(unreadable)?;
-    if run == 0 {
-        return Err(not_playing.into());
-    }
-    let player = pointer(run.wrapping_add(chain.host_player as u32)).ok_or(unreadable)?;
+    let unreadable = UNREADABLE;
+    let not_playing = NOT_PLAYING;
+    let run = game_run(chain, module_base, &read)?;
+    let player = pointer(&read, run.wrapping_add(chain.host_player as u32))?;
     if player == 0 {
         return Err(not_playing.into());
     }
@@ -286,22 +298,28 @@ mod process {
         chain
     }
 
-    pub fn read_position(pid: u32) -> Result<Position, String> {
+    /// Opens a client read-only and calls `work` with its exe path, chain, module base and a memory reader.
+    pub fn with_client<T>(pid: u32, work: impl FnOnce(&str, &Chain, u32, &dyn Fn(u32, &mut [u8]) -> bool) -> Result<T, String>) -> Result<T, String> {
         let handle = open(pid, PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ)
             .ok_or("The game client could not be opened for reading (it may have closed, run as administrator, or block other programs)")?;
         let path = image_path(&handle).ok_or("The game client's program file could not be found")?;
         let chain = chain_for(&path)?;
         let base = if chain.relocatable { module_base(pid).ok_or("The game client's memory could not be read")? } else { chain.image_base };
-        follow(&chain, base, |address, buffer| {
+        let read = |address: u32, buffer: &mut [u8]| {
             let mut read = 0usize;
             let ok = unsafe { ReadProcessMemory(handle.0, address as usize as *const _, buffer.as_mut_ptr().cast(), buffer.len(), &mut read) };
             ok != 0 && read == buffer.len()
-        })
+        };
+        work(&path, &chain, base, &read)
+    }
+
+    pub fn read_position(pid: u32) -> Result<Position, String> {
+        with_client(pid, |_, chain, base, read| follow(chain, base, read))
     }
 }
 
 #[cfg(windows)]
-pub use process::{read_position, running_clients};
+pub use process::{read_position, running_clients, with_client};
 
 #[cfg(not(windows))]
 pub fn running_clients() -> Vec<RunningClient> {
@@ -311,6 +329,11 @@ pub fn running_clients() -> Vec<RunningClient> {
 #[cfg(not(windows))]
 pub fn read_position(_pid: u32) -> Result<Position, String> {
     Err("Reading the game client's position needs Windows".into())
+}
+
+#[cfg(not(windows))]
+pub fn with_client<T>(_pid: u32, _work: impl FnOnce(&str, &Chain, u32, &dyn Fn(u32, &mut [u8]) -> bool) -> Result<T, String>) -> Result<T, String> {
+    Err("Reading the game client needs Windows".into())
 }
 
 #[cfg(test)]

@@ -241,6 +241,65 @@ async fn game_position(pid: u32) -> Result<client::game::Position, String> {
     tauri::async_runtime::spawn_blocking(move || client::game::read_position(pid)).await.map_err(|error| error.to_string())?
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct NearbyRow {
+    #[serde(flatten)]
+    entity: client::nearby::Entity,
+    /// "npc", "monster", "mine", "dynamic", "item" (dropped items, money and other matters) or "unknown"
+    /// (an NPC or monster without an open elements.data that names it).
+    class: &'static str,
+    label: Option<String>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct NearbyFetch {
+    player: client::game::Position,
+    rows: Vec<NearbyRow>,
+}
+
+/// Everything a running game client has loaded around the character (read-only), named and classified
+/// with the open elements.data when there is one.
+#[tauri::command]
+async fn game_nearby(pid: u32, state: State<'_, AppState>) -> Result<NearbyFetch, String> {
+    let (player, entities) = tauri::async_runtime::spawn_blocking(move || {
+        client::game::with_client(pid, |path, chain, base, read| {
+            let run = client::game::game_run(chain, base, &read)?;
+            let player = client::game::follow(chain, base, read)?;
+            Ok((player, client::nearby::fetch(path, read, run)?))
+        })
+    })
+    .await
+    .map_err(|error| error.to_string())??;
+    let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    let rows = entities
+        .into_iter()
+        .map(|entity| {
+            use client::nearby::EntityKind;
+            let found = if entity.kind == EntityKind::Dynamic { None } else { document.as_ref().and_then(|document| document.essence_struct(entity.template)) };
+            let class = match (entity.kind, found.as_ref().map(|(name, _)| name.as_str())) {
+                (EntityKind::Dynamic, _) => "dynamic",
+                (EntityKind::Npc, Some("MONSTER_ESSENCE")) => "monster",
+                (EntityKind::Npc, Some(_)) => "npc",
+                (EntityKind::Npc, None) => "unknown",
+                (EntityKind::Matter, _) if entity.dropper != 0 => "item",
+                (EntityKind::Matter, Some("MINE_ESSENCE")) => "mine",
+                (EntityKind::Matter, Some(_)) => "item",
+                (EntityKind::Matter, None) if document.is_some() => "item",
+                (EntityKind::Matter, None) => "mine",
+            };
+            NearbyRow { entity, class, label: found.map(|(_, label)| label) }
+        })
+        .collect();
+    Ok(NearbyFetch { player, rows })
+}
+
+#[tauri::command]
+fn import_npcgen_nearby(rows: Vec<npcgen::NearbyImport>, options: npcgen::NearbyOptions, state: State<'_, AppState>) -> Result<npcgen::View, String> {
+    state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open npcgen.data first")?.import_nearby(rows, options)
+}
+
 /// The configured client's maps with whether each has a full-map image (for the npcgen.data plot).
 #[tauri::command]
 async fn client_maps(state: State<'_, AppState>) -> Result<Vec<ClientMap>, String> {
@@ -1795,6 +1854,8 @@ pub fn run() {
             client_maps,
             game_clients,
             game_position,
+            game_nearby,
+            import_npcgen_nearby,
             dyn_tasks_view,
             dyn_task,
             set_dyn_task,

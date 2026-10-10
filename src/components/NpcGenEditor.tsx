@@ -1,11 +1,12 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ChevronDown, Copy, Crosshair, FolderOpen, Loader2, Map as MapIcon, Plus, Redo2, Save, Search, Trash2, Undo2, Users, X } from "lucide-react";
-import { clientMaps, cloneNpcGenItem, deleteNpcGenItem, dynTaskLabels, gameClients, gamePosition, midmapUrl, getNpcGenItem, npcGenView, openNpcGen, pickEssence, redoNpcGen, saveNpcGen, setNpcGenItem, undoNpcGen } from "../elements/api";
+import { ChevronDown, Copy, Crosshair, Radar, Wrench, FolderOpen, Loader2, Map as MapIcon, Plus, Redo2, Save, Search, Trash2, Undo2, Users, X } from "lucide-react";
+import { clientMaps, cloneNpcGenItem, deleteNpcGenItem, dynTaskLabels, gameClients, gamePosition, importNpcGenNearby, midmapUrl, getNpcGenItem, npcGenView, openNpcGen, pickEssence, redoNpcGen, saveNpcGen, setNpcGenItem, undoNpcGen } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatDuration } from "../elements/time";
-import type { ClientMap, GamePosition, RunningClient, NpcGenArea, NpcGenController, NpcGenGenerator, NpcGenItem, NpcGenObject, NpcGenResource, NpcGenResourceArea, NpcGenSection, NpcGenSummary, NpcGenTime, NpcGenVec3, NpcGenView } from "../elements/types";
+import type { ClientMap, GamePosition, NearbyImport, RunningClient, NpcGenArea, NpcGenController, NpcGenGenerator, NpcGenItem, NpcGenObject, NpcGenResource, NpcGenResourceArea, NpcGenSection, NpcGenSummary, NpcGenTime, NpcGenVec3, NpcGenView } from "../elements/types";
 import { NumberInput, TextInput, VertInput } from "./DynTasksEditor";
+import { CLASS_COLORS, emptyNearby, NearbyPanel, type NearbyState } from "./NpcGenNearby";
 import { ValuePicker } from "./ValuePicker";
 
 export interface NpcGenEditorState {
@@ -494,7 +495,17 @@ interface Background {
   opacity: number;
 }
 
-function MapPlot({ view, section, selected, onSelect, background, controls, onImageError }: { view: NpcGenView; section: NpcGenSection; selected: number | null; onSelect: (section: NpcGenSection, index: number) => void; background: Background | null; controls?: ReactNode; onImageError?: () => void }) {
+/** Something collected from the game, drawn as a diamond. */
+interface Marker {
+  key: string;
+  x: number;
+  z: number;
+  color: string;
+  title: string;
+  active: boolean;
+}
+
+function MapPlot({ view, section, selected, onSelect, background, controls, onImageError, markers }: { view: NpcGenView; section: NpcGenSection | null; selected: number | null; onSelect: (section: NpcGenSection, index: number) => void; background: Background | null; controls?: ReactNode; onImageError?: () => void; markers?: Marker[] }) {
   const points = useMemo(() => [...view.areas, ...view.resources, ...view.objects], [view]);
   const bounds = useMemo(() => {
     if (background) return { x: -background.half, y: -background.half, w: background.half * 2, h: background.half * 2 };
@@ -543,8 +554,12 @@ function MapPlot({ view, section, selected, onSelect, background, controls, onIm
       {view.resources.map((point) => shape(point, "resources", COLORS.resources))}
       {view.objects.map((point) => shape(point, "objects", COLORS.objects))}
       {view.areas.map((point) => shape(point, "areas", COLORS.areas[point.kind] ?? "#c08a2e"))}
+      {markers?.map((marker) => {
+        const size = unit * (marker.active ? 7 : 4);
+        return <rect key={marker.key} className="npcgen-marker" x={marker.x - size / 2} y={-marker.z - size / 2} width={size} height={size} transform={`rotate(45 ${marker.x} ${-marker.z})`} fill={marker.color} stroke={marker.active ? "var(--accent)" : "#fff"} strokeWidth={marker.active ? 2.5 : 1} vectorEffect="non-scaling-stroke"><title>{marker.title}</title></rect>;
+      })}
     </svg>
-    <div className="npcgen-legend"><span><i style={{ background: COLORS.areas[0] }} />Monsters</span><span><i style={{ background: COLORS.areas[1] }} />NPCs</span><span><i style={{ background: COLORS.areas[2] }} />Interaction</span><span><i style={{ background: COLORS.resources }} />Resources</span><span><i style={{ background: COLORS.objects }} />Objects</span><span className="muted">Wheel: zoom · drag: move · double-click: fit · north is up</span></div>
+    <div className="npcgen-legend"><span><i style={{ background: COLORS.areas[0] }} />Monsters</span><span><i style={{ background: COLORS.areas[1] }} />NPCs</span><span><i style={{ background: COLORS.areas[2] }} />Interaction</span><span><i style={{ background: COLORS.resources }} />Resources</span><span><i style={{ background: COLORS.objects }} />Objects</span>{markers?.length ? <span><i className="npcgen-legend-diamond" />Collected</span> : null}<span className="muted">Wheel: zoom · drag: move · double-click: fit · north is up</span></div>
   </div>;
 }
 
@@ -553,6 +568,10 @@ function MapPlot({ view, section, selected, onSelect, background, controls, onIm
 export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGenEditor({ active, onStateChange, icon, elementsPath = null, mapGeneration = null }, ref) {
   const [view, setView] = useState<NpcGenView | null>(null);
   const [section, setSection] = useState<NpcGenSection>("areas");
+  /** The Tools tab replaces the sections' list and form. */
+  const [tools, setTools] = useState(false);
+  const [nearby, setNearby] = useState<NearbyState>(emptyNearby);
+  const [focusedRow, setFocusedRow] = useState<string | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [item, setItem] = useState<NpcGenItem | null>(null);
   const [query, setQuery] = useState("");
@@ -640,44 +659,55 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
   // The character's position in a running game client; with several clients, the one chosen last.
   const [choosingClient, setChoosingClient] = useState<{ clients: RunningClient[]; resolve: (pid: number | null) => void } | null>(null);
   const lastClient = useRef<number | null>(null);
+  /** The client to read: the only one, the one chosen last, or ask (`choose` asks again); null when cancelled. */
+  const pickClient = useCallback(async (choose: boolean): Promise<number | null> => {
+    const clients = await gameClients();
+    if (!clients.length) throw new Error("No game client is running. Start elementclient.exe and enter the world first.");
+    let pid = clients.length === 1 ? clients[0].pid : choose ? undefined : clients.find((client) => client.pid === lastClient.current)?.pid;
+    if (pid === undefined) {
+      const chosen = await new Promise<number | null>((resolve) => setChoosingClient({ clients, resolve }));
+      setChoosingClient(null);
+      if (chosen === null) return null;
+      pid = chosen;
+    }
+    lastClient.current = pid;
+    return pid;
+  }, []);
   const fromGame = useCallback(async (choose: boolean): Promise<GamePosition | null> => {
     setError(null);
     setNote(null);
     try {
-      const clients = await gameClients();
-      if (!clients.length) {
-        setError("No game client is running. Start elementclient.exe, enter the world and stand where it should go.");
-        return null;
-      }
-      let pid = clients.length === 1 ? clients[0].pid : choose ? undefined : clients.find((client) => client.pid === lastClient.current)?.pid;
-      if (pid === undefined) {
-        const chosen = await new Promise<number | null>((resolve) => setChoosingClient({ clients, resolve }));
-        setChoosingClient(null);
-        if (chosen === null) return null;
-        pid = chosen;
-      }
-      lastClient.current = pid;
-      const position = await gamePosition(pid);
-      return position;
+      const pid = await pickClient(choose);
+      return pid === null ? null : await gamePosition(pid);
     } catch (problem) {
       setError(String(problem).replace(/^Error: /, ""));
       return null;
     }
-  }, []);
+  }, [pickClient]);
+  const importNearby = useCallback(async (rows: NearbyImport[], options: { count: number; refresh: number }) => {
+    let added = false;
+    await run(async () => {
+      const next = await importNpcGenNearby(rows, options);
+      added = true;
+      return next;
+    });
+    if (added) setNote(`Added ${rows.length === 1 ? "1 item" : `${rows.length} items`} from the game (one undo step). Save to keep them.`);
+    return added;
+  }, [run]);
   const pickSearch = useMemo(() => picking ? (text: string, page: number) => pickEssence(picking.kind, text, page, picking.current || null) : undefined, [picking]);
 
   const undo = useCallback(() => { if (view?.canUndo) void run(undoNpcGen); }, [run, view?.canUndo]);
   const redo = useCallback(() => { if (view?.canRedo) void run(redoNpcGen); }, [run, view?.canRedo]);
   const cloneSelected = useCallback(() => {
-    if (selected === null) return;
+    if (selected === null || tools) return;
     void run(async () => { const result = await cloneNpcGenItem(section, selected); setSelected(result.index); return result.view; });
-  }, [run, section, selected]);
+  }, [run, section, selected, tools]);
   const deleteSelected = useCallback(() => {
-    if (selected === null) return;
+    if (selected === null || tools) return;
     const one = SECTIONS.find((entry) => entry.key === section)!.one;
     if (!window.confirm(`Delete ${one} ${selected + 1}? Undo brings it back.`)) return;
     void run(async () => { const next = await deleteNpcGenItem(section, selected); const total = next[section].length; setSelected(total ? Math.min(selected, total - 1) : null); return next; });
-  }, [run, section, selected]);
+  }, [run, section, selected, tools]);
   const toggleMap = useCallback(() => setShowMap((current) => { try { localStorage.setItem(MAP_KEY, current ? "0" : "1"); } catch { /* optional */ } return !current; }), []);
 
   const writeTo = useCallback(async (target: string | null, replaceChanged: boolean) => {
@@ -816,7 +846,11 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     {note && <div className="path-data-message ok">{note} <button className="link" onClick={() => setNote(null)}>Dismiss</button></div>}
     <div className="dyn-tasks-body">
       <aside className="dyn-task-list">
-        <div className="npcgen-sections">{SECTIONS.map((entry) => <button key={entry.key} className={"btn small" + (section === entry.key ? " active" : "")} onClick={() => { setSection(entry.key); setSelected(null); }}>{entry.label} <span className="muted">{count(view[entry.key].length)}</span></button>)}</div>
+        <div className="npcgen-sections">{SECTIONS.map((entry) => <button key={entry.key} className={"btn small" + (section === entry.key && !tools ? " active" : "")} onClick={() => { setTools(false); setSection(entry.key); setSelected(null); }}>{entry.label} <span className="muted">{count(view[entry.key].length)}</span></button>)}
+          <button className={"btn small" + (tools ? " active" : "")} onClick={() => setTools(true)}><Wrench size={12} /> Tools</button></div>
+        {tools ? <div className="dyn-task-rows" role="listbox">
+          <button role="option" aria-selected className="dyn-task-row npcgen-tool selected"><Radar size={16} /><span><b>Nearby fetch</b><span className="muted small">NPCs, monsters, mines and objects around your character in the game{nearby.rows.length ? ` · ${count(nearby.rows.length)} collected` : ""}</span></span></button>
+        </div> : <>
         <div className="dyn-task-search"><Search size={13} /><input value={query} placeholder="NPC, mine, ID, controller or number" onChange={(event) => setQuery(event.target.value)} />{query && <button className="icon-btn small" onClick={() => setQuery("")}><X size={12} /></button>}</div>
         <div className="dyn-task-rows" role="listbox">
           {rows.map((entry) => <button key={entry.index} role="option" aria-selected={entry.index === selected} className={"dyn-task-row npcgen-row" + (entry.index === selected ? " selected" : "")} onClick={() => setSelected(entry.index)}>
@@ -830,13 +864,15 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
           <span className="spacer" />
           <span className="muted small">{count(rows.length)} / {count(view[section].length)}</span>
         </footer>
+        </>}
       </aside>
-      <div className={"npcgen-main" + (showMap && section !== "controllers" ? " with-map" : "")}>
-        {showMap && section !== "controllers" && <MapPlot view={view} section={section} selected={selected} onSelect={(kind, index) => { setSection(kind); setSelected(index); }} background={background} controls={mapControls} onImageError={() => setFailedImage(imageUrl)} />}
-        <div className="dyn-task-form-scroll">
+      <div className={"npcgen-main" + (showMap && (tools || section !== "controllers") ? " with-map" : "")}>
+        {showMap && (tools || section !== "controllers") && <MapPlot view={view} section={tools ? null : section} selected={tools ? null : selected} onSelect={(kind, index) => { setTools(false); setSection(kind); setSelected(index); }} background={background} controls={mapControls} onImageError={() => setFailedImage(imageUrl)}
+          markers={tools ? nearby.rows.filter((row) => nearby.shown[row.class === "unknown" ? "npc" : row.class as keyof NearbyState["shown"]] ?? true).map((row) => ({ key: row.key, x: row.position.x, z: row.position.z, color: CLASS_COLORS[row.class], title: `${row.label ?? row.template} (${row.template})`, active: row.key === focusedRow })) : undefined} />}
+        {tools ? <div className="npcgen-tool-pane"><NearbyPanel view={view} state={nearby} setState={setNearby} elementsOpen={!!elementsPath} busy={busy} pickClient={pickClient} onImport={importNearby} onShow={(row) => setFocusedRow(row.key)} /></div> : <div className="dyn-task-form-scroll">
           {selected === null ? <div className="empty-note">Select a {SECTIONS.find((entry) => entry.key === section)!.one}{section !== "controllers" ? " in the list or on the map" : ""}.</div>
             : <><div className="dyn-task-title"><h3>{SECTIONS.find((entry) => entry.key === section)!.one} {selected + 1}</h3></div>{form ?? <div className="empty-note">Loading…</div>}</>}
-        </div>
+        </div>}
       </div>
     </div>
     {choosingClient && <div className="modal-backdrop" onMouseDown={() => choosingClient.resolve(null)}>
