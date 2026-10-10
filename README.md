@@ -45,9 +45,11 @@ Settings (gear icon, top right) take the game client folder: the client root or 
 folder. The Appearance setting follows the Windows theme by default or forces the light or dark
 theme. The discovered data-file and package lists stay collapsed until clicked. JD IDE then:
 
-- lists the client's data files (`element\data\*.data`) and opens supported `elements.data`
-  and `tasks.data` files from there. Other kinds (gshop, npcgen, …) are listed for later versions. It can also open
-  the client's `elements.data` on start.
+- lists the client's data files (`element\data\*.data`) and opens `elements.data`, `tasks.data`,
+  `dyn_tasks.data`, `task_npc.data`, `path.data`, `npcgen.data` and the gshop files from there, each
+  in its own workspace. `tasks.data` stands for its numbered packs (`tasks.data1`, …), which are not
+  listed, and backups (`*.bak`) are left out. Other kinds are listed for later versions. It can also
+  open the client's `elements.data` on start.
 - reads `path.data`, so path and icon fields show their resource path.
 - reads item icons from `surfaces.pck` (`surfaces\iconset\iconlist_ivtr.dds` + `.txt`).
   Icons show in the record table, the inspector, icon fields and tabs.
@@ -623,6 +625,84 @@ no longer exists, as one undo step. Saving
 refuses ID 0 and duplicate IDs (the game would keep only the last), sets the time mark to now, keeps
 the records in their order, can back up the replaced file and warns when another program changed it.
 All six known files read and write back byte-for-byte.
+
+## gshop.data editor (the shops)
+
+**GShop** in the activity bar edits the in-game shops: `gshop.data` is the item mall, `gshop1.data` the
+bonus shop and `gshop2.data` the cross-server shop (gs.conf `MallData`, `BonusMallData`, `ZoneMallData`).
+The server needs **exactly the same file** as the client (the same items, order and timestamp): it finds
+a bought item by its position, and the client refuses to open the mall when the timestamps differ. So
+after saving, copy the file to the server's config folder too (e.g. `gamed/config/gshop.data`) and restart
+the server. Saving gives the shop a new timestamp, can back up the old file and warns when another
+program changed it.
+
+The left column shows the categories like the in-game shop (click a main category for its
+subcategories), the middle column the items in file order with their icons from `surfaces.pck` (when the
+client folder is set), names and prices, and the right side the selected item:
+
+- **Item**: what it sells (with a picker and the name from the open `elements.data`), how many, the
+  shop name, the icon path with a preview, and the translation ID. **Choose…** next to an icon (and the
+  gift icon) browses the pictures in the client's `surfaces.pck` (`surfaces\qshop`) by folder, with a
+  file name search, a dot on the icons the shop already uses and a "Not used in this shop" filter.
+- **Price**: the price (the item mall shows it in hundredths: 100 = 1.00), how long the item lasts, the
+  discount (the percentage charged while one of its discount schemes runs) and bonus percentages, the
+  New / Recommended / Promotion flags, and the sale and discount schemes 1–8 (the server sells an item
+  only in an active sale scheme).
+- **Category** and search keywords, **On sale** (always, between two dates in UTC, weekly on chosen days,
+  or monthly on chosen days, with times), the **Description** with a preview of its `^RRGGBB` colours
+  (line breaks are stored as the client expects), and the **Free gift** (item, count, duration, bound,
+  name, icon and text).
+- **Other fields**: fields the item layout reads but the editor has no meaning for (for example the extra
+  bytes some clients add), edited by their type.
+
+### Update names and descriptions
+
+**Tools › Update names from elements.data…** compares every item's shop name with the name of the item it
+sells in the elements.data open in the Elements workspace; **Tools › Update descriptions from
+item_ext_desc.txt…** compares the description with the client's `configs.pck` text for that item (the
+client folder must be set). Both list only the items that differ, the whole shop or just the items shown
+in the list, with the current and the new text side by side. Changes in spaces only (for example a space
+before a line break) are hidden unless you include them; texts longer than the shop stores are listed but
+cannot be ticked. **Update** writes the ticked items as one undo step, keeping colour codes and storing
+line breaks as the shop expects. In ForsakenJD's item mall 338 of 457 descriptions already match.
+
+### Compare, copy and JSON
+
+**Tools › Compare with another shop…** opens another gshop file (another client, a server, a backup) or a
+JSON export next to the open shop. Items are paired by what they sell (item and count; repeated ones in
+file order, identical ones first) and categories by name, so the lists show what is **only in the other
+shop**, what is **different** (and in which fields) and what is **only in this shop**. Tick rows and
+**Copy**: missing items are added after the last item of their subcategory, different ones are replaced
+field by field in place, and subcategories this shop lacks are added. Only the fields both files store
+are compared and copied (shops read with different layouts still compare). One copy is one undo step.
+
+**Tools › Export JSON…** writes the whole shop, the items shown in the list, or the selected item, with
+all categories. **Tools › Import JSON…** opens a JSON export as a comparison, so you choose what to copy.
+
+### Item layouts (other gshop versions)
+
+Clients store items in different sizes. The built-in **item layouts** read the source's 2,630-byte items
+(XtremeJade, the 1559 server), ForsakenJD's 2,635 bytes and HDN/Reborn's 2,660 bytes. A file is read
+with the first layout whose size fits; the **Layout** badge in the header names it, switches to another
+layout of the same size and opens **Edit layout…** (also **Tools › Item layout…**).
+
+When no layout fits (a newer client), opening the file says so with the size of its items and offers
+**Create a layout…**. The layout editor lists the fields in order with their offsets: a name, a type
+(u8, u16, u32, i32, f32, bool, UTF-16 text in characters, GBK text in bytes, unknown bytes, or a group
+repeated a number of times), and a **meaning** that tells the form which field is the price, the name,
+and so on. Fields without a meaning appear under Other fields. The size badge shows how far the layout is
+from the file's item size, and the preview on the right shows how the first items read, so a misplaced
+field shows up as names or prices that look wrong. **Save and use** stores the layout in the app's
+config folder (`gshop-layouts`) and reopens the file with it; your layouts are tried before the built-in
+ones. Built-in layouts cannot be changed; editing one saves a copy.
+
+New items are made with **Clone** (Ctrl+D, below the selected one); **Delete** asks first; the arrows
+(Alt+↑/↓) move an item before or after its neighbour in the list shown. **Tools › Edit categories…**
+renames main categories and adds, renames, reorders and removes subcategories; items keep their
+subcategory, and removing one that items use asks where they go. **Tools › Check problems…**
+(Ctrl+Shift+M) lists items the server would refuse (price 0, no sale scheme, an item or gift not in the
+open `elements.data`), items the shop would not show (a missing category), repeated items and sale windows that end before they start. Every change can be undone. All 15 sample
+shop files (clients and servers) read and write back byte for byte.
 
 ## npcgen.data editor
 

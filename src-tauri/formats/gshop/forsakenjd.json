@@ -1,0 +1,155 @@
+{
+  "id": "forsakenjd",
+  "name": "ForsakenJD (2,635 bytes)",
+  "description": "The source record plus 5 bytes.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "u32",
+      "note": "The item sold",
+      "meaning": "id"
+    },
+    {
+      "name": "num",
+      "type": "u32",
+      "meaning": "num"
+    },
+    {
+      "name": "icon",
+      "type": "str",
+      "len": 128,
+      "meaning": "icon"
+    },
+    {
+      "name": "price",
+      "type": "u32",
+      "meaning": "price"
+    },
+    {
+      "name": "time",
+      "type": "u32",
+      "meaning": "time"
+    },
+    {
+      "name": "discount",
+      "type": "i32",
+      "meaning": "discount"
+    },
+    {
+      "name": "bonus",
+      "type": "i32",
+      "meaning": "bonus"
+    },
+    {
+      "name": "props",
+      "type": "u32",
+      "meaning": "props"
+    },
+    {
+      "name": "main_type",
+      "type": "i32",
+      "meaning": "main_type"
+    },
+    {
+      "name": "sub_type",
+      "type": "i32",
+      "meaning": "sub_type"
+    },
+    {
+      "name": "local_id",
+      "type": "i32",
+      "meaning": "local_id"
+    },
+    {
+      "name": "description",
+      "type": "wstr",
+      "len": 512,
+      "meaning": "description"
+    },
+    {
+      "name": "name",
+      "type": "wstr",
+      "len": 32,
+      "meaning": "name"
+    },
+    {
+      "name": "has_present",
+      "type": "bool",
+      "meaning": "has_present"
+    },
+    {
+      "name": "present_name",
+      "type": "wstr",
+      "len": 32,
+      "meaning": "present_name"
+    },
+    {
+      "name": "present_id",
+      "type": "u32",
+      "meaning": "present_id"
+    },
+    {
+      "name": "present_count",
+      "type": "u32",
+      "meaning": "present_count"
+    },
+    {
+      "name": "present_time",
+      "type": "u32",
+      "meaning": "present_time"
+    },
+    {
+      "name": "present_icon",
+      "type": "str",
+      "len": 128,
+      "meaning": "present_icon"
+    },
+    {
+      "name": "present_bind",
+      "type": "bool",
+      "meaning": "present_bind"
+    },
+    {
+      "name": "present_description",
+      "type": "wstr",
+      "len": 512,
+      "meaning": "present_description"
+    },
+    {
+      "name": "valid_type",
+      "type": "i32",
+      "meaning": "valid_type"
+    },
+    {
+      "name": "valid_start",
+      "type": "i32",
+      "meaning": "valid_start"
+    },
+    {
+      "name": "valid_end",
+      "type": "i32",
+      "meaning": "valid_end"
+    },
+    {
+      "name": "valid_param",
+      "type": "i32",
+      "meaning": "valid_param"
+    },
+    {
+      "name": "search_keys",
+      "type": "wstr",
+      "len": 64,
+      "meaning": "search_keys"
+    },
+    {
+      "name": "unknown_flag",
+      "type": "u8",
+      "note": "ForsakenJD and later: 0 or 1"
+    },
+    {
+      "name": "unknown_value",
+      "type": "i32",
+      "note": "Usually equals the price (an original price?)"
+    }
+  ]
+}

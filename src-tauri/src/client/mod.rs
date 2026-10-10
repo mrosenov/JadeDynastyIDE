@@ -79,7 +79,8 @@ fn data_kind(name: &str) -> String {
     let stem = stem.trim_end_matches(|c: char| c.is_ascii_digit());
     match stem {
         "elements" => "elements",
-        "tasks" | "dyn_tasks" => "tasks",
+        "tasks" => "tasks",
+        "dyn_tasks" => "dyn tasks",
         "gshop" => "gshop",
         "npcgen" => "npcgen",
         "path" => "path",
@@ -109,10 +110,14 @@ pub fn inspect(picked: &Path) -> Result<ClientInfo, String> {
         .filter(|e| e.path().is_file())
         .filter_map(|e| {
             let name = e.file_name().to_string_lossy().into_owned();
-            name.to_lowercase().contains(".data").then(|| {
-                let kind = data_kind(&name);
+            let kind = data_kind(&name);
+            // The numbered task packs (tasks.data1, …) belong to tasks.data, which opens them all.
+            let pack = kind == "tasks" && !name.eq_ignore_ascii_case("tasks.data");
+            // Backups (`elements.data.20261004-122543.bak`) are not data files to open.
+            let backup = name.to_lowercase().ends_with(".bak");
+            (name.to_lowercase().contains(".data") && !pack && !backup).then(|| {
                 DataFile {
-                    supported: kind == "elements" || (kind == "tasks" && name.eq_ignore_ascii_case("tasks.data")),
+                    supported: matches!(kind.as_str(), "elements" | "tasks" | "dyn tasks" | "gshop" | "npcgen" | "path" | "task npc"),
                     path: e.path().display().to_string(),
                     size: e.metadata().map(|m| m.len()).unwrap_or(0),
                     name,
@@ -271,6 +276,8 @@ pub struct Resources {
     titles: OnceLock<Result<titles::TitleTable, String>>,
     /// Maps from configs.pck instance.txt, read on first use.
     instances: OnceLock<Result<Vec<instances::Instance>, String>>,
+    /// Images read by package path (shop icons), recently used.
+    path_images: Mutex<VecDeque<(String, Arc<ResourceImage>)>>,
     /// Recently converted midmaps (PNG) by image path.
     midmaps: Mutex<VecDeque<(String, Arc<Vec<u8>>)>>,
 }
@@ -311,6 +318,7 @@ impl Resources {
             titles: OnceLock::new(),
             instances: OnceLock::new(),
             midmaps: Mutex::new(VecDeque::new()),
+            path_images: Mutex::new(VecDeque::new()),
         }
     }
 
@@ -565,11 +573,38 @@ impl Resources {
             return Ok(hit.clone());
         }
         let path = self.path(path_id).ok_or_else(|| format!("path {path_id} is not in path.data"))?;
+        let image = Arc::new(self.load_image(path)?);
+        let mut cache = self.images.lock().map_err(|_| "image cache poisoned")?;
+        cache.retain(|(id, _)| *id != path_id);
+        cache.push_back((path_id, image.clone()));
+        while cache.len() > IMAGE_CACHE {
+            cache.pop_front();
+        }
+        Ok(image)
+    }
+
+    /// An image file of a package by its path (`Surfaces\QShop\1\x.dds`), converted like [`Self::image`].
+    pub fn image_at(&self, path: &str) -> Result<Arc<ResourceImage>, String> {
+        let key = path.replace('/', "\\").to_lowercase();
+        if let Some((_, hit)) = self.path_images.lock().map_err(|_| "image cache poisoned")?.iter().find(|(name, _)| *name == key) {
+            return Ok(hit.clone());
+        }
+        let image = Arc::new(self.load_image(path)?);
+        let mut cache = self.path_images.lock().map_err(|_| "image cache poisoned")?;
+        cache.push_back((key, image.clone()));
+        while cache.len() > IMAGE_CACHE {
+            cache.pop_front();
+        }
+        Ok(image)
+    }
+
+    /// Reads an image from the package named by the path's first component; TGA and DDS become PNG.
+    fn load_image(&self, path: &str) -> Result<ResourceImage, String> {
         let content_type = image_content_type(path).ok_or_else(|| format!("{path} is not a supported image"))?;
         let package_name = path.split(['\\', '/']).next().filter(|name| !name.is_empty()).ok_or("resource path has no package name")?;
         let bytes = self.package(package_name)?.read_path(path)?;
         let extension = path.rsplit('.').next().unwrap_or("").to_ascii_lowercase();
-        let image = match extension.as_str() {
+        Ok(match extension.as_str() {
             "tga" => {
                 let (rgba, width, height) = tga::decode(&bytes)?;
                 ResourceImage { bytes: dds::png(&rgba, width, height)?, content_type: "image/png" }
@@ -580,15 +615,19 @@ impl Resources {
                 ResourceImage { bytes: dds::png(&rgba, image.width, image.height)?, content_type: "image/png" }
             }
             _ => ResourceImage { bytes, content_type },
-        };
-        let image = Arc::new(image);
-        let mut cache = self.images.lock().map_err(|_| "image cache poisoned")?;
-        cache.retain(|(id, _)| *id != path_id);
-        cache.push_back((path_id, image.clone()));
-        while cache.len() > IMAGE_CACHE {
-            cache.pop_front();
-        }
-        Ok(image)
+        })
+    }
+
+    /// Image files of a package below `folder` (`surfaces\qshop`), as stored, sorted.
+    pub fn images_in(&self, folder: &str) -> Result<Vec<String>, String> {
+        let folder = pck::normalize(folder);
+        let folder = folder.trim_end_matches('\\');
+        let package_name = folder.split('\\').next().filter(|name| !name.is_empty()).ok_or("The folder has no package name")?;
+        let package = self.package(package_name)?;
+        let prefix = format!("{folder}\\");
+        let mut out: Vec<String> = package.entries.iter().filter(|entry| pck::normalize(&entry.path).starts_with(&prefix) && image_content_type(&entry.path).is_some()).map(|entry| entry.path.clone()).collect();
+        out.sort_by_key(|path| path.to_lowercase());
+        Ok(out)
     }
 
     pub fn has_image(&self, path_id: u32) -> bool {
@@ -615,7 +654,10 @@ mod tests {
             let info = inspect(&picked).unwrap();
             assert!(info.elements_path.as_deref().is_some_and(|p| p.ends_with("elements.data")));
             assert_eq!(info.data_files[0].kind, "elements");
-            assert!(info.data_files.iter().any(|f| f.kind == "tasks" && !f.supported));
+            // tasks.data stands for its numbered packs, which are not listed.
+            assert!(info.data_files.iter().filter(|f| f.kind == "tasks").all(|f| f.name.eq_ignore_ascii_case("tasks.data") && f.supported));
+            assert!(info.data_files.iter().any(|f| f.kind == "gshop" && f.supported));
+            assert!(info.data_files.iter().all(|f| !f.name.to_lowercase().ends_with(".bak")));
             assert!(info.packages.iter().any(|p| p.name.eq_ignore_ascii_case("surfaces.pck")));
             assert!(info.has_path_data && info.has_item_icons);
         }

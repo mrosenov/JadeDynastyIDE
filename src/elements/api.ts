@@ -1,5 +1,15 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
+  GShopTextField,
+  GShopTextPreview,
+  GShopComparison,
+  GShopCopyResult,
+  GShopLayout,
+  GShopLayoutPreview,
+  GShopCategoryOp,
+  GShopItem,
+  GShopProblem,
+  GShopView,
   NpcGenExportCounts,
   GenComparison,
   NpcGenCopyReport,
@@ -379,6 +389,8 @@ export const saveTaskNpc = (request: TaskNpcSaveRequest) => invoke<TaskNpcSaveRe
 /** Map names of the configured client (configs.pck instance.txt); empty without a client. */
 export const clientMapNames = () => invoke<[number, string][]>("client_map_names");
 export const clientMaps = () => invoke<ClientMap[]>("client_maps");
+/** Image files of the configured client below a package folder (`surfaces\qshop`), as stored. */
+export const clientImages = (folder: string) => invoke<string[]>("client_images", { folder });
 export const gameClients = () => invoke<RunningClient[]>("game_clients");
 /** The character's position in a running game client (read-only). */
 export const gamePosition = (pid: number) => invoke<GamePosition>("game_position", { pid });
@@ -393,6 +405,40 @@ export const closeNpcGenComparison = () => invoke<void>("close_npcgen_comparison
 /** Writes a JSON export: the whole file (`picks` null) or picked items, with `related` the controllers and attached areas they use. */
 export const exportNpcGenJson = (target: string, picks: [NpcGenSection, number][] | null, related: boolean) => invoke<NpcGenExportCounts>("export_npcgen_json", { target, picks, related });
 export const importNpcGenNearby = (rows: NearbyImport[], options: { count: number; refresh: number }) => invoke<NpcGenView>("import_npcgen_nearby", { rows, options });
+/** URL of an image in a client package by its path (`Surfaces\QShop\…\x.dds`, shop icons). */
+export const resourceImageUrl = (generation: number, path: string) => convertFileSrc(`${generation}-${path}`, "jdres");
+
+// gshop.data, gshop1.data, gshop2.data (the shops)
+/** Opens a shop with the preferred layout when it fits; fails with `NO_LAYOUT:{json}` when none does. */
+export const openGShop = (path: string, layout: string | null = null) => invoke<GShopView>("open_gshop", { path, layout });
+/** Compares the open shop with a shop file or JSON export (`path`), or again with the last one (`null`). */
+/** Shop items (at `picks`, or all) whose name differs from elements.data or description from item_ext_desc.txt. */
+export const gshopTextUpdates = (field: GShopTextField, picks: number[] | null) => invoke<GShopTextPreview>("gshop_text_updates", { field, picks });
+/** Writes picked text updates (with the text each item had in the preview) as one undo step. */
+export const applyGShopTexts = (field: GShopTextField, rows: { index: number; current: string; text: string }[]) => invoke<GShopView>("apply_gshop_texts", { field, rows });
+export const compareGShop = (path: string | null) => invoke<GShopComparison>("compare_gshop", { path });
+/** Copies items of the compared shop (by their position there). */
+export const copyGShop = (picks: number[]) => invoke<GShopCopyResult>("copy_gshop", { picks });
+export const closeGShopComparison = () => invoke<void>("close_gshop_comparison");
+/** Writes a JSON export of the open shop (all items, or the picked positions). */
+export const exportGShopJson = (target: string, picks: number[] | null) => invoke<{ items: number; categories: number }>("export_gshop_json", { target, picks });
+export const gshopLayouts = () => invoke<GShopLayout[]>("gshop_layouts");
+/** How a layout reads a shop file (`path`, or the open shop's file). */
+export const previewGShopLayout = (path: string | null, layout: GShopLayout, rows: number) => invoke<GShopLayoutPreview>("preview_gshop_layout", { path, layout, rows });
+export const saveGShopLayout = (layout: GShopLayout) => invoke<string>("save_gshop_layout", { layout });
+export const deleteGShopLayout = (id: string) => invoke<void>("delete_gshop_layout", { id });
+export const gshopView = () => invoke<GShopView | null>("gshop_view");
+export const getGShopItem = (index: number) => invoke<GShopItem>("gshop_item", { index });
+export const setGShopItem = (index: number, item: GShopItem, label: string) => invoke<GShopView>("set_gshop_item", { index, item, label });
+export const cloneGShopItem = (index: number) => invoke<{ view: GShopView; index: number }>("clone_gshop_item", { index });
+export const deleteGShopItem = (index: number) => invoke<GShopView>("delete_gshop_item", { index });
+export const moveGShopItem = (index: number, to: number) => invoke<GShopView>("move_gshop_item", { index, to });
+export const editGShopCategories = (op: GShopCategoryOp) => invoke<GShopView>("edit_gshop_categories", { op });
+export const undoGShop = () => invoke<GShopView>("undo_gshop");
+export const redoGShop = () => invoke<GShopView>("redo_gshop");
+export const saveGShop = (backup: boolean, replaceChanged: boolean) => invoke<{ path: string; backup: string | null; timestamp: number }>("save_gshop", { backup, replaceChanged });
+export const gshopProblems = () => invoke<GShopProblem[]>("gshop_problems");
+
 /** URL of a map's full-map image (Surfaces/MidMaps/<path>.dds as a PNG), by the client's map path. */
 export const midmapUrl = (generation: number, path: string) => convertFileSrc(`${generation}-${path}`, "jdmap");
 

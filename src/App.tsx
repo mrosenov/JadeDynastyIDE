@@ -30,6 +30,7 @@ import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } f
 import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
 import { TaskNpcEditor, type TaskNpcEditorHandle, type TaskNpcEditorState } from "./components/TaskNpcEditor";
 import { NpcGenEditor, type NpcGenEditorHandle, type NpcGenEditorState } from "./components/NpcGenEditor";
+import { GShopEditor, type GShopEditorHandle, type GShopEditorState } from "./components/GShopEditor";
 import { TasksEditor, type TasksEditorHandle, type TasksEditorState } from "./components/TasksEditor";
 import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
@@ -53,7 +54,12 @@ import {
   Eraser,
   Plus,
   Radar,
+  ShoppingCart,
+  ArrowUp,
+  ArrowDown,
   Table2,
+  Type,
+  FileText,
   FolderTree,
   FolderOpen,
   Gauge,
@@ -81,7 +87,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "tasks" | "dyn" | "npc" | "gen";
+type DataWorkspace = "elements" | "paths" | "tasks" | "dyn" | "npc" | "gen" | "shop";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -182,6 +188,20 @@ export default function App() {
   const npcEditorStateRef = useRef(npcEditorState);
   npcEditorStateRef.current = npcEditorState;
   const genEditor = useRef<NpcGenEditorHandle>(null);
+  const shopEditor = useRef<GShopEditorHandle>(null);
+  const [shopEditorState, setShopEditorState] = useState<GShopEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, kind: null });
+  const shopEditorStateRef = useRef(shopEditorState);
+  shopEditorStateRef.current = shopEditorState;
+  /** A file chosen in Settings, opened when its workspace is shown. */
+  const [pendingOpen, setPendingOpen] = useState<{ workspace: DataWorkspace; path: string } | null>(null);
+  useEffect(() => {
+    if (!pendingOpen || workspace !== pendingOpen.workspace) return;
+    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, npc: npcEditor };
+    const editor = editors[workspace]?.current;
+    if (!editor) return;
+    setPendingOpen(null);
+    editor.openPath(pendingOpen.path);
+  }, [pendingOpen, workspace]);
   const [genEditorState, setGenEditorState] = useState<NpcGenEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, version: null });
   const genEditorStateRef = useRef(genEditorState);
   genEditorStateRef.current = genEditorState;
@@ -320,6 +340,10 @@ export default function App() {
         event.preventDefault();
         return;
       }
+      if (shopEditorStateRef.current.dirty && !window.confirm("The shop (gshop) has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
       if (editCountOf(editsRef.current) === 0) return;
       event.preventDefault();
       setUnsaved({ action: "close JD IDE", proceed: () => void win.destroy() });
@@ -390,6 +414,7 @@ export default function App() {
         else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "npc") npcEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "gen") genEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "shop") shopEditor.current?.openPath(event.payload.paths[0]);
         else loadFile(event.payload.paths[0]);
       }
     });
@@ -906,6 +931,44 @@ export default function App() {
         { label: "Enums & masks…", icon: Tags, onSelect: () => setSetsEditor({ key: null }), title: "Edit the names of task types, categories, classes, friendships and other task values" },
       ],
     },
+  ] : workspace === "shop" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open gshop file…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => shopEditor.current?.choose() },
+        { label: "Save", icon: Save, shortcut: "Ctrl+S", onSelect: () => shopEditor.current?.save(), disabled: !shopEditorState.loaded },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => shopEditor.current?.undo(), disabled: !shopEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => shopEditor.current?.redo(), disabled: !shopEditorState.canRedo },
+        "separator",
+        { label: "Clone item", icon: Copy, shortcut: "Ctrl+D", onSelect: () => shopEditor.current?.cloneSelected(), disabled: !shopEditorState.loaded },
+        { label: "Delete item…", icon: Trash2, shortcut: "Del", onSelect: () => shopEditor.current?.deleteSelected(), disabled: !shopEditorState.loaded },
+        { label: "Move up", icon: ArrowUp, shortcut: "Alt+↑", onSelect: () => shopEditor.current?.moveSelected(-1), disabled: !shopEditorState.loaded },
+        { label: "Move down", icon: ArrowDown, shortcut: "Alt+↓", onSelect: () => shopEditor.current?.moveSelected(1), disabled: !shopEditorState.loaded },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => shopEditor.current?.openProblems(), disabled: !shopEditorState.loaded },
+        { label: "Edit categories…", icon: FolderTree, onSelect: () => shopEditor.current?.openCategories(), disabled: !shopEditorState.loaded },
+        { label: "Item layout…", icon: Table2, onSelect: () => shopEditor.current?.openLayout(), disabled: !shopEditorState.loaded },
+        { label: "Update names from elements.data…", icon: Type, onSelect: () => shopEditor.current?.updateTexts("name"), disabled: !shopEditorState.loaded },
+        { label: "Update descriptions from item_ext_desc.txt…", icon: FileText, onSelect: () => shopEditor.current?.updateTexts("description"), disabled: !shopEditorState.loaded },
+        { label: "Compare with another shop…", icon: GitCompareArrows, onSelect: () => shopEditor.current?.openCompare(), disabled: !shopEditorState.loaded },
+        { label: "Export JSON…", icon: Download, onSelect: () => shopEditor.current?.exportJson(), disabled: !shopEditorState.loaded },
+        { label: "Import JSON…", icon: FileUp, onSelect: () => shopEditor.current?.importJson(), disabled: !shopEditorState.loaded },
+      ],
+    },
   ] : workspace === "gen" ? [
     {
       label: "File",
@@ -1049,6 +1112,11 @@ export default function App() {
         <Users size={18} />
         <span className="activity-label">NPC Gen</span>
         {genEditorState.dirty && <span className="activity-dirty" />}
+      </button>
+      <button className={"activity" + (workspace === "shop" ? " active" : "")} onClick={() => switchWorkspace("shop")} title="gshop.data editor (item mall, bonus shop, cross-server shop)" aria-label="gshop.data">
+        <ShoppingCart size={18} />
+        <span className="activity-label">GShop</span>
+        {shopEditorState.dirty && <span className="activity-dirty" />}
       </button>
     </nav>
   );
@@ -1200,7 +1268,12 @@ export default function App() {
           view={settingsView}
           onSaved={onSettingsSaved}
           onOpenFile={(file) => {
-            if (file.kind === "tasks" && file.name.toLowerCase() === "tasks.data") {
+            // The other editors open the file once their workspace is shown (they mount with it).
+            const others: Record<string, DataWorkspace> = { "dyn tasks": "dyn", gshop: "shop", npcgen: "gen", path: "paths", "task npc": "npc" };
+            if (others[file.kind]) {
+              setPendingOpen({ workspace: others[file.kind], path: file.path });
+              setWorkspace(others[file.kind]);
+            } else if (file.kind === "tasks" && file.name.toLowerCase() === "tasks.data") {
               if (workspace === "tasks") {
                 tasksEditor.current?.openPath(file.path);
               } else {
@@ -1226,7 +1299,12 @@ export default function App() {
         </div>
       )}
 
-      {workspace === "gen" ? (
+      {workspace === "shop" ? (
+        <main className="workspace tasks-data-workspace">
+          {activityBar}
+          <GShopEditor ref={shopEditor} active onStateChange={setShopEditorState} elementsPath={summary?.path ?? null} resourceGeneration={settingsView?.client ? settingsView.iconGeneration : null} />
+        </main>
+      ) : workspace === "gen" ? (
         <main className="workspace tasks-data-workspace">
           {activityBar}
           <NpcGenEditor ref={genEditor} active onStateChange={setGenEditorState} icon={icon} elementsPath={summary?.path ?? null} mapGeneration={settingsView?.client ? settingsView.iconGeneration : null} />
@@ -1480,7 +1558,13 @@ export default function App() {
       )}
 
       <footer className="statusbar">
-        {workspace === "gen" ? (
+        {workspace === "shop" ? (
+          <>
+            <span>{shopEditorState.kind ?? "gshop.data"}</span>
+            {shopEditorState.path && <span className="mono truncate" title={shopEditorState.path}>{shopEditorState.path}</span>}
+            {shopEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
+          </>
+        ) : workspace === "gen" ? (
           <>
             <span>npcgen.data</span>
             {genEditorState.path && <span className="mono truncate" title={genEditorState.path}>{genEditorState.path}</span>}

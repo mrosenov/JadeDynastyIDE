@@ -1,6 +1,7 @@
 mod client;
 mod dyn_tasks;
 mod elements;
+mod gshop;
 mod path_data;
 mod npcgen;
 mod settings;
@@ -41,6 +42,10 @@ struct AppState {
     compared_dyn: Mutex<Option<dyn_tasks::ComparedPack>>,
     /// The open npcgen.data (one server map).
     npcgen: Mutex<Option<npcgen::Document>>,
+    /// The open gshop shop (client and server copy together).
+    gshop: Mutex<Option<gshop::Document>>,
+    /// Another shop (file or JSON export) opened read-only for comparing (lock order: gshop, then compared_gshop).
+    compared_gshop: Mutex<Option<gshop::ComparedShop>>,
     /// Another npcgen.data opened read-only for comparing (lock order: npcgen, then compared_npcgen).
     compared_npcgen: Mutex<Option<npcgen::ComparedGen>>,
     catalog: RwLock<Arc<Catalog>>,
@@ -297,6 +302,200 @@ async fn game_nearby(pid: u32, state: State<'_, AppState>) -> Result<NearbyFetch
     Ok(NearbyFetch { player, rows })
 }
 
+// ---------------------------------------------------------------- gshop.data
+
+fn with_gshop<T>(state: &State<'_, AppState>, work: impl FnOnce(&mut gshop::Document) -> Result<T, String>) -> Result<T, String> {
+    work(state.gshop.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open a gshop file first")?)
+}
+
+/// Opens a shop file (gshop.data, gshop1.data or gshop2.data) with the preferred layout when it fits,
+/// else the first that does (user layouts first). `NO_LAYOUT:{…}` when none fits.
+#[tauri::command]
+async fn open_gshop(path: String, layout: Option<String>, state: State<'_, AppState>) -> Result<gshop::View, String> {
+    let layouts = gshop::layout::all(Some(&state.user_dir));
+    let document = tauri::async_runtime::spawn_blocking(move || gshop::Document::open(&path, &layouts, layout.as_deref())).await.map_err(|error| error.to_string())??;
+    let view = document.view();
+    *state.gshop.lock().map_err(|_| "State lock poisoned")? = Some(document);
+    Ok(view)
+}
+
+#[tauri::command]
+fn gshop_view(state: State<'_, AppState>) -> Result<Option<gshop::View>, String> {
+    Ok(state.gshop.lock().map_err(|_| "State lock poisoned")?.as_ref().map(gshop::Document::view))
+}
+
+#[tauri::command]
+fn gshop_item(index: usize, state: State<'_, AppState>) -> Result<gshop::ShopItem, String> {
+    with_gshop(&state, |document| document.item(index))
+}
+
+#[tauri::command]
+fn set_gshop_item(index: usize, item: gshop::ShopItem, label: String, state: State<'_, AppState>) -> Result<gshop::View, String> {
+    with_gshop(&state, |document| document.set_item(index, item, &label))
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct GShopCloneResult {
+    view: gshop::View,
+    index: usize,
+}
+
+#[tauri::command]
+fn clone_gshop_item(index: usize, state: State<'_, AppState>) -> Result<GShopCloneResult, String> {
+    with_gshop(&state, |document| document.clone_item(index).map(|(view, index)| GShopCloneResult { view, index }))
+}
+
+#[tauri::command]
+fn delete_gshop_item(index: usize, state: State<'_, AppState>) -> Result<gshop::View, String> {
+    with_gshop(&state, |document| document.delete_item(index))
+}
+
+#[tauri::command]
+fn move_gshop_item(index: usize, to: usize, state: State<'_, AppState>) -> Result<gshop::View, String> {
+    with_gshop(&state, |document| document.move_item(index, to))
+}
+
+#[tauri::command]
+fn edit_gshop_categories(op: gshop::CategoryOp, state: State<'_, AppState>) -> Result<gshop::View, String> {
+    with_gshop(&state, |document| document.edit_categories(op))
+}
+
+#[tauri::command]
+fn undo_gshop(state: State<'_, AppState>) -> Result<gshop::View, String> {
+    with_gshop(&state, |document| document.undo())
+}
+
+#[tauri::command]
+fn redo_gshop(state: State<'_, AppState>) -> Result<gshop::View, String> {
+    with_gshop(&state, |document| document.redo())
+}
+
+#[tauri::command]
+fn save_gshop(backup: bool, replace_changed: bool, state: State<'_, AppState>) -> Result<gshop::SaveReport, String> {
+    with_gshop(&state, |document| document.save(backup, replace_changed))
+}
+
+/// Compares the open shop with another shop file or a JSON export (`path`), or again with the one chosen before.
+#[tauri::command]
+async fn compare_gshop(path: Option<String>, state: State<'_, AppState>) -> Result<gshop::ShopComparison, String> {
+    if let Some(path) = path {
+        let layouts = gshop::layout::all(Some(&state.user_dir));
+        let other = tauri::async_runtime::spawn_blocking(move || gshop::ComparedShop::open(path, &layouts)).await.map_err(|error| error.to_string())??;
+        *state.compared_gshop.lock().map_err(|_| "State lock poisoned")? = Some(other);
+    }
+    let document = state.gshop.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared_gshop.lock().map_err(|_| "State lock poisoned")?;
+    Ok(document.as_ref().ok_or("Open a gshop file first")?.compare(compared.as_ref().ok_or("Choose a shop to compare with")?))
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct GShopCopyResult {
+    view: gshop::View,
+    report: gshop::CopyReport,
+}
+
+/// Copies the picked items of the compared shop (by their position there) into the open one.
+#[tauri::command]
+fn copy_gshop(picks: Vec<usize>, state: State<'_, AppState>) -> Result<GShopCopyResult, String> {
+    let mut document = state.gshop.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared_gshop.lock().map_err(|_| "State lock poisoned")?;
+    let (view, report) = document.as_mut().ok_or("Open a gshop file first")?.copy_compared(compared.as_ref().ok_or("Choose a shop to compare with")?, &picks)?;
+    Ok(GShopCopyResult { view, report })
+}
+
+#[tauri::command]
+fn close_gshop_comparison(state: State<'_, AppState>) -> Result<(), String> {
+    *state.compared_gshop.lock().map_err(|_| "State lock poisoned")? = None;
+    Ok(())
+}
+
+/// Writes a JSON export of the open shop (all items, or the picked positions).
+#[tauri::command]
+fn export_gshop_json(target: String, picks: Option<Vec<usize>>, state: State<'_, AppState>) -> Result<gshop::ExportCounts, String> {
+    let (json, counts) = with_gshop(&state, |document| document.export_json(picks.as_deref()))?;
+    std::fs::write(&target, json).map_err(|error| format!("Could not write {target}: {error}"))?;
+    Ok(counts)
+}
+
+/// The shop items (at `picks`, or all) whose name differs from elements.data or whose description differs
+/// from the client's item_ext_desc.txt. Locks one thing at a time: the shop, the source, the shop.
+#[tauri::command]
+async fn gshop_text_updates(field: gshop::TextField, picks: Option<Vec<usize>>, state: State<'_, AppState>) -> Result<gshop::TextPreview, String> {
+    let mut ids = with_gshop(&state, |document| Ok(document.item_ids(picks.as_deref())))?;
+    ids.sort_unstable();
+    ids.dedup();
+    let texts: HashMap<u32, String> = match field {
+        gshop::TextField::Name => {
+            let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+            let document = document.as_ref().ok_or("Open the elements.data that matches this shop first")?;
+            ids.iter().filter_map(|&id| document.essence_name(id).map(|name| (id, name))).collect()
+        }
+        gshop::TextField::Description => {
+            let resources = state.resources().ok_or("Set the game client folder in Settings first: descriptions come from its configs.pck")?;
+            tauri::async_runtime::spawn_blocking(move || {
+                if let Err(error) = resources.table(client::table::ITEM_DESC).as_ref() {
+                    return Err(error.clone());
+                }
+                Ok(ids.iter().filter_map(|&id| resources.text(client::table::ITEM_DESC, id).map(|text| (id, gshop::texts::shop_text(&text)))).collect())
+            })
+            .await
+            .map_err(|error| error.to_string())??
+        }
+    };
+    with_gshop(&state, |document| document.text_updates(field, picks.as_deref(), &texts))
+}
+
+/// Writes the picked name or description updates as one undo step.
+#[tauri::command]
+fn apply_gshop_texts(field: gshop::TextField, rows: Vec<gshop::TextApply>, state: State<'_, AppState>) -> Result<gshop::View, String> {
+    with_gshop(&state, |document| document.apply_texts(field, &rows))
+}
+
+/// Every shop layout: the user's first, then the built-in ones.
+#[tauri::command]
+fn gshop_layouts(state: State<'_, AppState>) -> Vec<gshop::Layout> {
+    gshop::layout::all(Some(&state.user_dir))
+}
+
+/// How `layout` reads a shop file (`path`, or the open shop's file).
+#[tauri::command]
+async fn preview_gshop_layout(path: Option<String>, layout: gshop::Layout, rows: usize, state: State<'_, AppState>) -> Result<gshop::LayoutPreview, String> {
+    let path = match path {
+        Some(path) => path,
+        None => with_gshop(&state, |document| Ok(document.path().display().to_string()))?,
+    };
+    tauri::async_runtime::spawn_blocking(move || {
+        let data = std::fs::read(&path).map_err(|error| format!("Could not read {path}: {error}"))?;
+        gshop::preview(&data, &layout, rows.min(50))
+    })
+    .await
+    .map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+fn save_gshop_layout(layout: gshop::Layout, state: State<'_, AppState>) -> Result<String, String> {
+    gshop::layout::save(&state.user_dir, &layout).map(|path| path.display().to_string())
+}
+
+#[tauri::command]
+fn delete_gshop_layout(id: String, state: State<'_, AppState>) -> Result<(), String> {
+    gshop::layout::delete(&state.user_dir, &id)
+}
+
+/// Problems of the open shop; item and gift templates are checked against the open elements.data.
+#[tauri::command]
+fn gshop_problems(state: State<'_, AppState>) -> Result<Vec<gshop::Problem>, String> {
+    // One lock at a time: the shop's templates, then elements.data, then the check.
+    let ids = with_gshop(&state, |document| Ok(document.template_ids()))?;
+    let known: Option<HashSet<u32>> = {
+        let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+        document.as_ref().map(|document| ids.iter().copied().filter(|&id| document.resolve_essence_id(id).is_some()).collect())
+    };
+    with_gshop(&state, |document| Ok(document.problems(known.as_ref())))
+}
+
 /// Opens another npcgen.data read-only (`path`), or compares again with the one already open.
 #[tauri::command]
 async fn compare_npcgen(path: Option<String>, state: State<'_, AppState>) -> Result<npcgen::GenComparison, String> {
@@ -356,6 +555,13 @@ fn npcgen_problems(half_size: Option<f32>, state: State<'_, AppState>) -> Result
 #[tauri::command]
 fn import_npcgen_nearby(rows: Vec<npcgen::NearbyImport>, options: npcgen::NearbyOptions, state: State<'_, AppState>) -> Result<npcgen::View, String> {
     state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open npcgen.data first")?.import_nearby(rows, options)
+}
+
+/// Image files of the configured client below a package folder (`surfaces\qshop`), for icon pickers.
+#[tauri::command]
+async fn client_images(folder: String, state: State<'_, AppState>) -> Result<Vec<String>, String> {
+    let resources = state.resources().ok_or("Set the game client folder in Settings to browse its pictures")?;
+    tauri::async_runtime::spawn_blocking(move || resources.images_in(&folder)).await.map_err(|error| error.to_string())?
 }
 
 /// The configured client's maps with whether each has a full-map image (for the npcgen.data plot).
@@ -1675,6 +1881,25 @@ fn percent_decode(text: &str) -> String {
     String::from_utf8_lossy(&out).into_owned()
 }
 
+/// `jdres://localhost/<generation>-<package path>` → an image of a client package by its path (shop icons).
+fn resource_response(app: &tauri::AppHandle, uri_path: &str) -> tauri::http::Response<Vec<u8>> {
+    let not_found = || tauri::http::Response::builder().status(404).body(Vec::new()).unwrap();
+    let decoded = percent_decode(uri_path.trim_start_matches('/'));
+    let Some((_, path)) = decoded.split_once('-') else { return not_found() };
+    if path.contains("..") {
+        return not_found();
+    }
+    let Some(res) = app.state::<AppState>().resources() else { return not_found() };
+    match res.image_at(path) {
+        Ok(image) => tauri::http::Response::builder()
+            .header("Content-Type", image.content_type)
+            .header("Cache-Control", "max-age=31536000, immutable")
+            .body(image.bytes.clone())
+            .unwrap(),
+        Err(_) => not_found(),
+    }
+}
+
 /// `jdmap://localhost/<generation>-<map path>` → the map's midmap as a PNG.
 fn map_response(app: &tauri::AppHandle, uri_path: &str) -> tauri::http::Response<Vec<u8>> {
     let not_found = || tauri::http::Response::builder().status(404).body(Vec::new()).unwrap();
@@ -1831,6 +2056,8 @@ pub fn run() {
                 dyn_tasks: Mutex::new(None),
                 compared_dyn: Mutex::new(None),
                 npcgen: Mutex::new(None),
+                gshop: Mutex::new(None),
+                compared_gshop: Mutex::new(None),
                 compared_npcgen: Mutex::new(None),
                 compared: Mutex::new(None),
                 compared_tasks: Mutex::new(None),
@@ -1859,6 +2086,11 @@ pub fn run() {
             let app = ctx.app_handle().clone();
             let path = request.uri().path().to_string();
             std::thread::spawn(move || responder.respond(image_response(&app, &path)));
+        })
+        .register_asynchronous_uri_scheme_protocol("jdres", |ctx, request, responder| {
+            let app = ctx.app_handle().clone();
+            let path = request.uri().path().to_string();
+            std::thread::spawn(move || responder.respond(resource_response(&app, &path)));
         })
         .register_asynchronous_uri_scheme_protocol("jdmap", |ctx, request, responder| {
             let app = ctx.app_handle().clone();
@@ -1911,6 +2143,7 @@ pub fn run() {
             save_task_npc,
             client_map_names,
             client_maps,
+            client_images,
             game_clients,
             game_position,
             game_nearby,
@@ -1920,6 +2153,28 @@ pub fn run() {
             copy_npcgen,
             close_npcgen_comparison,
             export_npcgen_json,
+            open_gshop,
+            gshop_view,
+            gshop_item,
+            set_gshop_item,
+            clone_gshop_item,
+            delete_gshop_item,
+            move_gshop_item,
+            edit_gshop_categories,
+            undo_gshop,
+            redo_gshop,
+            save_gshop,
+            gshop_problems,
+            compare_gshop,
+            gshop_text_updates,
+            apply_gshop_texts,
+            copy_gshop,
+            close_gshop_comparison,
+            export_gshop_json,
+            gshop_layouts,
+            preview_gshop_layout,
+            save_gshop_layout,
+            delete_gshop_layout,
             dyn_tasks_view,
             dyn_task,
             set_dyn_task,

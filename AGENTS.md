@@ -11,7 +11,8 @@ Today it handles `elements.data` (all game items, NPCs, monsters, configs) acros
 versions v66–v176: browse, search, check, compare, export, edit, and save. A separate
 activity-bar workspace edits the client's `path.data`. The `tasks.data` workspace supports
 verified v165, v172 and v184 task sets, including browsing, schema analysis, safe editing,
-hierarchy operations and saving. More data files can follow later (`gshop.data`, …).
+hierarchy operations and saving. Further workspaces edit dyn_tasks.data, task_npc.data, npcgen.data
+and the gshop shops.
 
 A previous Laravel/PHP version of the same idea lives in `C:/Users/mitko/Herd/jdide`. It is
 a reference for ideas only; JD IDE replaces it.
@@ -36,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (187 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (195 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -77,6 +78,7 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
+| `gshop/mod.rs`, `gshop/layout.rs`, `gshop/compare.rs`, `gshop/texts.rs` | gshop.data / gshop1.data / gshop2.data: item layouts (built-in `formats/gshop/*.json` + user), reader/writer, document with journal, categories, problems, save; compare/copy and JSON export. |
 | `npcgen.rs` | `npcgen.data` (one server map's spawns): versions 1–14 reader/writer, document with journal (whole-item Replace/Insert/Remove per section), save. |
 | `task_npc.rs` | `task_npc.data` reader/writer (12-byte header, 16-byte NPC_INFO records), save with backup and changed-on-disk guard. |
 | `client/game.rs` | Character position from a running `elementclient.exe` (read-only): exe code scan for the pointer chain, process list, ReadProcessMemory. |
@@ -492,6 +494,64 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 - Map names: `Resources::instances`; HDN's instance.txt has comments after values. ForsakenJD has
   295 maps (401 = New Main City). Picker kind `npc` = NPC_ESSENCE + MONSTER_ESSENCE.
 
+## gshop.data editor
+
+- Format (`globaldata_load`, ZCommon/globaldataman.cpp; server template/globaldataman.cpp): u32 timestamp,
+  i32 count, `GSHOP_ITEM` records (`#pragma pack(1)`; offsets in `gshop.rs`: id 0, num 4, icon char[128] 8,
+  buy[1] price/time 136, discount 144, bonus 148, props 152, main 156, sub 160, local 164, desc WORD[512]
+  168, name WORD[32] 1192, bHasPresent 1256, present name 1257, id/count/time 1321, present icon 1333,
+  bind 1461, present desc 1462, valid_time {type, start, end, param} 2486, SearchKey WORD[64] 2502; 2,630
+  bytes), then i32 main types (≥ 7) × {i32 id, WORD[64] name, i32 n, n × WORD[64]}.
+- Record size is found by trying sizes from 2,630 until the category block ends the file: XtremeJade and
+  the 1559 server 2,630, ForsakenJD 2,635 (+5: a flag byte and an int, usually the price), HDN/Reborn
+  2,660 (+30, same 5 then zeros). HDN/Reborn's gshop4.data has 357-byte records (unknown; not supported).
+  Some files keep bytes after text terminators, so each item keeps its stored record (`Entry.raw`) and
+  `layout::encode` rewrites only fields whose value changed; category names keep their stored slots by
+  text (`raw_names`). All 15 samples round-trip.
+- **Item layouts** (`gshop/layout.rs`): `Layout{id, name, description, fields}`; `Field{name, type, meaning,
+  note}` with types u8/u16/u32/i32/f32/bool, wstr{len chars}, str{len GBK bytes}, bytes{len}, group{count,
+  fields} (one level). `MEANINGS` maps names to `ShopItem` fields (integer/flag/UTF-16/GBK); fields without
+  one become `ShopItem.other` (`OtherField{path, ty, value}`, group paths `name[i].field`). `validate` checks
+  names, lengths, meaning types and duplicates. Built-in: `formats/gshop/source.json` (2,630),
+  `forsakenjd.json` (2,635), `hdn.json` (2,660). User layouts: `<config>/gshop-layouts/<id>.json`, tried
+  first; built-in IDs cannot be saved over. `parse` splits the file with each layout's size (preferred
+  first; the UI remembers the choice per file in localStorage) and fails with `NO_LAYOUT:{recordSize,
+  items, categories}` when none fits; `preview` finds the record size by scanning sizes and describes the
+  first items for the layout editor (`GShopLayoutEditor.tsx`). The form hides cards whose meanings the
+  layout lacks (`View.meanings`).
+- An old client's shop (user file, timestamp 2009, 205 items, 7 mains): 1,252-byte items = id, num, icon[128],
+  price, time, one i32 (always 0), props (0 or 3), main, sub, local_id (unique), desc[512], name[32]; no
+  gifts, sale windows or keywords, and no sale-scheme bits, so `problems` reports a missing scheme once
+  (warning) when no item has any. A first user layout kept discount + bonus and read local_id as sub_type.
+- **Compare/copy/JSON** (`gshop/compare.rs`, `GShopCompare.tsx`): `ComparedShop` (`AppState.compared_gshop`; lock
+  order gshop, then compared_gshop) opens a shop file with the layouts or a `jdide-gshop` v1 JSON (`ShopJson`:
+  kind, timestamp, layout id, meanings, all categories, `ShopItem`s). `pair` matches (id, num): identical
+  items first (otherwise deleting one of two repeats shifted every later pair), then in order. Only meanings
+  both layouts have are compared/copied; categories by name (`place`: main by name, else same index; a
+  missing sub is added on copy; `Blocked` when the main is missing); other fields by path and type.
+  `copy_compared` is one journal entry: categories, then replacements (keep `raw`), then insertions (decoded
+  from a zero record, after the last item of the same subcategory). Import JSON = compare with the JSON.
+- Text updates (`gshop/texts.rs`, `GShopTextUpdate.tsx`, commands `gshop_text_updates`, `apply_gshop_texts`):
+  names from `Document::essence_name` (elements), descriptions from `item_ext_desc.txt` by item ID, converted
+  with `shop_text` (the string table turns `\r` into a line break; the shop stores a literal `\r`). The command
+  locks gshop (IDs), then the source, then gshop again. `apply_texts` refuses items whose text changed since
+  the preview; one journal entry. The limit is the layout's wstr length for the meaning.
+- Icon picker: `Resources::images_in(folder)` (command `client_images`) lists package images below
+  `surfaces\qshop` (subfolders 1 and 2 in the samples); `GShopIconPicker.tsx`.
+- Descriptions store line breaks as a literal `\r` (two characters); the UI shows real breaks.
+- Server (zgame/gs): reads only sale fields into `MALL_ITEM_SERV`; `PlayerDoShopping(id, index, slot,
+  count)` requires the item at `index` to have `id` and a price > 0, an active sale scheme
+  (`props & 0x00FF0000 & mall_prop`), charges price × discount / 100 when a discount scheme
+  (`0xFF000000`) is active, and checks valid_time. The client compares its gshop.data timestamp with the
+  server's (`cmd_inst_data_checkout`) and refuses the mall otherwise (`GShopVersionError`). Prices: the
+  item mall shows `price / 100` (`GetCashText`); the bonus and cross-server shops raw numbers.
+- `Document` = one shop file (the user copies the saved file to the server; a built-in "save to the
+  server too" pairing was tried and removed at the user's request as unnecessary), journal of
+  `Change::Item`/`Change::Categories`; `save` writes a new timestamp `max(now, old + 1)`, verifies the
+  file reads back, backs up and replaces atomically. `CategoryOp` remaps items' sub_type in the
+  same journal entry (main_type/sub_type are indexes). Icons by package path: `Resources::image_at`,
+  protocol `jdres`. Problems on official files: only repeated item+count warnings.
+
 ## npcgen.data editor
 
 - Format from `CNPCGenMan::Load` (ZElementEditor/NPCGenData.*, the same code as the server's
@@ -662,7 +722,7 @@ count as a minimum. Never write into these folders from tests. Tests save into `
 - Pick-aware export (export only the picked search results).
 - Task compare/translation/JSON workflows described in
   `TASKS_EDITOR_PLAN.md`.
-- More data files in the activity bar (`gshop.data`, …). The bar shows a label under each icon
+- More data files in the activity bar. The bar shows a label under each icon
   (`--activity-width` in App.css).
 - v165: the 8 bytes before list 296 that layouts mark as a checksum slot look like an empty
   list header (record size 1468, count 0). Check whether the layout should treat them as a list.

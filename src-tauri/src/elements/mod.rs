@@ -745,6 +745,13 @@ impl Document {
         None
     }
 
+    /// The name of the record an Essence ID resolves to (none when it has no name).
+    pub fn essence_name(&self, id: u32) -> Option<String> {
+        let (list, row, _) = self.resolve_essence_id(id)?;
+        let name = Self::record_name(self.file.record(list, row)?, Self::name_field(self.def(list).map(|(_, definition)| definition)));
+        (!name.trim().is_empty()).then_some(name)
+    }
+
     /// The structure name (e.g. `MONSTER_ESSENCE`, upper case) and label of the record an Essence ID resolves to.
     pub fn essence_struct(&self, id: u32) -> Option<(String, String)> {
         let (list, _, label) = self.resolve_essence_id(id)?;

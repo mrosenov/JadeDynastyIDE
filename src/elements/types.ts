@@ -2086,6 +2086,195 @@ export interface NpcGenExportCounts {
   controllers: number;
 }
 
+/** One shop item (gshop.data GSHOP_ITEM). */
+export interface GShopItem {
+  id: number;
+  num: number;
+  icon: string;
+  price: number;
+  time: number;
+  discount: number;
+  bonus: number;
+  /** Bits 0–2 new/recommended/promotion; 16–23 sale schemes 1–8; 24–31 discount schemes 1–8. */
+  props: number;
+  mainType: number;
+  subType: number;
+  localId: number;
+  description: string;
+  name: string;
+  hasPresent: boolean;
+  presentName: string;
+  presentId: number;
+  presentCount: number;
+  presentTime: number;
+  presentIcon: string;
+  presentBind: boolean;
+  presentDescription: string;
+  /** 0 always, 1 a date range, 2 weekly, 3 monthly. */
+  validType: number;
+  validStart: number;
+  validEnd: number;
+  validParam: number;
+  searchKeys: string;
+  /** Fields of the file's layout without a meaning (edited by their type). */
+  other: GShopOtherField[];
+}
+
+/** A layout field without a meaning: `ty` is u8, u16, u32, i32, f32, bool, wstr:N, str:N or bytes:N (hex). */
+export interface GShopOtherField {
+  path: string;
+  ty: string;
+  value: number | boolean | string;
+}
+
+export interface GShopFieldType {
+  type: "u8" | "u16" | "u32" | "i32" | "f32" | "bool" | "wstr" | "str" | "bytes" | "group";
+}
+
+/** One field of a shop item layout (wstr: len characters; str/bytes: len bytes; group: count × fields). */
+export interface GShopField extends GShopFieldType {
+  name: string;
+  len?: number;
+  count?: number;
+  fields?: GShopField[];
+  meaning?: string;
+  note?: string;
+}
+
+export interface GShopLayout {
+  id: string;
+  name: string;
+  description: string;
+  fields: GShopField[];
+  builtin: boolean;
+}
+
+export interface GShopLayoutInfo {
+  id: string;
+  name: string;
+  size: number;
+  builtin: boolean;
+}
+
+export interface GShopLayoutPreview {
+  recordSize: number | null;
+  layoutSize: number;
+  items: number;
+  categories: string[];
+  /** Per item: [field, type, value]. */
+  rows: [string, string, string][][];
+}
+
+export interface GShopCategory {
+  id: number;
+  name: string;
+  subs: string[];
+}
+
+export interface GShopSummary {
+  index: number;
+  id: number;
+  num: number;
+  name: string;
+  icon: string;
+  price: number;
+  time: number;
+  discount: number;
+  props: number;
+  mainType: number;
+  subType: number;
+  hasPresent: boolean;
+  validType: number;
+  changed: boolean;
+}
+
+export interface GShopView {
+  path: string;
+  kind: string;
+  timestamp: number;
+  recordSize: number | null;
+  layout: GShopLayoutInfo;
+  /** Other layouts of the same size. */
+  alternatives: GShopLayoutInfo[];
+  /** The meanings the layout has (the form shows only these). */
+  meanings: string[];
+  items: GShopSummary[];
+  categories: GShopCategory[];
+  dirty: boolean;
+  canUndo: boolean;
+  canRedo: boolean;
+  history: { id: number; label: string; time: number; undone: boolean }[];
+}
+
+export type GShopCategoryOp =
+  | { op: "rename_main"; main: number; name: string }
+  | { op: "add_sub"; main: number; name: string }
+  | { op: "rename_sub"; main: number; sub: number; name: string }
+  | { op: "remove_sub"; main: number; sub: number; moveTo: number | null }
+  | { op: "move_sub"; main: number; sub: number; to: number };
+
+/** A row of a shop comparison (positions here and in the other shop). */
+export interface GShopCompareRow {
+  status: "missing" | "different" | "only_here";
+  here: number | null;
+  there: number | null;
+  id: number;
+  num: number;
+  name: string;
+  price: number;
+  /** "Main › Sub" (the other shop's for missing and different items). */
+  category: string;
+  /** Differing meanings (price, name, …), "category", or other field names. */
+  fields: string[];
+  /** Why it cannot be copied. */
+  blocked: string | null;
+}
+
+export interface GShopComparison {
+  path: string;
+  json: boolean;
+  kind: string;
+  layout: string;
+  items: number;
+  same: number;
+  /** Meanings only one side's layout has (not compared). */
+  onlyThere: string[];
+  onlyHere: string[];
+  rows: GShopCompareRow[];
+}
+
+export type GShopTextField = "name" | "description";
+
+/** An item whose name or description differs from its source. */
+export interface GShopTextUpdate {
+  index: number;
+  id: number;
+  current: string;
+  text: string;
+  /** Why it cannot be applied (too long). */
+  problem: string | null;
+}
+
+export interface GShopTextPreview {
+  rows: GShopTextUpdate[];
+  checked: number;
+  same: number;
+  missing: number;
+  /** Characters the field holds. */
+  limit: number;
+}
+
+export interface GShopCopyResult {
+  view: GShopView;
+  report: { replaced: number; added: number; subcategories: string[] };
+}
+
+export interface GShopProblem {
+  severity: "error" | "warning";
+  index: number | null;
+  message: string;
+}
+
 /** A running elementclient.exe. */
 export interface RunningClient {
   pid: number;
