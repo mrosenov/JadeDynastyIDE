@@ -280,6 +280,11 @@
     {
       "name": "^(price|shop_price|buy_price|sell_price|decompose_price)$",
       "display": "money"
+    },
+    {
+      "struct": "MONSTER_ESSENCE",
+      "name": "^(common_strategy|aipolicy)$",
+      "display": "aipolicy"
     }
   ],
   "refs": [

@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (202 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (205 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -81,6 +81,7 @@ Environment quirks (Windows 11, Git Bash):
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
 | `gshop/mod.rs`, `gshop/layout.rs`, `gshop/compare.rs`, `gshop/texts.rs`, `gshop/align.rs` | gshop.data / gshop1.data / gshop2.data: item layouts (built-in `formats/gshop/*.json` + user), reader/writer, document with journal, categories, problems, save; compare/copy and JSON export. |
 | `npcgen.rs` | `npcgen.data` (one server map's spawns): versions 1–14 reader/writer, document with journal (whole-item Replace/Insert/Remove per section), save. |
+| `aipolicy.rs` | `aipolicy.data` (monster AI, server only): byte-exact reader/writer of policies, triggers, condition trees and operations; read-only views, categories, search. |
 | `vipaward.rs` | `vipaward.data` (VIP awards): reader/writer keeping stored records, the server's rules as problems, the client's level names. |
 | `task_npc.rs` | `task_npc.data` reader/writer (12-byte header, 16-byte NPC_INFO records), save with backup and changed-on-disk guard. |
 | `client/game.rs` | Character position from a running `elementclient.exe` (read-only): exe code scan for the pointer chain, process list, ReadProcessMemory. |
@@ -487,6 +488,38 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 - Item/monster picker: `Document::essence_spec` (monsters: `MONSTER_ESSENCE`; items: essence lists
   that are not types, services, configs, `MONSTER*`, `NPC*` or `MINE*`) + `picker_records`, command
   `pick_essence`; `ValuePicker` takes a `search` function instead of an elements field.
+
+## aipolicy.data browser
+
+- Sources: official editor ZElementData Policy.h/.cpp (= server gs/ai/policy.h/.cpp, trigger version 11),
+  PolicyType.h (= server ai/policytype.h, identical in all three trees), the newer server
+  `E:/Game Dev/JD/zx_18_source_server/src/zgame/gs/ai/` (trigger version 12), server ai/policy_loader.cpp
+  (file → runtime), aitrigger.h/.cpp (semantics), aiman.cpp (`hashtab::put`: the first policy of an ID wins).
+  Editor UI: PolicyDlg (policy tree, trigger list, a simulator firing events and timers, `DelRedundancy` removes
+  sub-triggers nothing runs), PolicyTriggerDlg, ConditionDlg (`Check`: arithmetic/compare take expression
+  children, and/or/not condition children; `TraverselTree` renders the expression), PolicyOperationDlg.
+  ElementLocalize PolicyTemplate.cpp translates talk texts and summon names. JadeEditor (C#) has a partial reader.
+- Format: see `aipolicy.rs` header. Operation parameters have no size: `operation_size` per type and trigger
+  version (structs not packed: O_SUMMON 56, O_ACTIVE_CONTROLLER 8, O_SUMMON_MINERAL 20; v0 reads fewer types,
+  v<9 change path 4 bytes). Conditions carry their size. Trigger names keep raw bytes (~75% have bytes after
+  the terminator). Samples: XtremeJade v11, zxserver v11, ForsakenJD v12, 1559 v12, zx_18 (+ -cn) v11+v12; all
+  round-trip; each has exactly one repeated policy ID.
+- Types (CTriggerData enums): conditions 0–23 + v12 24 random_selectone, 25 leave_combat; operations 0–29 + v12
+  30 drop_item_new (O_DROP_ITEM), 31 whisper, 32 talk_portrait (texts like talk); targets 0–7 + v12 8 aggro_all.
+  The 2013 server ASSERTs on unknown types and on op 20 (range skill); the newer makes them no-ops.
+- Runtime: `bRun` triggers are skipped as top level (run by op 4 by ID); `bActive` = enabled at start;
+  run condition 1 = battle trigger. Category = root condition's type (and/or: left child; not: its child);
+  start combat, death, path end, birth and skill hit force enabled. Auto-disable: hp_less, enmity, distance,
+  skill hit. random_selectone: run one random operation. HP/random are fractions. op_say channels `$F $T $B $A`.
+  Monster link: `MONSTER_ESSENCE.common_strategy` → `trigger_policy` (template_loader.cpp; missing → printed, set to
+  0). `id_strategy` is `primary_strategy`, the attack strategy (1–6). Load failure = gs -300. Display role
+  `aipolicy` (schema editor; built-in on common_strategy, v160 `AIPolicy`, added by hand to the five list_21
+  files: running apply-type-rules.mjs would also apply never-applied v160 rules (money roles, sets, a ref fix)).
+  `Document::monsters_by_policy` reads role fields (fallback: the field name); `get_record` hints them
+  (`annotate_policies`, aipolicy lock after the document's); the hint opens the AI browser (`showPolicy`).
+- UI `AiPolicyEditor.tsx` (read-only): commands open_aipolicy, aipolicy_view, aipolicy_policy, aipolicy_used_by
+  (`Document::monsters_by_policy`), aipolicy_search, skill_names. Next: editing (clone policies/triggers, add
+  operations and condition nodes), problems, then perhaps the simulator.
 
 ## vipaward.data editor
 

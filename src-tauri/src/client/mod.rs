@@ -87,6 +87,7 @@ fn data_kind(name: &str) -> String {
         s if s.starts_with("domain") => "domain",
         "task_npc" => "task npc",
         "vipaward" => "vip awards",
+        "aipolicy" => "ai policy",
         "dynamicobjects" => "dynamic objects",
         _ => "other",
     }
@@ -118,7 +119,7 @@ pub fn inspect(picked: &Path) -> Result<ClientInfo, String> {
             let backup = name.to_lowercase().ends_with(".bak");
             (name.to_lowercase().contains(".data") && !pack && !backup).then(|| {
                 DataFile {
-                    supported: matches!(kind.as_str(), "elements" | "tasks" | "dyn tasks" | "gshop" | "npcgen" | "path" | "task npc" | "vip awards"),
+                    supported: matches!(kind.as_str(), "elements" | "tasks" | "dyn tasks" | "gshop" | "npcgen" | "path" | "task npc" | "vip awards" | "ai policy"),
                     path: e.path().display().to_string(),
                     size: e.metadata().map(|m| m.len()).unwrap_or(0),
                     name,

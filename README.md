@@ -726,6 +726,36 @@ subcategory, and removing one that items use asks where they go. **Tools › Che
 open `elements.data`), items the shop would not show (a missing category), repeated items and sale windows that end before they start. Every change can be undone. All 15 sample
 shop files (clients and servers) read and write back byte for byte.
 
+## aipolicy.data browser (monster AI)
+
+**AI** in the activity bar opens `aipolicy.data`, the monster AI the **server** runs (`PolicyData` in
+gs.conf; the client never reads it). It is read-only for now. A monster uses the policy whose ID is its
+`common_strategy` in elements.data (`AIPolicy` in v160 layouts; `id_strategy` is its attack strategy, not a
+policy). In the schema editor such fields have the display role **aipolicy**; the built-in layouts set it on
+`MONSTER_ESSENCE.common_strategy`. The record inspector then shows the policy next to the value (its trigger
+count, or that aipolicy.data does not have it, in which case the server gives the monster no policy) and a
+click opens it in the AI browser.
+
+- **Policies** (left): with the elements.data open, each shows the monsters that use it. The search finds a
+  policy by its ID, a monster's ID or name, a trigger's name, a talk text, or any ID an operation names (a
+  skill, a summoned monster, a dropped item, a task, …). A policy whose ID an earlier policy already has is
+  marked *unused*: the server keeps the first one. The list shows 200 policies a page; the pager at the bottom goes to the first, previous,
+  next or last page, or to the page number typed in.
+- **Triggers** (middle), in the order the server tests them: their name, condition as a readable expression,
+  and what they react to: **Heartbeat** (every second: HP, random, aggro, distance, variables), **Timer**,
+  **Birth**, **Combat start**, **Death**, **Kill**, **Path end**, **Skill hit**, **Leave combat**, or **Sub**
+  (a sub-trigger that only runs when another trigger runs it).
+- **The trigger** (right): whether it is enabled at start, in combat only or also out of it, whether it fires
+  once (HP below, aggro count, distance and skill hit disable their trigger after firing) or runs one random
+  operation; who runs, enables or disables it; the condition (**When**) as an expression and as a tree; and
+  the operations (**Then**) in order with their target, and the names of skills, monsters, items, mines and
+  quests. Trigger IDs are links. Timers show which triggers start them, and warn when nothing starts them.
+  Talk texts show their channel (`$B` world broadcast, `$A` channel 9, `$F`/`$T` battle channels).
+
+The file has two trigger versions: 11 (the 2013 server) and 12 (newer servers, with *random select-one*,
+*leaves combat*, *everyone in aggro*, *scattered drop*, *whisper* and *talk with a portrait*). All six sample
+files read and write back byte for byte, so editing can follow.
+
 ## vipaward.data editor (VIP awards)
 
 **VIP** in the activity bar edits `vipaward.data` (the client's `element/data/VIPAward.data`, the server's

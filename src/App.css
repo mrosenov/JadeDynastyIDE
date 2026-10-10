@@ -10257,3 +10257,137 @@ select.ie-control {
   flex-direction: column;
   gap: 8px;
 }
+.ai-body {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 300px 360px minmax(0, 1fr);
+  min-height: 0;
+}
+.ai-body > .dyn-task-list {
+  border-right: 1px solid var(--border);
+}
+.ai-policy-row,
+.ai-trigger-row {
+  display: grid !important;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+}
+.ai-trigger-row.ai-off {
+  opacity: 0.65;
+}
+.ai-cat {
+  font-size: 10px;
+  white-space: nowrap;
+}
+.ai-cat.sub {
+  opacity: 0.75;
+}
+.ai-policy-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.ai-used-by {
+  width: 100%;
+}
+.ai-list-foot {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 8px;
+}
+.ai-pager {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.ai-page-input {
+  width: 46px !important;
+  margin: 0 3px;
+  text-align: center;
+}
+.ai-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0 8px;
+}
+.ai-section {
+  margin: 14px 0 6px;
+  font-size: 12px;
+}
+.ai-expression {
+  margin: 0 0 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--bg-pane);
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+.ai-cond,
+.ai-cond-children {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+.ai-cond li {
+  margin: 2px 0;
+}
+.ai-cond-name {
+  font-weight: 600;
+}
+.ai-param {
+  display: inline-flex;
+  gap: 4px;
+  align-items: baseline;
+  margin-left: 10px;
+}
+.ai-name {
+  color: var(--accent);
+}
+.ai-warn {
+  color: var(--warn);
+}
+.ai-ops {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ai-op {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.ai-op-index {
+  padding-top: 1px;
+}
+.ai-op-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.ai-op-params {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 0;
+  margin-top: 3px;
+  margin-left: -10px;
+  font-size: 12px;
+}
+.ai-talk {
+  margin-top: 4px;
+  font-size: 12px;
+  white-space: pre-wrap;
+}

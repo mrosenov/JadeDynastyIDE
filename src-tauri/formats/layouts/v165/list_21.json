@@ -301,7 +301,8 @@
       "off": 308,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "aipolicy"
     },
     {
       "name": "after_death",

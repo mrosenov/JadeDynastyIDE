@@ -2319,6 +2319,79 @@ export interface GShopProblem {
   message: string;
 }
 
+/** A parameter of an AI condition or operation; `refers` says what an ID names (skill, monster, item, mine, task, trigger, timer, global, …). */
+export interface AiParam {
+  label: string;
+  value: number | boolean | string;
+  refers: string | null;
+}
+
+export interface AiCondition {
+  kind: number;
+  name: string;
+  params: AiParam[];
+  left: AiCondition | null;
+  right: AiCondition | null;
+}
+
+export interface AiOperation {
+  kind: number;
+  name: string;
+  params: AiParam[];
+  target: number;
+  targetName: string;
+  /** The server uses the target for this operation. */
+  usesTarget: boolean;
+  targetMask: number | null;
+}
+
+export interface AiTrigger {
+  index: number;
+  id: number;
+  name: string;
+  version: number;
+  active: boolean;
+  /** A sub-trigger, only run by another trigger. */
+  run: boolean;
+  battleOnly: boolean;
+  /** What its root condition makes it react to (Heartbeat, Timer, Birth, …). */
+  category: string;
+  firesOnce: boolean;
+  selectOne: boolean;
+  expression: string;
+  condition: AiCondition;
+  operations: AiOperation[];
+  /** Triggers that run, enable or disable it. */
+  calledBy: number[];
+}
+
+export interface AiPolicyView {
+  index: number;
+  id: number;
+  triggers: AiTrigger[];
+  /** An earlier policy with the same ID, which the server uses. */
+  shadowedBy: number | null;
+}
+
+export interface AiPolicySummary {
+  index: number;
+  id: number;
+  triggers: number;
+  operations: number;
+  versions: number[];
+  talks: number;
+  shadowed: boolean;
+}
+
+export interface AiFile {
+  path: string;
+  size: number;
+  policies: AiPolicySummary[];
+  triggers: number;
+  /** Trigger versions and how many triggers have each. */
+  versions: [number, number][];
+}
+
 /** An award of vipaward.data (VIP_AWARD_ITEM). */
 export interface VipAward {
   /** Award ID (tid): unique; sent by the client to claim it. */

@@ -745,6 +745,37 @@ impl Document {
         None
     }
 
+    /// Records by the AI policy they use: policy ID → (record ID, name), in list order. The fields are those with
+    /// the `aipolicy` display role; a monster list without one (an older user layout) falls back to the server's
+    /// field, `MONSTER_ESSENCE.common_strategy` (template_loader.cpp: `trigger_policy = common_strategy`; v160
+    /// layouts name it `AIPolicy`). `id_strategy` is the attack strategy, not a policy.
+    pub fn monsters_by_policy(&self) -> HashMap<u32, Vec<(u32, String)>> {
+        let mut out: HashMap<u32, Vec<(u32, String)>> = HashMap::new();
+        for list in 0..self.lists.len() {
+            let Some((_, definition)) = self.def(list) else { continue };
+            let monsters = self.lists[list].struct_name.as_deref().is_some_and(|name| name.eq_ignore_ascii_case("MONSTER_ESSENCE"));
+            let mut fields: Vec<&format::Field> = definition.fields.iter().filter(|field| field.display.as_deref() == Some("aipolicy")).collect();
+            if fields.is_empty() && monsters {
+                fields.extend(definition.fields.iter().find(|field| field.name.eq_ignore_ascii_case("common_strategy") || field.name.eq_ignore_ascii_case("aipolicy")));
+            }
+            if fields.is_empty() {
+                continue;
+            }
+            let name_at = Self::name_field(Some(definition));
+            for row in 0..self.file.lists[list].count {
+                let Some(bytes) = self.file.record(list, row) else { continue };
+                for field in &fields {
+                    let Some(slot) = bytes.get(field.off..field.off + 4) else { continue };
+                    let policy = u32::from_le_bytes(slot.try_into().unwrap());
+                    if policy != 0 && policy <= i32::MAX as u32 {
+                        out.entry(policy).or_default().push((Self::record_id(bytes), Self::record_name(bytes, name_at)));
+                    }
+                }
+            }
+        }
+        out
+    }
+
     /// A whole-number field (by name, e.g. `pile_num_max`) of the record an Essence ID resolves to.
     pub fn essence_number(&self, id: u32, field: &str) -> Option<i64> {
         let (list, row, _) = self.resolve_essence_id(id)?;

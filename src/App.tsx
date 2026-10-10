@@ -30,6 +30,7 @@ import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } f
 import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
 import { TaskNpcEditor, type TaskNpcEditorHandle, type TaskNpcEditorState } from "./components/TaskNpcEditor";
 import { VipAwardEditor, type VipAwardEditorHandle, type VipAwardEditorState } from "./components/VipAwardEditor";
+import { AiPolicyEditor, type AiPolicyEditorHandle, type AiPolicyEditorState } from "./components/AiPolicyEditor";
 import { NpcGenEditor, type NpcGenEditorHandle, type NpcGenEditorState } from "./components/NpcGenEditor";
 import { GShopEditor, type GShopEditorHandle, type GShopEditorState } from "./components/GShopEditor";
 import { TasksEditor, type TasksEditorHandle, type TasksEditorState } from "./components/TasksEditor";
@@ -60,6 +61,7 @@ import {
   ArrowDown,
   Table2,
   Crown,
+  Brain,
   Type,
   FileText,
   FolderTree,
@@ -89,7 +91,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip";
+type DataWorkspace = "elements" | "paths" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -193,6 +195,8 @@ export default function App() {
   const [vipEditorState, setVipEditorState] = useState<VipAwardEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, awards: 0 });
   const vipEditorStateRef = useRef(vipEditorState);
   vipEditorStateRef.current = vipEditorState;
+  const aiEditor = useRef<AiPolicyEditorHandle>(null);
+  const [aiEditorState, setAiEditorState] = useState<AiPolicyEditorState>({ loaded: false, path: null, policies: 0 });
   const genEditor = useRef<NpcGenEditorHandle>(null);
   const shopEditor = useRef<GShopEditorHandle>(null);
   const [shopEditorState, setShopEditorState] = useState<GShopEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, kind: null });
@@ -200,9 +204,16 @@ export default function App() {
   shopEditorStateRef.current = shopEditorState;
   /** A file chosen in Settings, opened when its workspace is shown. */
   const [pendingOpen, setPendingOpen] = useState<{ workspace: DataWorkspace; path: string } | null>(null);
+  /** A policy to show once the AI browser is open (from a field with the aipolicy role). */
+  const [pendingPolicy, setPendingPolicy] = useState<number | null>(null);
+  useEffect(() => {
+    if (pendingPolicy === null || workspace !== "ai" || !aiEditor.current) return;
+    aiEditor.current.showPolicy(pendingPolicy);
+    setPendingPolicy(null);
+  }, [pendingPolicy, workspace]);
   useEffect(() => {
     if (!pendingOpen || workspace !== pendingOpen.workspace) return;
-    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, npc: npcEditor, vip: vipEditor };
+    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
     const editor = editors[workspace]?.current;
     if (!editor) return;
     setPendingOpen(null);
@@ -424,6 +435,7 @@ export default function App() {
         else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "npc") npcEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "vip") vipEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "ai") aiEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "gen") genEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "shop") shopEditor.current?.openPath(event.payload.paths[0]);
         else loadFile(event.payload.paths[0]);
@@ -1019,6 +1031,16 @@ export default function App() {
         { label: "Import JSON…", icon: FileUp, onSelect: () => genEditor.current?.importJson(), disabled: !genEditorState.loaded },
       ],
     },
+  ] : workspace === "ai" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open aipolicy.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => aiEditor.current?.choose() },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
   ] : workspace === "vip" ? [
     {
       label: "File",
@@ -1171,6 +1193,10 @@ export default function App() {
         <span className="activity-label">VIP</span>
         {vipEditorState.dirty && <span className="activity-dirty" />}
       </button>
+      <button className={"activity" + (workspace === "ai" ? " active" : "")} onClick={() => switchWorkspace("ai")} title="aipolicy.data browser (monster AI)" aria-label="aipolicy.data">
+        <Brain size={18} />
+        <span className="activity-label">AI</span>
+      </button>
     </nav>
   );
   const list = summary && listIndex !== null && listIndex >= 0 ? summary.lists[listIndex] : summary && showingDialogs ? dialogsList(summary) : null;
@@ -1322,7 +1348,7 @@ export default function App() {
           onSaved={onSettingsSaved}
           onOpenFile={(file) => {
             // The other editors open the file once their workspace is shown (they mount with it).
-            const others: Record<string, DataWorkspace> = { "dyn tasks": "dyn", gshop: "shop", npcgen: "gen", path: "paths", "task npc": "npc", "vip awards": "vip" };
+            const others: Record<string, DataWorkspace> = { "dyn tasks": "dyn", gshop: "shop", npcgen: "gen", path: "paths", "task npc": "npc", "vip awards": "vip", "ai policy": "ai" };
             if (others[file.kind]) {
               setPendingOpen({ workspace: others[file.kind], path: file.path });
               setWorkspace(others[file.kind]);
@@ -1361,6 +1387,11 @@ export default function App() {
         <main className="workspace tasks-data-workspace">
           {activityBar}
           <NpcGenEditor ref={genEditor} active onStateChange={setGenEditorState} icon={icon} elementsPath={summary?.path ?? null} mapGeneration={settingsView?.client ? settingsView.iconGeneration : null} />
+        </main>
+      ) : workspace === "ai" ? (
+        <main className="workspace tasks-data-workspace">
+          {activityBar}
+          <AiPolicyEditor ref={aiEditor} active elementsPath={summary?.path ?? null} defaultPath={aiEditorState.path ?? settingsView?.client?.dataFiles.find((file) => file.name.toLowerCase() === "aipolicy.data")?.path ?? null} onStateChange={setAiEditorState} />
         </main>
       ) : workspace === "vip" ? (
         <main className="workspace tasks-data-workspace">
@@ -1556,6 +1587,10 @@ export default function App() {
                 canGoBack={(activeTab?.history.length ?? 0) > 0}
                 onBack={() => dispatch({ type: "back" })}
                 onFollow={follow}
+                onPolicy={(id) => {
+                  setPendingPolicy(id);
+                  switchWorkspace("ai");
+                }}
                 onDefine={(list, offset, spec) => {
                   setEditorIntent({ list, offset, spec });
                   setEditorOpen(true);
@@ -1629,6 +1664,13 @@ export default function App() {
             {genEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
             <span className="spacer" />
             {genEditorState.version !== null && <span>version {genEditorState.version}</span>}
+          </>
+        ) : workspace === "ai" ? (
+          <>
+            <span>aipolicy.data</span>
+            {aiEditorState.path && <span className="mono truncate" title={aiEditorState.path}>{aiEditorState.path}</span>}
+            <span className="spacer" />
+            {aiEditorState.loaded && <span>{count(aiEditorState.policies)} policies (read-only)</span>}
           </>
         ) : workspace === "vip" ? (
           <>

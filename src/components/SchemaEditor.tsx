@@ -64,7 +64,7 @@ interface Props {
 
 const INTEGER_KINDS = new Set<Kind>(["i8", "u8", "bool", "i16", "u16", "i32", "u32", "i64", "u64"]);
 const FLOAT_KINDS = new Set<Kind>(["f32", "f64"]);
-const INTEGER_ROLES = ["path", "icon", "image", "skill", "buff", "title", "money", "time", "duration", "duration_ms", "daytime"];
+const INTEGER_ROLES = ["path", "icon", "image", "skill", "buff", "title", "aipolicy", "money", "time", "duration", "duration_ms", "daytime"];
 const ROLES = ["", ...INTEGER_ROLES, "probability"];
 const ROLE_LABEL: Record<string, string> = {
   "": "—",
@@ -74,6 +74,7 @@ const ROLE_LABEL: Record<string, string> = {
   skill: "skill (name from skillstr.txt)",
   buff: "buff (name from buff_str.txt)",
   title: "title (name from title_def_u.lua)",
+  aipolicy: "AI policy (ID in aipolicy.data)",
   money: "money (Gold / Silver / Copper)",
   time: "date/time (unix)",
   duration: "duration (seconds)",

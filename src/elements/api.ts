@@ -1,5 +1,7 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
+  AiFile,
+  AiPolicyView,
   VipAward,
   VipAwardFile,
   VipAwardLevelNames,
@@ -393,6 +395,15 @@ export const openTaskNpc = (path: string) => invoke<TaskNpcFile>("open_task_npc"
 export const saveTaskNpc = (request: TaskNpcSaveRequest) => invoke<TaskNpcSaveReport>("save_task_npc", { request });
 /** Map names of the configured client (configs.pck instance.txt); empty without a client. */
 export const clientMapNames = () => invoke<[number, string][]>("client_map_names");
+export const openAiPolicy = (path: string) => invoke<AiFile>("open_aipolicy", { path });
+export const aiPolicyView = () => invoke<AiFile | null>("aipolicy_view");
+export const aiPolicyPolicy = (index: number) => invoke<AiPolicyView>("aipolicy_policy", { index });
+/** Monsters of the open elements.data by policy ID. */
+export const aiPolicyUsedBy = () => invoke<Record<string, [number, string][]>>("aipolicy_used_by");
+/** Policy positions matching a search (IDs, monsters, trigger names, texts, IDs operations name). */
+export const aiPolicySearch = (query: string) => invoke<number[]>("aipolicy_search", { query });
+/** Skill names from the client's skillstr.txt. */
+export const skillNames = (ids: number[]) => invoke<Record<string, string>>("skill_names", { ids });
 export const openVipAward = (path: string) => invoke<VipAwardFile>("open_vipaward", { path });
 export const saveVipAward = (request: { openedPath: string; targetPath: string; token: string; recordSize: number; awards: VipAward[]; backup: boolean; replaceChanged: boolean }) =>
   invoke<{ path: string; size: number; awards: number; timestamp: number; token: string; backup: string | null }>("save_vipaward", { request });

@@ -313,7 +313,8 @@
       "t": {
         "k": "u32"
       },
-      "c": "怪物策略"
+      "c": "怪物策略",
+      "display": "aipolicy"
     },
     {
       "name": "after_death",

@@ -30,6 +30,8 @@ interface Props {
   canGoBack: boolean;
   onBack: () => void;
   onFollow: (list: number, row: number, newTab?: boolean) => void;
+  /** Open an AI policy (aipolicy role) in the aipolicy.data browser. */
+  onPolicy?: (id: number) => void;
   /** Open the schema editor with a field defined at this offset. */
   onDefine: (list: number, offset: number, spec: FieldSpec) => void;
   /** Item icon URL for a path ID (when the client's icons are available). */
@@ -58,7 +60,7 @@ export interface FieldFocus {
   nonce: number;
 }
 
-export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onDefine, icon, image, onEditSet, lists, focus, onEdit, onClone, onDelete }: Props) {
+export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow, onPolicy, onDefine, icon, image, onEditSet, lists, focus, onEdit, onClone, onDelete }: Props) {
   const [expanded, setExpanded] = useState<Set<Path>>(new Set());
   const [selected, setSelected] = useState<Path | null>(null);
   const [hovered, setHovered] = useState<Path | null>(null);
@@ -321,6 +323,7 @@ export function RecordInspector({ list, row, detail, canGoBack, onBack, onFollow
           onSelect={selectNode}
           onHover={setHovered}
           onFollow={onFollow}
+          onPolicy={onPolicy}
           icon={icon}
           image={image}
           onSet={(node, anchor) => setSetPopover({ node, anchor })}

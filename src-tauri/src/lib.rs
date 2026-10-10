@@ -1,3 +1,4 @@
+mod aipolicy;
 mod backup;
 mod client;
 mod dyn_tasks;
@@ -48,6 +49,8 @@ struct AppState {
     gshop: Mutex<Option<gshop::Document>>,
     /// Another shop (file or JSON export) opened read-only for comparing (lock order: gshop, then compared_gshop).
     compared_gshop: Mutex<Option<gshop::ComparedShop>>,
+    /// The open aipolicy.data (read only for now).
+    aipolicy: Mutex<Option<aipolicy::Document>>,
     /// Another npcgen.data opened read-only for comparing (lock order: npcgen, then compared_npcgen).
     compared_npcgen: Mutex<Option<npcgen::ComparedGen>>,
     catalog: RwLock<Arc<Catalog>>,
@@ -505,6 +508,52 @@ async fn vipaward_level_names(state: State<'_, AppState>) -> Result<vipaward::Le
     tauri::async_runtime::spawn_blocking(move || Ok(vipaward::level_names(resources.as_ref().and_then(|resources| resources.ingame_strings().ok()))))
         .await
         .map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn open_aipolicy(path: String, state: State<'_, AppState>) -> Result<aipolicy::FileView, String> {
+    let document = tauri::async_runtime::spawn_blocking(move || aipolicy::Document::open(&path)).await.map_err(|error| error.to_string())??;
+    let view = document.view();
+    *state.aipolicy.lock().map_err(|_| "State lock poisoned")? = Some(document);
+    Ok(view)
+}
+
+fn with_aipolicy<T>(state: &State<'_, AppState>, work: impl FnOnce(&aipolicy::Document) -> Result<T, String>) -> Result<T, String> {
+    work(state.aipolicy.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open aipolicy.data first")?)
+}
+
+#[tauri::command]
+fn aipolicy_view(state: State<'_, AppState>) -> Result<Option<aipolicy::FileView>, String> {
+    Ok(state.aipolicy.lock().map_err(|_| "State lock poisoned")?.as_ref().map(aipolicy::Document::view))
+}
+
+#[tauri::command]
+fn aipolicy_policy(index: usize, state: State<'_, AppState>) -> Result<aipolicy::PolicyView, String> {
+    with_aipolicy(&state, |document| document.policy(index))
+}
+
+/// Monsters of the open elements.data by the policy they use (empty without one).
+fn monsters_by_policy(state: &State<'_, AppState>) -> HashMap<u32, Vec<(u32, String)>> {
+    state.document.lock().ok().and_then(|document| document.as_ref().map(elements::Document::monsters_by_policy)).unwrap_or_default()
+}
+
+#[tauri::command]
+fn aipolicy_used_by(state: State<'_, AppState>) -> Result<HashMap<u32, Vec<(u32, String)>>, String> {
+    Ok(monsters_by_policy(&state))
+}
+
+/// Policies matching a search (IDs, the monsters that use them, names of triggers, talk texts, IDs operations name).
+#[tauri::command]
+fn aipolicy_search(query: String, state: State<'_, AppState>) -> Result<Vec<usize>, String> {
+    let monsters = monsters_by_policy(&state);
+    with_aipolicy(&state, |document| Ok(document.search(&query, &monsters)))
+}
+
+/// Skill names from the client (skillstr.txt), for operations and conditions that name skills.
+#[tauri::command]
+fn skill_names(ids: Vec<u32>, state: State<'_, AppState>) -> HashMap<u32, String> {
+    let Some(resources) = state.resources() else { return HashMap::new() };
+    ids.into_iter().filter_map(|id| resources.skill_name(id).map(|name| (id, name))).collect()
 }
 
 /// Every shop layout: the user's first, then the built-in ones.
@@ -1737,7 +1786,30 @@ async fn referenced_by(list: usize, row: usize, state: State<'_, AppState>) -> R
 
 #[tauri::command]
 async fn get_record(list: usize, index: usize, state: State<'_, AppState>) -> Result<RecordDetail, String> {
-    state.with_document(|doc| doc.record(list, index))
+    let mut detail = state.with_document(|doc| doc.record(list, index))?;
+    // Fields with the aipolicy role: the policy they name, when aipolicy.data is open (locked after the document).
+    if let Ok(policies) = state.aipolicy.lock() {
+        if let Some(policies) = policies.as_ref() {
+            annotate_policies(&mut detail.nodes, policies);
+        }
+    }
+    Ok(detail)
+}
+
+fn annotate_policies(nodes: &mut [elements::decode::Node], policies: &aipolicy::Document) {
+    for node in nodes {
+        if node.display.as_deref() == Some("aipolicy") {
+            let id: i64 = node.value.as_deref().and_then(|value| value.parse().ok()).unwrap_or(0);
+            node.hint = Some(match u32::try_from(id).ok().filter(|&id| id != 0).map(|id| (id, policies.policy_by_id(id))) {
+                None => "no policy".into(),
+                Some((_, Some((_, triggers)))) => format!("AI policy · {triggers} trigger{}", if triggers == 1 { "" } else { "s" }),
+                Some((id, None)) => format!("not in aipolicy.data: the server drops policy {id}"),
+            });
+        }
+        if let Some(children) = node.children.as_mut() {
+            annotate_policies(children, policies);
+        }
+    }
 }
 
 #[derive(Serialize)]
@@ -2112,6 +2184,7 @@ pub fn run() {
                 npcgen: Mutex::new(None),
                 gshop: Mutex::new(None),
                 compared_gshop: Mutex::new(None),
+                aipolicy: Mutex::new(None),
                 compared_npcgen: Mutex::new(None),
                 compared: Mutex::new(None),
                 compared_tasks: Mutex::new(None),
@@ -2226,6 +2299,12 @@ pub fn run() {
             close_gshop_comparison,
             export_gshop_json,
             gshop_layouts,
+            open_aipolicy,
+            aipolicy_view,
+            aipolicy_policy,
+            aipolicy_used_by,
+            aipolicy_search,
+            skill_names,
             open_vipaward,
             save_vipaward,
             vipaward_problems,

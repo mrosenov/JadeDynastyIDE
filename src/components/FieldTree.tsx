@@ -286,6 +286,8 @@ interface Props {
   onCommit?: (node: FieldNode, value: string) => Promise<string | null>;
   /** Opens the bounded value picker for a reference or client resource. */
   onPick?: (path: Path, node: FieldNode) => void;
+  /** Opens an AI policy (a field with the aipolicy role) in the aipolicy.data browser. */
+  onPolicy?: (id: number) => void;
   onCancelEdit?: () => void;
   /** Numeric leaf fields picked for the inspector's quick editor. */
   checked?: Set<Path>;
@@ -295,7 +297,7 @@ interface Props {
   original?: number[];
 }
 
-export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, image, onSet, editing, onStartEdit, onCommit, onPick, onCancelEdit, checked, onCheck, bytes, original }: Props) {
+export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, image, onSet, editing, onStartEdit, onCommit, onPick, onPolicy, onCancelEdit, checked, onCheck, bytes, original }: Props) {
   const rows = flatten(nodes, expanded);
   const checkable = !!onCheck;
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -413,7 +415,18 @@ ${node.comment}` : ""}` : node.comment}
                   <Search size={12} />
                 </button>
               )}
-              {node.hint &&
+              {node.display === "aipolicy" && onPolicy && Number(node.value) > 0 ? (
+                <button
+                  className="hint link-hint"
+                  title="Open this policy in the aipolicy.data browser"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onPolicy(Number(node.value));
+                  }}
+                >
+                  {node.hint ?? "open in the AI browser"}
+                </button>
+              ) : node.hint &&
                 (node.image !== undefined && image?.(node.image) ? (
                   <ImageHint name={node.hint} src={image(node.image)!} />
                 ) : node.description && (node.display === "skill" || node.display === "buff" || node.display === "title") ? (
