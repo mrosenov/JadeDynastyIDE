@@ -679,6 +679,17 @@ are compared and copied (shops read with different layouts still compare). One c
 **Tools › Export JSON…** writes the whole shop, the items shown in the list, or the selected item, with
 all categories. **Tools › Import JSON…** opens a JSON export as a comparison, so you choose what to copy.
 
+### The Lucky Bag shop (gshop4.data)
+
+`gshop4.data` (HDN, Reborn and their servers) is the **Lucky Bag shop**: each entry sells a lottery box and
+is paid with a token item instead of cash. It opens with the built-in **Lucky bag** layout: the form shows
+the position in the shop, the box sold (with the item picker), its name, icon and category, and **Paid
+with**: the token item (Lucky Spirit's Flowers, Key, Auspicious or Jade in the samples) and how many. The
+list shows the token instead of a price. Names are GBK text here, so the limit is 128 bytes (Chinese
+characters take two). The fields nobody has identified yet (two blocks of nine numbers, all 0 but one, and a
+flag set on the New category's items) are under Other fields. `gshop3.data` is an ordinary shop and opens with
+the client's usual layout.
+
 ### Item layouts (other gshop versions)
 
 Clients store items in different sizes. The built-in **item layouts** read the source's 2,630-byte items
@@ -695,6 +706,17 @@ from the file's item size, and the preview on the right shows how the first item
 field shows up as names or prices that look wrong. **Save and use** stores the layout in the app's
 config folder (`gshop-layouts`) and reopens the file with it; your layouts are tried before the built-in
 ones. Built-in layouts cannot be changed; editing one saves a copy.
+
+**Find the fields…** (in the layout editor) does the comparing for you. Choose a shop file the editor
+reads, ideally the same shop from a supported client or server. The editor pairs the items of both files
+(by item ID and count) and looks for every field of the reference layout in the unknown items: where
+paired items hold the same values, and where the values look alike (zeros, ranges, texts). It then
+lists what changed (new bytes and where they are, fields the file does not have) and how well each field
+fits, and **Use these fields** puts the result into the editor so the preview shows how the file reads.
+New bytes become `unknown_<offset>` fields to name and type yourself. Fields the reference file never
+fills (an old shop without gifts) cannot be pinned down by values; they are marked as placed by their
+neighbours. Tested: a field inserted in the middle, ForsakenJD's and HDN's extra bytes against
+XtremeJade, and a 1,252-byte shop from an old client against the 1559 server's.
 
 New items are made with **Clone** (Ctrl+D, below the selected one); **Delete** asks first; the arrows
 (Alt+↑/↓) move an item before or after its neighbour in the list shown. **Tools › Edit categories…**

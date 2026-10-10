@@ -454,6 +454,24 @@ fn apply_gshop_texts(field: gshop::TextField, rows: Vec<gshop::TextApply>, state
     with_gshop(&state, |document| document.apply_texts(field, &rows))
 }
 
+/// Proposes a layout for a shop file (`path`, or the open shop's file) by finding where it keeps the
+/// fields of `reference`, a shop file the editor reads.
+#[tauri::command]
+async fn propose_gshop_layout(reference: String, path: Option<String>, state: State<'_, AppState>) -> Result<gshop::align::LayoutProposal, String> {
+    let path = match path {
+        Some(path) => path,
+        None => with_gshop(&state, |document| Ok(document.path().display().to_string()))?,
+    };
+    let layouts = gshop::layout::all(Some(&state.user_dir));
+    tauri::async_runtime::spawn_blocking(move || {
+        let known = std::fs::read(&reference).map_err(|error| format!("Could not read {reference}: {error}"))?;
+        let target = std::fs::read(&path).map_err(|error| format!("Could not read {path}: {error}"))?;
+        gshop::align::propose(&known, &layouts, &target)
+    })
+    .await
+    .map_err(|error| error.to_string())?
+}
+
 /// Every shop layout: the user's first, then the built-in ones.
 #[tauri::command]
 fn gshop_layouts(state: State<'_, AppState>) -> Vec<gshop::Layout> {
@@ -2173,6 +2191,7 @@ pub fn run() {
             close_gshop_comparison,
             export_gshop_json,
             gshop_layouts,
+            propose_gshop_layout,
             preview_gshop_layout,
             save_gshop_layout,
             delete_gshop_layout,

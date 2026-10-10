@@ -1,18 +1,20 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { ArrowDown, ArrowUp, CircleAlert, Loader2, Plus, Save, Trash2, X } from "lucide-react";
-import { deleteGShopLayout, previewGShopLayout, saveGShopLayout } from "../elements/api";
+import { open } from "@tauri-apps/plugin-dialog";
+import { ArrowDown, ArrowUp, Check, CircleAlert, Loader2, Plus, Save, ScanSearch, Trash2, X } from "lucide-react";
+import { deleteGShopLayout, previewGShopLayout, proposeGShopLayout, saveGShopLayout } from "../elements/api";
 import { count } from "../elements/format";
-import type { GShopField, GShopFieldType, GShopLayout, GShopLayoutPreview } from "../elements/types";
+import type { GShopField, GShopFieldType, GShopLayout, GShopLayoutPreview, GShopLayoutProposal } from "../elements/types";
 
 /** The meanings the editor knows, and which field types can carry them. */
-const MEANINGS: [string, string, "int" | "flag" | "wstr" | "str"][] = [
+const MEANINGS: [string, string, "int" | "flag" | "wstr" | "str" | "text"][] = [
   ["id", "Item sold", "int"], ["num", "Count", "int"], ["icon", "Icon path", "str"], ["price", "Price", "int"], ["time", "Duration", "int"],
   ["discount", "Discount %", "int"], ["bonus", "Bonus %", "int"], ["props", "Flags and schemes", "int"], ["main_type", "Main category", "int"],
-  ["sub_type", "Subcategory", "int"], ["local_id", "Local ID", "int"], ["description", "Description", "wstr"], ["name", "Name", "wstr"],
+  ["sub_type", "Subcategory", "int"], ["local_id", "Local ID", "int"], ["description", "Description", "text"], ["name", "Name", "text"],
   ["has_present", "Has a gift", "flag"], ["present_name", "Gift name", "wstr"], ["present_id", "Gift item", "int"], ["present_count", "Gift count", "int"],
   ["present_time", "Gift duration", "int"], ["present_icon", "Gift icon", "str"], ["present_bind", "Gift bound", "flag"],
   ["present_description", "Gift text", "wstr"], ["valid_type", "Sale window type", "int"], ["valid_start", "Sale start", "int"],
   ["valid_end", "Sale end", "int"], ["valid_param", "Sale days", "int"], ["search_keys", "Search keywords", "wstr"],
+  ["place", "Position (Lucky Bag)", "int"], ["price_item", "Paid with item", "int"], ["price_item_count", "Paid with count", "int"],
 ];
 const TYPES: GShopFieldType["type"][] = ["u8", "u16", "u32", "i32", "f32", "bool", "wstr", "str", "bytes", "group"];
 const TYPE_NAMES: Record<string, string> = { u8: "u8 (1 byte)", u16: "u16 (2)", u32: "u32 (4)", i32: "i32 (4)", f32: "f32 (4)", bool: "bool (1)", wstr: "UTF-16 text", str: "GBK text", bytes: "bytes (unknown)", group: "group (repeated)" };
@@ -28,7 +30,7 @@ function sizeOf(field: GShopField): number {
   }
 }
 
-const fits = (field: GShopField, kind: string) => kind === "int" ? ["u8", "u16", "u32", "i32"].includes(field.type) : kind === "flag" ? ["u8", "u16", "u32", "i32", "bool"].includes(field.type) : field.type === kind;
+const fits = (field: GShopField, kind: string) => kind === "int" ? ["u8", "u16", "u32", "i32"].includes(field.type) : kind === "flag" ? ["u8", "u16", "u32", "i32", "bool"].includes(field.type) : kind === "text" ? field.type === "wstr" || field.type === "str" : field.type === kind;
 
 /** A field with a new type: lengths and children as the type needs, the meaning dropped when it no longer fits. */
 function retype(field: GShopField, type: GShopFieldType["type"]): GShopField {
@@ -91,6 +93,8 @@ export function GShopLayoutEditor({ start, path, recordSize, onSaved, onDeleted,
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  /** Finding the fields by comparing with a reference file. */
+  const [finding, setFinding] = useState<{ reference: string; proposal: GShopLayoutProposal | null; error: string | null } | null>(null);
   const size = useMemo(() => layout.fields.reduce((total, field) => total + sizeOf(field), 0), [layout.fields]);
   const target = preview?.recordSize ?? recordSize;
   const usedMeanings = useMemo(() => new Set(layout.fields.flatMap((field) => (field.meaning ? [field.meaning] : []))), [layout.fields]);
@@ -124,6 +128,17 @@ export function GShopLayoutEditor({ start, path, recordSize, onSaved, onDeleted,
       setError(String(problem).replace(/^Error: /, ""));
     }
   };
+  const find = async () => {
+    const reference = await open({ multiple: false, directory: false, defaultPath: path ?? undefined, title: "A shop file the editor reads (the same shop from a supported client is best)", filters: [{ name: "gshop data", extensions: ["data"] }] });
+    if (typeof reference !== "string") return;
+    setFinding({ reference, proposal: null, error: null });
+    try {
+      const proposal = await proposeGShopLayout(reference, path);
+      setFinding({ reference, proposal, error: null });
+    } catch (problem) {
+      setFinding({ reference, proposal: null, error: String(problem).replace(/^Error: /, "") });
+    }
+  };
   const fieldNames = preview?.rows[0]?.map(([field]) => field) ?? [];
   const sizeOk = target === null || target === undefined || size === target;
 
@@ -135,6 +150,7 @@ export function GShopLayoutEditor({ start, path, recordSize, onSaved, onDeleted,
         <label className="npcgen-flag">ID <input className="dyn-input" value={layout.id} onChange={(event) => setLayout({ ...layout, id: event.target.value.replace(/[^A-Za-z0-9_-]/g, "-") })} /></label>
         <label className="npcgen-flag">Name <input className="dyn-input wide" value={layout.name} onChange={(event) => setLayout({ ...layout, name: event.target.value })} /></label>
         <label className="npcgen-flag gshop-layout-description">Note <input className="dyn-input wide" value={layout.description} onChange={(event) => setLayout({ ...layout, description: event.target.value })} /></label>
+        <button className="btn small" onClick={() => void find()} title="Compare the file with one the editor reads and propose where its fields are"><ScanSearch size={13} /> Find the fields…</button>
         <span className={"path-data-badge" + (sizeOk ? "" : " gshop-layout-bad")} title="The layout must be exactly as long as one item of the file">
           <b>Size:</b> {count(size)} bytes{target ? <> of {count(target)}{size === target ? " ✓" : size < target ? ` (${count(target - size)} missing)` : ` (${count(size - target)} too many)`}</> : ""}
         </span>
@@ -163,12 +179,57 @@ export function GShopLayoutEditor({ start, path, recordSize, onSaved, onDeleted,
           </>}
         </div>
       </div>
+      {finding && <FindResult finding={finding} onUse={(fields) => { setLayout({ ...layout, fields, description: layout.description && layout.description !== start.description ? layout.description : `Found by comparing with ${finding.reference.split(/[\\/]/).slice(-3).join("/")}` }); setFinding(null); }} onClose={() => setFinding(null)} />}
       <footer className="modal-foot">
         <span className="muted small">Saved layouts are kept in the app's config folder; a file is read with the first layout whose size fits it (yours before the built-in ones).</span>
         <span className="spacer" />
         {!start.builtin && layout.id === start.id && <button className="btn danger" onClick={() => void remove()}><Trash2 size={14} /> Delete</button>}
         <button className="btn" onClick={onClose}>Cancel</button>
         <button className="btn primary" disabled={saving || !sizeOk} title={sizeOk ? undefined : "The size must match the file's items"} onClick={() => void save()}>{saving ? <Loader2 size={14} className="spin" /> : <Save size={14} />} Save and use</button>
+      </footer>
+    </div>
+  </div>;
+}
+
+/** The fields found by comparing with a reference file, to review before using them. */
+function FindResult({ finding, onUse, onClose }: { finding: { reference: string; proposal: GShopLayoutProposal | null; error: string | null }; onUse: (fields: GShopField[]) => void; onClose: () => void }) {
+  const { proposal } = finding;
+  const percent = (value: number) => `${Math.round(value * 100)}%`;
+  const kept = proposal?.matches.filter((match) => match.offset !== null) ?? [];
+  const weak = kept.filter((match) => !match.guessed && match.score < 0.6);
+  return <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <div className="modal gshop-find-dialog" role="dialog" aria-label="Find the fields">
+      <header className="modal-head"><ScanSearch size={16} className="accent-icon" /><h3>Find the fields</h3><span className="muted small truncate" title={finding.reference}>compared with {finding.reference}</span><span className="spacer" /><button className="icon-btn" onClick={onClose} aria-label="Close"><X size={16} /></button></header>
+      <div className="gshop-find-body">
+        {finding.error ? <div className="path-data-message error">{finding.error}</div>
+          : !proposal ? <div className="empty-note"><Loader2 size={14} className="spin" /> Comparing the items of both files…</div>
+          : <>
+            <p className="small">The reference is read with <b>{proposal.referenceLayout}</b>{proposal.referenceLayout.includes(count(proposal.referenceSize)) ? "" : <> ({count(proposal.referenceSize)} bytes per item)</>}; this file has {count(proposal.items)} items of <b>{count(proposal.recordSize)} bytes</b>. {proposal.pairs ? <>{count(proposal.pairs)} items were paired by item ID and count.</> : <>No items pair (other items), so only the value patterns are compared.</>}</p>
+            <h4>Changes</h4>
+            {proposal.changes.length ? <ul className="gshop-find-changes">{proposal.changes.map((change, index) => <li key={index} className={change.kind}>
+              {change.kind === "inserted" ? <><b>{count(change.size)} new byte{change.size === 1 ? "" : "s"}</b> at offset {change.offset}{change.after ? <> after <span className="mono">{change.after}</span></> : " at the start"}, as <span className="mono">{change.name}</span></>
+                : <><b className="mono">{change.name}</b> ({count(change.size)} bytes) is not in this file</>}
+            </li>)}</ul> : <p className="muted small">None: the reference layout fits as it is.</p>}
+            {weak.length > 0 && <div className="path-data-message"><CircleAlert size={13} /> {weak.map((match) => match.name).join(", ")} fit only weakly; check them in the preview.</div>}
+            <h4>Fields</h4>
+            <div className="gshop-find-table"><table className="dyn-table">
+              <thead><tr><th>Field</th><th>Reference</th><th>Here</th><th>Fit</th><th title="Paired items with the same value there">Same</th><th /></tr></thead>
+              <tbody>{proposal.matches.map((match) => <tr key={match.name} className={match.offset === null ? "muted" : undefined}>
+                <td className="mono">{match.name}</td>
+                <td className="mono muted">{match.referenceOffset}</td>
+                <td className="mono">{match.offset === null ? "—" : match.offset}{match.offset !== null && match.offset !== match.referenceOffset ? <span className="muted"> ({match.offset > match.referenceOffset ? "+" : ""}{match.offset - match.referenceOffset})</span> : null}</td>
+                <td>{match.offset === null ? "" : <span className="gshop-find-score" title={percent(match.score)}><span style={{ width: percent(match.score) }} className={match.score >= 0.8 ? "good" : match.score >= 0.6 ? "fair" : "weak"} /></span>}</td>
+                <td className="muted small">{match.same === null ? "" : percent(match.same)}</td>
+                <td className="muted small">{match.guessed ? "the reference never fills it: placed by its neighbours" : match.offset === null ? "removed" : ""}</td>
+              </tr>)}</tbody>
+            </table></div>
+          </>}
+      </div>
+      <footer className="modal-foot">
+        <span className="muted small">Using them replaces the fields in the editor; the preview then shows how the file reads. Save when it looks right.</span>
+        <span className="spacer" />
+        <button className="btn" onClick={onClose}>Cancel</button>
+        <button className="btn primary" disabled={!proposal} onClick={() => proposal && onUse(proposal.fields)}><Check size={14} /> Use these fields</button>
       </footer>
     </div>
   </div>;

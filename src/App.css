@@ -10154,3 +10154,64 @@ select.ie-control {
 .gshop-text-name {
   max-width: 160px;
 }
+.gshop-find-dialog {
+  width: min(900px, 94vw);
+  height: min(760px, 90vh);
+  max-height: none;
+}
+.gshop-find-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  padding: 10px 16px;
+  overflow: auto;
+}
+.gshop-find-body h4 {
+  margin: 8px 0 2px;
+  font-size: 12px;
+}
+.gshop-find-changes {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+.gshop-find-changes li.inserted b {
+  color: var(--accent);
+}
+.gshop-find-changes li.removed {
+  color: var(--text-dim);
+}
+.gshop-find-table {
+  flex: none;
+}
+.gshop-find-score {
+  display: inline-block;
+  width: 70px;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--bg-pane);
+  vertical-align: middle;
+}
+.gshop-find-score > span {
+  display: block;
+  height: 100%;
+}
+.gshop-find-score > .good {
+  background: var(--accent);
+}
+.gshop-find-score > .fair {
+  background: var(--warn);
+}
+.gshop-find-score > .weak {
+  background: var(--danger);
+}
+.gshop-token {
+  max-width: 110px;
+  overflow: hidden;
+  color: var(--text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

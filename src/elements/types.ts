@@ -2116,6 +2116,10 @@ export interface GShopItem {
   validEnd: number;
   validParam: number;
   searchKeys: string;
+  /** Lucky Bag shop: position, and the item paid (with how many) instead of a price. */
+  place: number;
+  priceItem: number;
+  priceItemCount: number;
   /** Fields of the file's layout without a meaning (edited by their type). */
   other: GShopOtherField[];
 }
@@ -2156,6 +2160,41 @@ export interface GShopLayoutInfo {
   builtin: boolean;
 }
 
+/** Where a field of the reference layout was found in the file. */
+export interface GShopFieldMatch {
+  name: string;
+  referenceOffset: number;
+  /** None: the file does not have it. */
+  offset: number | null;
+  size: number;
+  /** 0–1: how well it fits there. */
+  score: number;
+  /** Share of paired items with the same value there. */
+  same: number | null;
+  /** The reference rarely fills it, so its place follows its neighbours. */
+  guessed: boolean;
+}
+
+export interface GShopLayoutChange {
+  kind: "inserted" | "removed";
+  offset: number;
+  size: number;
+  name: string;
+  after: string | null;
+}
+
+/** A layout found by comparing a file with a reference file the editor reads. */
+export interface GShopLayoutProposal {
+  fields: GShopField[];
+  referenceLayout: string;
+  referenceSize: number;
+  recordSize: number;
+  items: number;
+  pairs: number;
+  matches: GShopFieldMatch[];
+  changes: GShopLayoutChange[];
+}
+
 export interface GShopLayoutPreview {
   recordSize: number | null;
   layoutSize: number;
@@ -2185,6 +2224,9 @@ export interface GShopSummary {
   subType: number;
   hasPresent: boolean;
   validType: number;
+  place: number;
+  priceItem: number;
+  priceItemCount: number;
   changed: boolean;
 }
 
@@ -2198,6 +2240,8 @@ export interface GShopView {
   alternatives: GShopLayoutInfo[];
   /** The meanings the layout has (the form shows only these). */
   meanings: string[];
+  /** Text meanings: slot size and whether it is UTF-16 (characters) or GBK (bytes). */
+  textLimits: Record<string, [number, boolean]>;
   items: GShopSummary[];
   categories: GShopCategory[];
   dirty: boolean;

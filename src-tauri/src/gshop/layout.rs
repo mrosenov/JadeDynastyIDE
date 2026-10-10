@@ -7,6 +7,8 @@
 //! a terminator, padding) survive.
 
 use encoding_rs::GBK;
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 
 use super::{OtherField, ShopItem, Value};
@@ -103,8 +105,8 @@ pub const MEANINGS: &[(&str, MeaningKind)] = &[
     ("main_type", MeaningKind::Integer),
     ("sub_type", MeaningKind::Integer),
     ("local_id", MeaningKind::Integer),
-    ("description", MeaningKind::Utf16),
-    ("name", MeaningKind::Utf16),
+    ("description", MeaningKind::Text),
+    ("name", MeaningKind::Text),
     ("has_present", MeaningKind::Flag),
     ("present_name", MeaningKind::Utf16),
     ("present_id", MeaningKind::Integer),
@@ -118,6 +120,10 @@ pub const MEANINGS: &[(&str, MeaningKind)] = &[
     ("valid_end", MeaningKind::Integer),
     ("valid_param", MeaningKind::Integer),
     ("search_keys", MeaningKind::Utf16),
+    // The Lucky Bag shop (gshop4.data): its position, and the item paid instead of a price.
+    ("place", MeaningKind::Integer),
+    ("price_item", MeaningKind::Integer),
+    ("price_item_count", MeaningKind::Integer),
 ];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -126,6 +132,8 @@ pub enum MeaningKind {
     Flag,
     Utf16,
     Gbk,
+    /// UTF-16 or GBK (names and descriptions; the Lucky Bag shop stores its names as GBK).
+    Text,
 }
 
 /// A field (inside groups: one repeat of a group member) at its offset.
@@ -162,6 +170,21 @@ impl Layout {
         let mut out = Vec::new();
         walk(&self.fields, "", &mut 0, &mut out, true);
         out
+    }
+
+    /// Text meanings with their slot size and whether it is UTF-16 (characters) or GBK (bytes).
+    pub fn text_limits(&self) -> HashMap<String, (usize, bool)> {
+        self.fields
+            .iter()
+            .filter_map(|field| {
+                let meaning = field.meaning.clone()?;
+                match field.ty {
+                    FieldType::Wstr { len } => Some((meaning, (len, true))),
+                    FieldType::Str { len } => Some((meaning, (len, false))),
+                    _ => None,
+                }
+            })
+            .collect()
     }
 
     /// The meanings this layout provides.
@@ -210,9 +233,10 @@ impl Layout {
                         MeaningKind::Flag => field.ty.integer() || field.ty == FieldType::Bool,
                         MeaningKind::Utf16 => matches!(field.ty, FieldType::Wstr { .. }),
                         MeaningKind::Gbk => matches!(field.ty, FieldType::Str { .. }),
+                        MeaningKind::Text => matches!(field.ty, FieldType::Wstr { .. } | FieldType::Str { .. }),
                     };
                     if !fits {
-                        return Err(format!("{name}: the meaning {meaning} needs {} field", match kind { MeaningKind::Integer => "an integer", MeaningKind::Flag => "a bool or integer", MeaningKind::Utf16 => "a UTF-16 text (wstr)", MeaningKind::Gbk => "a GBK text (str)" }));
+                        return Err(format!("{name}: the meaning {meaning} needs {} field", match kind { MeaningKind::Integer => "an integer", MeaningKind::Flag => "a bool or integer", MeaningKind::Utf16 => "a UTF-16 text (wstr)", MeaningKind::Gbk => "a GBK text (str)", MeaningKind::Text => "a text (wstr or str)" }));
                     }
                     if seen_meanings.contains(meaning) {
                         return Err(format!("Two fields have the meaning {meaning}"));
@@ -353,6 +377,9 @@ pub(super) fn get(item: &ShopItem, meaning: &str) -> Value {
         "valid_end" => int(item.valid_end as i64),
         "valid_param" => int(item.valid_param as i64),
         "search_keys" => Value::Text(item.search_keys.clone()),
+        "place" => int(item.place as i64),
+        "price_item" => int(item.price_item as i64),
+        "price_item_count" => int(item.price_item_count as i64),
         _ => Value::Int(0),
     }
 }
@@ -395,6 +422,9 @@ pub(super) fn set(item: &mut ShopItem, meaning: &str, value: Value) {
         "valid_end" => item.valid_end = number as i32,
         "valid_param" => item.valid_param = number as i32,
         "search_keys" => item.search_keys = text,
+        "place" => item.place = number as i32,
+        "price_item" => item.price_item = number as u32,
+        "price_item_count" => item.price_item_count = number as u32,
         _ => {}
     }
 }
@@ -457,7 +487,7 @@ pub fn describe(layout: &Layout, record: &[u8]) -> Vec<(String, String, String)>
 
 // ── Built-in and user layouts ──
 
-const BUILTIN: &[&str] = &[include_str!("../../formats/gshop/source.json"), include_str!("../../formats/gshop/forsakenjd.json"), include_str!("../../formats/gshop/hdn.json")];
+const BUILTIN: &[&str] = &[include_str!("../../formats/gshop/source.json"), include_str!("../../formats/gshop/forsakenjd.json"), include_str!("../../formats/gshop/hdn.json"), include_str!("../../formats/gshop/luckybag.json")];
 
 pub fn builtin() -> Vec<Layout> {
     BUILTIN

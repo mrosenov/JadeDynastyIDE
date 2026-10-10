@@ -1,5 +1,6 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
+  GShopLayoutProposal,
   GShopTextField,
   GShopTextPreview,
   GShopComparison,
@@ -422,6 +423,8 @@ export const copyGShop = (picks: number[]) => invoke<GShopCopyResult>("copy_gsho
 export const closeGShopComparison = () => invoke<void>("close_gshop_comparison");
 /** Writes a JSON export of the open shop (all items, or the picked positions). */
 export const exportGShopJson = (target: string, picks: number[] | null) => invoke<{ items: number; categories: number }>("export_gshop_json", { target, picks });
+/** Finds where a shop file (`path`, or the open shop's) keeps the fields of `reference`, a file the editor reads. */
+export const proposeGShopLayout = (reference: string, path: string | null) => invoke<GShopLayoutProposal>("propose_gshop_layout", { reference, path });
 export const gshopLayouts = () => invoke<GShopLayout[]>("gshop_layouts");
 /** How a layout reads a shop file (`path`, or the open shop's file). */
 export const previewGShopLayout = (path: string | null, layout: GShopLayout, rows: number) => invoke<GShopLayoutPreview>("preview_gshop_layout", { path, layout, rows });

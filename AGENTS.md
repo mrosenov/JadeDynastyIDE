@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (196 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (199 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -79,7 +79,7 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
-| `gshop/mod.rs`, `gshop/layout.rs`, `gshop/compare.rs`, `gshop/texts.rs` | gshop.data / gshop1.data / gshop2.data: item layouts (built-in `formats/gshop/*.json` + user), reader/writer, document with journal, categories, problems, save; compare/copy and JSON export. |
+| `gshop/mod.rs`, `gshop/layout.rs`, `gshop/compare.rs`, `gshop/texts.rs`, `gshop/align.rs` | gshop.data / gshop1.data / gshop2.data: item layouts (built-in `formats/gshop/*.json` + user), reader/writer, document with journal, categories, problems, save; compare/copy and JSON export. |
 | `npcgen.rs` | `npcgen.data` (one server map's spawns): versions 1–14 reader/writer, document with journal (whole-item Replace/Insert/Remove per section), save. |
 | `task_npc.rs` | `task_npc.data` reader/writer (12-byte header, 16-byte NPC_INFO records), save with backup and changed-on-disk guard. |
 | `client/game.rs` | Character position from a running `elementclient.exe` (read-only): exe code scan for the pointer chain, process list, ReadProcessMemory. |
@@ -509,7 +509,14 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   bytes), then i32 main types (≥ 7) × {i32 id, WORD[64] name, i32 n, n × WORD[64]}.
 - Record size is found by trying sizes from 2,630 until the category block ends the file: XtremeJade and
   the 1559 server 2,630, ForsakenJD 2,635 (+5: a flag byte and an int, usually the price), HDN/Reborn
-  2,660 (+30, same 5 then zeros). HDN/Reborn's gshop4.data has 357-byte records (unknown; not supported).
+  2,660 (+30, same 5 then zeros). gshop3.data (ForsakenJD, HDN, Reborn) is an ordinary shop with the client's size.
+- **gshop4.data = the Lucky Bag shop** (HDN, Reborn, zx_18 server; not in the C++ source; built-in layout
+  `luckybag`, 357 bytes): i32 place (7–18), main, sub, GBK char[128] name (the box's name), u32 item (a
+  `LOTTERY3_ESSENCE` box) + count, u32 price item (Lucky Spirit's Flowers/Key/Auspicious/Jade 78075–78079,
+  `GENERAL_ARTICLE_ESSENCE`) + count, 9 × i32 (0), u8 at 192 (1 on the New category's items), GBK char[128]
+  icon (`Surfaces\zhuxian3plus\token\…`), 9 × i32 (first is 1 on two items). Same header and category block
+  (3 mains: New, Packs, Other). Meanings `place`, `price_item`, `price_item_count`; `name`/`description` accept
+  wstr or str (`MeaningKind::Text`); `View.text_limits` gives the form a name's size (characters or GBK bytes).
   Some files keep bytes after text terminators, so each item keeps its stored record (`Entry.raw`) and
   `layout::encode` rewrites only fields whose value changed; category names keep their stored slots by
   text (`raw_names`). All 15 samples round-trip.
@@ -528,6 +535,17 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   price, time, one i32 (always 0), props (0 or 3), main, sub, local_id (unique), desc[512], name[32]; no
   gifts, sale windows or keywords, and no sale-scheme bits, so `problems` reports a missing scheme once
   (warning) when no item has any. A first user layout kept discount + bonus and read local_id as sub_type.
+- **Find the fields** (`gshop/align.rs`, command `propose_gshop_layout`, `FindResult` in GShopLayoutEditor.tsx):
+  the reference file is parsed with the layouts; the unknown file is split by scanning record sizes. Pairs by
+  the first 8 bytes (id, num), else by position when counts match; up to 400 spread pairs/samples. Per top-level
+  field and position: a value-pattern similarity (numbers: zero share, distinct share, median log2; texts:
+  junk share, CR/LF allowed, minus a quarter of the filled-text difference; blobs: zero share), pulled to KEEP
+  (0.5) by how rarely the reference fills the field (`informative_share` = 4 × non-zero share). Pair equality
+  counts (0.7 × same + 0.3 × pattern) only when the field matches ≥ 50% somewhere ("reliable"); other shops
+  differ in prices, texts and local IDs. DP over fields: keep (score − 0.5), drop (0.2 if reliable, else
+  0.01 + 0.2 × share), insert (1.0 + 0.0005/byte, ties go later: appended fields are the usual change).
+  Lessons: all-zero reference fields matched zero runs elsewhere (gifts in XtremeJade) and pulled whole
+  blocks; cheap keeps of uninformative fields pushed out the description in the old shop.
 - **Compare/copy/JSON** (`gshop/compare.rs`, `GShopCompare.tsx`): `ComparedShop` (`AppState.compared_gshop`; lock
   order gshop, then compared_gshop) opens a shop file with the layouts or a `jdide-gshop` v1 JSON (`ShopJson`:
   kind, timestamp, layout id, meanings, all categories, `ShopItem`s). `pair` matches (id, num): identical

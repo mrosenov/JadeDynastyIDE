@@ -174,12 +174,21 @@ function ItemForm({ item, view, labels, elementsOpen, iconUrl, onCommit, pick, p
   const shop = view.kind;
   return <div className="dyn-form npcgen-form">
     <div className="npcgen-cards">
-      {has("id", "num", "name", "icon", "local_id") && <Card title="Item">
+      {has("id", "num", "name", "icon", "local_id", "place") && <Card title="Item">
+        {has("place") && <Row label="Position" hint="Where it shows in the Lucky Bag shop"><NumberInput min={I32_MIN} max={I32_MAX} value={item.place} onCommit={(place) => set({ place }, "Edit position")} /></Row>}
         {has("id") && <Row label="Sells" hint="The item and how many per purchase"><span className="dyn-item-cell"><NumberInput value={item.id} onCommit={(id) => set({ id }, "Edit item")} /><button className="icon-btn small" title="Choose from elements.data" onClick={() => void pick(item.id).then((id) => { if (id !== null && id !== item.id) set({ id }, "Edit item"); })}><Search size={12} /></button><ItemLabel id={item.id} labels={labels} elementsOpen={elementsOpen} /></span></Row>}
         {has("num") && <Row label="Count"><NumberInput value={item.num} onCommit={(num) => set({ num }, "Edit count")} /></Row>}
-        {has("name") && <Row label="Name" hint="Shown in the shop (at most 31 characters)"><TextInput value={item.name} max={31} onCommit={(name) => set({ name }, "Rename item")} /></Row>}
+        {has("name") && (() => {
+          // UTF-16 names count characters; GBK names (Lucky Bag) count bytes, checked when saving the edit.
+          const [length, wide] = view.textLimits.name ?? [32, true];
+          return <Row label="Name" hint={wide ? `Shown in the shop (at most ${length} characters)` : `Shown in the shop (at most ${length} bytes in GBK; Chinese characters take 2)`}><TextInput value={item.name} max={wide ? length : undefined} onCommit={(name) => set({ name }, "Rename item")} /></Row>;
+        })()}
         {has("icon") && <Row label="Icon" hint="A picture in the client's surfaces.pck"><span className="gshop-icon-row"><Icon url={iconUrl(item.icon)} size={40} /><TextInput value={item.icon} onCommit={(icon) => set({ icon }, "Edit icon")} /><button className="btn small" onClick={() => void pickIcon(item.icon).then((icon) => { if (icon !== null) set({ icon }, "Edit icon"); })}>Choose…</button></span></Row>}
         {has("local_id") && <Row label="Local ID" hint="Used only for translation"><NumberInput min={I32_MIN} max={I32_MAX} value={item.localId} onCommit={(localId) => set({ localId }, "Edit local ID")} /></Row>}
+      </Card>}
+      {has("price_item") && <Card title="Price" hint="Paid with an item instead of cash">
+        <Row label="Paid with" hint="The token item taken per purchase"><span className="dyn-item-cell"><NumberInput value={item.priceItem} onCommit={(priceItem) => set({ priceItem }, "Edit price item")} /><button className="icon-btn small" title="Choose from elements.data" onClick={() => void pick(item.priceItem).then((priceItem) => { if (priceItem !== null && priceItem !== item.priceItem) set({ priceItem }, "Edit price item"); })}><Search size={12} /></button><ItemLabel id={item.priceItem} labels={labels} elementsOpen={elementsOpen} /></span></Row>
+        {has("price_item_count") && <Row label="How many"><NumberInput value={item.priceItemCount} onCommit={(priceItemCount) => set({ priceItemCount }, "Edit price count")} /></Row>}
       </Card>}
       {has("price", "time", "discount", "bonus", "props") && <Card title="Price" hint={shop === "Item mall" ? "In hundredths: 100 = 1.00" : undefined}>
         {has("price") && <Row label="Price" hint={shop === "Item mall" ? "Mall cash in hundredths" : shop === "Bonus shop" ? "Bonus points" : "Cross-server tokens"}><NumberInput value={item.price} onCommit={(price) => set({ price }, "Edit price")} /><span className="muted small">{priceText(shop, item.price)}</span></Row>}
@@ -312,7 +321,7 @@ export const GShopEditor = forwardRef<GShopEditorHandle, Props>(function GShopEd
   useEffect(() => setLabels({}), [elementsPath]);
   useEffect(() => {
     if (!view || !elementsPath) return;
-    const ids = [...new Set(view.items.map((entry) => entry.id))].filter((id) => id && !(String(id) in labels));
+    const ids = [...new Set(view.items.flatMap((entry) => [entry.id, entry.priceItem]))].filter((id) => id && !(String(id) in labels));
     if (item?.hasPresent && item.presentId && !(String(item.presentId) in labels)) ids.push(item.presentId);
     if (ids.length) dynTaskLabels(ids, []).then((found) => setLabels((current) => ({ ...current, ...found.elements }))).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -567,7 +576,7 @@ export const GShopEditor = forwardRef<GShopEditorHandle, Props>(function GShopEd
     <span className="mono muted">{entry.index + 1}</span>
     <Icon url={iconUrl(entry.icon)} size={28} />
     <span className="gshop-row-text"><span className="truncate">{entry.name || <span className="muted">(no name)</span>}{entry.num > 1 && <span className="muted"> ×{entry.num}</span>}</span><span className="muted small truncate"><span className="mono">{entry.id}</span>{labels[String(entry.id)] ? ` · ${labels[String(entry.id)].split(" › ").pop()}` : ""}</span></span>
-    <span className="gshop-row-price"><b>{priceText(view.kind, entry.price)}</b>{entry.hasPresent && <Gift size={12} className="muted" />}{entry.props & 1 ? <span className="tag ok">new</span> : null}</span>
+    <span className="gshop-row-price">{view.meanings.includes("price_item") ? <span className="gshop-token small" title={labels[String(entry.priceItem)] ?? String(entry.priceItem)}>{entry.priceItemCount}× {labels[String(entry.priceItem)]?.split(" › ").pop() ?? entry.priceItem}</span> : <b>{priceText(view.kind, entry.price)}</b>}{entry.hasPresent && <Gift size={12} className="muted" />}{entry.props & 1 ? <span className="tag ok">new</span> : null}</span>
     {entry.changed ? <span className="changed-dot" title="Changed" /> : <span />}
   </button>;
 

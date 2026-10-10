@@ -88,16 +88,18 @@ impl Document {
     }
 
     /// Characters the layout stores for a text field (none: the layout lacks it).
-    fn text_limit(&self, field: TextField) -> Option<usize> {
+    /// The slot size of a text field and whether it is UTF-16 (characters) or GBK (bytes).
+    fn text_limit(&self, field: TextField) -> Option<(usize, bool)> {
         self.layout.leaves().into_iter().find(|leaf| leaf.meaning.as_deref() == Some(field.meaning())).and_then(|leaf| match leaf.ty {
-            FieldType::Wstr { len } => Some(len),
+            FieldType::Wstr { len } => Some((len, true)),
+            FieldType::Str { len } => Some((len, false)),
             _ => None,
         })
     }
 
     /// The items (at `picks`, or all) whose text differs from `texts` (by item ID, already in the shop's form).
     pub fn text_updates(&self, field: TextField, picks: Option<&[usize]>, texts: &HashMap<u32, String>) -> Result<TextPreview, String> {
-        let limit = self.text_limit(field).ok_or_else(|| format!("This shop's item layout has no {}", field.meaning()))?;
+        let (limit, wide) = self.text_limit(field).ok_or_else(|| format!("This shop's item layout has no {}", field.meaning()))?;
         let indexes: Vec<usize> = match picks {
             Some(picks) => picks.iter().copied().filter(|&index| index < self.entries.len()).collect(),
             None => (0..self.entries.len()).collect(),
@@ -114,8 +116,13 @@ impl Document {
                 preview.same += 1;
                 continue;
             }
-            let length = text.encode_utf16().count();
-            let problem = (length > limit).then(|| format!("{length} characters; the shop stores {limit}"));
+            let problem = if wide {
+                let length = text.encode_utf16().count();
+                (length > limit).then(|| format!("{length} characters; the shop stores {limit}"))
+            } else {
+                let (encoded, _, unmappable) = encoding_rs::GBK.encode(text);
+                if unmappable { Some("has characters GBK cannot store".to_string()) } else { (encoded.len() > limit).then(|| format!("{} bytes in GBK; the shop stores {limit}", encoded.len())) }
+            };
             preview.rows.push(TextUpdate { index, id: item.id, current: current.to_string(), text: text.clone(), problem });
         }
         Ok(preview)

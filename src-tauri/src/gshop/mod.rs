@@ -10,6 +10,7 @@
 //! timestamp differs from the server's (`GShopVersionError`). So the server needs exactly the client's file;
 //! the user copies it there after saving.
 
+pub mod align;
 pub mod compare;
 pub mod layout;
 pub mod texts;
@@ -90,6 +91,13 @@ pub struct ShopItem {
     pub valid_param: i32,
     /// Comma-separated search keywords.
     pub search_keys: String,
+    /// Lucky Bag shop: the item's position, and the item paid (with how many) instead of a price.
+    #[serde(default)]
+    pub place: i32,
+    #[serde(default)]
+    pub price_item: u32,
+    #[serde(default)]
+    pub price_item_count: u32,
     /// Fields of the layout without a meaning, in layout order.
     #[serde(default)]
     pub other: Vec<OtherField>,
@@ -275,6 +283,7 @@ pub fn shop_kind(path: &Path) -> &'static str {
         Some("gshop.data") => "Item mall",
         Some("gshop1.data") => "Bonus shop",
         Some("gshop2.data") => "Cross-server shop",
+        Some("gshop4.data") => "Lucky bag shop",
         _ => "Shop",
     }
 }
@@ -328,6 +337,9 @@ pub struct Summary {
     pub sub_type: i32,
     pub has_present: bool,
     pub valid_type: i32,
+    pub place: i32,
+    pub price_item: u32,
+    pub price_item_count: u32,
     pub changed: bool,
 }
 
@@ -367,6 +379,8 @@ pub struct View {
     pub layout: LayoutInfo,
     pub alternatives: Vec<LayoutInfo>,
     pub meanings: Vec<String>,
+    /// Text meanings with their slot size and whether it is UTF-16 (characters) or GBK (bytes).
+    pub text_limits: HashMap<String, (usize, bool)>,
     pub items: Vec<Summary>,
     pub categories: Vec<Category>,
     pub dirty: bool,
@@ -463,6 +477,9 @@ impl Document {
                 sub_type: item.sub_type,
                 has_present: item.has_present,
                 valid_type: item.valid_type,
+                place: item.place,
+                price_item: item.price_item,
+                price_item_count: item.price_item_count,
                 changed: self.saved.get(index) != Some(item),
             }
         }).collect();
@@ -477,6 +494,7 @@ impl Document {
             layout: LayoutInfo::from(&self.layout),
             alternatives: self.alternatives.clone(),
             meanings: self.layout.meanings(),
+            text_limits: self.layout.text_limits(),
             items,
             categories: self.categories.clone(),
             dirty: self.saved_entries != Some(self.done.len()),
@@ -731,7 +749,7 @@ pub struct Problem {
 impl Document {
     /// Item and gift templates the shop uses.
     pub fn template_ids(&self) -> Vec<u32> {
-        let mut ids: Vec<u32> = self.entries.iter().flat_map(|entry| [entry.item.id, if entry.item.has_present { entry.item.present_id } else { 0 }]).filter(|id| *id != 0).collect();
+        let mut ids: Vec<u32> = self.entries.iter().flat_map(|entry| [entry.item.id, if entry.item.has_present { entry.item.present_id } else { 0 }, entry.item.price_item]).filter(|id| *id != 0).collect();
         ids.sort_unstable();
         ids.dedup();
         ids
@@ -781,6 +799,16 @@ impl Document {
                     _ => {}
                 }
             }
+            if has("price_item") {
+                if item.price_item == 0 {
+                    add("error", at, "No item to pay with (price item 0)".into());
+                } else if known.is_some_and(|known| !known.contains(&item.price_item)) {
+                    add("error", at, format!("Price item {} is not in the open elements.data", item.price_item));
+                }
+                if has("price_item_count") && item.price_item_count == 0 {
+                    add("warning", at, "Costs 0 of the price item".into());
+                }
+            }
             if has("has_present") && item.has_present {
                 if has("present_id") && item.present_id == 0 {
                     add("error", at, "Has a gift without an item".into());
@@ -820,14 +848,14 @@ mod tests {
 
     fn samples() -> Vec<PathBuf> {
         let roots = ["E:/Games/ForsakenJD/element/data", "E:/Games/Elite Jade Dynasty - HDN/element/data", "E:/Games/Jade Dynasty Reborn/element/data", "E:/Games/XtremeJade/element/data", "E:/Game Dev/JD/1559/gamed/config"];
-        roots.iter().flat_map(|root| ["gshop.data", "gshop1.data", "gshop2.data"].map(|name| Path::new(root).join(name))).filter(|path| path.is_file()).collect()
+        roots.iter().flat_map(|root| ["gshop.data", "gshop1.data", "gshop2.data", "gshop3.data", "gshop4.data"].map(|name| Path::new(root).join(name))).filter(|path| path.is_file()).collect()
     }
 
     #[test]
     fn built_in_layouts_are_valid_and_sized() {
         let layouts = layout::builtin();
         let sizes: Vec<(String, usize)> = layouts.iter().map(|layout| (layout.id.clone(), layout.size())).collect();
-        assert_eq!(sizes, vec![("source".to_string(), 2630), ("forsakenjd".to_string(), 2635), ("hdn".to_string(), 2660)]);
+        assert_eq!(sizes, vec![("source".to_string(), 2630), ("forsakenjd".to_string(), 2635), ("hdn".to_string(), 2660), ("luckybag".to_string(), 357)]);
         for layout in &layouts {
             layout.validate().unwrap();
             let text = serde_json::to_string(layout).unwrap();
@@ -842,12 +870,14 @@ mod tests {
         for path in samples() {
             let data = std::fs::read(&path).unwrap();
             let (file, layout) = parse(&data, &layouts, None).unwrap_or_else(|error| panic!("{}: {error}", path.display()));
-            assert!(file.categories.len() >= 7, "{}", path.display());
+            // The Lucky Bag shop has 3 main categories (New, Packs, Other); the others 7 or more.
+            assert!(file.categories.len() >= if file.record_size == Some(357) { 3 } else { 7 }, "{}", path.display());
             let expected = match file.record_size {
                 None => "source",
                 Some(2630) => "source",
                 Some(2635) => "forsakenjd",
                 Some(2660) => "hdn",
+                Some(357) => "luckybag",
                 other => panic!("{} {other:?}", path.display()),
             };
             assert_eq!(layout.id, expected, "{}", path.display());
@@ -983,4 +1013,5 @@ mod tests {
         let _ = std::fs::remove_dir_all(&folder);
     }
 }
+
 

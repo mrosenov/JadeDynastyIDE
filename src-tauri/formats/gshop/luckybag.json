@@ -1,0 +1,87 @@
+{
+  "id": "luckybag",
+  "name": "Lucky bag (357 bytes)",
+  "description": "gshop4.data, the Lucky Bag shop (HDN, Reborn, the zx_18 server): a lottery box paid with a Lucky Spirit token. Not in the C++ source; read from the data.",
+  "fields": [
+    {
+      "name": "place",
+      "type": "i32",
+      "meaning": "place",
+      "note": "Position in the shop (7–18 in the samples)"
+    },
+    {
+      "name": "main_type",
+      "type": "i32",
+      "meaning": "main_type"
+    },
+    {
+      "name": "sub_type",
+      "type": "i32",
+      "meaning": "sub_type"
+    },
+    {
+      "name": "name",
+      "type": "str",
+      "len": 128,
+      "meaning": "name",
+      "note": "The box's name, GBK"
+    },
+    {
+      "name": "id",
+      "type": "u32",
+      "meaning": "id",
+      "note": "The lucky bag sold (a LOTTERY3_ESSENCE box)"
+    },
+    {
+      "name": "num",
+      "type": "u32",
+      "meaning": "num"
+    },
+    {
+      "name": "price_item",
+      "type": "u32",
+      "meaning": "price_item",
+      "note": "The token paid (Lucky Spirit's Flowers, Key, Auspicious or Jade)"
+    },
+    {
+      "name": "price_item_count",
+      "type": "u32",
+      "meaning": "price_item_count"
+    },
+    {
+      "name": "unknown_156",
+      "type": "group",
+      "count": 9,
+      "fields": [
+        {
+          "name": "value",
+          "type": "i32"
+        }
+      ],
+      "note": "0 in every sample"
+    },
+    {
+      "name": "flag_192",
+      "type": "u8",
+      "note": "1 on the items of the New category in the samples"
+    },
+    {
+      "name": "icon",
+      "type": "str",
+      "len": 128,
+      "meaning": "icon"
+    },
+    {
+      "name": "unknown_321",
+      "type": "group",
+      "count": 9,
+      "fields": [
+        {
+          "name": "value",
+          "type": "i32"
+        }
+      ],
+      "note": "The first is 1 on two items in the samples; the rest are 0"
+    }
+  ]
+}
