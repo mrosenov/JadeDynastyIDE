@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (199 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (202 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -81,6 +81,7 @@ Environment quirks (Windows 11, Git Bash):
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
 | `gshop/mod.rs`, `gshop/layout.rs`, `gshop/compare.rs`, `gshop/texts.rs`, `gshop/align.rs` | gshop.data / gshop1.data / gshop2.data: item layouts (built-in `formats/gshop/*.json` + user), reader/writer, document with journal, categories, problems, save; compare/copy and JSON export. |
 | `npcgen.rs` | `npcgen.data` (one server map's spawns): versions 1–14 reader/writer, document with journal (whole-item Replace/Insert/Remove per section), save. |
+| `vipaward.rs` | `vipaward.data` (VIP awards): reader/writer keeping stored records, the server's rules as problems, the client's level names. |
 | `task_npc.rs` | `task_npc.data` reader/writer (12-byte header, 16-byte NPC_INFO records), save with backup and changed-on-disk guard. |
 | `client/game.rs` | Character position from a running `elementclient.exe` (read-only): exe code scan for the pointer chain, process list, ReadProcessMemory. |
 | `client/nearby.rs` | Entities a running client has loaded (NPC and matter hash tables): layout search, phase detection, collect. |
@@ -486,6 +487,31 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 - Item/monster picker: `Document::essence_spec` (monsters: `MONSTER_ESSENCE`; items: essence lists
   that are not types, services, configs, `MONSTER*`, `NPC*` or `MINE*`) + `picker_records`, command
   `pick_essence`; `ValuePicker` takes a `search` function instead of an elements field.
+
+## vipaward.data editor
+
+- Format (client ZCommon/globaldataman.cpp `LoadVIPAwardData`, server gs/template/globaldataman.cpp
+  `load_vipaward_data`; struct `VIP_AWARD_ITEM`, pack 1, 156 bytes): u32 timestamp, i32 count (0–65535), records
+  {u32 tid, WORD szName[64], u32 item_id, u32 count, u32 award_type 0 normal / 1 VIP, u32 award_level, u32
+  award_obtain_type 0 daily / 1 special, i32 expire_time}. No category block. The client never shows szName
+  (DlgVipAward uses the item's name); the timestamp is never compared. 2013–2015 files (XtremeJade,
+  ForsakenJD, 1559, zxserver) are 156 bytes and keep bytes after every name's terminator (records keep `raw`;
+  the name slot is rewritten only when the text changes).
+- 2018 builds (HDN, Reborn, zx_18; no source) have 172-byte records and a third kind: award_type 2 / obtain
+  type 2 = **VIP shop** (HDN interfaces `vip_shop_item_1.xml`: Buy button, 价格 price, 限次 purchase limit,
+  level, duration). Bytes 156–160 are the price as f32 (100–99,900, on type 2 only), 160 the purchase limit
+  (1–3 in Reborn, 0 in HDN), 164 and 168 always 0. VIP levels go to 8; ingame.stf names 13020–13029 (Bronze …
+  Diamond, VIP, Silver VIP, Gold VIP, …); normal bands 13011–13018. `Resources::ingame_strings` reads ingame.stf.
+- Server rules (playervipaward.cpp; `item_manager::__InitVipAward` fails the start): `CheckParam` (id, item,
+  count > 0; type and obtain 0/1; normal level 1–8; VIP level 1–6), duplicate award IDs, `CheckLevelAwardCnt`
+  ≤ 16 per kind/obtain/level, and (in `AddAward` itself, at load) an item with pile_limit 1 and count ≠ 1: any of
+  these makes gs exit with **-8** (item_manager init). A user hit it with Iron Sword (55) × 99; the check needs the
+  elements.data open, and the editor now checks before saving and asks. Normal level band = `convert_table` (rebirth 0: 1–89, 90–119, 120–134, 135–150;
+  rebirth 1: the same, 135–160). Claims: `PlayerObtainVipAward` needs the award ID and item ID to match,
+  `get_item_for_sell`, pile_limit 1 → count 1; `DeliverItem(…, expire_time)` (seconds). VIP daily only at
+  the player's VIP level, special at or below; nothing 0:00–6:00. `Document::essence_number` reads
+  `pile_num_max`. `problems` allows types 2 only in 172-byte files and VIP levels 7–8 there.
+- UI `VipAwardEditor.tsx` follows TaskNpcEditor (rows and undo in the component; save sends rows with `raw`).
 
 ## task_npc.data editor
 

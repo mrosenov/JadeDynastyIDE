@@ -29,6 +29,7 @@ import { UnsavedDialog } from "./components/UnsavedDialog";
 import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } from "./components/PathDataEditor";
 import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
 import { TaskNpcEditor, type TaskNpcEditorHandle, type TaskNpcEditorState } from "./components/TaskNpcEditor";
+import { VipAwardEditor, type VipAwardEditorHandle, type VipAwardEditorState } from "./components/VipAwardEditor";
 import { NpcGenEditor, type NpcGenEditorHandle, type NpcGenEditorState } from "./components/NpcGenEditor";
 import { GShopEditor, type GShopEditorHandle, type GShopEditorState } from "./components/GShopEditor";
 import { TasksEditor, type TasksEditorHandle, type TasksEditorState } from "./components/TasksEditor";
@@ -58,6 +59,7 @@ import {
   ArrowUp,
   ArrowDown,
   Table2,
+  Crown,
   Type,
   FileText,
   FolderTree,
@@ -87,7 +89,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "tasks" | "dyn" | "npc" | "gen" | "shop";
+type DataWorkspace = "elements" | "paths" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -187,6 +189,10 @@ export default function App() {
   const [npcEditorState, setNpcEditorState] = useState<TaskNpcEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, rows: 0 });
   const npcEditorStateRef = useRef(npcEditorState);
   npcEditorStateRef.current = npcEditorState;
+  const vipEditor = useRef<VipAwardEditorHandle>(null);
+  const [vipEditorState, setVipEditorState] = useState<VipAwardEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, awards: 0 });
+  const vipEditorStateRef = useRef(vipEditorState);
+  vipEditorStateRef.current = vipEditorState;
   const genEditor = useRef<NpcGenEditorHandle>(null);
   const shopEditor = useRef<GShopEditorHandle>(null);
   const [shopEditorState, setShopEditorState] = useState<GShopEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, kind: null });
@@ -196,7 +202,7 @@ export default function App() {
   const [pendingOpen, setPendingOpen] = useState<{ workspace: DataWorkspace; path: string } | null>(null);
   useEffect(() => {
     if (!pendingOpen || workspace !== pendingOpen.workspace) return;
-    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, npc: npcEditor };
+    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, npc: npcEditor, vip: vipEditor };
     const editor = editors[workspace]?.current;
     if (!editor) return;
     setPendingOpen(null);
@@ -336,6 +342,10 @@ export default function App() {
         event.preventDefault();
         return;
       }
+      if (vipEditorStateRef.current.dirty && !window.confirm("vipaward.data has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
       if (genEditorStateRef.current.dirty && !window.confirm("npcgen.data has unsaved changes. Close JD IDE and discard them?")) {
         event.preventDefault();
         return;
@@ -413,6 +423,7 @@ export default function App() {
         else if (workspaceRef.current === "tasks") tasksEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "npc") npcEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "vip") vipEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "gen") genEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "shop") shopEditor.current?.openPath(event.payload.paths[0]);
         else loadFile(event.payload.paths[0]);
@@ -1008,6 +1019,38 @@ export default function App() {
         { label: "Import JSON…", icon: FileUp, onSelect: () => genEditor.current?.importJson(), disabled: !genEditorState.loaded },
       ],
     },
+  ] : workspace === "vip" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open vipaward.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => vipEditor.current?.choose() },
+        { label: "Save", icon: Save, shortcut: "Ctrl+S", onSelect: () => vipEditor.current?.save(), disabled: !vipEditorState.loaded || !vipEditorState.dirty },
+        { label: "Save as…", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: () => vipEditor.current?.saveAs(), disabled: !vipEditorState.loaded },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => vipEditor.current?.undo(), disabled: !vipEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => vipEditor.current?.redo(), disabled: !vipEditorState.canRedo },
+        "separator",
+        { label: "Clone award", icon: Copy, shortcut: "Ctrl+D", onSelect: () => vipEditor.current?.cloneSelected(), disabled: !vipEditorState.loaded },
+        { label: "Delete award…", icon: Trash2, shortcut: "Del", onSelect: () => vipEditor.current?.deleteSelected(), disabled: !vipEditorState.loaded },
+        { label: "Move up", icon: ArrowUp, shortcut: "Alt+↑", onSelect: () => vipEditor.current?.moveSelected(-1), disabled: !vipEditorState.loaded },
+        { label: "Move down", icon: ArrowDown, shortcut: "Alt+↓", onSelect: () => vipEditor.current?.moveSelected(1), disabled: !vipEditorState.loaded },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => vipEditor.current?.openProblems(), disabled: !vipEditorState.loaded },
+      ],
+    },
   ] : workspace === "npc" ? [
     {
       label: "File",
@@ -1080,6 +1123,11 @@ export default function App() {
       if (!window.confirm("Leave the task_npc.data editor and discard its unsaved changes?")) return;
       setNpcEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
     }
+    // So does the vipaward.data table.
+    if (workspace === "vip" && vipEditorState.dirty) {
+      if (!window.confirm("Leave the vipaward.data editor and discard its unsaved changes?")) return;
+      setVipEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
+    }
     setWorkspace(next);
   };
   const activityBar = (
@@ -1117,6 +1165,11 @@ export default function App() {
         <ShoppingCart size={18} />
         <span className="activity-label">GShop</span>
         {shopEditorState.dirty && <span className="activity-dirty" />}
+      </button>
+      <button className={"activity" + (workspace === "vip" ? " active" : "")} onClick={() => switchWorkspace("vip")} title="vipaward.data editor (VIP and daily awards)" aria-label="vipaward.data">
+        <Crown size={18} />
+        <span className="activity-label">VIP</span>
+        {vipEditorState.dirty && <span className="activity-dirty" />}
       </button>
     </nav>
   );
@@ -1269,7 +1322,7 @@ export default function App() {
           onSaved={onSettingsSaved}
           onOpenFile={(file) => {
             // The other editors open the file once their workspace is shown (they mount with it).
-            const others: Record<string, DataWorkspace> = { "dyn tasks": "dyn", gshop: "shop", npcgen: "gen", path: "paths", "task npc": "npc" };
+            const others: Record<string, DataWorkspace> = { "dyn tasks": "dyn", gshop: "shop", npcgen: "gen", path: "paths", "task npc": "npc", "vip awards": "vip" };
             if (others[file.kind]) {
               setPendingOpen({ workspace: others[file.kind], path: file.path });
               setWorkspace(others[file.kind]);
@@ -1308,6 +1361,11 @@ export default function App() {
         <main className="workspace tasks-data-workspace">
           {activityBar}
           <NpcGenEditor ref={genEditor} active onStateChange={setGenEditorState} icon={icon} elementsPath={summary?.path ?? null} mapGeneration={settingsView?.client ? settingsView.iconGeneration : null} />
+        </main>
+      ) : workspace === "vip" ? (
+        <main className="workspace tasks-data-workspace">
+          {activityBar}
+          <VipAwardEditor ref={vipEditor} active defaultPath={vipEditorState.path ?? settingsView?.client?.dataFiles.find((file) => file.name.toLowerCase() === "vipaward.data")?.path ?? null} onStateChange={setVipEditorState} />
         </main>
       ) : workspace === "npc" ? (
         <main className="workspace path-data-workspace">
@@ -1571,6 +1629,14 @@ export default function App() {
             {genEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
             <span className="spacer" />
             {genEditorState.version !== null && <span>version {genEditorState.version}</span>}
+          </>
+        ) : workspace === "vip" ? (
+          <>
+            <span>vipaward.data</span>
+            {vipEditorState.path && <span className="mono truncate" title={vipEditorState.path}>{vipEditorState.path}</span>}
+            {vipEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
+            <span className="spacer" />
+            {vipEditorState.loaded && <span>{count(vipEditorState.awards)} awards</span>}
           </>
         ) : workspace === "npc" ? (
           <>

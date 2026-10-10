@@ -745,6 +745,24 @@ impl Document {
         None
     }
 
+    /// A whole-number field (by name, e.g. `pile_num_max`) of the record an Essence ID resolves to.
+    pub fn essence_number(&self, id: u32, field: &str) -> Option<i64> {
+        let (list, row, _) = self.resolve_essence_id(id)?;
+        let bytes = self.file.record(list, row)?;
+        let (_, definition) = self.def(list)?;
+        let found = definition.fields.iter().find(|candidate| candidate.name.eq_ignore_ascii_case(field))?;
+        let slot = bytes.get(found.off..found.off + found.t.size())?;
+        Some(match found.t {
+            format::Ty::U8 | format::Ty::Bool => slot[0] as i64,
+            format::Ty::I8 => slot[0] as i8 as i64,
+            format::Ty::U16 => u16::from_le_bytes([slot[0], slot[1]]) as i64,
+            format::Ty::I16 => i16::from_le_bytes([slot[0], slot[1]]) as i64,
+            format::Ty::U32 => u32::from_le_bytes(slot.try_into().ok()?) as i64,
+            format::Ty::I32 => i32::from_le_bytes(slot.try_into().ok()?) as i64,
+            _ => return None,
+        })
+    }
+
     /// The name of the record an Essence ID resolves to (none when it has no name).
     pub fn essence_name(&self, id: u32) -> Option<String> {
         let (list, row, _) = self.resolve_essence_id(id)?;

@@ -1,5 +1,9 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
+  VipAward,
+  VipAwardFile,
+  VipAwardLevelNames,
+  VipAwardProblem,
   GShopLayoutProposal,
   GShopTextField,
   GShopTextPreview,
@@ -389,6 +393,13 @@ export const openTaskNpc = (path: string) => invoke<TaskNpcFile>("open_task_npc"
 export const saveTaskNpc = (request: TaskNpcSaveRequest) => invoke<TaskNpcSaveReport>("save_task_npc", { request });
 /** Map names of the configured client (configs.pck instance.txt); empty without a client. */
 export const clientMapNames = () => invoke<[number, string][]>("client_map_names");
+export const openVipAward = (path: string) => invoke<VipAwardFile>("open_vipaward", { path });
+export const saveVipAward = (request: { openedPath: string; targetPath: string; token: string; recordSize: number; awards: VipAward[]; backup: boolean; replaceChanged: boolean }) =>
+  invoke<{ path: string; size: number; awards: number; timestamp: number; token: string; backup: string | null }>("save_vipaward", { request });
+/** Problems by the server's rules (items checked against the open elements.data). */
+export const vipAwardProblems = (awards: VipAward[], recordSize: number) => invoke<VipAwardProblem[]>("vipaward_problems", { awards, recordSize });
+/** The client's names of the award levels. */
+export const vipAwardLevelNames = () => invoke<VipAwardLevelNames>("vipaward_level_names");
 export const clientMaps = () => invoke<ClientMap[]>("client_maps");
 /** Image files of the configured client below a package folder (`surfaces\qshop`), as stored. */
 export const clientImages = (folder: string) => invoke<string[]>("client_images", { folder });

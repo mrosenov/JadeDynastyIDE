@@ -7,6 +7,7 @@ mod path_data;
 mod npcgen;
 mod settings;
 mod task_npc;
+mod vipaward;
 pub mod tasks;
 
 use std::collections::{HashMap, HashSet};
@@ -470,6 +471,40 @@ async fn propose_gshop_layout(reference: String, path: Option<String>, state: St
     })
     .await
     .map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn open_vipaward(path: String) -> Result<vipaward::FileView, String> {
+    tauri::async_runtime::spawn_blocking(move || vipaward::open(path)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn save_vipaward(request: vipaward::SaveRequest) -> Result<vipaward::SaveReport, String> {
+    tauri::async_runtime::spawn_blocking(move || vipaward::save(request)).await.map_err(|error| error.to_string())?
+}
+
+/// Problems by the server's rules; items are checked against the open elements.data (existence, stack limit).
+#[tauri::command]
+fn vipaward_problems(awards: Vec<vipaward::Award>, record_size: usize, state: State<'_, AppState>) -> Result<Vec<vipaward::Problem>, String> {
+    let items = {
+        let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+        document.as_ref().map(|document| {
+            vipaward::item_ids(&awards)
+                .into_iter()
+                .map(|id| (id, vipaward::ItemInfo { exists: document.resolve_essence_id(id).is_some(), stack: document.essence_number(id, "pile_num_max").and_then(|value| u32::try_from(value).ok()) }))
+                .collect::<HashMap<_, _>>()
+        })
+    };
+    Ok(vipaward::problems(&awards, record_size, items.as_ref()))
+}
+
+/// The client's names for the award levels (its VIP window's buttons).
+#[tauri::command]
+async fn vipaward_level_names(state: State<'_, AppState>) -> Result<vipaward::LevelNames, String> {
+    let resources = state.resources();
+    tauri::async_runtime::spawn_blocking(move || Ok(vipaward::level_names(resources.as_ref().and_then(|resources| resources.ingame_strings().ok()))))
+        .await
+        .map_err(|error| error.to_string())?
 }
 
 /// Every shop layout: the user's first, then the built-in ones.
@@ -2191,6 +2226,10 @@ pub fn run() {
             close_gshop_comparison,
             export_gshop_json,
             gshop_layouts,
+            open_vipaward,
+            save_vipaward,
+            vipaward_problems,
+            vipaward_level_names,
             propose_gshop_layout,
             preview_gshop_layout,
             save_gshop_layout,

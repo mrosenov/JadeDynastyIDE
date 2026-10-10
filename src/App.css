@@ -10215,3 +10215,45 @@ select.ie-control {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.vip-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.vip-tabs .btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.vip-row {
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) 8px;
+  align-items: center;
+  gap: 6px;
+}
+.vip-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 640px;
+  padding: 4px 0 12px;
+}
+.vip-name,
+.vip-duration {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.vip-names-note {
+  margin-top: auto;
+  padding: 8px 4px 0;
+}
+.vip-name .btn {
+  white-space: nowrap;
+}
+.vip-more {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

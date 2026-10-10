@@ -726,6 +726,34 @@ subcategory, and removing one that items use asks where they go. **Tools › Che
 open `elements.data`), items the shop would not show (a missing category), repeated items and sale windows that end before they start. Every change can be undone. All 15 sample
 shop files (clients and servers) read and write back byte for byte.
 
+## vipaward.data editor (VIP awards)
+
+**VIP** in the activity bar edits `vipaward.data` (the client's `element/data/VIPAward.data`, the server's
+`VipAwardData` in gs.conf): the awards of the in-game VIP award window. **The client and the server need the
+same awards**: claiming one sends its award ID and item ID, and the server refuses a claim it does not find
+in its own file. The timestamp is only the export time; saving sets it to now.
+
+The tabs follow the window: **Daily** (claimed once a day), **Special** (claimed once) and, in newer builds,
+**VIP shop**. On the left, awards are grouped like the window's buttons: **Normal** awards by level band
+(< LV90, LV90–119, LV120–134, LV135–150, and the same four after rebirth) and **VIP** awards by VIP level
+(Bronze, Silver, Gold, Platinum, Diamond, VIP, …), with the names of the configured client. The list keeps
+file order, which is the order the window shows a level's awards in. Each award has:
+
+- the award ID (unique; **Clone** takes the next free one), the item and count (the window shows the item's
+  own name and icon; the stored name is not shown, **Use the item's name** copies it), the kind, the level, how
+  it is claimed (daily, once, or bought), and the duration of the item (seconds, with the usual choices);
+- in newer builds (172-byte awards, HDN and Reborn): the VIP shop's price and purchase limit, and two values
+  nobody has identified (0 everywhere).
+
+Clone (Ctrl+D), Delete (Del), Move up/down (Alt+↑/↓) and undo/redo work as in the other editors.
+**Tools › Check problems…** (Ctrl+Shift+M) applies the server's rules, any of which stops it from starting:
+award IDs above 0 and unique, an item and a count, the kinds, normal levels 1–8, VIP levels from 1 (1–6 in
+the 2013 server; newer builds use up to 8), at most 16 awards per kind and level. With the matching
+elements.data open it also checks that each item exists and that items stacking to 1 have count 1 (otherwise
+the server does not start: gs exits with error -8). Saving runs these checks first and asks before writing a
+file the server would refuse. All seven sample files (2013–2018, clients and servers) read and write back byte for
+byte.
+
 ## npcgen.data editor
 
 **NPC Gen** in the activity bar opens one map's `npcgen.data`: what spawns on that map. Only the

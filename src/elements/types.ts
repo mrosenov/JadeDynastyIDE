@@ -2319,6 +2319,49 @@ export interface GShopProblem {
   message: string;
 }
 
+/** An award of vipaward.data (VIP_AWARD_ITEM). */
+export interface VipAward {
+  /** Award ID (tid): unique; sent by the client to claim it. */
+  id: number;
+  name: string;
+  itemId: number;
+  count: number;
+  /** 0 normal, 1 VIP, 2 VIP shop (newer builds). */
+  awardType: number;
+  /** Normal: level band 1–8; VIP: VIP level. */
+  level: number;
+  /** 0 daily, 1 special (once), 2 bought (VIP shop). */
+  obtainType: number;
+  /** Seconds the item lasts (0 = forever). */
+  expireTime: number;
+  /** Newer builds: VIP shop price, then purchase limit and two unknown ints. */
+  price: number | null;
+  extra: number[];
+  /** The stored record (kept where fields do not change). */
+  raw: number[];
+}
+
+export interface VipAwardFile {
+  path: string;
+  size: number;
+  timestamp: number;
+  recordSize: number;
+  token: string;
+  awards: VipAward[];
+}
+
+export interface VipAwardProblem {
+  severity: "error" | "warning";
+  index: number | null;
+  message: string;
+}
+
+export interface VipAwardLevelNames {
+  normal: string[];
+  vip: string[];
+  fromClient: boolean;
+}
+
 /** A running elementclient.exe. */
 export interface RunningClient {
   pid: number;

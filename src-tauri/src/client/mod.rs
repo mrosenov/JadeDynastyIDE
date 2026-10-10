@@ -86,6 +86,7 @@ fn data_kind(name: &str) -> String {
         "path" => "path",
         s if s.starts_with("domain") => "domain",
         "task_npc" => "task npc",
+        "vipaward" => "vip awards",
         "dynamicobjects" => "dynamic objects",
         _ => "other",
     }
@@ -117,7 +118,7 @@ pub fn inspect(picked: &Path) -> Result<ClientInfo, String> {
             let backup = name.to_lowercase().ends_with(".bak");
             (name.to_lowercase().contains(".data") && !pack && !backup).then(|| {
                 DataFile {
-                    supported: matches!(kind.as_str(), "elements" | "tasks" | "dyn tasks" | "gshop" | "npcgen" | "path" | "task npc"),
+                    supported: matches!(kind.as_str(), "elements" | "tasks" | "dyn tasks" | "gshop" | "npcgen" | "path" | "task npc" | "vip awards"),
                     path: e.path().display().to_string(),
                     size: e.metadata().map(|m| m.len()).unwrap_or(0),
                     name,
@@ -274,6 +275,8 @@ pub struct Resources {
     images: Mutex<VecDeque<(u32, Arc<ResourceImage>)>>,
     /// Title definitions from interfaces.pck, read on first use.
     titles: OnceLock<Result<titles::TitleTable, String>>,
+    /// interfaces.pck `ingame.stf` (the game UI's numbered strings), read on first use.
+    ingame: OnceLock<Result<HashMap<u32, String>, String>>,
     /// Maps from configs.pck instance.txt, read on first use.
     instances: OnceLock<Result<Vec<instances::Instance>, String>>,
     /// Images read by package path (shop icons), recently used.
@@ -316,6 +319,7 @@ impl Resources {
             item_colors: OnceLock::new(),
             images: Mutex::new(VecDeque::new()),
             titles: OnceLock::new(),
+            ingame: OnceLock::new(),
             instances: OnceLock::new(),
             midmaps: Mutex::new(VecDeque::new()),
             path_images: Mutex::new(VecDeque::new()),
@@ -366,6 +370,29 @@ impl Resources {
     }
 
     /// Maps (configs.pck Configs/instance.txt), in file order.
+    /// The game UI's numbered strings (interfaces.pck `interfaces\ingame.stf`, UTF-16: `13011	"< LV90"` per line).
+    pub fn ingame_strings(&self) -> Result<&HashMap<u32, String>, String> {
+        self.ingame
+            .get_or_init(|| {
+                let bytes = self.package("interfaces")?.read_path("interfaces\\ingame.stf")?;
+                let units: Vec<u16> = bytes.get(2..).unwrap_or(&[]).chunks_exact(2).map(|pair| u16::from_le_bytes([pair[0], pair[1]])).collect();
+                let text = if bytes.starts_with(&[0xff, 0xfe]) { String::from_utf16_lossy(&units) } else { GBK.decode(&bytes).0.into_owned() };
+                Ok(text
+                    .lines()
+                    .filter_map(|line| {
+                        let line = line.trim();
+                        let digits = line.find(|c: char| !c.is_ascii_digit())?;
+                        let number = line[..digits].parse().ok()?;
+                        let rest = line[digits..].trim();
+                        let quoted = rest.strip_prefix('"')?;
+                        Some((number, quoted.rfind('"').map_or(quoted, |end| &quoted[..end]).to_string()))
+                    })
+                    .collect())
+            })
+            .as_ref()
+            .map_err(Clone::clone)
+    }
+
     pub fn instances(&self) -> Result<&Vec<instances::Instance>, String> {
         self.instances
             .get_or_init(|| self.package("configs").and_then(|pck| pck.read_path("configs/instance.txt")).and_then(|bytes| instances::parse(&bytes)))
@@ -647,6 +674,15 @@ mod tests {
     }
 
     #[test]
+    fn reads_the_game_ui_strings() {
+        let Some(dir) = client() else { return };
+        let res = Resources::new(inspect(&dir).unwrap());
+        let strings = res.ingame_strings().unwrap();
+        assert_eq!(strings.get(&13011).map(String::as_str), Some("< LV90"));
+        assert_eq!(strings.get(&13020).map(String::as_str), Some("Bronze"));
+    }
+
+    #[test]
     fn inspects_a_client_folder() {
         let Some(dir) = client() else { return eprintln!("skipping: no client found") };
         // The client root and its element folder both work.
@@ -759,3 +795,5 @@ mod tests {
         assert!(description.starts_with("^ffbc3cThe Pinnacle\n") && description.lines().count() > 2, "bad title tooltip: {description:?}");
     }
 }
+
+
