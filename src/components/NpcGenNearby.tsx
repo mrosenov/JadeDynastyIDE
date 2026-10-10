@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Download, Eraser, Loader2, RefreshCw } from "lucide-react";
+import { Combine, Download, Eraser, Loader2, RefreshCw, Split } from "lucide-react";
 import { gameNearby } from "../elements/api";
 import { count } from "../elements/format";
 import type { NearbyClass, NearbyImport, NpcGenView } from "../elements/types";
@@ -18,6 +18,9 @@ export interface CollectedRow {
   phase: number | null;
   /** How many fetches saw it. */
   seen: number;
+  /** A group: the monsters or mines it merges (single rows), and the full size of the area they cover. */
+  members?: CollectedRow[];
+  size?: { x: number; z: number };
 }
 
 export interface NearbyState {
@@ -28,9 +31,11 @@ export interface NearbyState {
   radius: number;
   count: number;
   refresh: number;
+  /** Monsters or mines of one template this close to each other form a group. */
+  groupRadius: number;
 }
 
-export const emptyNearby = (): NearbyState => ({ rows: [], player: null, selected: [], shown: { npc: true, monster: true, mine: true, dynamic: true }, radius: 0, count: 1, refresh: 60 });
+export const emptyNearby = (): NearbyState => ({ rows: [], player: null, selected: [], shown: { npc: true, monster: true, mine: true, dynamic: true }, radius: 0, count: 1, refresh: 60, groupRadius: 10 });
 
 const CLASS_NAMES: Record<NearbyClass, string> = { npc: "NPC", monster: "Monster", unknown: "NPC or monster", mine: "Mine", dynamic: "Object", item: "Dropped item" };
 export const CLASS_COLORS: Record<NearbyClass, string> = { npc: "#3b82c4", monster: "#d9534f", unknown: "#c08a2e", mine: "#2e9e5b", dynamic: "#888", item: "#888" };
@@ -56,22 +61,75 @@ export function inFile(view: NpcGenView, row: CollectedRow): boolean {
   return near(view.areas, row.template);
 }
 
+/** Space around the outermost members of a group (on each side). */
+const GROUP_MARGIN = 2;
+
+/** One row for several monsters or mines: centred on them, sized to cover them. */
+function makeGroup(members: CollectedRow[]): CollectedRow {
+  const xs = members.map((row) => row.position.x), zs = members.map((row) => row.position.z);
+  const [minX, maxX, minZ, maxZ] = [Math.min(...xs), Math.max(...xs), Math.min(...zs), Math.max(...zs)];
+  const first = members[0];
+  return {
+    ...first,
+    key: `group:${first.key}`,
+    position: { x: (minX + maxX) / 2, y: members.reduce((total, row) => total + row.position.y, 0) / members.length, z: (minZ + maxZ) / 2 },
+    direction: null,
+    seen: Math.max(...members.map((row) => row.seen)),
+    members,
+    size: { x: Math.max(4, maxX - minX + GROUP_MARGIN * 2), z: Math.max(4, maxZ - minZ + GROUP_MARGIN * 2) },
+  };
+}
+
+/** Groups monsters and mines of one template that stand within `radius` of each other (chains count). */
+export function groupRows(rows: CollectedRow[], radius: number): CollectedRow[] {
+  const out: CollectedRow[] = [];
+  const byTemplate = new Map<string, CollectedRow[]>();
+  for (const row of rows) {
+    if (row.class !== "monster" && row.class !== "mine") out.push(row);
+    else {
+      const key = `${row.class}:${row.template}`;
+      byTemplate.set(key, [...(byTemplate.get(key) ?? []), ...(row.members ?? [row])]);
+    }
+  }
+  for (const singles of byTemplate.values()) {
+    const parent = singles.map((_, index) => index);
+    const root = (index: number): number => (parent[index] === index ? index : (parent[index] = root(parent[index])));
+    for (let a = 0; a < singles.length; a++) {
+      for (let b = a + 1; b < singles.length; b++) {
+        if (distance(singles[a].position, singles[b].position) <= radius) parent[root(a)] = root(b);
+      }
+    }
+    const clusters = new Map<number, CollectedRow[]>();
+    singles.forEach((row, index) => clusters.set(root(index), [...(clusters.get(root(index)) ?? []), row]));
+    for (const members of clusters.values()) out.push(members.length > 1 ? makeGroup(members) : members[0]);
+  }
+  return out;
+}
+
+export const ungroupRows = (rows: CollectedRow[]) => rows.flatMap((row) => row.members ?? [row]);
+
 /** Adds a fetch to the list: by runtime ID, or a row of the same template within a metre (it respawned). */
 function merge(rows: CollectedRow[], fetched: Awaited<ReturnType<typeof gameNearby>>): CollectedRow[] {
-  const next = rows.map((row) => ({ ...row }));
-  const byId = new Map(next.map((row) => [row.runtimeId, row]));
+  const next = rows.map((row) => (row.members ? { ...row, members: row.members.map((member) => ({ ...member })) } : { ...row }));
+  // Single rows and group members, with the group each belongs to.
+  const leaves = next.flatMap((row) => (row.members ?? [row]).map((leaf) => ({ leaf, group: row.members ? row : null })));
+  const byId = new Map(leaves.map((entry) => [entry.leaf.runtimeId, entry]));
   for (const entity of fetched.rows) {
     if (entity.class === "item") continue;
     const update = { runtimeId: entity.runtimeId, class: entity.class, template: entity.template, label: entity.label, position: entity.position, direction: entity.direction, rotation: entity.rotation, phase: entity.phase };
-    const known = byId.get(entity.runtimeId) ?? next.find((row) => row.template === entity.template && row.class === entity.class && distance(row.position, entity.position) < 1);
+    const known = byId.get(entity.runtimeId) ?? leaves.find((entry) => entry.leaf.template === entity.template && entry.leaf.class === entity.class && distance(entry.leaf.position, entity.position) < 1);
     if (known) {
       // Spawns that stand still keep their first position; wandering monsters keep where they were first seen.
-      Object.assign(known, { ...update, position: known.position, direction: known.direction ?? entity.direction, seen: known.seen + 1 });
+      const { leaf, group } = known;
+      Object.assign(leaf, { ...update, position: leaf.position, direction: leaf.direction ?? entity.direction, seen: leaf.seen + 1 });
+      if (group) group.seen = Math.max(group.seen, leaf.seen);
       byId.set(entity.runtimeId, known);
     } else {
       const row: CollectedRow = { key: `${entity.runtimeId}:${entity.template}`, ...update, seen: 1 };
       next.push(row);
-      byId.set(entity.runtimeId, row);
+      const entry = { leaf: row, group: null };
+      leaves.push(entry);
+      byId.set(entity.runtimeId, entry);
     }
   }
   return next;
@@ -141,12 +199,17 @@ export function NearbyPanel({ view, state, setState, elementsOpen, busy, pickCli
   const allSelected = newShown.length > 0 && newShown.every((entry) => selected.has(entry.row.key));
 
   const importRows = async (rows: CollectedRow[]) => {
-    const list = rows.filter(importable).map((row): NearbyImport => ({ kind: row.class as NearbyImport["kind"], template: row.template, position: row.position, direction: row.direction, rotation: row.rotation, phase: row.phase }));
+    const list = rows.filter(importable).map((row): NearbyImport => ({ kind: row.class as NearbyImport["kind"], template: row.template, position: row.position, direction: row.direction, rotation: row.rotation, phase: row.phase, size: row.size ? [row.size.x, row.size.z] : null, members: row.members?.length ?? null }));
     if (!list.length) return;
     if (await onImport(list, { count: state.count, refresh: state.refresh })) toggle(rows.map((row) => row.key), false);
   };
 
   const phaseKnown = state.rows.some((row) => row.phase !== null);
+  const grouped = state.rows.some((row) => row.members);
+  const regroup = (rows: CollectedRow[]) => setState((current) => {
+    const keys = new Set(rows.map((row) => row.key));
+    return { ...current, rows, selected: current.selected.filter((key) => keys.has(key)) };
+  });
   return <div className="npcgen-nearby">
     <div className="npcgen-nearby-bar">
       <button className="btn primary" disabled={fetching} onClick={(event) => void fetchNow(event.shiftKey)} title="Read what the running game client has loaded around your character (Shift+click: choose the client when several run)">
@@ -160,6 +223,12 @@ export function NearbyPanel({ view, state, setState, elementsOpen, busy, pickCli
       <span className="spacer" />
       <button className="btn" disabled={!state.rows.length} onClick={() => setState((current) => ({ ...current, rows: [], selected: [] }))}><Eraser size={14} /> Clear list</button>
     </div>
+    <div className="npcgen-nearby-bar">
+      <label className="npcgen-flag" title="Monsters or mines of the same template this close to each other (chains count) become one area">Group within <NumberInput min={1} value={state.groupRadius} onCommit={(groupRadius) => setState((current) => ({ ...current, groupRadius }))} /> m</label>
+      <button className="btn" disabled={!state.rows.some((row) => row.class === "monster" || row.class === "mine")} onClick={() => regroup(groupRows(state.rows, state.groupRadius))} title="Merge monsters and mines of one template standing close together into areas (again after more fetches)"><Combine size={14} /> Group monsters and mines</button>
+      <button className="btn" disabled={!grouped} onClick={() => regroup(ungroupRows(state.rows))}><Split size={14} /> Ungroup</button>
+      <span className="muted small">Groups import as areas covering them, spawning as many as were seen; single rows as points.</span>
+    </div>
     {error && <div className="path-data-message error">{error}</div>}
     {!elementsOpen && <div className="path-data-message">Open the server's elements.data to see names and to tell NPCs from monsters; until then they can be collected but not imported.</div>}
     {elementsOpen && unknown && <div className="path-data-message">Some IDs are not in the open elements.data (orange); they cannot be imported as NPCs or monsters.</div>}
@@ -168,7 +237,7 @@ export function NearbyPanel({ view, state, setState, elementsOpen, busy, pickCli
         <thead><tr>
           <th><input type="checkbox" checked={allSelected} disabled={!newShown.length} title="Select every new row shown" onChange={(event) => toggle(newShown.map((entry) => entry.row.key), event.target.checked)} /></th>
           <th>Kind</th><th>ID</th><th>Name</th><th>X</th><th>Y</th><th>Z</th><th title="Compass degrees, 0 = north">Facing</th><th title="From where you stood at the last fetch">Distance</th>
-          <th title={phaseKnown ? "Phase (0: everyone sees it)" : "Found once phased NPCs or mines are in view"}>Phase</th><th>Status</th><th />
+          <th title={phaseKnown ? "Phase (0: everyone sees it)" : "Found once phased NPCs or mines are in view"}>Phase</th><th title="How many a group merges">Count</th><th title="Groups: the area they cover (width × depth)">Size</th><th>Status</th><th />
         </tr></thead>
         <tbody>{shown.map(({ row, distance: away, inFile: present }) => {
           const angle = facing(row);
@@ -181,6 +250,8 @@ export function NearbyPanel({ view, state, setState, elementsOpen, busy, pickCli
             <td className="mono">{angle === null ? <span className="muted">—</span> : `${angle}°`}</td>
             <td className="mono">{away === null ? "" : `${away.toFixed(1)} m`}</td>
             <td className="mono">{row.phase ?? <span className="muted">?</span>}</td>
+            <td className="mono">{row.members?.length ?? 1}</td>
+            <td className="mono">{row.size ? `${row.size.x.toFixed(0)}×${row.size.z.toFixed(0)} m` : <span className="muted">point</span>}</td>
             <td>{present ? <span className="muted small">In file</span> : <span className="tag ok">New</span>}</td>
             <td onClick={(event) => event.stopPropagation()}><button className="btn small" disabled={busy || !importable(row)} title={importable(row) ? "Add it to the file" : "Not in the open elements.data"} onClick={() => void importRows([row])}><Download size={12} /> Import</button></td>
           </tr>;

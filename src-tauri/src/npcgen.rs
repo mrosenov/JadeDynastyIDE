@@ -13,6 +13,7 @@
 //! these files: one per map folder (gs.conf `NPCGenFile`). The client's copy is not loaded.
 //! Writing keeps the file's version; values a version does not store must stay at their defaults.
 
+use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
 use chrono::Local;
@@ -586,6 +587,12 @@ pub struct NearbyImport {
     /// Mines and objects: axis bytes and turn, as the client received them.
     pub rotation: Option<[u8; 3]>,
     pub phase: Option<i32>,
+    /// A group of monsters or mines seen close together: the full size (x, z) of the area they stood
+    /// in and how many there were. Groups become areas instead of points.
+    #[serde(default)]
+    pub size: Option<[f32; 2]>,
+    #[serde(default)]
+    pub members: Option<u32>,
 }
 
 /// Count and respawn time for imported monsters and mines (NPCs: one, no extra delay).
@@ -594,6 +601,27 @@ pub struct NearbyImport {
 pub struct NearbyOptions {
     pub count: u32,
     pub refresh: u32,
+}
+
+/// One thing the server would reject, skip, clamp or crash on.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Problem {
+    /// "error" (the server refuses, skips or crashes), "warning" (works differently than it looks) or
+    /// "note" (harmless but probably unintended; common in official files).
+    pub severity: &'static str,
+    pub section: Section,
+    pub index: usize,
+    pub message: String,
+}
+
+/// What a check knows beyond the file.
+#[derive(Debug, Clone, Default)]
+pub struct ProblemContext {
+    /// Structure names (upper case) of the templates, when an elements.data is open.
+    pub templates: Option<HashMap<u32, String>>,
+    /// Half the map size (the client's rows × 512), when the map is known.
+    pub half_size: Option<f32>,
 }
 
 /// What resource rows store as their type (`DT_MINE_ESSENCE`; the server does not read it).
@@ -728,6 +756,155 @@ impl Document {
         Ok(self.view())
     }
 
+    /// Every NPC, monster and mine template the file spawns.
+    pub fn template_ids(&self) -> Vec<u32> {
+        let mut ids: Vec<u32> = self.file.areas.iter().flat_map(|area| area.generators.iter().map(|generator| generator.id)).collect();
+        ids.extend(self.file.resource_areas.iter().flat_map(|area| area.resources.iter().map(|resource| resource.template as u32)));
+        ids.sort_unstable();
+        ids.dedup();
+        ids
+    }
+
+    /// Checks the file the way the server's `npc_generator::LoadGenData` reads it.
+    pub fn problems(&self, context: &ProblemContext) -> Vec<Problem> {
+        let file = &self.file;
+        let mut out = Vec::new();
+        let mut add = |severity, section, index, message: String| out.push(Problem { severity, section, index, message });
+        let controller_ids: HashSet<u32> = file.controllers.iter().map(|controller| controller.id).collect();
+        let outside = |position: &Vec3| context.half_size.filter(|half| position.x.abs() > *half || position.z.abs() > *half);
+        let structure = |id: u32| context.templates.as_ref().map(|templates| templates.get(&id).map(String::as_str));
+
+        // Controllers: ID 0 stops the whole map; a repeated ID or trigger ID leaves the later one out.
+        let mut seen_ids = HashMap::new();
+        let mut seen_triggers = HashMap::new();
+        for (index, controller) in file.controllers.iter().enumerate() {
+            if controller.id == 0 {
+                add("error", Section::Controllers, index, "Controller ID 0: the server refuses to load this map".into());
+            } else if let Some(first) = seen_ids.get(&controller.id) {
+                add("error", Section::Controllers, index, format!("Controller ID {} is also used by controller {}; the server keeps only the first", controller.id, *first + 1));
+            } else {
+                seen_ids.insert(controller.id, index);
+            }
+            if controller.controller_id > 0 {
+                if let Some(first) = seen_triggers.get(&controller.controller_id) {
+                    add("error", Section::Controllers, index, format!("Trigger ID {} is also used by controller {}; the server does not create this one, so its areas never spawn", controller.controller_id, *first + 1));
+                } else {
+                    seen_triggers.insert(controller.controller_id, index);
+                }
+            }
+        }
+        let missing_controller = |id: i64| id != 0 && (id < 0 || !controller_ids.contains(&(id as u32)));
+
+        // Export IDs and attachments, per section (the server looks attached areas up by export ID).
+        fn exports<'a>(list: impl Iterator<Item = (i32, i32, &'a [i32])>) -> (HashMap<i32, Vec<usize>>, HashSet<i32>) {
+            let mut by_id: HashMap<i32, Vec<usize>> = HashMap::new();
+            let mut attached = HashSet::new();
+            for (index, (export, _, list)) in list.enumerate() {
+                by_id.entry(export).or_default().push(index);
+                attached.extend(list.iter().copied());
+            }
+            (by_id, attached)
+        }
+        let linked = file.version >= 12;
+        let (area_exports, area_attached) = exports(file.areas.iter().map(|area| (area.export_id, area.attach_num, area.attached.as_slice())));
+        let (resource_exports, resource_attached) = exports(file.resource_areas.iter().map(|area| (area.export_id, area.attach_num, area.attached.as_slice())));
+        let check_links = |add: &mut dyn FnMut(&'static str, Section, usize, String), section, index, export_id: i32, attach_num: i32, attached: &[i32], exports: &HashMap<i32, Vec<usize>>, all_attached: &HashSet<i32>, flagged: &dyn Fn(usize) -> bool| {
+            if !linked {
+                return;
+            }
+            if let Some(others) = exports.get(&export_id).filter(|others| others.len() > 1 && others[0] != index) {
+                add("warning", section, index, format!("Export ID {export_id} is also used by item {}; attachments to it are ambiguous", others[0] + 1));
+            }
+            if attach_num < 0 && !all_attached.contains(&export_id) {
+                add("note", section, index, "Marked as attached to another area, but no area attaches it".into());
+            }
+            for id in attached {
+                match exports.get(id) {
+                    None => add("error", section, index, format!("Attaches export ID {id}, which no item in this section has (the server reads it without checking)")),
+                    Some(targets) if !flagged(targets[0]) => add("warning", section, index, format!("Attaches item {} (export ID {id}), which is not marked as attached, so it also spawns on its own", targets[0] + 1)),
+                    _ => {}
+                }
+            }
+        };
+
+        for (index, area) in file.areas.iter().enumerate() {
+            let section = Section::Areas;
+            if area.generators.is_empty() {
+                add("note", section, index, "Spawns nothing (no generators)".into());
+            }
+            if missing_controller(area.controller as i64) {
+                add("error", section, index, format!("Controller {} does not exist; the server never spawns this area", area.controller));
+            }
+            if !(0..=2).contains(&area.npc_type) {
+                add("warning", section, index, format!("Type {} is unknown; the server treats it as monsters", area.npc_type));
+            }
+            if area.npc_type == 0 && !(0..=2).contains(&area.group_type) {
+                add("warning", section, index, format!("Group type {} is unknown; the server treats it as normal", area.group_type));
+            }
+            if area.npc_type == 1 && area.revive == 2 && file.version >= 14 {
+                add("error", section, index, "NPC areas cannot revive when switched on (the official editor refuses this)".into());
+            }
+            if let Some(half) = outside(&area.position) {
+                add("warning", section, index, format!("Lies outside the map (±{half:.0}); the server does not load it"));
+            }
+            check_links(&mut add, section, index, area.export_id, area.attach_num, &area.attached, &area_exports, &area_attached, &|target| file.areas[target].attach_num < 0);
+            for (row, generator) in area.generators.iter().enumerate() {
+                let which = if area.generators.len() > 1 { format!("Row {}: ", row + 1) } else { String::new() };
+                match structure(generator.id) {
+                    Some(None) => add("error", section, index, format!("{which}{} is not in the open elements.data; the server skips it", generator.id)),
+                    Some(Some("MONSTER_ESSENCE")) if area.npc_type == 1 => add("warning", section, index, format!("{which}{} is a monster in an NPC area", generator.id)),
+                    Some(Some("NPC_ESSENCE")) if area.npc_type == 0 => add("warning", section, index, format!("{which}{} is an NPC in a monster area", generator.id)),
+                    Some(Some(name)) if name != "MONSTER_ESSENCE" && name != "NPC_ESSENCE" => add("error", section, index, format!("{which}{} is not an NPC or monster ({name})", generator.id)),
+                    _ => {}
+                }
+                if generator.count == 0 {
+                    add("warning", section, index, format!("{which}{} spawns 0", generator.id));
+                }
+                if generator.aggressive > 2 {
+                    add("warning", section, index, format!("{which}aggressive {} is unknown; the server treats it as the template's", generator.aggressive));
+                }
+                if generator.dead_time != 0 && !(5..=1800).contains(&generator.dead_time) {
+                    add("warning", section, index, format!("{which}corpse time {} s; the server keeps corpses 5–1800 s", generator.dead_time));
+                }
+                if generator.path_id != 0 && !(0..=2).contains(&generator.loop_type) {
+                    add("warning", section, index, format!("{which}path type {} is unknown", generator.loop_type));
+                }
+            }
+        }
+        for (index, area) in file.resource_areas.iter().enumerate() {
+            let section = Section::Resources;
+            if area.resources.is_empty() {
+                add("note", section, index, "Spawns nothing (no resources)".into());
+            }
+            if missing_controller(area.controller as i64) {
+                add("error", section, index, format!("Controller {} does not exist; the server never spawns this area", area.controller));
+            }
+            if let Some(half) = outside(&area.position) {
+                add("warning", section, index, format!("Lies outside the map (±{half:.0}); the server does not load it"));
+            }
+            check_links(&mut add, section, index, area.export_id, area.attach_num, &area.attached, &resource_exports, &resource_attached, &|target| file.resource_areas[target].attach_num < 0);
+            for resource in &area.resources {
+                match structure(resource.template as u32) {
+                    Some(None) => add("error", section, index, format!("{} is not in the open elements.data; the server skips it", resource.template)),
+                    Some(Some(name)) if name != "MINE_ESSENCE" => add("error", section, index, format!("{} is not a mine ({name})", resource.template)),
+                    _ => {}
+                }
+                if resource.count == 0 {
+                    add("warning", section, index, format!("{} spawns 0", resource.template));
+                }
+            }
+        }
+        for (index, object) in file.dynamic_objects.iter().enumerate() {
+            if missing_controller(object.controller as i64) {
+                add("error", Section::Objects, index, format!("Controller {} does not exist; the server never shows this object", object.controller));
+            }
+            if let Some(half) = outside(&object.position) {
+                add("warning", Section::Objects, index, format!("Lies outside the map (±{half:.0}); the server does not load it"));
+            }
+        }
+        out
+    }
+
     /// Adds what the game client showed: NPCs and monsters as point spawns, mines as point resource
     /// areas, dynamic objects as objects, each at the end of its section, as one journal entry. Defaults
     /// follow official point spawns (fixed height, spawn at start, revive, valid once); new export IDs
@@ -752,6 +929,33 @@ impl Document {
         let mut changes = Vec::with_capacity(rows.len());
         for row in &rows {
             let (slot, item) = match row.kind.as_str() {
+                "monster" if row.size.is_some() => {
+                    // Like official monster areas: on the terrain, 20 high, death count 50.
+                    let [width, depth] = row.size.unwrap_or_default();
+                    let generator = Generator {
+                        id: row.template,
+                        count: row.members.unwrap_or(1).max(1),
+                        refresh: options.refresh,
+                        died_times: 50,
+                        default_faction: 1,
+                        default_faction_helper: 1,
+                        default_faction_accept: 1,
+                        ..Default::default()
+                    };
+                    let area = Area {
+                        kind: 0,
+                        position: row.position,
+                        direction: Vec3 { x: 0.0, y: 0.0, z: 1.0 },
+                        extents: Vec3 { x: width, y: 20.0, z: depth },
+                        init_gen: 1,
+                        revive: 1,
+                        export_id: export(&mut area_export),
+                        phase: phase(row),
+                        generators: vec![generator],
+                        ..Default::default()
+                    };
+                    (0, Item::Areas(area))
+                }
                 "npc" | "monster" => {
                     let npc = row.kind == "npc";
                     let facing = row.direction.and_then(|d| {
@@ -784,9 +988,13 @@ impl Document {
                 }
                 "mine" => {
                     let [axis0, axis1, turn] = row.rotation.unwrap_or([192, 64, 0]);
-                    let resource = Resource { kind: MINE_DATA_TYPE, template: row.template as i32, refresh: options.refresh, count: options.count.max(1), height_offset: 0.0 };
+                    let count = row.members.unwrap_or(options.count).max(1);
+                    let resource = Resource { kind: MINE_DATA_TYPE, template: row.template as i32, refresh: options.refresh, count, height_offset: 0.0 };
+                    let [extent_x, extent_z] = row.size.unwrap_or_default();
                     let area = ResourceArea {
                         position: row.position,
+                        extent_x,
+                        extent_z,
                         init_gen: 1,
                         auto_revive: 1,
                         valid_once: 1,
@@ -1041,7 +1249,7 @@ mod tests {
             let before = document.view();
             let max_export = document.file.areas.iter().map(|area| area.export_id).max().unwrap_or(0);
             let at = Vec3 { x: 185.4, y: 164.9, z: 104.5 };
-            let row = |kind: &str, template, rotation, phase| NearbyImport { kind: kind.into(), template, position: at, direction: Some(Vec3 { x: 3.0, y: 0.5, z: 4.0 }), rotation, phase };
+            let row = |kind: &str, template, rotation, phase| NearbyImport { kind: kind.into(), template, position: at, direction: Some(Vec3 { x: 3.0, y: 0.5, z: 4.0 }), rotation, phase, size: None, members: None };
             let rows = vec![row("npc", 1173, None, Some(26)), row("monster", 3001, None, None), row("mine", 18892, Some([192, 63, 0]), None), row("dynamic", 154, Some([0, 0, 26]), Some(7))];
             let view = document.import_nearby(rows, NearbyOptions { count: 2, refresh: 60 }).unwrap();
             assert_eq!((view.areas.len(), view.resources.len(), view.objects.len()), (before.areas.len() + 2, before.resources.len() + 1, before.objects.len() + 1), "{map}");
@@ -1065,5 +1273,61 @@ mod tests {
             assert_eq!((view.areas.len(), view.resources.len(), view.objects.len()), (before.areas.len(), before.resources.len(), before.objects.len()));
             assert!(document.import_nearby(vec![row("tree", 1, None, None)], NearbyOptions { count: 1, refresh: 0 }).is_err());
         }
+    }
+
+    #[test]
+    fn groups_import_as_areas() {
+        let path = std::path::PathBuf::from("E:/Game Dev/JD/zxserver/zgame/gs/config/x1/npcgen.data");
+        let Ok(mut document) = Document::open(&path) else { return };
+        let (areas, resources) = (document.file.areas.len(), document.file.resource_areas.len());
+        let group = |kind: &str, template| NearbyImport { kind: kind.into(), template, position: Vec3 { x: 10.0, y: 5.0, z: 20.0 }, direction: None, rotation: Some([192, 63, 0]), phase: None, size: Some([24.0, 16.0]), members: Some(6) };
+        document.import_nearby(vec![group("monster", 3001), group("mine", 18892)], NearbyOptions { count: 1, refresh: 30 }).unwrap();
+        let Item::Areas(area) = document.item(Section::Areas, areas).unwrap() else { panic!() };
+        assert_eq!((area.kind, area.npc_type, area.extents, area.valid_once), (0, 0, Vec3 { x: 24.0, y: 20.0, z: 16.0 }, 0));
+        assert_eq!((area.generators[0].count, area.generators[0].refresh, area.generators[0].died_times), (6, 30, 50));
+        let Item::Resources(mine) = document.item(Section::Resources, resources).unwrap() else { panic!() };
+        assert_eq!((mine.extent_x, mine.extent_z, mine.resources[0].count), (24.0, 16.0, 6));
+    }
+
+    #[test]
+    fn problems_follow_the_server() {
+        let path = std::path::PathBuf::from("E:/Game Dev/JD/zxserver/zgame/gs/config/x1/npcgen.data");
+        let Ok(mut document) = Document::open(&path) else { return };
+        let context = ProblemContext::default();
+        let errors = |document: &Document, context: &ProblemContext| document.problems(context).into_iter().filter(|problem| problem.severity == "error").collect::<Vec<_>>();
+        // The official file has no errors.
+        assert!(errors(&document, &context).is_empty());
+
+        let file = &mut document.file;
+        let mut copy = file.controllers[0].clone();
+        copy.name = "copy".into();
+        file.controllers.push(copy.clone());
+        copy.id = 0;
+        copy.controller_id = 0;
+        file.controllers.push(copy);
+        let area = file.areas.iter().position(|area| area.npc_type == 0 && !area.generators.is_empty()).unwrap();
+        file.areas[area].controller = 999_999;
+        file.areas[area].attached = vec![-12_345];
+        file.areas[area].attach_num = 1;
+        file.areas[area].generators[0].aggressive = 7;
+        let monster = file.areas[area].generators[0].id;
+        let found = errors(&document, &context);
+        let messages: Vec<&str> = found.iter().map(|problem| problem.message.as_str()).collect();
+        let count = document.file.controllers.len();
+        assert!(found.iter().any(|problem| problem.section == Section::Controllers && problem.index == count - 2 && problem.message.contains("keeps only the first")), "{messages:?}");
+        assert!(found.iter().any(|problem| problem.section == Section::Controllers && problem.index == count - 2 && problem.message.contains("does not create this one")), "{messages:?}");
+        assert!(found.iter().any(|problem| problem.index == count - 1 && problem.message.contains("refuses to load this map")), "{messages:?}");
+        assert!(found.iter().any(|problem| problem.section == Section::Areas && problem.index == area && problem.message.contains("Controller 999999 does not exist")), "{messages:?}");
+        assert!(found.iter().any(|problem| problem.index == area && problem.message.contains("Attaches export ID -12345")), "{messages:?}");
+        assert!(document.problems(&context).iter().any(|problem| problem.index == area && problem.severity == "warning" && problem.message.contains("aggressive 7")));
+
+        // With elements.data: a missing template and an NPC in a monster area; with the map size: outside.
+        let mut templates = HashMap::new();
+        templates.insert(monster, "NPC_ESSENCE".to_string());
+        let context = ProblemContext { templates: Some(templates), half_size: Some(1.0) };
+        let all = document.problems(&context);
+        assert!(all.iter().any(|problem| problem.index == area && problem.message.contains("is an NPC in a monster area")));
+        assert!(all.iter().any(|problem| problem.severity == "error" && problem.message.contains("is not in the open elements.data")));
+        assert!(all.iter().any(|problem| problem.message.contains("outside the map")));
     }
 }

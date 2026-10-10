@@ -1,5 +1,6 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
+  NpcGenProblem,
   NearbyFetch,
   NearbyImport,
   GamePosition,
@@ -380,6 +381,8 @@ export const gameClients = () => invoke<RunningClient[]>("game_clients");
 export const gamePosition = (pid: number) => invoke<GamePosition>("game_position", { pid });
 /** NPCs, monsters, mines and objects the running game client has loaded (read-only). */
 export const gameNearby = (pid: number) => invoke<NearbyFetch>("game_nearby", { pid });
+/** Problems of the open npcgen.data (`halfSize`: half the map size, to check positions). */
+export const npcGenProblems = (halfSize: number | null) => invoke<NpcGenProblem[]>("npcgen_problems", { halfSize });
 export const importNpcGenNearby = (rows: NearbyImport[], options: { count: number; refresh: number }) => invoke<NpcGenView>("import_npcgen_nearby", { rows, options });
 /** URL of a map's full-map image (Surfaces/MidMaps/<path>.dds as a PNG), by the client's map path. */
 export const midmapUrl = (generation: number, path: string) => convertFileSrc(`${generation}-${path}`, "jdmap");

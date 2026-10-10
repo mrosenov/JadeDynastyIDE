@@ -694,6 +694,29 @@ and patrol paths are not visible to the client, and monsters are listed where th
 The phase column fills in once phased NPCs or mines are in view (it is located then and remembered while
 JD IDE runs).
 
+**Group monsters and mines** merges collected monsters or mines of one template that stand within the
+group distance of each other (10 m by default; chains count) into one row. A group imports as an area
+like the official ones: monsters on the terrain, covering where they stood plus 2 m, spawning as many as
+were seen, with death count 50; mines as a resource area of that size and count. Groups show their count
+and size in the list and as dashed areas on the map; later fetches update their members, **Group** again
+merges new ones, and **Ungroup** splits them back.
+
+**Tools › Check problems…** (Ctrl+Shift+M) lists what the server would trip over when it loads the map,
+checked the way its loader reads the file:
+
+- errors: a controller with ID 0 (the server refuses the whole map), repeated controller or trigger IDs
+  (the later controller is left out and its areas never spawn), areas or objects pointing to a missing
+  controller, attached export IDs no area has (the server reads them without checking), NPC areas that
+  revive when switched on, and templates that are not in the open `elements.data` or not an NPC, monster
+  or mine;
+- warnings: monsters in NPC areas and the other way round, unknown types or aggressive values, corpse
+  times the server clamps to 5–1800 s, spawns of 0, attached areas that also spawn on their own, repeated
+  export IDs, and items outside the map (when the map is known);
+- notes (hidden unless ticked): empty areas and areas marked as attached that nothing attaches. Official
+  files have hundreds of these; they are harmless.
+
+Click a problem to go to the item. Official server maps show no errors.
+
 The file keeps its version when saved. Real files use versions 4 to 14; a field a version does not
 store (for example the phase before version 14) shows "not in vN" and cannot be set. Saving checks that
 the file reads back exactly, can back up the old file and warns when another program changed it. All

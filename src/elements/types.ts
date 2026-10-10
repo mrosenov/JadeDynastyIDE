@@ -2035,6 +2035,17 @@ export interface NearbyImport {
   direction: { x: number; y: number; z: number } | null;
   rotation: [number, number, number] | null;
   phase: number | null;
+  /** Groups: full size (x, z) and how many they merge. */
+  size: [number, number] | null;
+  members: number | null;
+}
+
+/** Something the server would reject, skip, clamp or crash on in npcgen.data. */
+export interface NpcGenProblem {
+  severity: "error" | "warning" | "note";
+  section: NpcGenSection;
+  index: number;
+  message: string;
 }
 
 /** A running elementclient.exe. */

@@ -935,6 +935,7 @@ export default function App() {
       accessKey: "t",
       items: [
         { label: "Nearby fetch…", icon: Radar, onSelect: () => genEditor.current?.openNearby(), disabled: !genEditorState.loaded },
+        { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => genEditor.current?.openProblems(), disabled: !genEditorState.loaded },
       ],
     },
   ] : workspace === "npc" ? [

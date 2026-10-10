@@ -1,10 +1,10 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ChevronDown, Copy, Crosshair, FolderOpen, Loader2, Map as MapIcon, Plus, Redo2, Save, Search, Trash2, Undo2, Users, X } from "lucide-react";
-import { clientMaps, cloneNpcGenItem, deleteNpcGenItem, dynTaskLabels, gameClients, gamePosition, importNpcGenNearby, midmapUrl, getNpcGenItem, npcGenView, openNpcGen, pickEssence, redoNpcGen, saveNpcGen, setNpcGenItem, undoNpcGen } from "../elements/api";
+import { ChevronDown, CircleAlert, Copy, Crosshair, FolderOpen, Info, Loader2, Map as MapIcon, Plus, Redo2, RefreshCw, Save, Search, Trash2, TriangleAlert, Undo2, Users, X } from "lucide-react";
+import { clientMaps, cloneNpcGenItem, deleteNpcGenItem, dynTaskLabels, gameClients, gamePosition, importNpcGenNearby, midmapUrl, npcGenProblems, getNpcGenItem, npcGenView, openNpcGen, pickEssence, redoNpcGen, saveNpcGen, setNpcGenItem, undoNpcGen } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatDuration } from "../elements/time";
-import type { ClientMap, GamePosition, NearbyImport, RunningClient, NpcGenArea, NpcGenController, NpcGenGenerator, NpcGenItem, NpcGenObject, NpcGenResource, NpcGenResourceArea, NpcGenSection, NpcGenSummary, NpcGenTime, NpcGenVec3, NpcGenView } from "../elements/types";
+import type { ClientMap, GamePosition, NearbyImport, NpcGenProblem, RunningClient, NpcGenArea, NpcGenController, NpcGenGenerator, NpcGenItem, NpcGenObject, NpcGenResource, NpcGenResourceArea, NpcGenSection, NpcGenSummary, NpcGenTime, NpcGenVec3, NpcGenView } from "../elements/types";
 import { NumberInput, TextInput, VertInput } from "./DynTasksEditor";
 import { CLASS_COLORS, emptyNearby, NearbyPanel, type NearbyState } from "./NpcGenNearby";
 import { ValuePicker } from "./ValuePicker";
@@ -30,6 +30,8 @@ export interface NpcGenEditorHandle {
   toggleMap: () => void;
   /** Tools › Nearby fetch: the window that collects what the game client shows. */
   openNearby: () => void;
+  /** Tools › Check problems. */
+  openProblems: () => void;
 }
 
 interface Props {
@@ -99,6 +101,7 @@ const newGenerator = (): NpcGenGenerator => ({ id: 0, count: 1, refresh: 30, die
 const newResource = (): NpcGenResource => ({ kind: 0, template: 0, refresh: 30, count: 1, heightOffset: 0 });
 const noTime = (): NpcGenTime => ({ year: -1, month: -1, week: -1, day: -1, hours: -1, minutes: 0 });
 const shortName = (label?: string) => label?.split(" › ").pop();
+const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
 /** A titled group of label/value rows. */
 function Card({ title, hint, wide, children }: { title: string; hint?: string; wide?: boolean; children: ReactNode }) {
@@ -505,6 +508,9 @@ interface Marker {
   color: string;
   title: string;
   active: boolean;
+  /** Groups: the area they cover. */
+  width?: number;
+  depth?: number;
 }
 
 function MapPlot({ view, section, selected, onSelect, background, controls, onImageError, markers }: { view: NpcGenView; section: NpcGenSection | null; selected: number | null; onSelect: (section: NpcGenSection, index: number) => void; background: Background | null; controls?: ReactNode; onImageError?: () => void; markers?: Marker[] }) {
@@ -558,6 +564,9 @@ function MapPlot({ view, section, selected, onSelect, background, controls, onIm
       {view.areas.map((point) => shape(point, "areas", COLORS.areas[point.kind] ?? "#c08a2e"))}
       {markers?.map((marker) => {
         const size = unit * (marker.active ? 7 : 4);
+        if (marker.width && marker.depth) {
+          return <rect key={marker.key} className="npcgen-marker" x={marker.x - marker.width / 2} y={-marker.z - marker.depth / 2} width={marker.width} height={marker.depth} fill={marker.color} fillOpacity={0.15} stroke={marker.active ? "var(--accent)" : marker.color} strokeDasharray="4 3" strokeWidth={marker.active ? 2.5 : 1.5} vectorEffect="non-scaling-stroke"><title>{marker.title}</title></rect>;
+        }
         return <rect key={marker.key} className="npcgen-marker" x={marker.x - size / 2} y={-marker.z - size / 2} width={size} height={size} transform={`rotate(45 ${marker.x} ${-marker.z})`} fill={marker.color} stroke={marker.active ? "var(--accent)" : "#fff"} strokeWidth={marker.active ? 2.5 : 1} vectorEffect="non-scaling-stroke"><title>{marker.title}</title></rect>;
       })}
     </svg>
@@ -572,6 +581,25 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
   const [section, setSection] = useState<NpcGenSection>("areas");
   /** The Nearby fetch window (Tools menu); what it collected stays while it is closed. */
   const [nearbyOpen, setNearbyOpen] = useState(false);
+  /** The problems window: the last check (null while checking) and whether notes show. */
+  const [problemsOpen, setProblemsOpen] = useState(false);
+  const [problems, setProblems] = useState<NpcGenProblem[] | null>(null);
+  const [showNotes, setShowNotes] = useState(false);
+  /** Half the size of the detected map (rows × 512), for the outside-the-map check. */
+  const halfSize = useRef<number | null>(null);
+  const checkProblems = useCallback(async () => {
+    setProblems(null);
+    try {
+      setProblems(await npcGenProblems(halfSize.current));
+    } catch (problem) {
+      setProblemsOpen(false);
+      setError(String(problem).replace(/^Error: /, ""));
+    }
+  }, []);
+  const openProblems = useCallback(() => {
+    setProblemsOpen(true);
+    void checkProblems();
+  }, [checkProblems]);
   const [nearby, setNearby] = useState<NearbyState>(emptyNearby);
   const [focusedRow, setFocusedRow] = useState<string | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
@@ -736,7 +764,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     if (target) setSaving({ target, changed: false });
   }, [view]);
 
-  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => void load(path), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, cloneSelected, deleteSelected, toggleMap, openNearby: () => { if (view) setNearbyOpen(true); } }), [choose, cloneSelected, deleteSelected, load, redo, saveAs, saveCurrent, toggleMap, undo, view]);
+  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => void load(path), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, cloneSelected, deleteSelected, toggleMap, openNearby: () => { if (view) setNearbyOpen(true); }, openProblems: () => { if (view) openProblems(); } }), [choose, cloneSelected, deleteSelected, load, openProblems, redo, saveAs, saveCurrent, toggleMap, undo, view]);
 
   useEffect(() => {
     if (!active) return;
@@ -744,9 +772,16 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
       const mod = event.ctrlKey || event.metaKey;
       const typing = event.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName);
       const key = event.key.toLowerCase();
-      if (event.key === "Escape" && nearbyOpen && !choosingClient) {
+      if (event.key === "Escape" && (nearbyOpen || problemsOpen) && !choosingClient) {
         event.preventDefault();
         setNearbyOpen(false);
+        setProblemsOpen(false);
+        return;
+      }
+      if (mod && event.shiftKey && key === "m") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (view) openProblems();
         return;
       }
       if (mod && ["o", "s", "z", "y", "d"].includes(key)) {
@@ -765,7 +800,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [active, choose, choosingClient, cloneSelected, deleteSelected, nearbyOpen, redo, saveAs, saveCurrent, undo]);
+  }, [active, choose, choosingClient, cloneSelected, deleteSelected, nearbyOpen, openProblems, problemsOpen, redo, saveAs, saveCurrent, undo, view]);
 
   const rows = useMemo(() => (view?.[section] ?? []).filter((entry) => {
     if (!needle) return true;
@@ -794,6 +829,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     store(MAP_FOR_KEY, next);
   };
   const setStyle = (change: Partial<typeof backgroundStyle>) => setBackgroundStyle((current) => { const next = { ...current, ...change }; store(BACKGROUND_KEY, next); return next; });
+  halfSize.current = map && map.rows > 0 ? map.rows * 512 : null;
   const imageUrl = map?.hasImage && map.rows > 0 && mapGeneration !== null ? midmapUrl(mapGeneration, map.path) : null;
   const background = imageUrl && backgroundStyle.on && failedImage !== imageUrl ? { url: imageUrl, half: map!.rows * 512, opacity: backgroundStyle.opacity / 100 } : null;
   const mapControls = mapGeneration === null ? <span className="muted small">Set the game client folder in Settings to show the map image.</span>
@@ -870,13 +906,54 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
       </aside>
       <div className={"npcgen-main" + (showMap && section !== "controllers" ? " with-map" : "")}>
         {showMap && section !== "controllers" && <MapPlot view={view} section={section} selected={selected} onSelect={(kind, index) => { setSection(kind); setSelected(index); }} background={background} controls={mapControls} onImageError={() => setFailedImage(imageUrl)}
-          markers={nearby.rows.filter((row) => nearby.shown[row.class === "unknown" ? "npc" : row.class as keyof NearbyState["shown"]] ?? true).map((row) => ({ key: row.key, x: row.position.x, z: row.position.z, color: CLASS_COLORS[row.class], title: `Collected: ${row.label ?? row.template} (${row.template})`, active: row.key === focusedRow }))} />}
+          markers={nearby.rows.filter((row) => nearby.shown[row.class === "unknown" ? "npc" : row.class as keyof NearbyState["shown"]] ?? true).map((row) => ({ key: row.key, x: row.position.x, z: row.position.z, color: CLASS_COLORS[row.class], title: `Collected: ${row.label ?? row.template} (${row.template})${row.members ? ` × ${row.members.length}` : ""}`, active: row.key === focusedRow, width: row.size?.x, depth: row.size?.z }))} />}
         <div className="dyn-task-form-scroll">
           {selected === null ? <div className="empty-note">Select a {SECTIONS.find((entry) => entry.key === section)!.one}{section !== "controllers" ? " in the list or on the map" : ""}.</div>
             : <><div className="dyn-task-title"><h3>{SECTIONS.find((entry) => entry.key === section)!.one} {selected + 1}</h3></div>{form ?? <div className="empty-note">Loading…</div>}</>}
         </div>
       </div>
     </div>
+    {problemsOpen && (() => {
+      const rank = { error: 0, warning: 1, note: 2 };
+      const order = SECTIONS.map((entry) => entry.key);
+      const sorted = [...(problems ?? [])].sort((a, b) => rank[a.severity] - rank[b.severity] || order.indexOf(a.section) - order.indexOf(b.section) || a.index - b.index);
+      const tally = (severity: NpcGenProblem["severity"]) => (problems ?? []).filter((problem) => problem.severity === severity).length;
+      const shown = sorted.filter((problem) => showNotes || problem.severity !== "note");
+      const name = (problem: NpcGenProblem) => {
+        const entry = view[problem.section][problem.index];
+        if (!entry) return null;
+        if (problem.section === "controllers") return entry.label || null;
+        const first = entry.ids[0];
+        return first ? shortName(labels[String(first)]) ?? `#${first}` : null;
+      };
+      const icon = { error: <CircleAlert size={14} />, warning: <TriangleAlert size={14} />, note: <Info size={14} /> };
+      return <div className="modal-backdrop" onMouseDown={() => setProblemsOpen(false)}>
+        <div className="modal npcgen-problems-dialog" role="dialog" aria-label="Problems" onMouseDown={(event) => event.stopPropagation()}>
+          <header className="modal-head">
+            <h3>Problems</h3>
+            {problems && <span className="muted small">{count(tally("error"))} error{tally("error") === 1 ? "" : "s"} · {count(tally("warning"))} warning{tally("warning") === 1 ? "" : "s"}</span>}
+            <span className="spacer" />
+            <label className="npcgen-flag small" title="Harmless but probably unintended, common in official files (empty areas, unused attachments)"><input type="checkbox" checked={showNotes} onChange={(event) => setShowNotes(event.target.checked)} /> Notes ({count(tally("note"))})</label>
+            <button className="btn small" onClick={() => void checkProblems()} disabled={!problems}><RefreshCw size={12} /> Check again</button>
+            <button className="icon-btn" onClick={() => setProblemsOpen(false)} aria-label="Close" title="Close (Esc)"><X size={16} /></button>
+          </header>
+          <div className="npcgen-problems-list">
+            {!problems ? <div className="empty-note"><Loader2 size={14} className="spin" /> Checking…</div>
+              : shown.length ? shown.map((problem, index) => <button key={index} className={`npcgen-problem ${problem.severity}`} title="Show it" onClick={() => { setProblemsOpen(false); setSection(problem.section); setSelected(problem.index); }}>
+                {icon[problem.severity]}
+                <span className="npcgen-problem-item">{capitalize(SECTIONS.find((entry) => entry.key === problem.section)!.one)} {problem.index + 1}</span>
+                <span className="npcgen-problem-name truncate">{name(problem)}</span>
+                <span className="npcgen-problem-message">{problem.message}</span>
+              </button>)
+              : <div className="empty-note">No problems found{tally("note") && !showNotes ? ` (${count(tally("note"))} notes hidden)` : ""}.</div>}
+          </div>
+          <footer className="modal-foot muted small">
+            {elementsPath ? "Templates are checked against the open elements.data." : "Open the server's elements.data to check NPC, monster and mine templates too."}
+            {" "}{halfSize.current ? `Positions are checked against the map (±${halfSize.current}).` : "The map is unknown, so positions are not checked."}
+          </footer>
+        </div>
+      </div>;
+    })()}
     {nearbyOpen && <div className="modal-backdrop" onMouseDown={() => setNearbyOpen(false)}>
       <div className="modal npcgen-nearby-dialog" role="dialog" aria-label="Nearby fetch" onMouseDown={(event) => event.stopPropagation()}>
         <header className="modal-head"><h3>Nearby fetch</h3><span className="muted small">What your game client has loaded around your character</span><span className="spacer" /><button className="icon-btn" onClick={() => setNearbyOpen(false)} aria-label="Close" title="Close (Esc); the list stays"><X size={16} /></button></header>

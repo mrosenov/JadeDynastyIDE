@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (183 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (185 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -541,7 +541,7 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `CECMatter::INFO {mid, tid, dropper_id, dir0, dir1, rad}`; dynamic objects are matters with tid
   `0x80000000 | id`. `find_layout` accepts six distinct manager pointers, a table whose walk equals its
   count, and an info offset where 12 objects store their own key; `find_phase` needs the only offset with
-  `bool m_bPhase`/`short m_iPhaseId` semantics and ≥ 2 phased objects (unverified live: no phases in z1).
+  `bool m_bPhase`/`short m_iPhaseId` semantics and ≥ 2 phased objects (confirmed by the user in x1, Oct 10 2026: NPCs get their phases).
   Layouts are cached per exe for the session. Live ForsakenJD (z1, Oct 10 2026): world +0x08, managers
   +0x24, NPC table +0x10 / info +0x11C, matter table +0x10 / info +0x10C; search 35 ms, collect < 1 ms;
   collected NPC positions equal the zxserver/1559 z1 npcgen.data spawns. Classification (`lib.rs`):
@@ -549,6 +549,18 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   dropper or non-MINE_ESSENCE → item). `Document::import_nearby` (one journal entry, `record_all`):
   point spawns as official ones (kind 1, init/revive/valid once 1, NPC refresh 0), resource type 47
   (`DT_MINE_ESSENCE`; the server ignores it), export IDs after the section's highest (v12+), phase v14.
+- **Grouping** (`NpcGenNearby.tsx` `groupRows`): single-linkage per (class, template) within the radius;
+  groups keep `members` (merge updates them; Ungroup restores); `NearbyImport.size`/`members` make
+  `import_nearby` write areas (monsters: kind 0, extents (w, 20, d), death count 50, count = members;
+  mines: extent_x/z, count = members), as official areas.
+- **Problems** (`Document::problems`, command `npcgen_problems`, Ctrl+Shift+M): from
+  `npc_generator::LoadGenData` / `InsertSpawnControl` / `InsertSpawner`: controller id 0 → map refused;
+  duplicate controller id or trigger id (>0) → later one not created; missing controller → spawner never
+  inserted; attached export ID missing → `*GetGenAttachArea` without check; missing template → skipped;
+  aggressive > 2 → `ASSERT`, then 0; corpse delay clamped 5–1800; area outside the world region →
+  skipped. Severity "note" for empty areas and unreferenced attached areas (865 + 52 in the zxserver/1559
+  maps, which have no errors). Templates come from `Document::essence_struct` (locks: npcgen, then
+  document, then npcgen again, never two at once); the map half size (rows × 512) from the UI.
 - Servers name map folders by the instance's **data path**, images use its **path** (`e12` vs `z12`
   for Foxhill). `detectMap` (NpcGenEditor) tries `npcgen_<map>.data`, then the folder, data path
   first; zxserver/1559: 99/139 map folders match (83/119 with an image); `b31`, `d12`, `t01–t03`

@@ -295,6 +295,20 @@ async fn game_nearby(pid: u32, state: State<'_, AppState>) -> Result<NearbyFetch
     Ok(NearbyFetch { player, rows })
 }
 
+/// Problems the server would have with the open npcgen.data; templates are checked against the open
+/// elements.data, positions against the map size (`half_size`) when the UI knows the map.
+#[tauri::command]
+fn npcgen_problems(half_size: Option<f32>, state: State<'_, AppState>) -> Result<Vec<npcgen::Problem>, String> {
+    // Lock one document at a time: templates first, then the elements lookup, then the check.
+    let ids = state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open npcgen.data first")?.template_ids();
+    let templates = {
+        let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+        document.as_ref().map(|document| ids.iter().filter_map(|&id| document.essence_struct(id).map(|(name, _)| (id, name))).collect())
+    };
+    let context = npcgen::ProblemContext { templates, half_size };
+    Ok(state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open npcgen.data first")?.problems(&context))
+}
+
 #[tauri::command]
 fn import_npcgen_nearby(rows: Vec<npcgen::NearbyImport>, options: npcgen::NearbyOptions, state: State<'_, AppState>) -> Result<npcgen::View, String> {
     state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open npcgen.data first")?.import_nearby(rows, options)
@@ -1856,6 +1870,7 @@ pub fn run() {
             game_position,
             game_nearby,
             import_npcgen_nearby,
+            npcgen_problems,
             dyn_tasks_view,
             dyn_task,
             set_dyn_task,

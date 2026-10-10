@@ -9792,3 +9792,49 @@ select.ie-control {
   height: min(780px, 92vh);
   max-height: none;
 }
+.npcgen-problems-dialog {
+  width: min(980px, 96vw);
+  height: min(680px, 90vh);
+  max-height: none;
+}
+.npcgen-problems-list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 6px;
+}
+.npcgen-problem {
+  display: grid;
+  grid-template-columns: 18px 130px minmax(0, 160px) minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.npcgen-problem:hover {
+  background: var(--bg-hover);
+}
+.npcgen-problem.error > svg {
+  color: var(--danger);
+}
+.npcgen-problem.warning > svg {
+  color: var(--warn);
+}
+.npcgen-problem.note > svg {
+  color: var(--text-dim);
+}
+.npcgen-problem-item {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.npcgen-problem-name {
+  color: var(--text-dim);
+}
