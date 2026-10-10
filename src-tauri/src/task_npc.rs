@@ -152,11 +152,7 @@ pub fn save(request: SaveRequest) -> Result<SaveReport, String> {
         return Err("The saved table would not read back as these rows; nothing was written".into());
     }
     let backup = if request.backup && target.is_file() {
-        let stamp = Local::now().format("%Y%m%d-%H%M%S");
-        let name = target.file_name().map(|name| name.to_string_lossy().into_owned()).unwrap_or_else(|| "task_npc.data".into());
-        let path = target.with_file_name(format!("{name}.{stamp}.bak"));
-        std::fs::copy(&target, &path).map_err(|error| format!("Could not back up {} to {}: {error}", target.display(), path.display()))?;
-        Some(path)
+        Some(crate::backup::archive(&target, std::slice::from_ref(&target))?)
     } else {
         None
     };

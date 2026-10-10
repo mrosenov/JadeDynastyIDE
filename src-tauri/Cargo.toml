@@ -30,6 +30,7 @@ png = "0.17"
 md-5 = "0.10"
 chrono = { version = "0.4", default-features = false, features = ["clock"] }
 reqwest = { version = "0.13", default-features = false, features = ["json", "native-tls-no-alpn"] }
+sevenz-rust2 = { version = "0.23", default-features = false, features = ["compress", "util"] }
 
 # Reading the character position from a running game client (read-only).
 [target.'cfg(windows)'.dependencies]

@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (195 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (196 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -57,6 +57,7 @@ Environment quirks (Windows 11, Git Bash):
 | File | Role |
 |---|---|
 | `lib.rs` | Tauri commands and `AppState` (open document, compared document, catalog, settings, client resources). Every UI call lands here. |
+| `backup.rs` | Save backups: 7-Zip archives in `jdide_backups` next to the file (`archive`, `archive_path`). |
 | `settings.rs` | `settings.json` in the app config dir (client folder, open on start). |
 | `elements/reader.rs` | Structural reader: header, lists, marker segments, talk block; `insert_record`/`remove_record` keep offsets in sync. |
 | `elements/format.rs` | Layout catalog: built-in layouts (embedded `formats/`) + user overlays; `Ty`, `Field`, `ListDef`, markers. |
@@ -222,8 +223,12 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   chosen in the dialog.
 - Writes to `<name>.jdide-saving`, then renames it over the target; clears the read-only
   flag (as the official tools do).
-- Backup: on the first save over a file in a session, the old file is copied to
-  `elements.data.YYYYMMDD-HHMMSS.bak` (a checkbox, remembered in localStorage).
+- Backup: on the first save over a file in a session, the old file is archived by `backup::archive`
+  (a checkbox, remembered in localStorage). Every editor's save uses it: `<dir>/jdide_backups/<file>_<YYYYMMDD-HHMMSS>.7z`
+  (`-2`, `-3` … within one second), written as `.7z.partial` and renamed. `sevenz-rust2` (pure Rust, features
+  compress + util), LZMA2 preset 5, one solid stream, multi-threaded 16 MB chunks: ForsakenJD elements.data 42 MB →
+  1 MB in 1.8 s; its task set (index + 56 packs, 199 MB) → 3 MB in 4.8 s (18 s non-solid, one file per stream).
+  tasks.data archives the index and every replaced pack. Older `*.bak` files/folders are not touched.
 - Changed-on-disk guard: a quick Ctrl+S save fails with a `CHANGED_ON_DISK` prefix when
   another program changed the file since it was read; the dialog then shows the warning
   and sends `replaceChanged: true`.

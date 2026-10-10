@@ -616,11 +616,7 @@ impl DynDocument {
             return Err("The saved pack would not read back as these tasks; nothing was written".into());
         }
         let backup_path = if backup && target.is_file() && (!same || !self.backed_up) {
-            let stamp = chrono::Local::now().format("%Y%m%d-%H%M%S");
-            let name = target.file_name().map(|name| name.to_string_lossy().into_owned()).unwrap_or_else(|| "dyn_tasks.data".into());
-            let path = target.with_file_name(format!("{name}.{stamp}.bak"));
-            std::fs::copy(&target, &path).map_err(|error| format!("Could not back up {} to {}: {error}", target.display(), path.display()))?;
-            Some(path)
+            Some(crate::backup::archive(&target, std::slice::from_ref(&target))?)
         } else {
             None
         };

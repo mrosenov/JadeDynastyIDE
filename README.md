@@ -48,7 +48,7 @@ theme. The discovered data-file and package lists stay collapsed until clicked. 
 - lists the client's data files (`element\data\*.data`) and opens `elements.data`, `tasks.data`,
   `dyn_tasks.data`, `task_npc.data`, `path.data`, `npcgen.data` and the gshop files from there, each
   in its own workspace. `tasks.data` stands for its numbered packs (`tasks.data1`, …), which are not
-  listed, and backups (`*.bak`) are left out. Other kinds are listed for later versions. It can also
+  listed, and old `*.bak` backups are left out. Other kinds are listed for later versions. It can also
   open the client's `elements.data` on start.
 - reads `path.data`, so path and icon fields show their resource path.
 - reads item icons from `surfaces.pck` (`surfaces\iconset\iconlist_ivtr.dds` + `.txt`).
@@ -446,8 +446,8 @@ that name the quest (`task_npc.data`, server scripts) are not updated.
 edited roots when saving over the open task set, recalculates every affected root offset and pack
 MD5, and preserves unchanged packs byte-for-byte. Save As writes a complete task set. Before any
 replacement, the complete staged set is reopened, every pack checksum is checked, and every root
-must decode and encode back to identical bytes. An optional timestamped `.bak` folder keeps the
-complete replaced set. A changed-on-disk guard stops saving if the index or any source pack was
+must decode and encode back to identical bytes. An optional backup keeps the complete replaced
+set (the index and every pack) in one archive. A changed-on-disk guard stops saving if the index or any source pack was
 altered by another program; read-only destination files are made writable. Undo and redo remain
 available after a successful save, except when the save adds new top-level tasks: those become part of
 the saved set, so the save dialog warns that undo history starts again from the saved state.
@@ -993,8 +993,17 @@ The first save asks first, showing:
   the right one either way. Without a path.data the old checksum stays and a client that checks
   refuses the file;
 - a warning when another program changed the file since it was read;
-- **Keep a backup**: the replaced file is copied to `elements.data.YYYYMMDD-HHMMSS.bak` next to it,
-  once per file and session (remembered).
+- **Keep a backup**: the replaced file is archived first (see Backups below), once per file and
+  session (remembered).
+
+**Backups.** Every editor's save (elements.data, tasks.data, dyn_tasks.data, task_npc.data,
+path.data, npcgen.data and the gshop files) keeps its backup the same way: the replaced file, or for
+tasks.data the index with all its packs, goes into a 7-Zip archive in a `jdide_backups` folder next to
+the file, created when needed, named `<file>_<YYYYMMDD-HHMMSS>.7z` (for example
+`jdide_backups\elements.data_20261010-203011.7z`). Data files compress very well: ForsakenJD's 42 MB
+elements.data becomes about 1 MB (under 2 seconds), its 199 MB task set about 3 MB (about 5 seconds).
+Open the archives with 7-Zip. Backups made by older versions (`*.bak` files and folders) stay where
+they are.
 
 Later Ctrl+S saves right away with the same choices (the top bar confirms it with the time and
 checksum), unless the file changed on disk, which brings the dialog back. The file is written

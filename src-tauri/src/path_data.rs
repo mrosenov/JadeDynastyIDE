@@ -254,12 +254,6 @@ pub fn import_json(path: String) -> Result<JsonImport, String> {
     Ok(JsonImport { rows, source_path, exported_at })
 }
 
-fn backup_path(target: &Path) -> PathBuf {
-    let stamp = Local::now().format("%Y%m%d-%H%M%S");
-    let name = target.file_name().map(|name| name.to_string_lossy().into_owned()).unwrap_or_else(|| "path.data".into());
-    target.with_file_name(format!("{name}.{stamp}.bak"))
-}
-
 pub(crate) fn write_replacing(target: &Path, data: &[u8]) -> Result<(), String> {
     let name = target.file_name().ok_or("The file has no name")?.to_string_lossy().into_owned();
     let temporary = target.with_file_name(format!("{name}.jdide-saving"));
@@ -289,9 +283,7 @@ pub fn save(request: SaveRequest) -> Result<SaveReport, String> {
     }
     let data = encode(&request.rows)?;
     let backup = if request.backup && target.is_file() {
-        let path = backup_path(&target);
-        std::fs::copy(&target, &path).map_err(|error| format!("Could not back up {} to {}: {error}", target.display(), path.display()))?;
-        Some(path)
+        Some(crate::backup::archive(&target, std::slice::from_ref(&target))?)
     } else {
         None
     };

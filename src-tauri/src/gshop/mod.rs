@@ -691,10 +691,8 @@ impl Document {
         }
         let mut report = SaveReport { path: copy.path.display().to_string(), backup: None, timestamp };
         if backup && !copy.backed_up && copy.path.exists() {
-            let name = format!("{}.{}.bak", copy.path.file_name().and_then(|name| name.to_str()).unwrap_or("gshop.data"), Local::now().format("%Y%m%d-%H%M%S"));
-            let target = copy.path.with_file_name(name);
-            std::fs::copy(&copy.path, &target).map_err(|error| format!("Could not back up {}: {error}", copy.path.display()))?;
-            report.backup = Some(target.display().to_string());
+            let archive = crate::backup::archive(&copy.path, std::slice::from_ref(&copy.path))?;
+            report.backup = Some(archive.display().to_string());
             copy.backed_up = true;
         }
         let temporary = copy.path.with_extension("data.jdide-saving");

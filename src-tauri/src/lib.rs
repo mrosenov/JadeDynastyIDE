@@ -1,3 +1,4 @@
+mod backup;
 mod client;
 mod dyn_tasks;
 mod elements;

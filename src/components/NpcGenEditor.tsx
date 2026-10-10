@@ -1158,7 +1158,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
         <p className="mono truncate" title={saving.target ?? view.path}>{saving.target ?? view.path}</p>
         <p className="muted small">The file keeps its version ({view.version}). The server reads it when the map starts, so restart that map's server.</p>
         {saving.changed && <div className="path-data-message error">Another program changed this file since it was opened. Replacing it discards those changes.</div>}
-        <label className="small"><input type="checkbox" checked={backup} onChange={(event) => { setBackup(event.target.checked); try { localStorage.setItem(BACKUP_KEY, event.target.checked ? "1" : "0"); } catch { /* optional */ } }} /> Back up the existing file first (<span className="mono">.bak</span>, once per session)</label>
+        <label className="small"><input type="checkbox" checked={backup} onChange={(event) => { setBackup(event.target.checked); try { localStorage.setItem(BACKUP_KEY, event.target.checked ? "1" : "0"); } catch { /* optional */ } }} /> Back up the existing file first (a .7z in <span className="mono">jdide_backups</span> next to it, once per session)</label>
         <footer><span className="spacer" /><button className="btn" onClick={() => setSaving(null)} disabled={busy}>Cancel</button><button className="btn primary" onClick={() => void writeTo(saving.target, saving.changed)} disabled={busy}>{busy ? <Loader2 size={14} className="spin" /> : <Save size={14} />} {saving.changed ? "Replace anyway" : "Save"}</button></footer>
       </div>
     </div>}

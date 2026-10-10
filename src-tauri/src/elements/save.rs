@@ -171,11 +171,9 @@ pub fn stored_digest(data: &[u8], slots: &[usize]) -> Option<String> {
     text.iter().all(u8::is_ascii_hexdigit).then(|| String::from_utf8(text).unwrap().to_lowercase())
 }
 
-/// `elements.data` → `elements.data.20261003-143205.bak`, next to it.
+/// `elements.data` → `jdide_backups/elements.data_20261003-143205.7z`, next to it.
 fn backup_path(target: &Path) -> PathBuf {
-    let stamp = chrono::Local::now().format("%Y%m%d-%H%M%S");
-    let name = target.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| "elements.data".into());
-    target.with_file_name(format!("{name}.{stamp}.bak"))
+    crate::backup::archive_path(target)
 }
 
 fn same_path(a: &Path, b: &Path) -> bool {
@@ -312,9 +310,7 @@ impl Document {
 
         let replaces = target.is_file();
         let backup = if options.backup && replaces && !self.backed_up.contains(&target) {
-            let b = backup_path(&target);
-            std::fs::copy(&target, &b).map_err(|e| format!("Could not back up {} to {}: {e}", target.display(), b.display()))?;
-            Some(b)
+            Some(crate::backup::archive(&target, std::slice::from_ref(&target))?)
         } else {
             None
         };
@@ -488,8 +484,13 @@ mod tests {
         assert_eq!(plan.checksum.status, ChecksumStatus::NoPathData);
         assert!(plan.backup.is_some());
         let report = doc.save(&options).unwrap();
+        // The replaced file, archived in jdide_backups next to it.
         let backup = PathBuf::from(report.backup.unwrap());
-        assert_eq!(std::fs::read(&backup).unwrap(), source.file.data);
+        assert_eq!(backup.parent().unwrap(), dir.join(crate::backup::FOLDER));
+        assert!(backup.file_name().unwrap().to_string_lossy().starts_with("elements.data_"));
+        let unpacked = dir.join("unpacked");
+        sevenz_rust2::decompress_file(&backup, &unpacked).unwrap();
+        assert_eq!(std::fs::read(unpacked.join("elements.data")).unwrap(), source.file.data);
         assert!(report.digest.is_none());
         // The second save keeps the first backup.
         assert!(doc.save(&options).unwrap().backup.is_none());

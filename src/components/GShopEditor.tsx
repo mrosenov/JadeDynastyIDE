@@ -703,7 +703,7 @@ export const GShopEditor = forwardRef<GShopEditorHandle, Props>(function GShopEd
             <label className="save-backup">
               <input type="checkbox" checked={backup} disabled={busy} onChange={(event) => { setBackup(event.target.checked); try { localStorage.setItem(BACKUP_KEY, event.target.checked ? "1" : "0"); } catch { /* optional */ } }} />
               <Archive size={14} />
-              <span>Keep a backup of the replaced file<span className="muted small save-backup-name"> · {name}.<i>date-time</i>.bak, once per session</span></span>
+              <span>Keep a backup of the replaced file<span className="muted small save-backup-name"> · jdide_backups\{name}_<i>date-time</i>.7z, once per session</span></span>
             </label>
           </div>
           <footer className="modal-foot">

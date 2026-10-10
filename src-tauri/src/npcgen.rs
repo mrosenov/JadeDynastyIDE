@@ -1145,10 +1145,7 @@ impl Document {
             return Err("The saved file would not read back as this map; nothing was written".into());
         }
         let backup_path = if backup && target.is_file() && (!same || !self.backed_up) {
-            let stamp = Local::now().format("%Y%m%d-%H%M%S");
-            let path = target.with_file_name(format!("npcgen.data.{stamp}.bak"));
-            std::fs::copy(&target, &path).map_err(|error| format!("Could not back up {} to {}: {error}", target.display(), path.display()))?;
-            Some(path)
+            Some(crate::backup::archive(&target, std::slice::from_ref(&target))?)
         } else {
             None
         };

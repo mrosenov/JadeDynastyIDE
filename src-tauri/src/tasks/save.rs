@@ -87,10 +87,9 @@ fn numbered(index: &Path, number: usize) -> PathBuf {
     PathBuf::from(name)
 }
 
+/// `tasks.data` → `jdide_backups/tasks.data_20261003-143205.7z` (the index and every pack), next to it.
 fn backup_path(target: &Path) -> PathBuf {
-    let stamp = chrono::Local::now().format("%Y%m%d-%H%M%S");
-    let name = target.file_name().map(|name| name.to_string_lossy().into_owned()).unwrap_or_else(|| "tasks.data".into());
-    target.with_file_name(format!("{name}.{stamp}.bak"))
+    crate::backup::archive_path(target)
 }
 
 fn set_writable(path: &Path) {
@@ -258,16 +257,9 @@ impl TaskDocument {
     fn install(&mut self, staged: &Path, target: &Path, changed_packs: &HashSet<usize>, same_file: bool, backup: bool) -> Result<Option<PathBuf>, String> {
         let replaced_pack_count = if target.is_file() { TaskContainer::open(target)?.packs.len() } else { 0 };
         let persistent_backup = if backup && target.is_file() && !self.backed_up.contains(target) {
-            let folder = backup_path(target);
-            std::fs::create_dir(&folder).map_err(|error| format!("Could not create backup {}: {error}", folder.display()))?;
-            std::fs::copy(target, folder.join(target.file_name().unwrap())).map_err(|error| error.to_string())?;
-            for number in 1..=replaced_pack_count {
-                let source = numbered(target, number);
-                if source.is_file() {
-                    std::fs::copy(&source, folder.join(source.file_name().unwrap())).map_err(|error| error.to_string())?;
-                }
-            }
-            Some(folder)
+            let mut files = vec![target.to_path_buf()];
+            files.extend((1..=replaced_pack_count).map(|number| numbered(target, number)));
+            Some(crate::backup::archive(target, &files)?)
         } else { None };
         let rollback = staged.parent().unwrap().join("rollback");
         std::fs::create_dir(&rollback).map_err(|error| error.to_string())?;
@@ -353,7 +345,13 @@ mod tests {
         let saved = document.save(&SaveOptions { path: copy.display().to_string(), backup: true }).unwrap();
         assert_eq!(saved.changed_roots, 1);
         assert_eq!(saved.changed_packs, 1);
-        assert!(saved.backup.as_ref().is_some_and(|path| Path::new(path).is_dir()));
+        // One archive with the index and every pack of the replaced set.
+        let archive = PathBuf::from(saved.backup.as_ref().unwrap());
+        assert!(archive.is_file() && archive.extension().is_some_and(|extension| extension == "7z"));
+        let unpacked = archive.with_extension("unpacked");
+        sevenz_rust2::decompress_file(&archive, &unpacked).unwrap();
+        assert_eq!(std::fs::read_dir(&unpacked).unwrap().count(), 1 + TaskContainer::open(&copy).unwrap().packs.len());
+        let _ = std::fs::remove_dir_all(&unpacked);
         let reopened = TaskContainer::open(&copy).unwrap();
         assert_eq!(reopened.root(0, 1).unwrap(), before_second);
         assert_ne!(std::fs::read(&copy).unwrap()[20..36], original_index[20..36]);
