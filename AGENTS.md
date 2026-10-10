@@ -533,7 +533,8 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `follow` rejects null pointers ("not in the world") and non-finite or huge values. Opens the process
   with PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ only (`windows-sys`, Windows only). No
   anti-cheat DLLs in the four client folders. Not yet checked against a live client.
-- **Nearby fetch** (`client/nearby.rs`, `NpcGenNearby.tsx`, commands `game_nearby`, `import_npcgen_nearby`):
+- **Nearby fetch** (`client/nearby.rs`, `NpcGenNearby.tsx`, commands `game_nearby`, `import_npcgen_nearby`;
+  a window from the menu bar, Tools › Nearby fetch…, via `NpcGenEditorHandle.openNearby`; the editor keeps the list):
   `CECGameRun::m_pWorld` → `CECWorld::m_aManagers[6]` (player, NPC, matter, ornament, skill gfx, decal) →
   `abase::hashtab<Object*, int>` (`{hash, count, vector{data, finish, max, size}}`, nodes `{next, value,
   key}`). Keys: NPC IDs `0x8…` without `0x4…`, matter IDs `0xC…`. `CECNPC::INFO {nid, tid}`,

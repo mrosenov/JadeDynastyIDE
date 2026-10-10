@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ChevronDown, Copy, Crosshair, Radar, Wrench, FolderOpen, Loader2, Map as MapIcon, Plus, Redo2, Save, Search, Trash2, Undo2, Users, X } from "lucide-react";
+import { ChevronDown, Copy, Crosshair, FolderOpen, Loader2, Map as MapIcon, Plus, Redo2, Save, Search, Trash2, Undo2, Users, X } from "lucide-react";
 import { clientMaps, cloneNpcGenItem, deleteNpcGenItem, dynTaskLabels, gameClients, gamePosition, importNpcGenNearby, midmapUrl, getNpcGenItem, npcGenView, openNpcGen, pickEssence, redoNpcGen, saveNpcGen, setNpcGenItem, undoNpcGen } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatDuration } from "../elements/time";
@@ -28,6 +28,8 @@ export interface NpcGenEditorHandle {
   cloneSelected: () => void;
   deleteSelected: () => void;
   toggleMap: () => void;
+  /** Tools › Nearby fetch: the window that collects what the game client shows. */
+  openNearby: () => void;
 }
 
 interface Props {
@@ -568,8 +570,8 @@ function MapPlot({ view, section, selected, onSelect, background, controls, onIm
 export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGenEditor({ active, onStateChange, icon, elementsPath = null, mapGeneration = null }, ref) {
   const [view, setView] = useState<NpcGenView | null>(null);
   const [section, setSection] = useState<NpcGenSection>("areas");
-  /** The Tools tab replaces the sections' list and form. */
-  const [tools, setTools] = useState(false);
+  /** The Nearby fetch window (Tools menu); what it collected stays while it is closed. */
+  const [nearbyOpen, setNearbyOpen] = useState(false);
   const [nearby, setNearby] = useState<NearbyState>(emptyNearby);
   const [focusedRow, setFocusedRow] = useState<string | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
@@ -699,15 +701,15 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
   const undo = useCallback(() => { if (view?.canUndo) void run(undoNpcGen); }, [run, view?.canUndo]);
   const redo = useCallback(() => { if (view?.canRedo) void run(redoNpcGen); }, [run, view?.canRedo]);
   const cloneSelected = useCallback(() => {
-    if (selected === null || tools) return;
+    if (selected === null || nearbyOpen) return;
     void run(async () => { const result = await cloneNpcGenItem(section, selected); setSelected(result.index); return result.view; });
-  }, [run, section, selected, tools]);
+  }, [run, section, selected, nearbyOpen]);
   const deleteSelected = useCallback(() => {
-    if (selected === null || tools) return;
+    if (selected === null || nearbyOpen) return;
     const one = SECTIONS.find((entry) => entry.key === section)!.one;
     if (!window.confirm(`Delete ${one} ${selected + 1}? Undo brings it back.`)) return;
     void run(async () => { const next = await deleteNpcGenItem(section, selected); const total = next[section].length; setSelected(total ? Math.min(selected, total - 1) : null); return next; });
-  }, [run, section, selected, tools]);
+  }, [run, section, selected, nearbyOpen]);
   const toggleMap = useCallback(() => setShowMap((current) => { try { localStorage.setItem(MAP_KEY, current ? "0" : "1"); } catch { /* optional */ } return !current; }), []);
 
   const writeTo = useCallback(async (target: string | null, replaceChanged: boolean) => {
@@ -734,7 +736,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     if (target) setSaving({ target, changed: false });
   }, [view]);
 
-  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => void load(path), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, cloneSelected, deleteSelected, toggleMap }), [choose, cloneSelected, deleteSelected, load, redo, saveAs, saveCurrent, toggleMap, undo]);
+  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => void load(path), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, cloneSelected, deleteSelected, toggleMap, openNearby: () => { if (view) setNearbyOpen(true); } }), [choose, cloneSelected, deleteSelected, load, redo, saveAs, saveCurrent, toggleMap, undo, view]);
 
   useEffect(() => {
     if (!active) return;
@@ -742,6 +744,11 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
       const mod = event.ctrlKey || event.metaKey;
       const typing = event.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName);
       const key = event.key.toLowerCase();
+      if (event.key === "Escape" && nearbyOpen && !choosingClient) {
+        event.preventDefault();
+        setNearbyOpen(false);
+        return;
+      }
       if (mod && ["o", "s", "z", "y", "d"].includes(key)) {
         if (typing && (key === "z" || key === "y")) return;
         event.preventDefault();
@@ -758,7 +765,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [active, choose, cloneSelected, deleteSelected, redo, saveAs, saveCurrent, undo]);
+  }, [active, choose, choosingClient, cloneSelected, deleteSelected, nearbyOpen, redo, saveAs, saveCurrent, undo]);
 
   const rows = useMemo(() => (view?.[section] ?? []).filter((entry) => {
     if (!needle) return true;
@@ -846,11 +853,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     {note && <div className="path-data-message ok">{note} <button className="link" onClick={() => setNote(null)}>Dismiss</button></div>}
     <div className="dyn-tasks-body">
       <aside className="dyn-task-list">
-        <div className="npcgen-sections">{SECTIONS.map((entry) => <button key={entry.key} className={"btn small" + (section === entry.key && !tools ? " active" : "")} onClick={() => { setTools(false); setSection(entry.key); setSelected(null); }}>{entry.label} <span className="muted">{count(view[entry.key].length)}</span></button>)}
-          <button className={"btn small" + (tools ? " active" : "")} onClick={() => setTools(true)}><Wrench size={12} /> Tools</button></div>
-        {tools ? <div className="dyn-task-rows" role="listbox">
-          <button role="option" aria-selected className="dyn-task-row npcgen-tool selected"><Radar size={16} /><span><b>Nearby fetch</b><span className="muted small">NPCs, monsters, mines and objects around your character in the game{nearby.rows.length ? ` · ${count(nearby.rows.length)} collected` : ""}</span></span></button>
-        </div> : <>
+        <div className="npcgen-sections">{SECTIONS.map((entry) => <button key={entry.key} className={"btn small" + (section === entry.key ? " active" : "")} onClick={() => { setSection(entry.key); setSelected(null); }}>{entry.label} <span className="muted">{count(view[entry.key].length)}</span></button>)}</div>
         <div className="dyn-task-search"><Search size={13} /><input value={query} placeholder="NPC, mine, ID, controller or number" onChange={(event) => setQuery(event.target.value)} />{query && <button className="icon-btn small" onClick={() => setQuery("")}><X size={12} /></button>}</div>
         <div className="dyn-task-rows" role="listbox">
           {rows.map((entry) => <button key={entry.index} role="option" aria-selected={entry.index === selected} className={"dyn-task-row npcgen-row" + (entry.index === selected ? " selected" : "")} onClick={() => setSelected(entry.index)}>
@@ -864,17 +867,22 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
           <span className="spacer" />
           <span className="muted small">{count(rows.length)} / {count(view[section].length)}</span>
         </footer>
-        </>}
       </aside>
-      <div className={"npcgen-main" + (showMap && (tools || section !== "controllers") ? " with-map" : "")}>
-        {showMap && (tools || section !== "controllers") && <MapPlot view={view} section={tools ? null : section} selected={tools ? null : selected} onSelect={(kind, index) => { setTools(false); setSection(kind); setSelected(index); }} background={background} controls={mapControls} onImageError={() => setFailedImage(imageUrl)}
-          markers={tools ? nearby.rows.filter((row) => nearby.shown[row.class === "unknown" ? "npc" : row.class as keyof NearbyState["shown"]] ?? true).map((row) => ({ key: row.key, x: row.position.x, z: row.position.z, color: CLASS_COLORS[row.class], title: `${row.label ?? row.template} (${row.template})`, active: row.key === focusedRow })) : undefined} />}
-        {tools ? <div className="npcgen-tool-pane"><NearbyPanel view={view} state={nearby} setState={setNearby} elementsOpen={!!elementsPath} busy={busy} pickClient={pickClient} onImport={importNearby} onShow={(row) => setFocusedRow(row.key)} /></div> : <div className="dyn-task-form-scroll">
+      <div className={"npcgen-main" + (showMap && section !== "controllers" ? " with-map" : "")}>
+        {showMap && section !== "controllers" && <MapPlot view={view} section={section} selected={selected} onSelect={(kind, index) => { setSection(kind); setSelected(index); }} background={background} controls={mapControls} onImageError={() => setFailedImage(imageUrl)}
+          markers={nearby.rows.filter((row) => nearby.shown[row.class === "unknown" ? "npc" : row.class as keyof NearbyState["shown"]] ?? true).map((row) => ({ key: row.key, x: row.position.x, z: row.position.z, color: CLASS_COLORS[row.class], title: `Collected: ${row.label ?? row.template} (${row.template})`, active: row.key === focusedRow }))} />}
+        <div className="dyn-task-form-scroll">
           {selected === null ? <div className="empty-note">Select a {SECTIONS.find((entry) => entry.key === section)!.one}{section !== "controllers" ? " in the list or on the map" : ""}.</div>
             : <><div className="dyn-task-title"><h3>{SECTIONS.find((entry) => entry.key === section)!.one} {selected + 1}</h3></div>{form ?? <div className="empty-note">Loading…</div>}</>}
-        </div>}
+        </div>
       </div>
     </div>
+    {nearbyOpen && <div className="modal-backdrop" onMouseDown={() => setNearbyOpen(false)}>
+      <div className="modal npcgen-nearby-dialog" role="dialog" aria-label="Nearby fetch" onMouseDown={(event) => event.stopPropagation()}>
+        <header className="modal-head"><h3>Nearby fetch</h3><span className="muted small">What your game client has loaded around your character</span><span className="spacer" /><button className="icon-btn" onClick={() => setNearbyOpen(false)} aria-label="Close" title="Close (Esc); the list stays"><X size={16} /></button></header>
+        <NearbyPanel view={view} state={nearby} setState={setNearby} elementsOpen={!!elementsPath} busy={busy} pickClient={pickClient} onImport={importNearby} onShow={(row) => setFocusedRow(row.key)} />
+      </div>
+    </div>}
     {choosingClient && <div className="modal-backdrop" onMouseDown={() => choosingClient.resolve(null)}>
       <div className="modal dyn-save-dialog" onMouseDown={(event) => event.stopPropagation()}>
         <h3>Which game client?</h3>

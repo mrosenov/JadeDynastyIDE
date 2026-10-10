@@ -52,6 +52,7 @@ import {
   Users,
   Eraser,
   Plus,
+  Radar,
   Table2,
   FolderTree,
   FolderOpen,
@@ -927,6 +928,13 @@ export default function App() {
         { label: "Delete…", icon: Trash2, shortcut: "Del", onSelect: () => genEditor.current?.deleteSelected(), disabled: !genEditorState.loaded },
         "separator",
         { label: "Map", icon: MapIcon, onSelect: () => genEditor.current?.toggleMap(), disabled: !genEditorState.loaded },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        { label: "Nearby fetch…", icon: Radar, onSelect: () => genEditor.current?.openNearby(), disabled: !genEditorState.loaded },
       ],
     },
   ] : workspace === "npc" ? [

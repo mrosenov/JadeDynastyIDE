@@ -9720,24 +9720,6 @@ select.ie-control {
   max-width: 100%;
   text-align: left;
 }
-.npcgen-tool {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  text-align: left;
-}
-.npcgen-tool > span {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-.npcgen-tool-pane {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-height: 0;
-}
 .npcgen-nearby {
   display: flex;
   flex: 1;
@@ -9804,4 +9786,9 @@ select.ie-control {
 }
 .npcgen-marker {
   pointer-events: none;
+}
+.npcgen-nearby-dialog {
+  width: min(1240px, 96vw);
+  height: min(780px, 92vh);
+  max-height: none;
 }

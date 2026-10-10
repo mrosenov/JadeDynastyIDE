@@ -678,12 +678,12 @@ recognised, and other builds of the same game usually are too). With several cli
 which one and remembers it; Shift+click asks again. A client that blocks other programs, a character that
 is not in the world yet or an unrecognised build gives a message instead of a position.
 
-**Tools › Nearby fetch** collects what your game client has loaded around your character (roughly
-100–200 m): NPCs, monsters, mines and herbs, and dynamic objects, with their template ID, name (from the
+**Tools › Nearby fetch…** (the menu bar, in the NPC Gen workspace) opens a window that collects what your
+game client has loaded around your character (roughly 100–200 m): NPCs, monsters, mines and herbs, and dynamic objects, with their template ID, name (from the
 open `elements.data`), position, facing, distance and phase. **Fetch** adds them to a list that stays
 until **Clear list**, so you can walk on and fetch again (**Every 5 s** fetches by itself); the same thing
-seen again is not listed twice, and dropped items are left out. Collected things show as diamonds on the
-map. Nothing is added to the file until you import: **Import** on a row, or tick rows and **Import
+seen again is not listed twice, and dropped items are left out. Closing the window (Esc) keeps the list;
+collected things show as diamonds on the map. Nothing is added to the file until you import: **Import** on a row, or tick rows and **Import
 selected**, or **Import all new**. Rows whose template and place already exist in the file say **In
 file**. Imports are point spawns like the official ones (fixed height, spawn at start, revive, valid once):
 NPCs as NPC spawns facing the way they faced, monsters as monster spawns with the **Count** and
