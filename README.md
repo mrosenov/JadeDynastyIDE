@@ -616,7 +616,10 @@ The table shows the ID, the NPC or monster name from the open `elements.data`, t
 from the client's `configs.pck` (`instance.txt`), and X, Y and Z (whole world coordinates; Y is the
 height). Map 0 means no known location (about 45% of official records). Search by ID, name or map;
 **No location** and **Not in elements.data** narrow the list. **Add NPC…** picks an NPC or monster from
-the open `elements.data`; the trash button deletes a record; Ctrl+Z/Ctrl+Y undo and redo. Saving
+the open `elements.data`; the trash button deletes a record; Ctrl+Z/Ctrl+Y undo and redo. **Clean up…**
+(also Edit › Remove records not in elements.data…) checks every ID against the open `elements.data`
+again and, after confirming with the count and example IDs, removes the records whose NPC or monster
+no longer exists, as one undo step. Saving
 refuses ID 0 and duplicate IDs (the game would keep only the last), sets the time mark to now, keeps
 the records in their order, can back up the replaced file and warns when another program changed it.
 All six known files read and write back byte-for-byte.

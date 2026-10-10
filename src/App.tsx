@@ -47,6 +47,7 @@ import {
   FileStack,
   Gift,
   MapPin,
+  Eraser,
   Plus,
   Table2,
   FolderTree,
@@ -911,6 +912,7 @@ export default function App() {
         { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => npcEditor.current?.redo(), disabled: !npcEditorState.canRedo },
         "separator",
         { label: "Add NPC…", icon: Plus, onSelect: () => npcEditor.current?.add(), disabled: !npcEditorState.loaded },
+        { label: "Remove records not in elements.data…", icon: Eraser, onSelect: () => npcEditor.current?.cleanup(), disabled: !npcEditorState.loaded },
       ],
     },
   ] : workspace === "dyn" ? [

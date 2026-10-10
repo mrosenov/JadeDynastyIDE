@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, FolderOpen, MapPin, Plus, Redo2, RotateCcw, Save, Search, Trash2, Undo2 } from "lucide-react";
+import { AlertTriangle, Eraser, FolderOpen, MapPin, Plus, Redo2, RotateCcw, Save, Search, Trash2, Undo2 } from "lucide-react";
 import { clientMapNames, dynTaskLabels, openTaskNpc, pickEssence, saveTaskNpc } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import type { TaskNpcFile, TaskNpcRow } from "../elements/types";
@@ -34,6 +34,7 @@ export interface TaskNpcEditorHandle {
   undo: () => void;
   redo: () => void;
   add: () => void;
+  cleanup: () => void;
 }
 
 interface Props {
@@ -171,6 +172,42 @@ export const TaskNpcEditor = forwardRef<TaskNpcEditorHandle, Props>(function Tas
     if (selected === row.key) setSelected(null);
   };
 
+  /** Removes every record whose NPC or monster is not in the open elements.data (one undo step). */
+  const cleanup = useCallback(async () => {
+    if (!file || busy) return;
+    setBusy(true);
+    setError(null);
+    setNote(null);
+    try {
+      // Checked again now, so an elements.data opened after this file counts.
+      const found = (await dynTaskLabels([...new Set(rows.map((row) => row.id))], [])).elements;
+      setLabels((current) => ({ ...current, ...found }));
+      if (!Object.keys(found).length) {
+        setError("None of these IDs is in an open elements.data. Open the matching elements.data first.");
+        return;
+      }
+      const gone = rows.filter((row) => !(String(row.id) in found));
+      if (!gone.length) {
+        setNote("Every record names an NPC or monster of the open elements.data.");
+        return;
+      }
+      const examples = gone.slice(0, 12).map((row) => row.id).join(", ");
+      if (!window.confirm(`Remove ${count(gone.length)} record${gone.length === 1 ? "" : "s"} whose NPC or monster is not in the open elements.data?
+
+IDs: ${examples}${gone.length > 12 ? ", …" : ""}
+
+Undo (Ctrl+Z) brings them back until the file is saved.`)) return;
+      commit(rows.filter((row) => String(row.id) in found), `cleanup:${Date.now()}`);
+      if (selected !== null && gone.some((row) => row.key === selected)) setSelected(null);
+      setOnlyUnknown(false);
+      setNote(`Removed ${count(gone.length)} record${gone.length === 1 ? "" : "s"} not in elements.data. Ctrl+Z brings them back.`);
+    } catch (problem) {
+      setError(String(problem).replace(/^Error: /, ""));
+    } finally {
+      setBusy(false);
+    }
+  }, [busy, commit, file, rows, selected]);
+
   const undo = useCallback(() => setHistory((current) => current.cursor > 0 ? { ...current, cursor: current.cursor - 1 } : current), []);
   const redo = useCallback(() => setHistory((current) => current.cursor + 1 < current.states.length ? { ...current, cursor: current.cursor + 1 } : current), []);
 
@@ -207,7 +244,7 @@ export const TaskNpcEditor = forwardRef<TaskNpcEditorHandle, Props>(function Tas
     if (typeof target === "string") await saveTo(target);
   }, [busy, file, saveTo]);
 
-  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => guard(() => void load(path)), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, add }), [add, choose, guard, load, redo, saveAs, saveCurrent, undo]);
+  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => guard(() => void load(path)), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, add, cleanup: () => void cleanup() }), [add, choose, cleanup, guard, load, redo, saveAs, saveCurrent, undo]);
 
   useEffect(() => onStateChange({ loaded: !!file, dirty, canUndo: history.cursor > 0, canRedo: history.cursor + 1 < history.states.length, path: file?.path ?? null, rows: rows.length }), [dirty, file, history.cursor, history.states.length, onStateChange, rows.length]);
 
@@ -276,6 +313,7 @@ export const TaskNpcEditor = forwardRef<TaskNpcEditorHandle, Props>(function Tas
       {dirty && <span className="dirty-label">Unsaved changes</span>}
       <button className="btn" onClick={() => void choose()} disabled={busy}><FolderOpen size={13} /> Open…</button>
       <button className="btn" onClick={add} disabled={busy} title="Add a record for an NPC or monster of the open elements.data"><Plus size={13} /> Add NPC…</button>
+      <button className="btn" onClick={() => void cleanup()} disabled={busy} title="Remove every record whose NPC or monster is not in the open elements.data"><Eraser size={13} /> Clean up…</button>
       <button className="icon-btn" onClick={undo} disabled={busy || history.cursor <= 0} title="Undo (Ctrl+Z)"><Undo2 size={15} /></button>
       <button className="icon-btn" onClick={redo} disabled={busy || history.cursor + 1 >= history.states.length} title="Redo (Ctrl+Y)"><Redo2 size={15} /></button>
       <button className="btn primary" onClick={saveCurrent} disabled={busy || !dirty}><Save size={13} /> Save</button>
