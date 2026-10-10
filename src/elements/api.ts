@@ -1,5 +1,8 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
+  NpcGenExportCounts,
+  GenComparison,
+  NpcGenCopyReport,
   NpcGenProblem,
   NearbyFetch,
   NearbyImport,
@@ -383,6 +386,12 @@ export const gamePosition = (pid: number) => invoke<GamePosition>("game_position
 export const gameNearby = (pid: number) => invoke<NearbyFetch>("game_nearby", { pid });
 /** Problems of the open npcgen.data (`halfSize`: half the map size, to check positions). */
 export const npcGenProblems = (halfSize: number | null) => invoke<NpcGenProblem[]>("npcgen_problems", { halfSize });
+/** Opens another npcgen.data read-only (`path`) or compares again with the open one. */
+export const compareNpcGen = (path: string | null) => invoke<GenComparison>("compare_npcgen", { path });
+export const copyNpcGen = (picks: [NpcGenSection, number][]) => invoke<{ view: NpcGenView; report: NpcGenCopyReport }>("copy_npcgen", { picks });
+export const closeNpcGenComparison = () => invoke<void>("close_npcgen_comparison");
+/** Writes a JSON export: the whole file (`picks` null) or picked items, with `related` the controllers and attached areas they use. */
+export const exportNpcGenJson = (target: string, picks: [NpcGenSection, number][] | null, related: boolean) => invoke<NpcGenExportCounts>("export_npcgen_json", { target, picks, related });
 export const importNpcGenNearby = (rows: NearbyImport[], options: { count: number; refresh: number }) => invoke<NpcGenView>("import_npcgen_nearby", { rows, options });
 /** URL of a map's full-map image (Surfaces/MidMaps/<path>.dds as a PNG), by the client's map path. */
 export const midmapUrl = (generation: number, path: string) => convertFileSrc(`${generation}-${path}`, "jdmap");

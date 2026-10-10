@@ -1163,6 +1163,545 @@ impl Document {
     }
 }
 
+// ── Comparing with another npcgen.data and copying from it ──
+
+/// Another npcgen.data opened read-only.
+pub struct ComparedGen {
+    pub path: PathBuf,
+    file: NpcGen,
+}
+
+impl ComparedGen {
+    /// An npcgen.data, or a JSON export (`.json`).
+    pub fn open(path: impl AsRef<Path>) -> Result<Self, String> {
+        let path = path.as_ref().to_path_buf();
+        let data = std::fs::read(&path).map_err(|error| format!("Could not read {}: {error}", path.display()))?;
+        let is_json = path.extension().is_some_and(|extension| extension.eq_ignore_ascii_case("json"));
+        Ok(ComparedGen { file: if is_json { from_json(&data)? } else { parse(&data)? }, path })
+    }
+}
+
+// ── JSON export (`jdide-npcgen` version 1) ──
+
+const JSON_FORMAT: &str = "jdide-npcgen";
+const JSON_FORMAT_VERSION: u32 = 1;
+
+/// Items as the editor shows them (controller names as text; their raw bytes are not exported).
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonExport {
+    format: String,
+    format_version: u32,
+    /// The npcgen.data version the items come from.
+    npcgen_version: u32,
+    #[serde(default)]
+    source: String,
+    #[serde(default)]
+    areas: Vec<Area>,
+    #[serde(default)]
+    resources: Vec<ResourceArea>,
+    #[serde(default)]
+    objects: Vec<DynamicObject>,
+    #[serde(default)]
+    controllers: Vec<Controller>,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ExportCounts {
+    pub areas: usize,
+    pub resources: usize,
+    pub objects: usize,
+    pub controllers: usize,
+}
+
+/// Reads a JSON export; it must fit the npcgen.data version it names.
+fn from_json(data: &[u8]) -> Result<NpcGen, String> {
+    let export: JsonExport = serde_json::from_slice(data).map_err(|error| format!("Not an npcgen JSON export: {error}"))?;
+    if export.format != JSON_FORMAT {
+        return Err(format!("Not an npcgen JSON export (format {:?})", export.format));
+    }
+    if export.format_version != JSON_FORMAT_VERSION {
+        return Err(format!("This JSON export is format version {}; this editor reads version {JSON_FORMAT_VERSION}", export.format_version));
+    }
+    if !(1..=MAX_VERSION).contains(&export.npcgen_version) {
+        return Err(format!("npcgen.data version {} is not supported", export.npcgen_version));
+    }
+    let file = NpcGen { version: export.npcgen_version, areas: export.areas, resource_areas: export.resources, dynamic_objects: export.objects, controllers: export.controllers };
+    encode(&file).map_err(|error| format!("This JSON export does not fit npcgen.data version {}: {error}", file.version))?;
+    Ok(file)
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GenCompareRow {
+    pub section: Section,
+    /// The item in the other file (none: only in this one).
+    pub there: Option<usize>,
+    /// The item in this file (none: only in the other one).
+    pub here: Option<usize>,
+    /// "missing" (only in the other file), "different", "same" or "only_here".
+    pub status: &'static str,
+    /// Differing fields (`generators.refresh`, `phase`, …).
+    pub fields: Vec<String>,
+    /// Areas: templates; resources: mines; objects: the object ID; controllers: the controller ID.
+    pub ids: Vec<u32>,
+    pub x: f32,
+    pub z: f32,
+    /// Controllers: the name.
+    pub label: String,
+    /// Why it cannot be copied, when it cannot.
+    pub blocked: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GenComparison {
+    pub path: String,
+    pub version: u32,
+    pub rows: Vec<GenCompareRow>,
+}
+
+#[derive(Debug, Clone, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CopyReport {
+    pub added: usize,
+    pub replaced: usize,
+    /// Controllers copied because copied items use them.
+    pub controllers: usize,
+    /// Attached export IDs left out because the attached area is not in this file.
+    pub dropped_attachments: usize,
+    /// Items whose values this file's version cannot store were cleared.
+    pub fitted: usize,
+}
+
+/// Pairs items (ours, theirs) by a class key and position: same place first, then the nearest within 10 m.
+fn pair_items<T>(ours: &[T], theirs: &[T], key: impl Fn(&T) -> (String, f32, f32)) -> Vec<(Option<usize>, Option<usize>)> {
+    let our_keys: Vec<_> = ours.iter().map(&key).collect();
+    let their_keys: Vec<_> = theirs.iter().map(&key).collect();
+    let mut by_class: HashMap<&str, Vec<usize>> = HashMap::new();
+    for (index, (class, _, _)) in our_keys.iter().enumerate() {
+        by_class.entry(class.as_str()).or_default().push(index);
+    }
+    let mut taken = vec![false; ours.len()];
+    let mut partner: Vec<Option<usize>> = vec![None; theirs.len()];
+    for limit in [0.05f32, 10.0] {
+        for (there, (class, x, z)) in their_keys.iter().enumerate() {
+            if partner[there].is_some() {
+                continue;
+            }
+            let Some(candidates) = by_class.get(class.as_str()) else { continue };
+            let best = candidates
+                .iter()
+                .filter(|&&here| !taken[here])
+                .map(|&here| (here, (our_keys[here].1 - x).hypot(our_keys[here].2 - z)))
+                .filter(|(_, distance)| *distance <= limit)
+                .min_by(|a, b| a.1.total_cmp(&b.1));
+            if let Some((here, _)) = best {
+                taken[here] = true;
+                partner[there] = Some(here);
+            }
+        }
+    }
+    let mut out: Vec<_> = partner.iter().enumerate().map(|(there, here)| (*here, Some(there))).collect();
+    out.extend(taken.iter().enumerate().filter(|(_, taken)| !**taken).map(|(here, _)| (Some(here), None)));
+    out
+}
+
+fn sorted_ids(ids: impl Iterator<Item = u32>) -> Vec<u32> {
+    let mut ids: Vec<u32> = ids.collect();
+    ids.sort_unstable();
+    ids
+}
+
+/// Pairs controllers by ID (the first of repeated IDs).
+fn pair_controllers(ours: &[Controller], theirs: &[Controller]) -> Vec<(Option<usize>, Option<usize>)> {
+    let first = |list: &[Controller]| {
+        let mut map = HashMap::new();
+        for (index, controller) in list.iter().enumerate() {
+            map.entry(controller.id).or_insert(index);
+        }
+        map
+    };
+    let (mine, other) = (first(ours), first(theirs));
+    let mut out: Vec<_> = (0..theirs.len()).map(|there| (mine.get(&theirs[there].id).copied().filter(|_| other.get(&theirs[there].id) == Some(&there)), Some(there))).collect();
+    let paired: HashSet<usize> = out.iter().filter_map(|(here, _)| *here).collect();
+    out.extend((0..ours.len()).filter(|here| !paired.contains(here)).map(|here| (Some(here), None)));
+    out
+}
+
+struct Pairs {
+    areas: Vec<(Option<usize>, Option<usize>)>,
+    resources: Vec<(Option<usize>, Option<usize>)>,
+    objects: Vec<(Option<usize>, Option<usize>)>,
+    controllers: Vec<(Option<usize>, Option<usize>)>,
+}
+
+impl Pairs {
+    fn of(ours: &NpcGen, theirs: &NpcGen) -> Self {
+        Pairs {
+            areas: pair_items(&ours.areas, &theirs.areas, |area| (format!("{}:{:?}", area.npc_type, sorted_ids(area.generators.iter().map(|generator| generator.id))), area.position.x, area.position.z)),
+            resources: pair_items(&ours.resource_areas, &theirs.resource_areas, |area| (format!("{:?}", sorted_ids(area.resources.iter().map(|resource| resource.template as u32))), area.position.x, area.position.z)),
+            objects: pair_items(&ours.dynamic_objects, &theirs.dynamic_objects, |object| (object.id.to_string(), object.position.x, object.position.z)),
+            controllers: pair_controllers(&ours.controllers, &theirs.controllers),
+        }
+    }
+
+    fn list(&self, section: Section) -> &[(Option<usize>, Option<usize>)] {
+        match section {
+            Section::Areas => &self.areas,
+            Section::Resources => &self.resources,
+            Section::Objects => &self.objects,
+            Section::Controllers => &self.controllers,
+        }
+    }
+
+    /// Their export ID → ours, through paired items of a section.
+    fn exports(&self, section: Section, ours: &[i32], theirs: &[i32]) -> HashMap<i32, i32> {
+        self.list(section).iter().filter_map(|pair| match *pair {
+            (Some(here), Some(there)) => Some((theirs[there], ours[here])),
+            _ => None,
+        }).collect()
+    }
+}
+
+/// Differing fields of two serialized items (one level into lists of records).
+fn differing(ours: &serde_json::Value, theirs: &serde_json::Value) -> Vec<String> {
+    let (Some(a), Some(b)) = (ours.as_object(), theirs.as_object()) else { return Vec::new() };
+    let mut out: Vec<String> = Vec::new();
+    for (key, value) in a {
+        if key == "nameRaw" {
+            continue;
+        }
+        let other = b.get(key);
+        if other == Some(value) {
+            continue;
+        }
+        match (value.as_array(), other.and_then(|other| other.as_array())) {
+            (Some(x), Some(y)) if x.len() == y.len() && x.iter().all(serde_json::Value::is_object) => {
+                for (p, q) in x.iter().zip(y) {
+                    for sub in differing(p, q) {
+                        let name = format!("{key}.{sub}");
+                        if !out.contains(&name) {
+                            out.push(name);
+                        }
+                    }
+                }
+            }
+            _ => out.push(key.clone()),
+        }
+    }
+    out
+}
+
+/// Clears what a version cannot store; true when something was cleared.
+fn fit_to_version(item: &mut Item, version: u32) -> bool {
+    let before = item.clone();
+    match item {
+        Item::Areas(area) => {
+            if version < 14 { area.phase = 0; }
+            if version < 12 { area.export_id = 0; area.attach_num = 0; area.attached.clear(); }
+            if version < 7 { area.controller = 0; area.life_time = 0; area.max_count = 0; }
+        }
+        Item::Resources(area) => {
+            if version < 14 { area.phase = 0; }
+            if version < 12 { area.export_id = 0; area.attach_num = 0; area.attached.clear(); }
+            if version < 7 { area.controller = 0; area.max_count = 0; }
+            if version < 6 { area.direction = [0, 0]; area.radius = 0; }
+        }
+        Item::Objects(object) => {
+            if version < 14 { object.phase = 0; }
+            if version < 10 { object.controller = 0; }
+            if version < 9 { object.scale = 0; }
+        }
+        Item::Controllers(controller) => {
+            if version < 13 { controller.segments.clear(); controller.segment_logic = 0; }
+            if version < 11 { controller.repeat = 0; }
+            if version < 8 { controller.active_time_range = 0; }
+        }
+    }
+    *item != before
+}
+
+impl Document {
+    fn item_list(file: &NpcGen, section: Section, index: usize) -> Item {
+        match section {
+            Section::Areas => Item::Areas(file.areas[index].clone()),
+            Section::Resources => Item::Resources(file.resource_areas[index].clone()),
+            Section::Objects => Item::Objects(file.dynamic_objects[index].clone()),
+            Section::Controllers => Item::Controllers(file.controllers[index].clone()),
+        }
+    }
+
+    /// Pairs this file with another and says what differs. Export IDs are file-local: attachments are
+    /// compared through the pairing.
+    pub fn compare(&self, other: &ComparedGen) -> GenComparison {
+        let (ours, theirs) = (&self.file, &other.file);
+        let pairs = Pairs::of(ours, theirs);
+        let area_exports = pairs.exports(Section::Areas, &ours.areas.iter().map(|area| area.export_id).collect::<Vec<_>>(), &theirs.areas.iter().map(|area| area.export_id).collect::<Vec<_>>());
+        let resource_exports = pairs.exports(Section::Resources, &ours.resource_areas.iter().map(|area| area.export_id).collect::<Vec<_>>(), &theirs.resource_areas.iter().map(|area| area.export_id).collect::<Vec<_>>());
+        // Comparable form: no export ID, attachments in this file's export IDs.
+        let normalize = |item: Item, map: Option<&HashMap<i32, i32>>| -> serde_json::Value {
+            let translate = |attached: &mut Vec<i32>| if let Some(map) = map { *attached = attached.iter().map(|id| map.get(id).copied().unwrap_or(i32::MIN)).collect(); };
+            let value = match item {
+                Item::Areas(mut area) => { area.export_id = 0; translate(&mut area.attached); serde_json::to_value(area) }
+                Item::Resources(mut area) => { area.export_id = 0; translate(&mut area.attached); serde_json::to_value(area) }
+                Item::Objects(object) => serde_json::to_value(object),
+                Item::Controllers(controller) => serde_json::to_value(controller),
+            };
+            value.unwrap_or_default()
+        };
+        let our_triggers: HashMap<i32, u32> = ours.controllers.iter().filter(|controller| controller.controller_id > 0).map(|controller| (controller.controller_id, controller.id)).collect();
+        let version = ours.version;
+        let mut rows = Vec::new();
+        for section in [Section::Areas, Section::Resources, Section::Objects, Section::Controllers] {
+            let exports = match section {
+                Section::Areas => Some(&area_exports),
+                Section::Resources => Some(&resource_exports),
+                _ => None,
+            };
+            for &(here, there) in pairs.list(section) {
+                let shown = match (there, here) {
+                    (Some(there), _) => Self::item_list(theirs, section, there),
+                    (None, Some(here)) => Self::item_list(ours, section, here),
+                    (None, None) => continue,
+                };
+                let (status, fields) = match (here, there) {
+                    (Some(here), Some(there)) => {
+                        let fields = differing(&normalize(Self::item_list(ours, section, here), None), &normalize(Self::item_list(theirs, section, there), exports));
+                        (if fields.is_empty() { "same" } else { "different" }, fields)
+                    }
+                    (None, Some(_)) => ("missing", Vec::new()),
+                    _ => ("only_here", Vec::new()),
+                };
+                let (ids, x, z, label) = match &shown {
+                    Item::Areas(area) => (area.generators.iter().map(|generator| generator.id).collect(), area.position.x, area.position.z, String::new()),
+                    Item::Resources(area) => (area.resources.iter().map(|resource| resource.template as u32).collect(), area.position.x, area.position.z, String::new()),
+                    Item::Objects(object) => (vec![object.id], object.position.x, object.position.z, String::new()),
+                    Item::Controllers(controller) => (vec![controller.id], 0.0, 0.0, controller.name.clone()),
+                };
+                let blocked = match (&shown, status) {
+                    (_, "same" | "only_here") => None,
+                    (Item::Objects(_), _) if version < 6 => Some(format!("Version {version} files store no dynamic objects")),
+                    (Item::Controllers(_), _) if version < 7 => Some(format!("Version {version} files store no controllers")),
+                    (Item::Controllers(controller), _) => our_triggers.get(&controller.controller_id).filter(|id| **id != controller.id).map(|id| format!("Trigger ID {} is already used by controller {id} here", controller.controller_id)),
+                    _ => None,
+                };
+                rows.push(GenCompareRow { section, there, here, status, fields, ids, x, z, label, blocked });
+            }
+        }
+        GenComparison { path: other.path.display().to_string(), version: theirs.version, rows }
+    }
+
+    /// Copies items of the other file (`(section, index there)`): ones this file lacks are added at the end,
+    /// paired ones replace ours (keeping our export ID). Controllers that copied items use and this file
+    /// lacks come along; attachments are translated through the pairing; what this version cannot store is
+    /// cleared. One journal entry.
+    pub fn copy_compared(&mut self, other: &ComparedGen, picks: &[(Section, usize)]) -> Result<(View, CopyReport), String> {
+        if picks.is_empty() {
+            return Err("Nothing to copy".into());
+        }
+        let comparison = self.compare(other);
+        let (ours, theirs) = (&self.file, &other.file);
+        let version = ours.version;
+        let pairs = Pairs::of(ours, theirs);
+        let partner = |section: Section, there: usize| pairs.list(section).iter().find(|pair| pair.1 == Some(there)).and_then(|pair| pair.0);
+        for &(section, there) in picks {
+            let row = comparison.rows.iter().find(|row| row.section == section && row.there == Some(there)).ok_or("That item is not in the other file")?;
+            if let Some(reason) = &row.blocked {
+                return Err(reason.clone());
+            }
+        }
+        let mut report = CopyReport::default();
+        let mut changes: Vec<Change> = Vec::new();
+        let mut lengths = [ours.areas.len(), ours.resource_areas.len(), ours.dynamic_objects.len(), ours.controllers.len()];
+        let slot = |section: Section| match section { Section::Areas => 0, Section::Resources => 1, Section::Objects => 2, Section::Controllers => 3 };
+        let push = |changes: &mut Vec<Change>, report: &mut CopyReport, section: Section, here: Option<usize>, mut item: Item, lengths: &mut [usize; 4]| {
+            if fit_to_version(&mut item, version) {
+                report.fitted += 1;
+            }
+            match here {
+                Some(index) => {
+                    let before = Self::item_list(ours, section, index);
+                    if before != item {
+                        report.replaced += 1;
+                        changes.push(Change { index, before: Some(before), after: Some(item) });
+                    }
+                }
+                None => {
+                    report.added += 1;
+                    changes.push(Change { index: lengths[slot(section)], before: None, after: Some(item) });
+                    lengths[slot(section)] += 1;
+                }
+            }
+        };
+
+        // Controllers: the picked ones, then the ones copied items need.
+        let mut have: HashSet<u32> = ours.controllers.iter().map(|controller| controller.id).collect();
+        for &(section, there) in picks.iter().filter(|(section, _)| *section == Section::Controllers) {
+            let controller = theirs.controllers[there].clone();
+            have.insert(controller.id);
+            push(&mut changes, &mut report, section, partner(section, there), Item::Controllers(controller), &mut lengths);
+        }
+        let mut needed: Vec<u32> = picks.iter().filter_map(|&(section, there)| match section {
+            Section::Areas => Some(theirs.areas[there].controller as u32),
+            Section::Resources => Some(theirs.resource_areas[there].controller as u32),
+            Section::Objects => Some(theirs.dynamic_objects[there].controller),
+            Section::Controllers => None,
+        }).filter(|id| *id != 0 && !have.contains(id)).collect();
+        needed.sort_unstable();
+        needed.dedup();
+        for id in needed {
+            if let Some(controller) = theirs.controllers.iter().find(|controller| controller.id == id) {
+                push(&mut changes, &mut report, Section::Controllers, None, Item::Controllers(controller.clone()), &mut lengths);
+                report.added -= 1;
+                report.controllers += 1;
+            }
+        }
+
+        // Spawn and resource areas: new export IDs where theirs are taken here; attachments translated.
+        for section in [Section::Areas, Section::Resources] {
+            let (our_exports, their_exports): (Vec<i32>, Vec<i32>) = match section {
+                Section::Areas => (ours.areas.iter().map(|area| area.export_id).collect(), theirs.areas.iter().map(|area| area.export_id).collect()),
+                _ => (ours.resource_areas.iter().map(|area| area.export_id).collect(), theirs.resource_areas.iter().map(|area| area.export_id).collect()),
+            };
+            let paired = pairs.exports(section, &our_exports, &their_exports);
+            let mut used: HashSet<i32> = our_exports.iter().copied().collect();
+            let mut next = our_exports.iter().copied().max().unwrap_or(0).max(0) + 1;
+            let mut added: HashMap<i32, i32> = HashMap::new();
+            let picked: Vec<usize> = picks.iter().filter(|(picked, _)| *picked == section).map(|(_, there)| *there).collect();
+            for &there in &picked {
+                if partner(section, there).is_none() && version >= 12 {
+                    let export = their_exports[there];
+                    let id = if export > 0 && !used.contains(&export) { export } else { next };
+                    used.insert(id);
+                    next = next.max(id + 1);
+                    added.insert(export, id);
+                }
+            }
+            for there in picked {
+                let here = partner(section, there);
+                let export = match here {
+                    Some(index) => our_exports[index],
+                    None => added.get(&their_exports[there]).copied().unwrap_or(0),
+                };
+                let translate = |attached: &[i32], report: &mut CopyReport| -> Vec<i32> {
+                    attached.iter().filter_map(|id| {
+                        let found = added.get(id).or_else(|| paired.get(id)).copied();
+                        if found.is_none() {
+                            report.dropped_attachments += 1;
+                        }
+                        found
+                    }).collect()
+                };
+                let item = match section {
+                    Section::Areas => {
+                        let mut area = theirs.areas[there].clone();
+                        area.export_id = export;
+                        area.attached = translate(&area.attached, &mut report);
+                        if area.attach_num >= 0 { area.attach_num = area.attached.len() as i32; }
+                        Item::Areas(area)
+                    }
+                    _ => {
+                        let mut area = theirs.resource_areas[there].clone();
+                        area.export_id = export;
+                        area.attached = translate(&area.attached, &mut report);
+                        if area.attach_num >= 0 { area.attach_num = area.attached.len() as i32; }
+                        Item::Resources(area)
+                    }
+                };
+                push(&mut changes, &mut report, section, here, item, &mut lengths);
+            }
+        }
+        for &(section, there) in picks.iter().filter(|(section, _)| *section == Section::Objects) {
+            push(&mut changes, &mut report, section, partner(section, there), Item::Objects(theirs.dynamic_objects[there].clone()), &mut lengths);
+        }
+        if changes.is_empty() {
+            return Err("The picked items are already the same here".into());
+        }
+        let label = match (report.added, report.replaced) {
+            (added, 0) => format!("Copy {added} item{} from another npcgen.data", if added == 1 { "" } else { "s" }),
+            (0, replaced) => format!("Replace {replaced} item{} from another npcgen.data", if replaced == 1 { "" } else { "s" }),
+            (added, replaced) => format!("Copy {added} and replace {replaced} items from another npcgen.data"),
+        };
+        let view = self.record_all(label, changes)?;
+        Ok((view, report))
+    }
+}
+
+impl Document {
+    /// A JSON export of the whole file (`picks` none) or of picked items. With `related`, the controllers
+    /// they use and the areas they attach come along, so an import elsewhere is complete.
+    pub fn export_json(&self, picks: Option<&[(Section, usize)]>, related: bool) -> Result<(String, ExportCounts), String> {
+        let file = &self.file;
+        let all = |len: usize| (0..len).collect::<std::collections::BTreeSet<usize>>();
+        let (mut areas, mut resources, objects, mut controllers) = match picks {
+            None => (all(file.areas.len()), all(file.resource_areas.len()), all(file.dynamic_objects.len()), all(file.controllers.len())),
+            Some(picks) => {
+                let mut sets: [std::collections::BTreeSet<usize>; 4] = Default::default();
+                for &(section, index) in picks {
+                    let (slot, len) = match section {
+                        Section::Areas => (0, file.areas.len()),
+                        Section::Resources => (1, file.resource_areas.len()),
+                        Section::Objects => (2, file.dynamic_objects.len()),
+                        Section::Controllers => (3, file.controllers.len()),
+                    };
+                    if index >= len {
+                        return Err(format!("No item {} in this section", index + 1));
+                    }
+                    sets[slot].insert(index);
+                }
+                let [a, r, o, c] = sets;
+                (a, r, o, c)
+            }
+        };
+        if related && picks.is_some() {
+            // Attached areas (by export ID, until nothing new comes in), then the controllers of everything.
+            loop {
+                let before = areas.len() + resources.len();
+                let attached: Vec<i32> = areas.iter().flat_map(|&index| file.areas[index].attached.clone()).collect();
+                areas.extend(file.areas.iter().enumerate().filter(|(_, area)| attached.contains(&area.export_id)).map(|(index, _)| index));
+                let attached: Vec<i32> = resources.iter().flat_map(|&index| file.resource_areas[index].attached.clone()).collect();
+                resources.extend(file.resource_areas.iter().enumerate().filter(|(_, area)| attached.contains(&area.export_id)).map(|(index, _)| index));
+                if areas.len() + resources.len() == before {
+                    break;
+                }
+            }
+            let used: HashSet<u32> = areas.iter().map(|&index| file.areas[index].controller as u32)
+                .chain(resources.iter().map(|&index| file.resource_areas[index].controller as u32))
+                .chain(objects.iter().map(|&index| file.dynamic_objects[index].controller))
+                .filter(|id| *id != 0)
+                .collect();
+            for id in used {
+                if let Some(index) = file.controllers.iter().position(|controller| controller.id == id) {
+                    controllers.insert(index);
+                }
+            }
+        }
+        let counts = ExportCounts { areas: areas.len(), resources: resources.len(), objects: objects.len(), controllers: controllers.len() };
+        if counts == ExportCounts::default() {
+            return Err("Nothing to export".into());
+        }
+        let export = JsonExport {
+            format: JSON_FORMAT.into(),
+            format_version: JSON_FORMAT_VERSION,
+            npcgen_version: file.version,
+            source: self.path.display().to_string(),
+            areas: areas.iter().map(|&index| file.areas[index].clone()).collect(),
+            resources: resources.iter().map(|&index| file.resource_areas[index].clone()).collect(),
+            objects: objects.iter().map(|&index| file.dynamic_objects[index].clone()).collect(),
+            controllers: controllers.iter().map(|&index| Controller { name_raw: Vec::new(), ..file.controllers[index].clone() }).collect(),
+        };
+        let mut value = serde_json::to_value(&export).map_err(|error| error.to_string())?;
+        for controller in value.get_mut("controllers").and_then(serde_json::Value::as_array_mut).into_iter().flatten() {
+            if let Some(object) = controller.as_object_mut() {
+                object.remove("nameRaw");
+            }
+        }
+        Ok((serde_json::to_string_pretty(&value).map_err(|error| error.to_string())?, counts))
+    }
+}
+
 fn section_name(section: Section) -> &'static str {
     match section {
         Section::Areas => "spawn area",
@@ -1329,5 +1868,94 @@ mod tests {
         assert!(all.iter().any(|problem| problem.index == area && problem.message.contains("is an NPC in a monster area")));
         assert!(all.iter().any(|problem| problem.severity == "error" && problem.message.contains("is not in the open elements.data")));
         assert!(all.iter().any(|problem| problem.message.contains("outside the map")));
+    }
+
+    #[test]
+    fn copies_what_another_server_has_and_the_result_compares_equal() {
+        let ours = std::path::PathBuf::from("E:/Game Dev/JD/zxserver/zgame/gs/config/x1/npcgen.data");
+        let theirs = std::path::PathBuf::from("E:/Game Dev/JD/1559/gamed/config/x1/npcgen.data");
+        let (Ok(mut document), Ok(other)) = (Document::open(&ours), ComparedGen::open(&theirs)) else { return };
+        let before = document.view();
+        let errors = |document: &Document| document.problems(&ProblemContext::default()).into_iter().filter(|problem| problem.severity == "error").count();
+        let errors_before = errors(&document);
+        let comparison = document.compare(&other);
+        let picks: Vec<(Section, usize)> = comparison.rows.iter().filter(|row| matches!(row.status, "missing" | "different") && row.blocked.is_none()).map(|row| (row.section, row.there.unwrap())).collect();
+        let missing = comparison.rows.iter().filter(|row| row.status == "missing").count();
+        assert!(missing > 100 && picks.len() > missing);
+        let (view, report) = document.copy_compared(&other, &picks).unwrap();
+        assert_eq!(report.added, missing);
+        assert_eq!(view.history.len(), 1);
+        assert!(encode(&document.file).is_ok());
+        assert_eq!(errors(&document), errors_before);
+        // Everything picked now compares equal; only what is only here stays.
+        let again = document.compare(&other);
+        assert!(again.rows.iter().all(|row| matches!(row.status, "same" | "only_here")), "{:?}", again.rows.iter().filter(|row| !matches!(row.status, "same" | "only_here")).take(3).collect::<Vec<_>>());
+        // New export IDs do not clash, and the attachments still point at areas.
+        let mut exports: Vec<i32> = document.file.areas.iter().map(|area| area.export_id).filter(|id| *id != 0).collect();
+        let total = exports.len();
+        exports.sort_unstable();
+        exports.dedup();
+        assert_eq!(exports.len(), total);
+        let undone = document.undo().unwrap();
+        assert_eq!((undone.areas.len(), undone.resources.len(), undone.objects.len(), undone.controllers.len()), (before.areas.len(), before.resources.len(), before.objects.len(), before.controllers.len()));
+        // A newer file into an older version: values it cannot store are cleared, not refused.
+        document.file.version = 13;
+        document.file.areas.iter_mut().for_each(|area| area.phase = 0);
+        document.file.resource_areas.iter_mut().for_each(|area| area.phase = 0);
+        document.file.dynamic_objects.iter_mut().for_each(|object| object.phase = 0);
+        let comparison = document.compare(&other);
+        let row = comparison.rows.iter().find(|row| row.section == Section::Areas && row.status == "missing" && other.file.areas[row.there.unwrap()].phase != 0).unwrap();
+        let phased = row.there.unwrap();
+        let (_, report) = document.copy_compared(&other, &[(Section::Areas, phased)]).unwrap();
+        assert_eq!(report.fitted, 1, "{row:?}");
+    }
+
+    #[test]
+    fn json_exports_import_through_the_comparison() {
+        let path = std::path::PathBuf::from("E:/Game Dev/JD/zxserver/zgame/gs/config/x1/npcgen.data");
+        let Ok(document) = Document::open(&path) else { return };
+        let folder = std::env::temp_dir().join(format!("jdide-npcgen-json-{}", std::process::id()));
+        std::fs::create_dir_all(&folder).unwrap();
+        // The whole file comes back identical.
+        let (json, counts) = document.export_json(None, true).unwrap();
+        assert_eq!((counts.areas, counts.controllers), (document.file.areas.len(), document.file.controllers.len()));
+        let whole = folder.join("whole.json");
+        std::fs::write(&whole, &json).unwrap();
+        let comparison = document.compare(&ComparedGen::open(&whole).unwrap());
+        assert!(comparison.rows.iter().all(|row| row.status == "same"));
+        assert!(!json.contains("nameRaw"));
+
+        // An area with attachments and one with a controller bring them along (z10 has attachments).
+        let Ok(document) = Document::open("E:/Game Dev/JD/zxserver/zgame/gs/config/z10/npcgen.data") else { return };
+        let attaching = document.file.areas.iter().position(|area| area.attach_num > 0).unwrap();
+        let controlled = document.file.areas.iter().position(|area| area.controller != 0 && area.attach_num == 0).unwrap();
+        let picks = [(Section::Areas, attaching), (Section::Areas, controlled)];
+        let (json, counts) = document.export_json(Some(&picks), true).unwrap();
+        let attached = document.file.areas[attaching].attached.len();
+        let controllers = [attaching, controlled].iter().map(|&index| document.file.areas[index].controller).filter(|id| *id != 0).collect::<HashSet<_>>().len();
+        assert_eq!((counts.areas, counts.controllers), (2 + attached, controllers));
+        let (_, alone) = document.export_json(Some(&picks), false).unwrap();
+        assert_eq!((alone.areas, alone.controllers), (2, 0));
+        let part = folder.join("part.json");
+        std::fs::write(&part, &json).unwrap();
+        // Into another map: everything is new, copies cleanly, and the attachments still resolve.
+        let Ok(mut other) = Document::open(&path) else { return };
+        let imported = ComparedGen::open(&part).unwrap();
+        let comparison = other.compare(&imported);
+        let picks: Vec<(Section, usize)> = comparison.rows.iter().filter(|row| row.status == "missing" && row.section == Section::Areas).map(|row| (row.section, row.there.unwrap())).collect();
+        assert_eq!(picks.len(), counts.areas);
+        let errors = |document: &Document| document.problems(&ProblemContext::default()).into_iter().filter(|problem| problem.severity == "error").count();
+        let before = errors(&other);
+        let (_, report) = other.copy_compared(&imported, &picks).unwrap();
+        assert_eq!((report.added, report.dropped_attachments), (counts.areas, 0));
+        assert_eq!(errors(&other), before);
+
+        // Broken or mismatched exports are refused.
+        let bad = folder.join("bad.json");
+        std::fs::write(&bad, r#"{"format":"something","formatVersion":1,"npcgenVersion":14}"#).unwrap();
+        assert!(ComparedGen::open(&bad).is_err());
+        std::fs::write(&bad, json.replace("\"npcgenVersion\": 14", "\"npcgenVersion\": 11")).unwrap();
+        assert!(ComparedGen::open(&bad).err().unwrap_or_default().contains("does not fit npcgen.data version 11"));
+        let _ = std::fs::remove_dir_all(&folder);
     }
 }

@@ -717,6 +717,33 @@ checked the way its loader reads the file:
 
 Click a problem to go to the item. Official server maps show no errors.
 
+**Tools › Compare with another npcgen.data…** opens another server's file for the same map read-only and
+pairs its items with this one's: spawn areas by type and NPCs or monsters, resource areas by mines,
+objects by object ID (each at the same place, or the nearest within 10 m), controllers by ID. Tabs show
+what is only in the other file, what differs (with the fields, such as respawn or position), what is the
+same and what only this file has; Show goes to this file's item. Tick rows and **Copy**: missing items
+are added at the end of their section, differing ones replace this file's (keeping its export ID).
+Copied areas get new export IDs where theirs are taken here, their attachments are translated through
+the pairing (attachments to areas this file lacks are left out), the controllers they use come along,
+and values this file's version cannot store (a phase into a version 13 file) are cleared. A controller
+whose trigger ID another controller here already uses cannot be copied. One copy is one undo step, and
+the comparison is refreshed afterwards.
+
+**Tools › Export JSON…** writes the whole file, the selected item, or the items the list shows (after a
+search) as JSON: every stored value, controller names as text, and the npcgen.data version they come
+from. For a part of the file, **Include the controllers and attached areas they use** (on by default)
+adds what those items need, so importing them elsewhere is complete. **Tools › Import JSON…** opens an
+export in the comparison window, as if it were another npcgen.data: you see what is new, what differs and
+what is the same, and copy what you pick with the same rules (new export IDs where needed, attachments
+translated, controllers brought along, values the version cannot store cleared, one undo step). The
+comparison's file chooser also takes JSON exports.
+
+**Tools › Controller overview…** lists every controller with its trigger ID, name, whether it starts on,
+and what uses it (click a row to see the spawn areas, resource areas and objects; click one to go
+there). Filter used or unused ones, search by name or ID, and see controllers that areas use but that do
+not exist. Each controller's form has a **Used by** card with the same links, and the controller list
+shows how many items use each one ("unused" when none).
+
 The file keeps its version when saved. Real files use versions 4 to 14; a field a version does not
 store (for example the phase before version 14) shows "not in vN" and cannot be set. Saving checks that
 the file reads back exactly, can back up the old file and warns when another program changed it. All

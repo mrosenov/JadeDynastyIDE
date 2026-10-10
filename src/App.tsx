@@ -60,6 +60,7 @@ import {
   Copy,
   Gem,
   GitCompareArrows,
+  Workflow,
   Trash2,
   History,
   ListFilter,
@@ -936,6 +937,12 @@ export default function App() {
       items: [
         { label: "Nearby fetch…", icon: Radar, onSelect: () => genEditor.current?.openNearby(), disabled: !genEditorState.loaded },
         { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => genEditor.current?.openProblems(), disabled: !genEditorState.loaded },
+        "separator",
+        { label: "Compare with another npcgen.data…", icon: GitCompareArrows, onSelect: () => genEditor.current?.openCompare(), disabled: !genEditorState.loaded },
+        { label: "Controller overview…", icon: Workflow, onSelect: () => genEditor.current?.openControllers(), disabled: !genEditorState.loaded },
+        "separator",
+        { label: "Export JSON…", icon: Download, onSelect: () => genEditor.current?.exportJson(), disabled: !genEditorState.loaded },
+        { label: "Import JSON…", icon: FileUp, onSelect: () => genEditor.current?.importJson(), disabled: !genEditorState.loaded },
       ],
     },
   ] : workspace === "npc" ? [

@@ -9838,3 +9838,24 @@ select.ie-control {
 .npcgen-problem-name {
   color: var(--text-dim);
 }
+.npcgen-uses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.npcgen-unused {
+  color: var(--warn);
+}
+.npcgen-overview-search {
+  flex: 0 1 260px;
+  margin: 0;
+}
+.npcgen-overview-uses td {
+  padding: 4px 12px 10px 28px;
+  background: var(--bg-pane);
+}
+.npcgen-export-scope {
+  gap: 8px;
+  margin: 10px 0;
+  font-size: 12.5px;
+}

@@ -2048,6 +2048,44 @@ export interface NpcGenProblem {
   message: string;
 }
 
+/** One item of an npcgen.data comparison (paired by what it spawns and where; controllers by ID). */
+export interface GenCompareRow {
+  section: NpcGenSection;
+  /** Index in the other file (null: only in this one). */
+  there: number | null;
+  /** Index in this file (null: only in the other one). */
+  here: number | null;
+  status: "missing" | "different" | "same" | "only_here";
+  fields: string[];
+  ids: number[];
+  x: number;
+  z: number;
+  label: string;
+  blocked: string | null;
+}
+
+export interface GenComparison {
+  path: string;
+  version: number;
+  rows: GenCompareRow[];
+}
+
+export interface NpcGenCopyReport {
+  added: number;
+  replaced: number;
+  controllers: number;
+  droppedAttachments: number;
+  fitted: number;
+}
+
+/** What a JSON export of npcgen.data contains. */
+export interface NpcGenExportCounts {
+  areas: number;
+  resources: number;
+  objects: number;
+  controllers: number;
+}
+
 /** A running elementclient.exe. */
 export interface RunningClient {
   pid: number;

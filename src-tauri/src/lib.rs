@@ -41,6 +41,8 @@ struct AppState {
     compared_dyn: Mutex<Option<dyn_tasks::ComparedPack>>,
     /// The open npcgen.data (one server map).
     npcgen: Mutex<Option<npcgen::Document>>,
+    /// Another npcgen.data opened read-only for comparing (lock order: npcgen, then compared_npcgen).
+    compared_npcgen: Mutex<Option<npcgen::ComparedGen>>,
     catalog: RwLock<Arc<Catalog>>,
     /// The user's data folder: `layouts/`, `enums/` and `masks/` written by the editors.
     user_dir: PathBuf,
@@ -293,6 +295,48 @@ async fn game_nearby(pid: u32, state: State<'_, AppState>) -> Result<NearbyFetch
         })
         .collect();
     Ok(NearbyFetch { player, rows })
+}
+
+/// Opens another npcgen.data read-only (`path`), or compares again with the one already open.
+#[tauri::command]
+async fn compare_npcgen(path: Option<String>, state: State<'_, AppState>) -> Result<npcgen::GenComparison, String> {
+    if let Some(path) = path {
+        let other = tauri::async_runtime::spawn_blocking(move || npcgen::ComparedGen::open(path)).await.map_err(|error| error.to_string())??;
+        *state.compared_npcgen.lock().map_err(|_| "State lock poisoned")? = Some(other);
+    }
+    let document = state.npcgen.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared_npcgen.lock().map_err(|_| "State lock poisoned")?;
+    Ok(document.as_ref().ok_or("Open npcgen.data first")?.compare(compared.as_ref().ok_or("Choose an npcgen.data to compare with")?))
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct NpcGenCopyResult {
+    view: npcgen::View,
+    report: npcgen::CopyReport,
+}
+
+#[tauri::command]
+fn copy_npcgen(picks: Vec<(npcgen::Section, usize)>, state: State<'_, AppState>) -> Result<NpcGenCopyResult, String> {
+    let mut document = state.npcgen.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared_npcgen.lock().map_err(|_| "State lock poisoned")?;
+    let (view, report) = document.as_mut().ok_or("Open npcgen.data first")?.copy_compared(compared.as_ref().ok_or("Choose an npcgen.data to compare with")?, &picks)?;
+    Ok(NpcGenCopyResult { view, report })
+}
+
+/// Writes a JSON export of the open npcgen.data (all of it, or the picked items and, with `related`, what
+/// they use).
+#[tauri::command]
+fn export_npcgen_json(target: String, picks: Option<Vec<(npcgen::Section, usize)>>, related: bool, state: State<'_, AppState>) -> Result<npcgen::ExportCounts, String> {
+    let (json, counts) = state.npcgen.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open npcgen.data first")?.export_json(picks.as_deref(), related)?;
+    std::fs::write(&target, json).map_err(|error| format!("Could not write {target}: {error}"))?;
+    Ok(counts)
+}
+
+#[tauri::command]
+fn close_npcgen_comparison(state: State<'_, AppState>) -> Result<(), String> {
+    *state.compared_npcgen.lock().map_err(|_| "State lock poisoned")? = None;
+    Ok(())
 }
 
 /// Problems the server would have with the open npcgen.data; templates are checked against the open
@@ -1787,6 +1831,7 @@ pub fn run() {
                 dyn_tasks: Mutex::new(None),
                 compared_dyn: Mutex::new(None),
                 npcgen: Mutex::new(None),
+                compared_npcgen: Mutex::new(None),
                 compared: Mutex::new(None),
                 compared_tasks: Mutex::new(None),
                 task_translation: Mutex::new(None),
@@ -1871,6 +1916,10 @@ pub fn run() {
             game_nearby,
             import_npcgen_nearby,
             npcgen_problems,
+            compare_npcgen,
+            copy_npcgen,
+            close_npcgen_comparison,
+            export_npcgen_json,
             dyn_tasks_view,
             dyn_task,
             set_dyn_task,

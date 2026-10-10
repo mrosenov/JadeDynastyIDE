@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (185 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (187 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -561,6 +561,24 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   skipped. Severity "note" for empty areas and unreferenced attached areas (865 + 52 in the zxserver/1559
   maps, which have no errors). Templates come from `Document::essence_struct` (locks: npcgen, then
   document, then npcgen again, never two at once); the map half size (rows × 512) from the UI.
+- **Compare** (`ComparedGen`, `Document::compare` / `copy_compared`, `NpcGenCompare.tsx`, commands
+  `compare_npcgen`, `copy_npcgen`, `close_npcgen_comparison`; `AppState.compared_npcgen`, lock order npcgen
+  then compared_npcgen): `pair_items` keys areas by npc type + sorted templates, resources by templates,
+  objects by ID, then position (≤ 0.05, then nearest ≤ 10 m); controllers by ID (first of repeats).
+  Differences come from serde_json (`differing`, one level into generator/resource rows) with export IDs
+  zeroed and attachments translated through the pairing. Copy: picked and needed controllers first,
+  new export IDs where taken (max + 1), attachments → added or paired export IDs (others dropped and
+  counted), `fit_to_version` clears what `encode` would refuse; one journal entry (`record_all`).
+  zxserver vs 1559: z1 identical; x1 1559 has 438 more areas, 116 resource areas, 28 objects, 348
+  controllers. Copying all of them makes the files compare equal with no new problem errors.
+- **JSON** (`Document::export_json`, command `export_npcgen_json`; `from_json` behind
+  `ComparedGen::open` for `.json`): `jdide-npcgen` format version 1 with `npcgenVersion`, `source` and the
+  four item lists in the UI's serde form; controllers without `nameRaw` (empty raw → encoded from the
+  text). `related` adds attached areas (by export ID, repeatedly) and the controllers used. Import =
+  the comparison (copy rules apply); an export must `encode` at its own version or it is refused. A whole
+  x1 export compares all "same"; a z10 part with attachments copies into x1 with none dropped.
+- **Controller overview** (UI only, `controllerUses` from the view's summaries): `ControllerOverview`
+  window, the controller form's Used by card, and use counts in the controller list.
 - Servers name map folders by the instance's **data path**, images use its **path** (`e12` vs `z12`
   for Foxhill). `detectMap` (NpcGenEditor) tries `npcgen_<map>.data`, then the folder, data path
   first; zxserver/1559: 99/139 map folders match (83/119 with an image); `b31`, `d12`, `t01–t03`

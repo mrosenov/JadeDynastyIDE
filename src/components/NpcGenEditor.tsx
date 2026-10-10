@@ -1,11 +1,12 @@
-import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
+import { forwardRef, Fragment, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ChevronDown, CircleAlert, Copy, Crosshair, FolderOpen, Info, Loader2, Map as MapIcon, Plus, Redo2, RefreshCw, Save, Search, Trash2, TriangleAlert, Undo2, Users, X } from "lucide-react";
-import { clientMaps, cloneNpcGenItem, deleteNpcGenItem, dynTaskLabels, gameClients, gamePosition, importNpcGenNearby, midmapUrl, npcGenProblems, getNpcGenItem, npcGenView, openNpcGen, pickEssence, redoNpcGen, saveNpcGen, setNpcGenItem, undoNpcGen } from "../elements/api";
+import { ChevronDown, CircleAlert, Copy, Crosshair, Download, FolderOpen, Info, Loader2, Map as MapIcon, Plus, Redo2, RefreshCw, Save, Search, Trash2, TriangleAlert, Undo2, Users, X } from "lucide-react";
+import { clientMaps, cloneNpcGenItem, deleteNpcGenItem, dynTaskLabels, compareNpcGen, copyNpcGen, exportNpcGenJson, gameClients, gamePosition, importNpcGenNearby, midmapUrl, npcGenProblems, getNpcGenItem, npcGenView, openNpcGen, pickEssence, redoNpcGen, saveNpcGen, setNpcGenItem, undoNpcGen } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatDuration } from "../elements/time";
-import type { ClientMap, GamePosition, NearbyImport, NpcGenProblem, RunningClient, NpcGenArea, NpcGenController, NpcGenGenerator, NpcGenItem, NpcGenObject, NpcGenResource, NpcGenResourceArea, NpcGenSection, NpcGenSummary, NpcGenTime, NpcGenVec3, NpcGenView } from "../elements/types";
+import type { ClientMap, GamePosition, GenComparison, NearbyImport, NpcGenProblem, RunningClient, NpcGenArea, NpcGenController, NpcGenGenerator, NpcGenItem, NpcGenObject, NpcGenResource, NpcGenResourceArea, NpcGenSection, NpcGenSummary, NpcGenTime, NpcGenVec3, NpcGenView } from "../elements/types";
 import { NumberInput, TextInput, VertInput } from "./DynTasksEditor";
+import { NpcGenCompare } from "./NpcGenCompare";
 import { CLASS_COLORS, emptyNearby, NearbyPanel, type NearbyState } from "./NpcGenNearby";
 import { ValuePicker } from "./ValuePicker";
 
@@ -32,6 +33,13 @@ export interface NpcGenEditorHandle {
   openNearby: () => void;
   /** Tools › Check problems. */
   openProblems: () => void;
+  /** Tools › Compare with another npcgen.data. */
+  openCompare: () => void;
+  /** Tools › Controller overview. */
+  openControllers: () => void;
+  /** Tools › Export JSON / Import JSON (the import opens in the comparison). */
+  exportJson: () => void;
+  importJson: () => void;
 }
 
 interface Props {
@@ -200,6 +208,21 @@ interface FormProps<T> {
   pick: (kind: PickKind, current: number) => Promise<number | null>;
   /** The character's position in a running game client; null when it could not be read (the editor shows why). */
   fromGame: (choose: boolean) => Promise<GamePosition | null>;
+  /** Controllers: the areas and objects that name this one. */
+  usedBy?: ControllerUse[];
+  onShow?: (section: NpcGenSection, index: number) => void;
+}
+
+/** An area, resource area or object naming a controller. */
+interface ControllerUse {
+  section: NpcGenSection;
+  index: number;
+  text: string;
+}
+
+function UsedBy({ uses, onShow }: { uses: ControllerUse[]; onShow?: (section: NpcGenSection, index: number) => void }) {
+  if (!uses.length) return <span className="muted small">Nothing uses it.</span>;
+  return <span className="npcgen-uses">{uses.map((use) => <button key={`${use.section}:${use.index}`} className="link" onClick={() => onShow?.(use.section, use.index)}>{use.text}</button>)}</span>;
 }
 
 /** Takes the position of the character in the running game client. */
@@ -390,7 +413,7 @@ function ObjectForm({ value: object, version, controllers, onCommit, fromGame }:
   </div></div>;
 }
 
-function ControllerForm({ value: controller, version, onCommit }: FormProps<NpcGenController>) {
+function ControllerForm({ value: controller, version, onCommit, usedBy = [], onShow }: FormProps<NpcGenController>) {
   const set = (change: Partial<NpcGenController>, label: string) => onCommit({ ...controller, ...change }, label);
   return <div className="dyn-form npcgen-form">
     <div className="npcgen-cards">
@@ -409,6 +432,9 @@ function ControllerForm({ value: controller, version, onCommit }: FormProps<NpcG
         <Row label="Active time range"><Gate since={8} version={version}><NumberInput min={I32_MIN} max={I32_MAX} value={controller.activeTimeRange} onCommit={(activeTimeRange) => set({ activeTimeRange }, "Edit active range")} /></Gate></Row>
       </Card>
     </div>
+    <Card title="Used by" hint="What this controller switches on and off" wide>
+      <Row label={`${usedBy.length} item${usedBy.length === 1 ? "" : "s"}`}><UsedBy uses={usedBy} onShow={onShow} /></Row>
+    </Card>
     <Card title="Dates" hint="year · month · weekday · day · hour · minute; −1 = any" wide>
       <Row label="Starts at"><span className="npcgen-inline"><TimeInput value={controller.activeTime} onCommit={(activeTime) => set({ activeTime }, "Edit start time")} /><Flag label="Ignore" value={controller.activeTimeInvalid} onCommit={(activeTimeInvalid) => set({ activeTimeInvalid }, "Edit start time")} /></span></Row>
       <Row label="Stops at"><span className="npcgen-inline"><TimeInput value={controller.stopTimeAt} onCommit={(stopTimeAt) => set({ stopTimeAt }, "Edit stop time")} /><Flag label="Ignore" value={controller.stopTimeInvalid} onCommit={(stopTimeInvalid) => set({ stopTimeInvalid }, "Edit stop time")} /></span></Row>
@@ -574,6 +600,60 @@ function MapPlot({ view, section, selected, onSelect, background, controls, onIm
   </div>;
 }
 
+// ── Controller overview ──
+
+function ControllerOverview({ view, uses, onShow, onClose }: { view: NpcGenView; uses: Map<number, ControllerUse[]>; onShow: (section: NpcGenSection, index: number) => void; onClose: () => void }) {
+  const [filter, setFilter] = useState<"all" | "used" | "unused">("all");
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState<Set<number>>(new Set());
+  const needle = query.trim().toLowerCase();
+  const known = new Set(view.controllers.map((entry) => entry.ids[0]));
+  const missing = [...uses.entries()].filter(([id]) => !known.has(id)).sort((a, b) => a[0] - b[0]);
+  const rows = view.controllers.filter((entry) => {
+    const used = (uses.get(entry.ids[0])?.length ?? 0) > 0;
+    if ((filter === "used" && !used) || (filter === "unused" && used)) return false;
+    return !needle || entry.label.toLowerCase().includes(needle) || String(entry.ids[0]) === needle || String(entry.controller) === needle;
+  });
+  const tally = (list: ControllerUse[] | undefined) => {
+    const parts = (["areas", "resources", "objects"] as const).map((kind) => [kind, list?.filter((use) => use.section === kind).length ?? 0] as const).filter(([, n]) => n);
+    return parts.length ? parts.map(([kind, n]) => `${n} ${kind === "areas" ? "spawn" : kind === "resources" ? "resource" : "object"}${n === 1 ? "" : "s"}`).join(", ") : "unused";
+  };
+  const toggle = (id: number) => setOpen((current) => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; });
+  return <div className="modal-backdrop" onMouseDown={onClose}>
+    <div className="modal npcgen-nearby-dialog" role="dialog" aria-label="Controller overview" onMouseDown={(event) => event.stopPropagation()}>
+      <header className="modal-head"><h3>Controller overview</h3><span className="muted small">{count(view.controllers.length)} controllers · what each switches on and off</span><span className="spacer" /><button className="icon-btn" onClick={onClose} aria-label="Close" title="Close (Esc)"><X size={16} /></button></header>
+      <div className="npcgen-nearby">
+        <div className="npcgen-nearby-bar">
+          <span className="dyn-compare-tabs">{(["all", "used", "unused"] as const).map((entry) => <button key={entry} className={"btn small" + (filter === entry ? " active" : "")} onClick={() => setFilter(entry)}>{entry === "all" ? "All" : entry === "used" ? "Used" : "Unused"}</button>)}</span>
+          <span className="dyn-task-search npcgen-overview-search"><Search size={13} /><input value={query} placeholder="Name, ID or trigger ID" onChange={(event) => setQuery(event.target.value)} /></span>
+        </div>
+        <div className="npcgen-nearby-table">
+          {missing.length > 0 && <div className="path-data-message error">{missing.map(([id, list]) => <div key={id}>Controller {id} does not exist but is used by: <UsedBy uses={list} onShow={onShow} /></div>)}</div>}
+          <table className="dyn-table">
+            <thead><tr><th>Controller</th><th>ID</th><th>Trigger</th><th>Name</th><th>At start</th><th>Used by</th></tr></thead>
+            <tbody>{rows.map((entry) => {
+              const id = entry.ids[0];
+              const list = uses.get(id) ?? [];
+              return <Fragment key={entry.index}>
+                <tr onClick={() => list.length && toggle(id)} className={list.length ? undefined : "npcgen-nearby-known"}>
+                  <td><button className="link" onClick={(event) => { event.stopPropagation(); onShow("controllers", entry.index); }}>Controller {entry.index + 1}</button></td>
+                  <td className="mono">{id}</td>
+                  <td className="mono">{entry.controller || ""}</td>
+                  <td className="truncate">{entry.label || <span className="muted">(no name)</span>}</td>
+                  <td>{entry.kind ? <span className="tag ok">on</span> : <span className="muted small">off</span>}</td>
+                  <td>{list.length ? <span>{open.has(id) ? "▾" : "▸"} {tally(list)}</span> : <span className="muted small">unused</span>}</td>
+                </tr>
+                {open.has(id) && <tr className="npcgen-overview-uses"><td colSpan={6}><UsedBy uses={list} onShow={onShow} /></td></tr>}
+              </Fragment>;
+            })}</tbody>
+          </table>
+          {!rows.length && <div className="empty-note">No controllers match.</div>}
+        </div>
+      </div>
+    </div>
+  </div>;
+}
+
 // ── The workspace ──
 
 export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGenEditor({ active, onStateChange, icon, elementsPath = null, mapGeneration = null }, ref) {
@@ -583,6 +663,11 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
   const [nearbyOpen, setNearbyOpen] = useState(false);
   /** The problems window: the last check (null while checking) and whether notes show. */
   const [problemsOpen, setProblemsOpen] = useState(false);
+  const [compareOpen, setCompareOpen] = useState(false);
+  const [comparison, setComparison] = useState<GenComparison | null>(null);
+  const [controllersOpen, setControllersOpen] = useState(false);
+  /** The export window: what to export and whether what it uses comes along. */
+  const [exporting, setExporting] = useState<{ scope: "file" | "selected" | "shown"; related: boolean } | null>(null);
   const [problems, setProblems] = useState<NpcGenProblem[] | null>(null);
   const [showNotes, setShowNotes] = useState(false);
   /** Half the size of the detected map (rows × 512), for the outside-the-map check. */
@@ -638,10 +723,27 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
   }, [mapGeneration]);
   useEffect(() => {
     if (!view || !elementsPath) return;
-    const ids = [...new Set([...view.areas, ...view.resources].flatMap((entry) => entry.ids))].filter((id) => id && !(String(id) in labels));
+    const compared = (comparison?.rows ?? []).filter((row) => row.section === "areas" || row.section === "resources").flatMap((row) => row.ids);
+    const ids = [...new Set([...view.areas, ...view.resources].flatMap((entry) => entry.ids).concat(compared))].filter((id) => id && !(String(id) in labels));
     if (ids.length) dynTaskLabels(ids, []).then((found) => setLabels((current) => ({ ...current, ...found.elements }))).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, elementsPath]);
+  }, [view, elementsPath, comparison]);
+
+  /** Who names each controller ID (areas, resource areas, objects). */
+  const controllerUses = useMemo(() => {
+    const uses = new Map<number, ControllerUse[]>();
+    if (!view) return uses;
+    for (const [kind, entries] of [["areas", view.areas], ["resources", view.resources], ["objects", view.objects]] as const) {
+      for (const entry of entries) {
+        if (!entry.controller) continue;
+        const first = entry.ids[0];
+        const name = kind === "objects" ? `object ${first}` : first ? shortName(labels[String(first)]) ?? `#${first}` : "(empty)";
+        const text = `${capitalize(SECTIONS.find((section) => section.key === kind)!.one)} ${entry.index + 1} · ${name}`;
+        uses.set(entry.controller, [...(uses.get(entry.controller) ?? []), { section: kind, index: entry.index, text }]);
+      }
+    }
+    return uses;
+  }, [labels, view]);
 
   useEffect(() => {
     if (!view || selected === null) { setItem(null); return; }
@@ -728,16 +830,56 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
 
   const undo = useCallback(() => { if (view?.canUndo) void run(undoNpcGen); }, [run, view?.canUndo]);
   const redo = useCallback(() => { if (view?.canRedo) void run(redoNpcGen); }, [run, view?.canRedo]);
+  const openCompare = useCallback(() => {
+    setCompareOpen(true);
+    // Edits since the last comparison change it: compare again.
+    if (comparison) compareNpcGen(null).then(setComparison).catch(() => setComparison(null));
+  }, [comparison]);
+  const importJson = useCallback(async () => {
+    const picked = await open({ multiple: false, directory: false, title: "Import npcgen JSON", filters: [{ name: "npcgen JSON export", extensions: ["json"] }] });
+    if (typeof picked !== "string") return;
+    let opened = false;
+    await run(async () => {
+      setComparison(await compareNpcGen(picked));
+      opened = true;
+    });
+    if (opened) setCompareOpen(true);
+  }, [run]);
+  const chooseCompare = useCallback(async () => {
+    const picked = await open({ multiple: false, directory: false, defaultPath: comparison?.path ?? view?.path, title: "Compare with another npcgen.data or a JSON export", filters: [{ name: "npcgen.data or JSON export", extensions: ["data", "json"] }] });
+    if (typeof picked !== "string") return;
+    await run(async () => { setComparison(await compareNpcGen(picked)); });
+  }, [comparison?.path, run, view?.path]);
+  const copyCompared = useCallback(async (picks: [NpcGenSection, number][]) => {
+    let report: Awaited<ReturnType<typeof copyNpcGen>>["report"] | null = null;
+    await run(async () => {
+      const result = await copyNpcGen(picks);
+      report = result.report;
+      setComparison(await compareNpcGen(null));
+      return result.view;
+    });
+    const done = report as Awaited<ReturnType<typeof copyNpcGen>>["report"] | null;
+    if (!done) return;
+    const parts = [done.added && `copied ${done.added}`, done.replaced && `replaced ${done.replaced}`, done.controllers && `also copied ${done.controllers} controller${done.controllers === 1 ? "" : "s"} they use`, done.droppedAttachments && `left out ${done.droppedAttachments} attachment${done.droppedAttachments === 1 ? "" : "s"} to areas this file lacks`, done.fitted && `cleared values version ${view?.version} cannot store in ${done.fitted}`].filter(Boolean);
+    setNote(`${parts.join(", ").replace(/^./, (first) => first.toUpperCase())} (one undo step). Save to keep them.`);
+  }, [run, view?.version]);
+  const showItem = useCallback((section: NpcGenSection, index: number) => {
+    setCompareOpen(false);
+    setControllersOpen(false);
+    setSection(section);
+    setSelected(index);
+  }, []);
+
   const cloneSelected = useCallback(() => {
-    if (selected === null || nearbyOpen) return;
+    if (selected === null || nearbyOpen || compareOpen || controllersOpen || problemsOpen) return;
     void run(async () => { const result = await cloneNpcGenItem(section, selected); setSelected(result.index); return result.view; });
-  }, [run, section, selected, nearbyOpen]);
+  }, [run, section, selected, nearbyOpen, compareOpen, controllersOpen, problemsOpen]);
   const deleteSelected = useCallback(() => {
-    if (selected === null || nearbyOpen) return;
+    if (selected === null || nearbyOpen || compareOpen || controllersOpen || problemsOpen) return;
     const one = SECTIONS.find((entry) => entry.key === section)!.one;
     if (!window.confirm(`Delete ${one} ${selected + 1}? Undo brings it back.`)) return;
     void run(async () => { const next = await deleteNpcGenItem(section, selected); const total = next[section].length; setSelected(total ? Math.min(selected, total - 1) : null); return next; });
-  }, [run, section, selected, nearbyOpen]);
+  }, [run, section, selected, nearbyOpen, compareOpen, controllersOpen, problemsOpen]);
   const toggleMap = useCallback(() => setShowMap((current) => { try { localStorage.setItem(MAP_KEY, current ? "0" : "1"); } catch { /* optional */ } return !current; }), []);
 
   const writeTo = useCallback(async (target: string | null, replaceChanged: boolean) => {
@@ -764,7 +906,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     if (target) setSaving({ target, changed: false });
   }, [view]);
 
-  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => void load(path), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, cloneSelected, deleteSelected, toggleMap, openNearby: () => { if (view) setNearbyOpen(true); }, openProblems: () => { if (view) openProblems(); } }), [choose, cloneSelected, deleteSelected, load, openProblems, redo, saveAs, saveCurrent, toggleMap, undo, view]);
+  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => void load(path), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, cloneSelected, deleteSelected, toggleMap, openNearby: () => { if (view) setNearbyOpen(true); }, openProblems: () => { if (view) openProblems(); }, openCompare: () => { if (view) openCompare(); }, openControllers: () => { if (view) setControllersOpen(true); }, exportJson: () => { if (view) setExporting((current) => current ?? { scope: "file", related: true }); }, importJson: () => { if (view) void importJson(); } }), [choose, cloneSelected, deleteSelected, importJson, load, openCompare, openProblems, redo, saveAs, saveCurrent, toggleMap, undo, view]);
 
   useEffect(() => {
     if (!active) return;
@@ -772,10 +914,12 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
       const mod = event.ctrlKey || event.metaKey;
       const typing = event.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName);
       const key = event.key.toLowerCase();
-      if (event.key === "Escape" && (nearbyOpen || problemsOpen) && !choosingClient) {
+      if (event.key === "Escape" && (nearbyOpen || problemsOpen || compareOpen || controllersOpen) && !choosingClient) {
         event.preventDefault();
         setNearbyOpen(false);
         setProblemsOpen(false);
+        setCompareOpen(false);
+        setControllersOpen(false);
         return;
       }
       if (mod && event.shiftKey && key === "m") {
@@ -800,7 +944,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [active, choose, choosingClient, cloneSelected, deleteSelected, nearbyOpen, openProblems, problemsOpen, redo, saveAs, saveCurrent, undo, view]);
+  }, [active, choose, choosingClient, cloneSelected, compareOpen, controllersOpen, deleteSelected, nearbyOpen, openProblems, problemsOpen, redo, saveAs, saveCurrent, undo, view]);
 
   const rows = useMemo(() => (view?.[section] ?? []).filter((entry) => {
     if (!needle) return true;
@@ -845,7 +989,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
     </>;
   const generators = view.areas.reduce((total, entry) => total + entry.ids.length, 0);
   const rowLabel = (entry: NpcGenSummary) => {
-    if (section === "controllers") return <><span className="mono">{entry.ids[0]}</span><span className="truncate">{entry.label || <span className="muted">(no name)</span>}{entry.controller !== 0 && <span className="muted small"> · trigger {entry.controller}</span>}</span>{entry.kind !== 0 ? <span className="tag ok">on</span> : <span />}<span /></>;
+    if (section === "controllers") return <><span className="mono">{entry.ids[0]}</span><span className="truncate">{entry.label || <span className="muted">(no name)</span>}{entry.controller !== 0 && <span className="muted small"> · trigger {entry.controller}</span>}</span>{entry.kind !== 0 ? <span className="tag ok">on</span> : <span />}{(() => { const uses = controllerUses.get(entry.ids[0])?.length ?? 0; return <span className={"small " + (uses ? "muted" : "npcgen-unused")} title={uses ? "Areas and objects using it" : "Nothing uses this controller"}>{uses ? `${uses}×` : "unused"}</span>; })()}</>;
     const badge = entry.controller !== 0 ? <span className="dyn-award-badge" title={`Controller ${entry.controller}`}>⚑{entry.controller}</span> : <span />;
     if (section === "objects") return <><span className="mono">{entry.ids[0]}</span><span className="truncate muted">Object</span><span />{badge}</>;
     const first = entry.ids[0];
@@ -865,7 +1009,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
       case "areas": return <AreaForm key={key} {...common} value={item.item} onCommit={(value, label) => commit({ section: "areas", item: value }, label)} />;
       case "resources": return <ResourceForm key={key} {...common} value={item.item} onCommit={(value, label) => commit({ section: "resources", item: value }, label)} />;
       case "objects": return <ObjectForm key={key} {...common} value={item.item} onCommit={(value, label) => commit({ section: "objects", item: value }, label)} />;
-      default: return <ControllerForm key={key} {...common} value={item.item} onCommit={(value, label) => commit({ section: "controllers", item: value }, label)} />;
+      default: return <ControllerForm key={key} {...common} value={item.item} usedBy={controllerUses.get(item.item.id) ?? []} onShow={showItem} onCommit={(value, label) => commit({ section: "controllers", item: value }, label)} />;
     }
   })() : null;
 
@@ -909,10 +1053,47 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
           markers={nearby.rows.filter((row) => nearby.shown[row.class === "unknown" ? "npc" : row.class as keyof NearbyState["shown"]] ?? true).map((row) => ({ key: row.key, x: row.position.x, z: row.position.z, color: CLASS_COLORS[row.class], title: `Collected: ${row.label ?? row.template} (${row.template})${row.members ? ` × ${row.members.length}` : ""}`, active: row.key === focusedRow, width: row.size?.x, depth: row.size?.z }))} />}
         <div className="dyn-task-form-scroll">
           {selected === null ? <div className="empty-note">Select a {SECTIONS.find((entry) => entry.key === section)!.one}{section !== "controllers" ? " in the list or on the map" : ""}.</div>
-            : <><div className="dyn-task-title"><h3>{SECTIONS.find((entry) => entry.key === section)!.one} {selected + 1}</h3></div>{form ?? <div className="empty-note">Loading…</div>}</>}
+            : <><div className="dyn-task-title"><h3>{capitalize(SECTIONS.find((entry) => entry.key === section)!.one)} {selected + 1}</h3></div>{form ?? <div className="empty-note">Loading…</div>}</>}
         </div>
       </div>
     </div>
+    {compareOpen && <div className="modal-backdrop" onMouseDown={() => setCompareOpen(false)}>
+      <div className="modal npcgen-nearby-dialog" role="dialog" aria-label="Compare" onMouseDown={(event) => event.stopPropagation()}>
+        <header className="modal-head"><h3>Compare with another npcgen.data</h3><span className="spacer" /><button className="icon-btn" onClick={() => setCompareOpen(false)} aria-label="Close" title="Close (Esc); the comparison stays"><X size={16} /></button></header>
+        <NpcGenCompare comparison={comparison} version={view.version} busy={busy} labels={labels} onChoose={() => void chooseCompare()} onCopy={(picks) => void copyCompared(picks)} onShow={showItem} />
+      </div>
+    </div>}
+    {exporting && (() => {
+      const one = SECTIONS.find((entry) => entry.key === section)!;
+      const picks: [NpcGenSection, number][] | null = exporting.scope === "file" ? null : exporting.scope === "selected" ? (selected === null ? [] : [[section, selected]]) : rows.map((entry) => [section, entry.index] as [NpcGenSection, number]);
+      const folder = view.path.split(/[\\/]/).slice(-2, -1)[0] ?? "npcgen";
+      const write = async () => {
+        const target = await save({ defaultPath: view.path.replace(/[^\\/]*$/, `${folder}_npcgen${exporting.scope === "file" ? "" : `_${section}`}.json`), title: "Export npcgen JSON", filters: [{ name: "JSON", extensions: ["json"] }] });
+        if (!target) return;
+        try {
+          const counts = await exportNpcGenJson(target, picks, exporting.related);
+          const parts = [counts.areas && `${counts.areas} spawn area${counts.areas === 1 ? "" : "s"}`, counts.resources && `${counts.resources} resource area${counts.resources === 1 ? "" : "s"}`, counts.objects && `${counts.objects} object${counts.objects === 1 ? "" : "s"}`, counts.controllers && `${counts.controllers} controller${counts.controllers === 1 ? "" : "s"}`].filter(Boolean);
+          setExporting(null);
+          setNote(`Exported ${parts.join(", ")} to ${target}.`);
+        } catch (problem) {
+          setError(String(problem).replace(/^Error: /, ""));
+        }
+      };
+      return <div className="modal-backdrop" onMouseDown={() => setExporting(null)}>
+        <div className="modal dyn-save-dialog" role="dialog" aria-label="Export JSON" onMouseDown={(event) => event.stopPropagation()}>
+          <h3>Export JSON</h3>
+          <div className="npcgen-stack npcgen-export-scope">
+            <label className="npcgen-flag"><input type="radio" checked={exporting.scope === "file"} onChange={() => setExporting({ ...exporting, scope: "file" })} /> The whole file <span className="muted small">({count(view.areas.length)} spawn areas, {count(view.resources.length)} resource areas, {count(view.objects.length)} objects, {count(view.controllers.length)} controllers)</span></label>
+            <label className="npcgen-flag"><input type="radio" checked={exporting.scope === "selected"} disabled={selected === null} onChange={() => setExporting({ ...exporting, scope: "selected" })} /> The selected item {selected !== null && <span className="muted small">({capitalize(one.one)} {selected + 1})</span>}</label>
+            <label className="npcgen-flag"><input type="radio" checked={exporting.scope === "shown"} disabled={!rows.length} onChange={() => setExporting({ ...exporting, scope: "shown" })} /> {one.label} shown in the list <span className="muted small">({count(rows.length)}{query.trim() ? ` matching “${query.trim()}”` : ""})</span></label>
+            <label className="npcgen-flag" title="So an import into another file is complete"><input type="checkbox" checked={exporting.related || exporting.scope === "file"} disabled={exporting.scope === "file"} onChange={(event) => setExporting({ ...exporting, related: event.target.checked })} /> Include the controllers and attached areas they use</label>
+          </div>
+          <p className="muted small">The JSON keeps every stored value and the npcgen.data version. Import it with Tools › Import JSON…: it opens like a comparison, so you choose what to copy.</p>
+          <footer><span className="spacer" /><button className="btn" onClick={() => setExporting(null)}>Cancel</button><button className="btn primary" disabled={!!picks && !picks.length} onClick={() => void write()}><Download size={14} /> Export…</button></footer>
+        </div>
+      </div>;
+    })()}
+    {controllersOpen && <ControllerOverview view={view} uses={controllerUses} onShow={showItem} onClose={() => setControllersOpen(false)} />}
     {problemsOpen && (() => {
       const rank = { error: 0, warning: 1, note: 2 };
       const order = SECTIONS.map((entry) => entry.key);
