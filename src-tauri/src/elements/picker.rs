@@ -161,6 +161,29 @@ impl Document {
         Ok(Spec { source: Source::Records(targets), kind: "reference".into(), title: format!("Choose {field}"), scope, current })
     }
 
+    /// Items or monsters (by `kind`) for editors of other files (dyn_tasks.data).
+    pub(crate) fn essence_spec(&self, kind: &str, current: Option<u32>) -> Result<Spec, String> {
+        const NOT_ITEMS: [&str; 3] = ["MONSTER", "NPC", "MINE"];
+        let targets: Vec<usize> = self.lists.iter().enumerate().filter_map(|(list, resolved)| {
+            let name = resolved.struct_name.as_deref()?.to_ascii_uppercase();
+            let wanted = match kind {
+                "monster" => name == "MONSTER_ESSENCE",
+                "npc" => name == "NPC_ESSENCE" || name == "MONSTER_ESSENCE",
+                _ => refs::list_space(&name) == IdSpace::Essence && refs::registry_space(&name) == IdSpace::Essence && !NOT_ITEMS.iter().any(|prefix| name.starts_with(prefix)) && !name.ends_with("_CONFIG"),
+            };
+            wanted.then_some(list)
+        }).collect();
+        if targets.is_empty() {
+            return Err(format!("This elements.data has no {kind} lists"));
+        }
+        let (title, scope) = match kind {
+            "monster" => ("Choose a monster", "MONSTER_ESSENCE"),
+            "npc" => ("Choose an NPC or monster", "NPC_ESSENCE and MONSTER_ESSENCE"),
+            _ => ("Choose an item", "Item lists of elements.data"),
+        };
+        Ok(Spec { source: Source::Records(targets), kind: "reference".into(), title: title.into(), scope: scope.into(), current })
+    }
+
     pub(crate) fn picker_records(&self, spec: &Spec, query: &str, page: usize) -> Result<ResultPage, String> {
         let Source::Records(targets) = &spec.source else { return Err("Picker source is not a record list".into()) };
         let targets: HashSet<usize> = targets.iter().copied().collect();
@@ -264,5 +287,19 @@ mod tests {
         assert_eq!(rank("ans", None, 7, "answer"), Some(2));
         assert_eq!(rank("swe", None, 7, "answer"), Some(3));
         assert_eq!(rank("missing", None, 7, "answer"), None);
+    }
+
+    #[test]
+    fn items_and_monsters_for_other_editors() {
+        let path = String::from("E:/Games/ForsakenJD/element/data/elements.data");
+        if !std::path::Path::new(&path).is_file() { return; }
+        let doc = Document::open(path, std::sync::Arc::new(crate::elements::format::Catalog::load(None))).unwrap();
+        let monsters = doc.essence_spec("monster", None).unwrap();
+        let page = doc.picker_records(&monsters, "", 0).unwrap();
+        assert!(page.total > 1000 && page.entries.iter().all(|entry| entry.detail.as_deref().is_some_and(|list| list.contains("MONSTER"))));
+        let items = doc.essence_spec("item", None).unwrap();
+        let page = doc.picker_records(&items, "", 0).unwrap();
+        assert!(page.total > 10_000);
+        assert!(page.entries.iter().all(|entry| !entry.detail.as_deref().unwrap_or("").contains("MONSTER")));
     }
 }

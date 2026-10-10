@@ -3,6 +3,7 @@ mod dyn_tasks;
 mod elements;
 mod path_data;
 mod settings;
+mod task_npc;
 pub mod tasks;
 
 use std::collections::{HashMap, HashSet};
@@ -35,6 +36,8 @@ struct AppState {
     task_search: Arc<tasks::search::SearchControl>,
     /// The open dyn_tasks.data (locked after `tasks` and `document`, never while holding them).
     dyn_tasks: Mutex<Option<dyn_tasks::DynDocument>>,
+    /// Another dyn_tasks.data opened for comparing (locked after `dyn_tasks`).
+    compared_dyn: Mutex<Option<dyn_tasks::ComparedPack>>,
     catalog: RwLock<Arc<Catalog>>,
     /// The user's data folder: `layouts/`, `enums/` and `masks/` written by the editors.
     user_dir: PathBuf,
@@ -137,6 +140,23 @@ async fn open_elements(path: String, state: State<'_, AppState>) -> Result<FileS
     let summary = doc.summary();
     *state.document.lock().map_err(|_| "State lock poisoned")? = Some(doc);
     Ok(summary)
+}
+
+#[tauri::command]
+async fn open_task_npc(path: String) -> Result<task_npc::FileView, String> {
+    tauri::async_runtime::spawn_blocking(move || task_npc::open(path)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn save_task_npc(request: task_npc::SaveRequest) -> Result<task_npc::SaveReport, String> {
+    tauri::async_runtime::spawn_blocking(move || task_npc::save(request)).await.map_err(|error| error.to_string())?
+}
+
+/// Map names of the configured client (configs.pck instance.txt), or none without a client.
+#[tauri::command]
+async fn client_map_names(state: State<'_, AppState>) -> Result<Vec<(i32, String)>, String> {
+    let Some(resources) = state.resources() else { return Ok(Vec::new()) };
+    tauri::async_runtime::spawn_blocking(move || resources.instances().cloned()).await.map_err(|error| error.to_string())?
 }
 
 #[tauri::command]
@@ -880,6 +900,47 @@ fn dyn_task_labels(elements: Vec<u32>, tasks: Vec<u32>, state: State<'_, AppStat
 }
 
 #[tauri::command]
+fn dyn_task_overview(state: State<'_, AppState>) -> Result<Vec<dyn_tasks::DynOverviewRow>, String> {
+    Ok(state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open dyn_tasks.data first")?.overview())
+}
+
+/// Opens another dyn_tasks.data read-only (`path`), or compares again with the one already open.
+#[tauri::command]
+async fn compare_dyn_tasks(path: Option<String>, state: State<'_, AppState>) -> Result<dyn_tasks::DynComparison, String> {
+    let quests: Option<HashSet<u32>> = quest_names(&state).map(|names| names.into_keys().collect());
+    if let Some(path) = path {
+        let pack = tauri::async_runtime::spawn_blocking(move || dyn_tasks::ComparedPack::open(path)).await.map_err(|error| error.to_string())??;
+        *state.compared_dyn.lock().map_err(|_| "State lock poisoned")? = Some(pack);
+    }
+    let document = state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared_dyn.lock().map_err(|_| "State lock poisoned")?;
+    Ok(document.as_ref().ok_or("Open dyn_tasks.data first")?.compare(compared.as_ref().ok_or("Choose a dyn_tasks.data to compare with")?, quests.as_ref()))
+}
+
+#[tauri::command]
+fn copy_dyn_tasks(ids: Vec<u32>, state: State<'_, AppState>) -> Result<dyn_tasks::DynView, String> {
+    let quests: Option<HashSet<u32>> = quest_names(&state).map(|names| names.into_keys().collect());
+    let mut document = state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared_dyn.lock().map_err(|_| "State lock poisoned")?;
+    document.as_mut().ok_or("Open dyn_tasks.data first")?.copy_from(compared.as_ref().ok_or("Choose a dyn_tasks.data to compare with")?, &ids, quests.as_ref())
+}
+
+#[tauri::command]
+fn close_dyn_comparison(state: State<'_, AppState>) -> Result<(), String> {
+    *state.compared_dyn.lock().map_err(|_| "State lock poisoned")? = None;
+    Ok(())
+}
+
+/// Items or monsters of the open elements.data, for the dyn_tasks.data editor's ID fields.
+#[tauri::command]
+async fn pick_essence(kind: String, query: String, page: usize, current: Option<u32>, state: State<'_, AppState>) -> Result<elements::picker::ResultPage, String> {
+    state.with_document(|doc| {
+        let spec = doc.essence_spec(&kind, current)?;
+        doc.picker_records(&spec, &query, page)
+    })
+}
+
+#[tauri::command]
 async fn save_dyn_tasks(target: Option<String>, backup: bool, replace_changed: bool, state: State<'_, AppState>) -> Result<dyn_tasks::DynSaveReport, String> {
     state.dyn_tasks.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open dyn_tasks.data first")?.save(target.as_deref(), backup, replace_changed)
 }
@@ -1522,6 +1583,7 @@ pub fn run() {
                 document: Mutex::new(None),
                 tasks: Mutex::new(None),
                 dyn_tasks: Mutex::new(None),
+                compared_dyn: Mutex::new(None),
                 compared: Mutex::new(None),
                 compared_tasks: Mutex::new(None),
                 task_translation: Mutex::new(None),
@@ -1583,6 +1645,9 @@ pub fn run() {
             task_search_fields,
             probe_task_layouts,
             open_dyn_tasks,
+            open_task_npc,
+            save_task_npc,
+            client_map_names,
             dyn_tasks_view,
             dyn_task,
             set_dyn_task,
@@ -1593,6 +1658,11 @@ pub fn run() {
             dyn_task_problems,
             dyn_task_labels,
             save_dyn_tasks,
+            dyn_task_overview,
+            compare_dyn_tasks,
+            copy_dyn_tasks,
+            close_dyn_comparison,
+            pick_essence,
             propose_task_alignment,
             apply_task_alignment,
             task_dialogs,

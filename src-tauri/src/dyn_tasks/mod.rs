@@ -94,6 +94,81 @@ pub struct DynProblem {
     pub message: String,
 }
 
+/// One task in the rewards overview.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DynOverviewRow {
+    pub index: usize,
+    pub uid: u64,
+    pub id: u32,
+    pub name: String,
+    pub dyn_type: u8,
+    pub special_award: u32,
+    pub level_min: u8,
+    pub level_max: u8,
+    pub method: u8,
+    pub gold: Option<u32>,
+    pub experience: Option<u64>,
+    pub sp: Option<u32>,
+    pub reputation: Option<i32>,
+    /// Item groups: (random, [(item, amount)]).
+    pub groups: Vec<(bool, Vec<(u32, u32)>)>,
+    pub status: &'static str,
+}
+
+/// A task of the compared pack against the open one, paired by top-level ID.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DynCompareRow {
+    pub id: u32,
+    pub name: String,
+    pub special_award: u32,
+    /// "missing" (only in the other pack), "different", "same" or "only_here".
+    pub status: &'static str,
+    /// Top-level parts that differ ("award", "talks", …).
+    pub fields: Vec<String>,
+    /// Why it cannot be copied (an ID clash), when it cannot.
+    pub blocked: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DynComparison {
+    pub path: String,
+    pub tasks: usize,
+    pub time_mark: i32,
+    pub layout: AwardLayout,
+    pub rows: Vec<DynCompareRow>,
+}
+
+/// Another pack opened read-only for comparing and copying.
+pub struct ComparedPack {
+    pub path: PathBuf,
+    pub pack: format::Pack,
+}
+
+impl ComparedPack {
+    pub fn open(path: impl AsRef<Path>) -> Result<Self, String> {
+        let path = path.as_ref().to_path_buf();
+        let data = std::fs::read(&path).map_err(|error| format!("Could not read {}: {error}", path.display()))?;
+        Ok(ComparedPack { pack: format::read(&data)?, path })
+    }
+
+    fn by_id(&self) -> HashMap<u32, &DynTask> {
+        let mut out = HashMap::new();
+        for (task, _) in &self.pack.tasks {
+            out.entry(task.id).or_insert(task);
+        }
+        out
+    }
+}
+
+/// Top-level parts of two tasks that differ (serialized names).
+fn differing_parts(a: &DynTask, b: &DynTask) -> Vec<String> {
+    let (Ok(serde_json::Value::Object(a)), Ok(serde_json::Value::Object(b))) = (serde_json::to_value(a), serde_json::to_value(b)) else { return vec!["task".into()] };
+    a.iter().filter(|(key, value)| b.get(key.as_str()) != Some(value)).map(|(key, _)| key.clone()).collect()
+}
+
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DynSaveReport {
@@ -334,6 +409,130 @@ impl DynDocument {
         Ok(self.view())
     }
 
+    pub fn overview(&self) -> Vec<DynOverviewRow> {
+        let view = self.view();
+        self.entries.iter().enumerate().map(|(index, entry)| {
+            let task = &entry.task;
+            DynOverviewRow {
+                index,
+                uid: entry.uid,
+                id: task.id,
+                name: task.name.clone(),
+                dyn_type: task.dyn_type,
+                special_award: task.special_award,
+                level_min: task.level_min,
+                level_max: task.level_max,
+                method: task.goal.method,
+                gold: task.award.gold,
+                experience: task.award.experience,
+                sp: task.award.sp,
+                reputation: task.award.reputation,
+                groups: task.award.candidates.iter().flatten().map(|group| (group.random != 0, group.items.iter().map(|item| (item.item_id, item.amount)).collect())).collect(),
+                status: view.rows[index].status,
+            }
+        }).collect()
+    }
+
+    /// Pairs the other pack's tasks with these by top-level ID. `quests`: the open tasks.data's IDs.
+    pub fn compare(&self, other: &ComparedPack, quests: Option<&HashSet<u32>>) -> DynComparison {
+        let mine: HashMap<u32, usize> = self.entries.iter().enumerate().rev().map(|(index, entry)| (entry.task.id, index)).collect();
+        let theirs = other.by_id();
+        let mut rows = Vec::new();
+        let mut seen = HashSet::new();
+        for (task, _) in &other.pack.tasks {
+            if !seen.insert(task.id) {
+                continue;
+            }
+            let here = mine.get(&task.id).copied();
+            let (status, fields) = match here {
+                None => ("missing", Vec::new()),
+                Some(index) => {
+                    let fields = differing_parts(&self.entries[index].task, task);
+                    (if fields.is_empty() { "same" } else { "different" }, fields)
+                }
+            };
+            let blocked = if status == "same" { None } else { self.copy_clash(task, here, quests) };
+            rows.push(DynCompareRow { id: task.id, name: task.name.clone(), special_award: task.special_award, status, fields, blocked });
+        }
+        for entry in &self.entries {
+            if !theirs.contains_key(&entry.task.id) && seen.insert(entry.task.id) {
+                rows.push(DynCompareRow { id: entry.task.id, name: entry.task.name.clone(), special_award: entry.task.special_award, status: "only_here", fields: Vec::new(), blocked: None });
+            }
+        }
+        DynComparison { path: other.path.display().to_string(), tasks: other.pack.tasks.len(), time_mark: other.pack.header.time_mark, layout: other.pack.layout, rows }
+    }
+
+    /// Why a task of another pack cannot take the place of task `here` (or be added), if it cannot.
+    fn copy_clash(&self, task: &DynTask, here: Option<usize>, quests: Option<&HashSet<u32>>) -> Option<String> {
+        let others = self.used_ids(here);
+        let own: HashSet<u32> = here.map(|index| self.entries[index].task.walk().iter().map(|task| task.id).collect()).unwrap_or_default();
+        for node in task.walk() {
+            if others.contains(&node.id) {
+                return Some(format!("ID {} is used by another task in this pack", node.id));
+            }
+            if !own.contains(&node.id) && quests.is_some_and(|quests| quests.contains(&node.id)) {
+                return Some(format!("ID {} is a task in the open tasks.data", node.id));
+            }
+        }
+        if task.award.candidates.is_some() && self.layout == AwardLayout::Unknown {
+            return Some("This pack has no item rewards, so where they are stored is unknown".into());
+        }
+        None
+    }
+
+    /// Copies the chosen tasks of another pack: missing ones are added at the end, existing ones
+    /// replaced. IDs and special award numbers stay as they are; one undo step.
+    pub fn copy_from(&mut self, other: &ComparedPack, ids: &[u32], quests: Option<&HashSet<u32>>) -> Result<DynView, String> {
+        let theirs = other.by_id();
+        let mut changes = Vec::new();
+        let mut added = 0usize;
+        let mut replaced = 0usize;
+        let mut first: Option<DynTask> = None;
+        for id in ids {
+            let task = *theirs.get(id).ok_or_else(|| format!("Task {id} is not in {}", other.path.display()))?;
+            let here = self.entries.iter().position(|entry| entry.task.id == *id);
+            if let Some(reason) = self.copy_clash(task, here, quests) {
+                return Err(format!("Task {id}: {reason}"));
+            }
+            // Written in this pack's award layout (the task model does not depend on it).
+            let bytes = format::write_task_bytes(task, self.layout)?;
+            first.get_or_insert_with(|| task.clone());
+            match here {
+                Some(index) => {
+                    let before = self.entries[index].clone();
+                    if before.bytes == bytes { continue; }
+                    let after = Entry { uid: before.uid, task: task.clone(), bytes };
+                    // Applied as it is recorded, so later rows see the change.
+                    self.apply(&Change::Replace { index, before: before.clone(), after: after.clone() }, true);
+                    changes.push(Change::Replace { index, before, after });
+                    replaced += 1;
+                }
+                None => {
+                    let uid = self.next_uid;
+                    self.next_uid += 1;
+                    let index = self.entries.len();
+                    let entry = Entry { uid, task: task.clone(), bytes };
+                    self.apply(&Change::Insert { index, entry: entry.clone() }, true);
+                    changes.push(Change::Insert { index, entry });
+                    added += 1;
+                }
+            }
+        }
+        // Undo the trial application; `record` applies the changes again.
+        for change in changes.iter().rev() {
+            self.apply(change, false);
+        }
+        let Some(first) = first.filter(|_| !changes.is_empty()) else { return Ok(self.view()) };
+        let name = other.path.file_name().map(|name| name.to_string_lossy().into_owned()).unwrap_or_default();
+        let label = match (added, replaced) {
+            (added, 0) => format!("Copy {added} task{} from {name}", if added == 1 { "" } else { "s" }),
+            (0, replaced) => format!("Replace {replaced} task{} from {name}", if replaced == 1 { "" } else { "s" }),
+            (added, replaced) => format!("Copy {added} and replace {replaced} tasks from {name}"),
+        };
+        self.record(&label, &first, changes);
+        Ok(self.view())
+    }
+
     /// Item and monster IDs the tasks use (for checking them against elements.data).
     pub fn element_ids(&self) -> HashSet<u32> {
         let mut ids = HashSet::new();
@@ -480,6 +679,23 @@ mod tests {
 
         // Delete, save, reopen.
         document.delete_task(5, document.entries[5].uid).unwrap();
+
+        // Compare with HDN's pack (newer award layout) and copy what this one lacks.
+        if let Some(hdn) = format::tests::SAMPLES.iter().find(|path| path.contains("HDN") && Path::new(path).is_file()) {
+            let other = ComparedPack::open(hdn).unwrap();
+            let comparison = document.compare(&other, None);
+            let missing: Vec<u32> = comparison.rows.iter().filter(|row| row.status == "missing" && row.blocked.is_none()).map(|row| row.id).collect();
+            assert!(missing.len() >= 40, "HDN has {} tasks ForsakenJD lacks", missing.len());
+            let before = document.entries.len();
+            let view = document.copy_from(&other, &missing, None).unwrap();
+            assert_eq!(view.rows.len(), before + missing.len());
+            assert!(view.history.last().unwrap().label.starts_with("Copy "));
+            document.undo().unwrap();
+            assert_eq!(document.entries.len(), before);
+            document.redo().unwrap();
+            assert!(document.compare(&other, None).rows.iter().filter(|row| missing.contains(&row.id)).all(|row| row.status == "same"));
+            document.undo().unwrap();
+        }
         let report = document.save(None, false, false).unwrap();
         assert!(report.time_mark > document.header.time_mark - 1);
         let reopened = DynDocument::open(&copy).unwrap();

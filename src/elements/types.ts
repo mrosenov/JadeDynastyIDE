@@ -1822,3 +1822,80 @@ export interface DynSaveReport {
   timeMark: number;
   backup: string | null;
 }
+
+/** One task in the dyn_tasks.data rewards overview. */
+export interface DynOverviewRow {
+  index: number;
+  uid: number;
+  id: number;
+  name: string;
+  dynType: number;
+  specialAward: number;
+  levelMin: number;
+  levelMax: number;
+  method: number;
+  gold: number | null;
+  experience: number | null;
+  sp: number | null;
+  reputation: number | null;
+  /** Item groups: [random, [[item, amount], …]]. */
+  groups: [boolean, [number, number][]][];
+  status: "" | "changed" | "added";
+}
+
+export interface DynCompareRow {
+  id: number;
+  name: string;
+  specialAward: number;
+  status: "missing" | "different" | "same" | "only_here";
+  /** Top-level parts that differ (DynTask keys). */
+  fields: string[];
+  blocked: string | null;
+}
+
+export interface DynComparison {
+  path: string;
+  tasks: number;
+  timeMark: number;
+  layout: DynAwardLayout;
+  rows: DynCompareRow[];
+}
+
+// ── task_npc.data (where the quest tracker finds NPCs and monsters) ──
+
+export interface TaskNpcRow {
+  id: number;
+  /** Map (instance) ID; 0 = no location. */
+  map: number;
+  x: number;
+  y: number;
+  z: number;
+  /** Padding bytes, kept as they were. */
+  pad: number;
+}
+
+export interface TaskNpcFile {
+  path: string;
+  size: number;
+  timeMark: number;
+  token: string;
+  rows: TaskNpcRow[];
+}
+
+export interface TaskNpcSaveRequest {
+  openedPath: string;
+  targetPath: string;
+  token: string;
+  rows: TaskNpcRow[];
+  backup: boolean;
+  replaceChanged: boolean;
+}
+
+export interface TaskNpcSaveReport {
+  path: string;
+  size: number;
+  rows: number;
+  timeMark: number;
+  token: string;
+  backup: string | null;
+}

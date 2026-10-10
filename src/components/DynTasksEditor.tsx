@@ -1,12 +1,13 @@
-import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, forwardRef, useCallback, useContext, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, CircleAlert, Copy, FolderOpen, Gift, History, Loader2, Plus, Redo2, Save, Search, Trash2, Undo2, X } from "lucide-react";
-import { cloneDynTask, deleteDynTask, dynTaskLabels, dynTaskProblems, dynTasksView, getDynTask, openDynTasks, redoDynTask, saveDynTasks, setDynTask, undoDynTask } from "../elements/api";
+import { AlertTriangle, ArrowDown, ArrowUp, CircleAlert, Copy, FolderOpen, Gift, GitCompareArrows, History, Loader2, Plus, Redo2, Save, Search, Table2, Trash2, Undo2, X } from "lucide-react";
+import { cloneDynTask, closeDynComparison, compareDynTasks, copyDynTasks, deleteDynTask, dynTaskLabels, dynTaskOverview, dynTaskProblems, dynTasksView, getDynTask, openDynTasks, pickEssence, redoDynTask, saveDynTasks, setDynTask, undoDynTask } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatMoney, parseMoney } from "../elements/money";
 import { formatDuration } from "../elements/time";
-import type { DynCandidate, DynItem, DynLabels, DynMonster, DynProblemReport, DynTalk, DynTask, DynTaskTime, DynTimetableEntry, DynVert, DynView, TaskDialog } from "../elements/types";
+import type { DynCandidate, DynCompareRow, DynComparison, DynItem, DynLabels, DynMonster, DynOverviewRow, DynProblemReport, DynTalk, DynTask, DynTaskTime, DynTimetableEntry, DynVert, DynView, TaskDialog } from "../elements/types";
 import { DialogTreeEditor } from "./TaskDialogEditor";
+import { ValuePicker } from "./ValuePicker";
 import { loadSet } from "./TaskForm";
 
 export interface DynTasksEditorState {
@@ -31,14 +32,27 @@ export interface DynTasksEditorHandle {
   deleteSelected: () => void;
   toggleProblems: () => void;
   toggleHistory: () => void;
+  toggleOverview: () => void;
+  toggleCompare: () => void;
 }
 
-type DynPanel = "problems" | "history" | null;
+type DynPanel = "problems" | "history" | "overview" | "compare" | null;
 type Tab = "general" | "requirements" | "goal" | "rewards" | "texts" | "dialogs";
 
 interface Props {
   active: boolean;
   onStateChange: (state: DynTasksEditorState) => void;
+  /** Item icon URLs (by path.data ID) from the game client. */
+  icon?: (pathId?: number | null) => string | undefined;
+}
+
+type PickKind = "item" | "monster";
+/** Opens the item or monster picker; resolves with the chosen ID, or null. */
+const PickContext = createContext<(kind: PickKind, current: number) => Promise<number | null>>(async () => null);
+
+function PickButton({ kind, value, onPick }: { kind: PickKind; value: number; onPick: (value: number) => void }) {
+  const pick = useContext(PickContext);
+  return <button className="icon-btn small" title={kind === "item" ? "Choose an item from elements.data" : "Choose a monster from elements.data"} onClick={() => void pick(kind, value).then((next) => { if (next !== null && next !== value) onPick(next); })}><Search size={12} /></button>;
 }
 
 const TABS: { key: Tab; label: string }[] = [
@@ -226,7 +240,7 @@ function ItemTable({ items, max, labels, onCommit }: { items: DynItem[]; max: nu
     <table className="dyn-table">
       <thead><tr><th>Item</th><th>Amount</th><th title="Common item (not a quest item)">Common</th><th>Probability</th><th>Bound</th><th title="Expires after (seconds)">Period</th>{all && <><th>Timetable</th><th>Day</th><th>Hour</th><th>Minute</th><th>Refine cond.</th><th>Refine level</th><th>Replacement</th></>}<th /></tr></thead>
       <tbody>{items.map((item, index) => <tr key={index}>
-        <td><span className="dyn-item-cell"><NumberInput value={item.itemId} onCommit={(itemId) => set(index, { itemId })} /><Label id={item.itemId} labels={labels} kind="elements" /></span></td>
+        <td><span className="dyn-item-cell"><NumberInput value={item.itemId} onCommit={(itemId) => set(index, { itemId })} /><PickButton kind="item" value={item.itemId} onPick={(itemId) => set(index, { itemId })} /><Label id={item.itemId} labels={labels} kind="elements" /></span></td>
         <td><NumberInput value={item.amount} onCommit={(amount) => set(index, { amount })} /></td>
         <td className="center">{flag(index, "commonItem", "Common item")}</td>
         <td><NumberInput float min={0} max={1} value={item.probability} onCommit={(probability) => set(index, { probability })} /></td>
@@ -239,7 +253,7 @@ function ItemTable({ items, max, labels, onCommit }: { items: DynItem[]; max: nu
           <td><NumberInput max={U8} value={item.minute} onCommit={(minute) => set(index, { minute })} /></td>
           <td><NumberInput max={U8} value={item.refineCondition} onCommit={(refineCondition) => set(index, { refineCondition })} /></td>
           <td><NumberInput value={item.refineLevel} onCommit={(refineLevel) => set(index, { refineLevel })} /></td>
-          <td><span className="dyn-item-cell"><NumberInput value={item.replacementItemId} onCommit={(replacementItemId) => set(index, { replacementItemId })} /><Label id={item.replacementItemId} labels={labels} kind="elements" /></span></td>
+          <td><span className="dyn-item-cell"><NumberInput value={item.replacementItemId} onCommit={(replacementItemId) => set(index, { replacementItemId })} /><PickButton kind="item" value={item.replacementItemId} onPick={(replacementItemId) => set(index, { replacementItemId })} /><Label id={item.replacementItemId} labels={labels} kind="elements" /></span></td>
         </>}
         <td><button className="icon-btn small danger" onClick={() => onCommit(items.filter((_, position) => position !== index))} title="Remove item"><Trash2 size={12} /></button></td>
       </tr>)}</tbody>
@@ -259,9 +273,9 @@ function MonsterTable({ monsters, labels, onCommit }: { monsters: DynMonster[]; 
     <table className="dyn-table">
       <thead><tr><th>Monster</th><th>Amount</th><th>Drop item</th><th>Drop amount</th><th>Common</th><th>Drop probability</th><th title="Only kills by players near the monster's level count">Level check</th><th /></tr></thead>
       <tbody>{monsters.map((monster, index) => <tr key={index}>
-        <td><span className="dyn-item-cell"><NumberInput value={monster.monsterId} onCommit={(monsterId) => set(index, { monsterId })} /><Label id={monster.monsterId} labels={labels} kind="elements" /></span></td>
+        <td><span className="dyn-item-cell"><NumberInput value={monster.monsterId} onCommit={(monsterId) => set(index, { monsterId })} /><PickButton kind="monster" value={monster.monsterId} onPick={(monsterId) => set(index, { monsterId })} /><Label id={monster.monsterId} labels={labels} kind="elements" /></span></td>
         <td><NumberInput value={monster.amount} onCommit={(amount) => set(index, { amount })} /></td>
-        <td><span className="dyn-item-cell"><NumberInput value={monster.dropItemId} onCommit={(dropItemId) => set(index, { dropItemId })} /><Label id={monster.dropItemId} labels={labels} kind="elements" /></span></td>
+        <td><span className="dyn-item-cell"><NumberInput value={monster.dropItemId} onCommit={(dropItemId) => set(index, { dropItemId })} /><PickButton kind="item" value={monster.dropItemId} onPick={(dropItemId) => set(index, { dropItemId })} /><Label id={monster.dropItemId} labels={labels} kind="elements" /></span></td>
         <td><NumberInput value={monster.dropItemAmount} onCommit={(dropItemAmount) => set(index, { dropItemAmount })} /></td>
         <td className="center"><input type="checkbox" checked={monster.dropCommonItem !== 0} onChange={(event) => set(index, { dropCommonItem: event.target.checked ? 1 : 0 })} /></td>
         <td><NumberInput float min={0} max={1} value={monster.dropProbability} onCommit={(dropProbability) => set(index, { dropProbability })} /></td>
@@ -426,11 +440,103 @@ function Timetable({ entries, types, onCommit }: { entries: DynTimetableEntry[];
   </div>;
 }
 
+// ── Rewards overview ──
+
+type SortKey = "index" | "id" | "specialAward" | "levelMin" | "gold" | "experience" | "items";
+
+function Overview({ rows, labels, onOpen, onClose }: { rows: DynOverviewRow[] | null; labels: DynLabels; onOpen: (index: number) => void; onClose: () => void }) {
+  const [filter, setFilter] = useState("");
+  const [sort, setSort] = useState<{ key: SortKey; down: boolean }>({ key: "index", down: false });
+  const needle = useDeferredValue(filter.trim().toLowerCase());
+  const itemName = (id: number) => labels.elements[String(id)]?.split(" › ").pop() ?? `#${id}`;
+  const shown = useMemo(() => {
+    const value = (row: DynOverviewRow): number => sort.key === "items" ? row.groups.reduce((total, group) => total + group[1].length, 0) : sort.key === "index" ? row.index : Number(row[sort.key] ?? -1);
+    const matches = (row: DynOverviewRow) => !needle || String(row.id).includes(needle) || row.name.toLowerCase().includes(needle) || String(row.specialAward) === needle
+      || row.groups.some(([, items]) => items.some(([id]) => String(id) === needle || itemName(id).toLowerCase().includes(needle)));
+    const list = (rows ?? []).filter(matches);
+    return [...list].sort((a, b) => (value(a) - value(b)) * (sort.down ? -1 : 1) || a.index - b.index);
+  }, [needle, rows, sort, labels]);
+  const header = (key: SortKey, label: string) => <th key={key} className="sortable" onClick={() => setSort((current) => ({ key, down: current.key === key ? !current.down : false }))}>{label}{sort.key === key && (sort.down ? <ArrowDown size={11} /> : <ArrowUp size={11} />)}</th>;
+  return <section className="dyn-panel">
+    <header><b>Rewards overview</b><span className="muted small">{rows ? `${shown.length} of ${rows.length} tasks` : "Loading…"}</span>
+      <span className="dyn-task-search inline"><Search size={13} /><input value={filter} placeholder="Task, award # or item" onChange={(event) => setFilter(event.target.value)} /></span>
+      <span className="spacer" /><button className="icon-btn small" onClick={onClose}><X size={13} /></button></header>
+    <div className="dyn-table-wrap">
+      <table className="dyn-table dyn-overview">
+        <thead><tr>{header("id", "ID")}<th>Name</th>{header("specialAward", "Award #")}{header("levelMin", "Levels")}{header("gold", "Gold")}{header("experience", "Exp")}<th>SP</th><th>Rep.</th>{header("items", "Item rewards")}</tr></thead>
+        <tbody>{shown.map((row) => <tr key={row.uid} className={row.status ? row.status : undefined} onClick={() => onOpen(row.index)}>
+          <td className="mono">{row.id}</td>
+          <td className="truncate dyn-overview-name">{row.name}</td>
+          <td className="mono">{row.dynType === 1 ? `#${row.specialAward}` : ""}</td>
+          <td className="mono">{row.levelMin}{row.levelMax ? `–${row.levelMax}` : "+"}</td>
+          <td className="mono">{row.gold !== null ? formatMoney(row.gold) : ""}</td>
+          <td className="mono">{row.experience !== null ? count(row.experience) : ""}</td>
+          <td className="mono">{row.sp !== null ? count(row.sp) : ""}</td>
+          <td className="mono">{row.reputation !== null ? count(row.reputation) : ""}</td>
+          <td><div className="dyn-overview-items">{row.groups.map(([random, items], group) => <span key={group} className="dyn-overview-group" title={random ? "One random item" : undefined}>
+            {row.groups.length > 1 && <b className="muted">{group + 1}{random ? "?" : ""}</b>}
+            {items.map(([id, amount], index) => <span key={index} className="dyn-overview-item" title={`${labels.elements[String(id)] ?? id} (ID ${id})`}>{itemName(id)}{amount > 1 && <span className="muted"> ×{amount}</span>}</span>)}
+          </span>)}</div></td>
+        </tr>)}</tbody>
+      </table>
+    </div>
+  </section>;
+}
+
+// ── Compare with another pack ──
+
+const PARTS: Record<string, string> = {
+  dynType: "type", specialAward: "special award", name: "name", flags: "flags", levelMin: "levels", levelMax: "levels", timeLimit: "requirements", reputation: "requirements", period: "requirements",
+  premiseItems: "requirements", zone: "requirements", transfer: "requirements", givenItems: "given items", deposit: "requirements", premiseTasks: "requirements", gender: "requirements",
+  occupations: "requirements", mutexTasks: "requirements", timetable: "requirements", goal: "goal", finishType: "finish type", award: "rewards", description: "texts", okText: "texts",
+  noText: "texts", talks: "dialogs", subtasks: "subtasks", extraMask: "stored flags", mask2: "stored flags",
+};
+const STATUS: Record<DynCompareRow["status"], string> = { missing: "Only in the other pack", different: "Different", same: "Same", only_here: "Only in this pack" };
+
+function ComparePanel({ comparison, busy, onChoose, onCopy, onOpen, onClose }: { comparison: DynComparison | null; busy: boolean; onChoose: () => void; onCopy: (ids: number[]) => void; onOpen: (id: number) => void; onClose: () => void }) {
+  const [status, setStatus] = useState<DynCompareRow["status"]>("missing");
+  const [picked, setPicked] = useState<Set<number>>(new Set());
+  useEffect(() => setPicked(new Set()), [comparison]);
+  const counts = useMemo(() => {
+    const out: Record<string, number> = { missing: 0, different: 0, same: 0, only_here: 0 };
+    for (const row of comparison?.rows ?? []) out[row.status]++;
+    return out;
+  }, [comparison]);
+  const rows = (comparison?.rows ?? []).filter((row) => row.status === status);
+  const copyable = (row: DynCompareRow) => (row.status === "missing" || row.status === "different") && !row.blocked;
+  const selectable = rows.filter(copyable);
+  const toggle = (id: number) => setPicked((current) => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; });
+  return <section className="dyn-panel">
+    <header><b>Compare with another pack</b>
+      {comparison && <span className="muted small truncate" title={comparison.path}>{comparison.path} · {count(comparison.tasks)} tasks · {comparison.layout === "shifted" ? "newer" : comparison.layout === "classic" ? "older" : "no"} reward layout</span>}
+      <span className="spacer" />
+      <button className="btn small" onClick={onChoose} disabled={busy}><FolderOpen size={13} /> {comparison ? "Choose another…" : "Choose dyn_tasks.data…"}</button>
+      <button className="icon-btn small" onClick={onClose}><X size={13} /></button>
+    </header>
+    {!comparison ? <div className="empty-note">Choose another server's or client's dyn_tasks.data. Tasks are paired by ID: you can copy the ones this pack lacks and replace the ones that differ. IDs and special award numbers stay as they are, and the copies are written in this pack's reward layout.</div> : <>
+      <div className="dyn-compare-tabs">{(Object.keys(STATUS) as DynCompareRow["status"][]).map((key) => <button key={key} className={"btn small" + (status === key ? " active" : "")} onClick={() => { setStatus(key); setPicked(new Set()); }}>{STATUS[key]} <span className="muted">{counts[key]}</span></button>)}</div>
+      {selectable.length > 0 && <div className="dyn-compare-actions">
+        <label className="small"><input type="checkbox" checked={selectable.every((row) => picked.has(row.id))} onChange={(event) => setPicked(event.target.checked ? new Set(selectable.map((row) => row.id)) : new Set())} /> Select all</label>
+        <span className="spacer" />
+        <button className="btn small primary" disabled={!picked.size || busy} onClick={() => onCopy([...picked])}><Copy size={13} /> {status === "missing" ? "Copy" : "Replace with"} {picked.size} task{picked.size === 1 ? "" : "s"}</button>
+      </div>}
+      {rows.map((row) => <div key={row.id} className={"dyn-compare-row" + (row.blocked ? " blocked" : "")}>
+        {copyable(row) ? <input type="checkbox" checked={picked.has(row.id)} onChange={() => toggle(row.id)} /> : <span />}
+        <span className="mono">{row.id}</span>
+        {row.status === "missing" ? <span className="truncate">{row.name}</span> : <button className="link truncate" onClick={() => onOpen(row.id)} title="Open this task">{row.name}</button>}
+        <span className="dyn-award-badge">#{row.specialAward}</span>
+        <span className="muted small truncate">{row.blocked ?? [...new Set(row.fields.map((field) => PARTS[field] ?? field))].join(", ")}</span>
+      </div>)}
+      {!rows.length && <div className="empty-note">No tasks here.</div>}
+    </>}
+  </section>;
+}
+
 // ── The workspace ──
 
 const BACKUP_KEY = "jdide.dyn.backup";
 
-export const DynTasksEditor = forwardRef<DynTasksEditorHandle, Props>(function DynTasksEditor({ active, onStateChange }, ref) {
+export const DynTasksEditor = forwardRef<DynTasksEditorHandle, Props>(function DynTasksEditor({ active, onStateChange, icon }, ref) {
   const [view, setView] = useState<DynView | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [path, setPath] = useState<number[]>([]);
@@ -448,6 +554,11 @@ export const DynTasksEditor = forwardRef<DynTasksEditorHandle, Props>(function D
   const [saving, setSaving] = useState<{ target: string | null; changed: boolean } | null>(null);
   const [backup, setBackup] = useState(() => { try { return localStorage.getItem(BACKUP_KEY) !== "0"; } catch { return true; } });
   const savedOnce = useRef(false);
+  const [overview, setOverview] = useState<DynOverviewRow[] | null>(null);
+  const [comparison, setComparison] = useState<DynComparison | null>(null);
+  const [picking, setPicking] = useState<{ kind: PickKind; current: number; resolve: (value: number | null) => void } | null>(null);
+  const pick = useCallback((kind: PickKind, current: number) => new Promise<number | null>((resolve) => setPicking({ kind, current, resolve })), []);
+  const pickSearch = useMemo(() => picking ? (query: string, page: number) => pickEssence(picking.kind, query, page, picking.current || null) : undefined, [picking]);
   const row = view && selected !== null ? view.rows[selected] ?? null : null;
 
   // The workspace remounts when switching; pick up the open pack.
@@ -474,6 +585,26 @@ export const DynTasksEditor = forwardRef<DynTasksEditorHandle, Props>(function D
     }).catch((problem) => { if (!cancelled) setError(String(problem).replace(/^Error: /, "")); });
     return () => { cancelled = true; };
   }, [row?.index, row?.uid, view]);
+
+  useEffect(() => {
+    if (panel !== "overview" || !view) return;
+    let cancelled = false;
+    dynTaskOverview().then((rows) => {
+      if (cancelled) return;
+      setOverview(rows);
+      const ids = [...new Set(rows.flatMap((row) => row.groups.flatMap(([, items]) => items.map(([id]) => id))))].filter((id) => id && !(String(id) in labels.elements));
+      if (ids.length) dynTaskLabels(ids, []).then((found) => { if (!cancelled) setLabels((current) => ({ elements: { ...current.elements, ...found.elements }, tasks: current.tasks })); }).catch(() => {});
+    }).catch((problem) => setError(String(problem)));
+    return () => { cancelled = true; };
+    // Labels are merged into, not depended on.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [panel, view]);
+  useEffect(() => {
+    if (panel !== "compare" || !comparison) return;
+    compareDynTasks(null).then(setComparison).catch(() => {});
+    // The comparison follows every change to this pack.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view]);
 
   const run = useCallback(async (work: () => Promise<DynView | null | void>) => {
     if (busy) return;
@@ -545,6 +676,33 @@ export const DynTasksEditor = forwardRef<DynTasksEditorHandle, Props>(function D
     });
   }, [row, run, view]);
 
+  const chooseComparison = useCallback(async () => {
+    const picked = await open({ multiple: false, directory: false, defaultPath: comparison?.path ?? view?.path, title: "Compare with another dyn_tasks.data", filters: [{ name: "dyn_tasks.data", extensions: ["data"] }] });
+    if (typeof picked !== "string") return;
+    void run(async () => { setComparison(await compareDynTasks(picked)); });
+  }, [comparison?.path, run, view?.path]);
+  const copyCompared = useCallback((ids: number[]) => {
+    void run(async () => {
+      const next = await copyDynTasks(ids);
+      setNote(`${next.history[next.history.length - 1]?.label ?? "Copied"}. Undo brings the previous tasks back.`);
+      return next;
+    });
+  }, [run]);
+  const openById = useCallback((id: number) => {
+    const target = view?.rows.find((entry) => entry.id === id);
+    if (!target) return;
+    setSelected(target.index);
+    setPath([]);
+    setPanel(null);
+  }, [view?.rows]);
+  const toggleOverview = useCallback(() => setPanel((current) => current === "overview" ? null : "overview"), []);
+  const toggleCompare = useCallback(() => setPanel((current) => current === "compare" ? null : "compare"), []);
+  const closeComparison = useCallback(() => {
+    void closeDynComparison().catch(() => {});
+    setComparison(null);
+    setPanel(null);
+  }, []);
+
   const refreshProblems = useCallback(() => { void dynTaskProblems().then(setProblems).catch((problem) => setError(String(problem))); }, []);
   const toggleProblems = useCallback(() => setPanel((current) => { const next = current === "problems" ? null : "problems"; if (next) refreshProblems(); return next; }), [refreshProblems]);
   const toggleHistory = useCallback(() => setPanel((current) => current === "history" ? null : "history"), []);
@@ -577,7 +735,7 @@ export const DynTasksEditor = forwardRef<DynTasksEditorHandle, Props>(function D
     if (target) setSaving({ target, changed: false });
   }, [view]);
 
-  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (file) => void load(file), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, cloneSelected, deleteSelected, toggleProblems, toggleHistory }), [choose, cloneSelected, deleteSelected, load, redo, saveAs, saveCurrent, toggleHistory, toggleProblems, undo]);
+  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (file) => void load(file), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, cloneSelected, deleteSelected, toggleProblems, toggleHistory, toggleOverview, toggleCompare }), [choose, cloneSelected, deleteSelected, load, redo, saveAs, saveCurrent, toggleCompare, toggleHistory, toggleOverview, toggleProblems, undo]);
 
   useEffect(() => {
     if (!active) return;
@@ -633,6 +791,8 @@ export const DynTasksEditor = forwardRef<DynTasksEditorHandle, Props>(function D
       </div></div>
       <button className="btn" onClick={undo} disabled={!view.canUndo || busy} title="Undo (Ctrl+Z)"><Undo2 size={14} /></button>
       <button className="btn" onClick={redo} disabled={!view.canRedo || busy} title="Redo (Ctrl+Y)"><Redo2 size={14} /></button>
+      <button className={"btn" + (panel === "overview" ? " active" : "")} onClick={toggleOverview} title="Every task's rewards in one table"><Table2 size={14} /> Overview</button>
+      <button className={"btn" + (panel === "compare" ? " active" : "")} onClick={toggleCompare} title="Compare with another pack and copy tasks"><GitCompareArrows size={14} /> Compare</button>
       <button className={"btn" + (panel === "problems" ? " active" : "")} onClick={toggleProblems} title="Problems (Ctrl+Shift+M)"><CircleAlert size={14} /> Problems</button>
       <button className={"btn" + (panel === "history" ? " active" : "")} onClick={toggleHistory} title="History (Ctrl+H)"><History size={14} /> History</button>
       <button className="btn" onClick={() => void choose()} disabled={busy}><FolderOpen size={14} /> Open…</button>
@@ -660,7 +820,9 @@ export const DynTasksEditor = forwardRef<DynTasksEditorHandle, Props>(function D
         </footer>
       </aside>
       <div className="dyn-task-main">
-        {panel === "problems" ? <section className="dyn-panel">
+        {panel === "overview" ? <Overview rows={overview} labels={labels} onClose={() => setPanel(null)} onOpen={(index) => { setSelected(index); setPath([]); setTab("rewards"); setPanel(null); }} />
+        : panel === "compare" ? <ComparePanel comparison={comparison} busy={busy} onChoose={() => void chooseComparison()} onCopy={copyCompared} onOpen={openById} onClose={closeComparison} />
+        : panel === "problems" ? <section className="dyn-panel">
           <header><b>Problems</b><span className="muted small">{problems ? `${problems.problems.length} found${problems.tasksChecked ? "" : " · open tasks.data to check task IDs"}${problems.elementsChecked ? "" : " · open elements.data to check items"}` : "Checking…"}</span><span className="spacer" /><button className="btn small" onClick={refreshProblems}>Check again</button><button className="icon-btn small" onClick={() => setPanel(null)}><X size={13} /></button></header>
           {problems && (problems.problems.length ? problems.problems.map((problem, index) => <button key={index} className="dyn-problem" onClick={() => { setSelected(problem.index); setPath([]); setPanel(null); }}>
             <span className={"tag " + (problem.severity === "error" ? "danger" : "warn")}>{problem.severity}</span><span className="mono">{problem.taskId}</span><span className="truncate">{problem.taskName}</span><span>{problem.message}</span>
@@ -679,11 +841,14 @@ export const DynTasksEditor = forwardRef<DynTasksEditorHandle, Props>(function D
           </div>
           <div className="task-award-tabs" role="tablist">{TABS.map((entry) => <button key={entry.key} role="tab" aria-selected={tab === entry.key} className={tab === entry.key ? "active" : ""} onClick={() => setTab(entry.key)}>{entry.label}</button>)}</div>
           <div className="dyn-task-form-scroll">
-            <DynTaskForm key={`${row.uid}:${path.join(".")}`} task={node} top={!path.length} tab={tab} layout={view.layout} labels={labels} sets={sets} onCommit={commit} onDialog={saveDialog} />
+            <PickContext.Provider value={pick}>
+              <DynTaskForm key={`${row.uid}:${path.join(".")}`} task={node} top={!path.length} tab={tab} layout={view.layout} labels={labels} sets={sets} onCommit={commit} onDialog={saveDialog} />
+            </PickContext.Provider>
           </div>
         </>}
       </div>
     </div>
+    {picking && pickSearch && <ValuePicker search={pickSearch} icon={icon} onApply={async (value) => { picking.resolve(Number(value)); return null; }} onClose={() => { picking.resolve(null); setPicking(null); }} />}
     {saving && <div className="modal-backdrop" onMouseDown={() => !busy && setSaving(null)}>
       <div className="modal dyn-save-dialog" onMouseDown={(event) => event.stopPropagation()}>
         <h3>Save dyn_tasks.data</h3>

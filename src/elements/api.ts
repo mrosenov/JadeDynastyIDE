@@ -75,6 +75,11 @@ import type {
   DynProblemReport,
   DynLabels,
   DynSaveReport,
+  DynOverviewRow,
+  DynComparison,
+  TaskNpcFile,
+  TaskNpcSaveRequest,
+  TaskNpcSaveReport,
   TaskAlignProposal,
   TaskLayoutExportReport,
   TaskLayoutCondition,
@@ -347,3 +352,16 @@ export const redoDynTask = () => invoke<DynView>("redo_dyn_task");
 export const dynTaskProblems = () => invoke<DynProblemReport>("dyn_task_problems");
 export const dynTaskLabels = (elements: number[], tasks: number[]) => invoke<DynLabels>("dyn_task_labels", { elements, tasks });
 export const saveDynTasks = (target: string | null, backup: boolean, replaceChanged: boolean) => invoke<DynSaveReport>("save_dyn_tasks", { target, backup, replaceChanged });
+export const dynTaskOverview = () => invoke<DynOverviewRow[]>("dyn_task_overview");
+/** Opens `path` read-only for comparing, or compares again with the one open (null). */
+export const compareDynTasks = (path: string | null) => invoke<DynComparison>("compare_dyn_tasks", { path });
+export const copyDynTasks = (ids: number[]) => invoke<DynView>("copy_dyn_tasks", { ids });
+export const closeDynComparison = () => invoke<void>("close_dyn_comparison");
+/** Items or monsters of the open elements.data. */
+export const pickEssence = (kind: "item" | "monster" | "npc", query: string, page: number, current: number | null) => invoke<PickerResult>("pick_essence", { kind, query, page, current });
+
+// task_npc.data
+export const openTaskNpc = (path: string) => invoke<TaskNpcFile>("open_task_npc", { path });
+export const saveTaskNpc = (request: TaskNpcSaveRequest) => invoke<TaskNpcSaveReport>("save_task_npc", { request });
+/** Map names of the configured client (configs.pck instance.txt); empty without a client. */
+export const clientMapNames = () => invoke<[number, string][]>("client_map_names");

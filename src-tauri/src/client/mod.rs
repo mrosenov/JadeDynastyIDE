@@ -2,6 +2,7 @@
 //! path table (`path.data`) and the item icon atlas.
 
 pub mod dds;
+pub mod instances;
 pub mod pck;
 pub mod strings;
 pub mod tga;
@@ -266,6 +267,8 @@ pub struct Resources {
     images: Mutex<VecDeque<(u32, Arc<ResourceImage>)>>,
     /// Title definitions from interfaces.pck, read on first use.
     titles: OnceLock<Result<titles::TitleTable, String>>,
+    /// Map names from configs.pck instance.txt, read on first use.
+    instances: OnceLock<Result<Vec<(i32, String)>, String>>,
 }
 
 pub struct ResourceImage {
@@ -302,6 +305,7 @@ impl Resources {
             item_colors: OnceLock::new(),
             images: Mutex::new(VecDeque::new()),
             titles: OnceLock::new(),
+            instances: OnceLock::new(),
         }
     }
 
@@ -344,6 +348,14 @@ impl Resources {
                 let atlas = surfaces.read_path(&format!("{ITEM_ICONS}.dds"))?;
                 IconSet::parse(&list, atlas)
             })
+            .as_ref()
+            .map_err(Clone::clone)
+    }
+
+    /// Map names by ID (configs.pck Configs/instance.txt), in file order.
+    pub fn instances(&self) -> Result<&Vec<(i32, String)>, String> {
+        self.instances
+            .get_or_init(|| self.package("configs").and_then(|pck| pck.read_path("configs/instance.txt")).and_then(|bytes| instances::parse(&bytes)))
             .as_ref()
             .map_err(Clone::clone)
     }
@@ -654,4 +666,3 @@ mod tests {
         assert!(description.starts_with("^ffbc3cThe Pinnacle\n") && description.lines().count() > 2, "bad title tooltip: {description:?}");
     }
 }
-

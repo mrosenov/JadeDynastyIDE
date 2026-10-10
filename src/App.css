@@ -241,7 +241,7 @@ input {
 
 .workspace {
   display: grid;
-  grid-template-columns: 46px minmax(300px, 420px) minmax(0, 1fr);
+  grid-template-columns: var(--activity-width) minmax(300px, 420px) minmax(0, 1fr);
   min-height: 0;
 }
 
@@ -4101,7 +4101,7 @@ button.outline-node:hover {
 
 /* The search takes the place of the list sidebar and the record table. */
 .workspace.searching {
-  grid-template-columns: 46px minmax(460px, 620px) minmax(0, 1fr);
+  grid-template-columns: var(--activity-width) minmax(460px, 620px) minmax(0, 1fr);
 }
 .search-slot {
   display: flex;
@@ -4734,6 +4734,9 @@ select.sf-control {
 
 /* ------------------------------------------------------------ activity bar */
 
+:root {
+  --activity-width: 60px;
+}
 .activity-bar {
   display: flex;
   flex-direction: column;
@@ -4745,10 +4748,13 @@ select.sf-control {
 }
 .activity {
   position: relative;
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 54px;
+  height: 46px;
   padding: 0;
   border: 0;
   border-radius: 8px;
@@ -4767,7 +4773,7 @@ select.sf-control {
 .activity.active::before {
   content: "";
   position: absolute;
-  left: -5px;
+  left: -3px;
   top: 8px;
   bottom: 8px;
   width: 3px;
@@ -4778,10 +4784,18 @@ select.sf-control {
   top: 0;
   right: -2px;
 }
+.activity-label {
+  max-width: 52px;
+  overflow: hidden;
+  font-size: 10px;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .activity-dirty {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 4px;
+  right: 11px;
   width: 7px;
   height: 7px;
   border: 1px solid var(--bg-pane);
@@ -4793,7 +4807,7 @@ select.sf-control {
 
 .path-data-workspace,
 .welcome-workspace {
-  grid-template-columns: 46px minmax(0, 1fr);
+  grid-template-columns: var(--activity-width) minmax(0, 1fr);
 }
 .welcome-workspace > .welcome {
   grid-column: 2;
@@ -5090,7 +5104,7 @@ select.sf-control {
 /* ------------------------------------------------------------ tasks.data browser */
 
 .tasks-data-workspace {
-  grid-template-columns: 46px minmax(0, 1fr);
+  grid-template-columns: var(--activity-width) minmax(0, 1fr);
 }
 .tasks-pane {
   grid-column: 2;
@@ -9299,4 +9313,124 @@ select.ie-control {
   display: flex;
   gap: 8px;
   margin-top: 12px;
+}
+.dyn-task-search.inline {
+  margin: 0;
+  width: 240px;
+}
+.dyn-overview tbody tr {
+  cursor: pointer;
+}
+.dyn-overview tbody tr:hover {
+  background: var(--bg-hover);
+}
+.dyn-overview tbody tr.changed td:first-child {
+  box-shadow: inset 2px 0 var(--warn);
+}
+.dyn-overview tbody tr.added td:first-child {
+  box-shadow: inset 2px 0 var(--accent);
+}
+.dyn-overview th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+.dyn-overview th.sortable svg {
+  margin-left: 3px;
+  vertical-align: -1px;
+}
+.dyn-overview td {
+  vertical-align: top;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  white-space: nowrap;
+}
+.dyn-overview-name {
+  max-width: 200px;
+}
+.dyn-overview-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  min-width: 280px;
+  white-space: normal;
+}
+.dyn-overview-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.dyn-overview-item {
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+}
+.dyn-compare-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-bottom: 8px;
+}
+.dyn-compare-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 8px;
+}
+.dyn-compare-row {
+  display: grid;
+  grid-template-columns: 18px 60px minmax(120px, 260px) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+.dyn-compare-row.blocked {
+  color: var(--text-faint);
+}
+.dyn-compare-row .link {
+  justify-self: start;
+  max-width: 100%;
+  text-align: left;
+}
+
+/* ── task_npc.data editor (reuses the path.data editor layout) ── */
+.task-npc-table th:nth-child(1) { width: 110px; }
+.task-npc-table th:nth-child(2) { width: auto; }
+.task-npc-table th:nth-child(3) { width: 240px; }
+.task-npc-table th:nth-child(4),
+.task-npc-table th:nth-child(5),
+.task-npc-table th:nth-child(6) { width: 82px; }
+.task-npc-table th:nth-child(7) { width: 42px; }
+.task-npc-table td.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.task-npc-map {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.task-npc-map input {
+  flex: none;
+  width: 64px !important;
+}
+.task-npc-map > span {
+  min-width: 0;
+  font-size: 12px;
+}
+.task-npc-maps {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 260px;
+  margin-top: 6px;
+  overflow-y: auto;
+}
+.task-npc-maps b {
+  display: inline-block;
+  width: 36px;
 }

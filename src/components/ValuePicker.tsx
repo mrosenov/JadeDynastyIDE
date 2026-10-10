@@ -5,16 +5,19 @@ import { searchPicker } from "../elements/api";
 import { GameText } from "./GameText";
 
 interface Props {
-  list: number;
-  row: number;
-  node: FieldNode;
+  /** The elements.data field being chosen for (its list, row and offset), or `search`. */
+  list?: number;
+  row?: number;
+  node?: FieldNode;
+  /** A search of its own (other editors), instead of the field. */
+  search?: (query: string, page: number) => Promise<PickerResult>;
   icon?: (pathId?: number | null) => string | undefined;
   image?: (pathId?: number | null) => string | undefined;
   onApply: (value: string) => Promise<string | null>;
   onClose: () => void;
 }
 
-export function ValuePicker({ list, row, node, icon, image, onApply, onClose }: Props) {
+export function ValuePicker({ list, row, node, search, icon, image, onApply, onClose }: Props) {
   const input = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
@@ -31,7 +34,7 @@ export function ValuePicker({ list, row, node, icon, image, onApply, onClose }: 
     setLoading(true);
     setError(null);
     const timer = window.setTimeout(() => {
-      searchPicker({ list, row, off: node.off, query, page })
+      (search ? search(query, page) : searchPicker({ list: list ?? 0, row: row ?? 0, off: node?.off ?? 0, query, page }))
         .then((resultPage) => {
           if (cancelled) return;
           setResult(resultPage);
@@ -46,7 +49,7 @@ export function ValuePicker({ list, row, node, icon, image, onApply, onClose }: 
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [list, row, node.off, query, page]);
+  }, [list, row, node?.off, search, query, page]);
 
   const selectedChoice = result?.entries[active];
   const previewChoice = result?.entries[hovered ?? active];
@@ -72,7 +75,7 @@ export function ValuePicker({ list, row, node, icon, image, onApply, onClose }: 
         className="modal value-picker-dialog"
         role="dialog"
         aria-modal="true"
-        aria-label={result?.title ?? `Choose ${node.name}`}
+        aria-label={result?.title ?? `Choose ${node?.name ?? "a value"}`}
         onKeyDown={(event) => {
           if (event.key === "Escape") onClose();
           else if (event.key === "ArrowDown") {
@@ -95,7 +98,7 @@ export function ValuePicker({ list, row, node, icon, image, onApply, onClose }: 
       >
         <div className="modal-head">
           <div>
-            <h3>{result?.title ?? `Choose ${node.name}`}</h3>
+            <h3>{result?.title ?? `Choose ${node?.name ?? "a value"}`}</h3>
             <div className="muted small">{result?.scope ?? "Finding available values…"}</div>
           </div>
           <span className="spacer" />

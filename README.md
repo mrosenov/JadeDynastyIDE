@@ -570,9 +570,25 @@ form has six tabs:
 - **Dialogs**: the five NPC talks, with the same tree editor as `tasks.data`.
 
 Item and monster IDs show their names from the open `elements.data`, and task IDs their names from
-the open `tasks.data`. Every change is checked against the client's limits (for example 5 prerequisite
+the open `tasks.data`. The search button beside an item or monster ID opens a picker over the open
+`elements.data` (items only, or `MONSTER_ESSENCE` only), searchable by name or ID and with icons when
+a game client is configured. Every change is checked against the client's limits (for example 5 prerequisite
 quests, 3 monsters, 8 items to collect, 16 reward groups of 32 items, 63-character dialog options) and
 must read back as exactly the task that was sent; untouched tasks keep their bytes.
+
+**Overview** (Tools › Rewards overview) shows every task in one table: ID, name, special award
+number, levels, gold, experience, SP, reputation and the reward items with their names and amounts.
+It can be sorted by most columns and filtered by task, award number or item name or ID; clicking a row
+opens that task's Rewards tab.
+
+**Compare** (Tools › Compare with another dyn_tasks.data…) opens another pack read-only and pairs its
+tasks with these by ID: only in the other pack, different (naming the parts that differ: rewards,
+dialogs, requirements, …), the same, and only in this pack. Tick tasks and **Copy** the missing ones
+(added at the end) or **Replace** the different ones, as one undo step. IDs and special award numbers
+stay as they are; tasks are written in this pack's reward layout, so HDN gifts can be copied into an
+older pack and the other way round. A task whose IDs are taken by another task in this pack or by the
+open `tasks.data` cannot be ticked and says why. For example, HDN's pack (301 tasks) has more than 40
+gifts that ForsakenJD's (256) lacks.
 
 **Clone** (Ctrl+D) copies a task with fresh IDs above this pack, the open `tasks.data` and every ID
 cloned or deleted this session, and gives it the next special award number; quest references to the
@@ -586,6 +602,24 @@ another program changed unless confirmed.
 The format matches the client's `UnmarshalDynTask` (pack version 13). All five known packs
 (XtremeJade, 1559, ForsakenJD, HDN, Reborn) read and write back byte-for-byte. Newer clients (HDN,
 Reborn) store item rewards in a different award bit; JD IDE detects which one a pack uses.
+
+## task_npc.data editor
+
+The map pin in the activity bar (**Task NPC**) opens `task_npc.data`: where the quest tracker finds
+NPCs and monsters. Each record names an NPC or monster template, a map and a position. Clicking a name
+in the quest tracker marks that position on the minimap, and "fly to NPC" teleports the player there.
+**The client and the server each read their own copy**: the client `element/data/task_npc.data`
+(tracker and minimap), the server the file named by `QuestNPCInfo` in gs.conf (teleporting). Save
+both; **Save as…** writes the other copy.
+
+The table shows the ID, the NPC or monster name from the open `elements.data`, the map with its name
+from the client's `configs.pck` (`instance.txt`), and X, Y and Z (whole world coordinates; Y is the
+height). Map 0 means no known location (about 45% of official records). Search by ID, name or map;
+**No location** and **Not in elements.data** narrow the list. **Add NPC…** picks an NPC or monster from
+the open `elements.data`; the trash button deletes a record; Ctrl+Z/Ctrl+Y undo and redo. Saving
+refuses ID 0 and duplicate IDs (the game would keep only the last), sets the time mark to now, keeps
+the records in their order, can back up the replaced file and warns when another program changed it.
+All six known files read and write back byte-for-byte.
 
 ## path.data editor
 

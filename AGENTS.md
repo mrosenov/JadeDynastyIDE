@@ -36,7 +36,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (171 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (176 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -77,6 +77,8 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
+| `task_npc.rs` | `task_npc.data` reader/writer (12-byte header, 16-byte NPC_INFO records), save with backup and changed-on-disk guard. |
+| `client/instances.rs` | Map names from configs.pck `Configs/instance.txt` (UTF-16 `"Name" { id … }` blocks, `//` comments). |
 | `dyn_tasks/format.rs`, `dyn_tasks/mod.rs` | `dyn_tasks.data` reader/writer (client limits, read-back check) and the open pack: edit journal, clone, delete, problems, save. |
 | `tasks/container.rs` | Strict `tasks.data` index and numbered-pack reader: offsets, pack limits and MD5 validation. |
 | `tasks/schema.rs`, `structures.rs`, `v165.rs`, `v172.rs`, `v184.rs` | Byte-preserving task schema engine and verified version layouts. |
@@ -99,6 +101,7 @@ Environment quirks (Windows 11, Git Bash):
   `ComparePanel`, `HistoryPanel`, `SaveDialog`, `SchemaEditor`, `RecordInspector`,
   `FieldTree`, `InlineEditor`, `PathDataEditor`, `TasksEditor`, `DynTasksEditor`, task hierarchy dialogs, …).
   `TaskDialogEditor` exports `DialogTreeEditor`, the talk tree editor both task editors use.
+  `TaskNpcEditor` follows `PathDataEditor` (rows and undo history in the component).
 - `schema/model.ts` — schema editor draft model; `schema/fieldList.ts` — pasted
   sELedit/Jade Editor field lists → fields.
 - `elements/money.ts`, `time.ts`, `text.ts`, `talk.ts` — display helpers.
@@ -462,7 +465,27 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `write_task_bytes` to read back equal (given-item counts are recounted). Journal entries hold
   whole-task Replace/Insert/Remove changes. Clone IDs: above this pack, the open tasks.data
   (`TaskDocument::task_names`, the background index) and `id_floor`.
-- Lock order: `tasks`/`document` are read first and released, then `dyn_tasks`.
+- Lock order: `tasks`/`document` are read first and released, then `dyn_tasks`, then `compared_dyn`.
+- Overview: `DynDocument::overview` (award summary per top-level task). Compare: `ComparedPack`
+  (`AppState.compared_dyn`, read-only), `compare` pairs by top-level ID (first of duplicates) and names
+  differing parts by comparing the tasks' serialized top-level keys; `copy_clash` blocks ID clashes
+  (other tasks here, the open tasks.data) and item rewards into a pack of unknown layout; `copy_from`
+  writes with this pack's layout, appends missing tasks and replaces existing ones in one journal entry.
+- Item/monster picker: `Document::essence_spec` (monsters: `MONSTER_ESSENCE`; items: essence lists
+  that are not types, services, configs, `MONSTER*`, `NPC*` or `MINE*`) + `picker_records`, command
+  `pick_essence`; `ValuePicker` takes a `search` function instead of an elements field.
+
+## task_npc.data editor
+
+- `ATaskTemplMan::UnmarshalNPCInfo`: header u32 pack_size (= file size), i32 time_mark, u16 version 2,
+  u16 count; records `NPC_INFO` {u32 id, i32 map_id, i16 x, y, z} declared before `#pragma pack(1)`
+  in TaskTempl.h, so 16 bytes with 2 padding bytes (always 0; kept). Stored in a hash map by id (the
+  last record wins); files are in hash order. Client: `LoadNPCInfoFromPack("data\\task_npc.data")`,
+  used by DlgTask/DlgTaskBase (minimap target, fly links). Server: gs.conf `QuestNPCInfo`,
+  `PlayerTaskInterface::GetTaskNPCPos` (teleport). No time-mark sync between them.
+- Six fixtures (XtremeJade, 1559, ForsakenJD, HDN, Reborn, zxserver) round-trip; ~45% of records have map 0.
+- Map names: `Resources::instances`; HDN's instance.txt has comments after values. ForsakenJD has
+  295 maps (401 = New Main City). Picker kind `npc` = NPC_ESSENCE + MONSTER_ESSENCE.
 
 ## Sample files (for tests and repros)
 
@@ -526,7 +549,8 @@ count as a minimum. Never write into these folders from tests. Tests save into `
 - Pick-aware export (export only the picked search results).
 - Task compare/translation/JSON workflows described in
   `TASKS_EDITOR_PLAN.md`.
-- More data files in the activity bar (`gshop.data`, `task_npc.data`, …).
+- More data files in the activity bar (`gshop.data`, …). The bar shows a label under each icon
+  (`--activity-width` in App.css).
 - v165: the 8 bytes before list 296 that layouts mark as a checksum slot look like an empty
   list header (record size 1468, count 0). Check whether the layout should treat them as a list.
 

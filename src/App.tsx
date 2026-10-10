@@ -28,6 +28,7 @@ import { SaveDialog } from "./components/SaveDialog";
 import { UnsavedDialog } from "./components/UnsavedDialog";
 import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } from "./components/PathDataEditor";
 import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
+import { TaskNpcEditor, type TaskNpcEditorHandle, type TaskNpcEditorState } from "./components/TaskNpcEditor";
 import { TasksEditor, type TasksEditorHandle, type TasksEditorState } from "./components/TasksEditor";
 import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
@@ -45,6 +46,9 @@ import {
   FileUp,
   FileStack,
   Gift,
+  MapPin,
+  Plus,
+  Table2,
   FolderTree,
   FolderOpen,
   Gauge,
@@ -71,7 +75,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "tasks" | "dyn";
+type DataWorkspace = "elements" | "paths" | "tasks" | "dyn" | "npc";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -167,6 +171,10 @@ export default function App() {
   const [dynEditorState, setDynEditorState] = useState<DynTasksEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, tasks: 0, timeMark: null, panel: null });
   const dynEditorStateRef = useRef(dynEditorState);
   dynEditorStateRef.current = dynEditorState;
+  const npcEditor = useRef<TaskNpcEditorHandle>(null);
+  const [npcEditorState, setNpcEditorState] = useState<TaskNpcEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, rows: 0 });
+  const npcEditorStateRef = useRef(npcEditorState);
+  npcEditorStateRef.current = npcEditorState;
   const [summary, setSummary] = useState<FileSummary | null>(null);
   const [fileKey, setFileKey] = useState(0);
   const [loading, setLoading] = useState<string | null>(null);
@@ -294,6 +302,10 @@ export default function App() {
         event.preventDefault();
         return;
       }
+      if (npcEditorStateRef.current.dirty && !window.confirm("task_npc.data has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
       if (editCountOf(editsRef.current) === 0) return;
       event.preventDefault();
       setUnsaved({ action: "close JD IDE", proceed: () => void win.destroy() });
@@ -362,6 +374,7 @@ export default function App() {
         if (workspaceRef.current === "paths") pathEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "tasks") tasksEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "npc") npcEditor.current?.openPath(event.payload.paths[0]);
         else loadFile(event.payload.paths[0]);
       }
     });
@@ -878,6 +891,28 @@ export default function App() {
         { label: "Enums & masks…", icon: Tags, onSelect: () => setSetsEditor({ key: null }), title: "Edit the names of task types, categories, classes, friendships and other task values" },
       ],
     },
+  ] : workspace === "npc" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open task_npc.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => npcEditor.current?.choose() },
+        { label: "Save", icon: Save, shortcut: "Ctrl+S", onSelect: () => npcEditor.current?.save(), disabled: !npcEditorState.loaded || !npcEditorState.dirty },
+        { label: "Save as…", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: () => npcEditor.current?.saveAs(), disabled: !npcEditorState.loaded },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => npcEditor.current?.undo(), disabled: !npcEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => npcEditor.current?.redo(), disabled: !npcEditorState.canRedo },
+        "separator",
+        { label: "Add NPC…", icon: Plus, onSelect: () => npcEditor.current?.add(), disabled: !npcEditorState.loaded },
+      ],
+    },
   ] : workspace === "dyn" ? [
     {
       label: "File",
@@ -909,6 +944,9 @@ export default function App() {
       label: "Tools",
       accessKey: "t",
       items: [
+        { label: "Rewards overview", icon: Table2, onSelect: () => dynEditor.current?.toggleOverview(), disabled: !dynEditorState.loaded, checked: dynEditorState.panel === "overview" },
+        { label: "Compare with another dyn_tasks.data…", icon: GitCompareArrows, onSelect: () => dynEditor.current?.toggleCompare(), disabled: !dynEditorState.loaded, checked: dynEditorState.panel === "compare" },
+        "separator",
         { label: "Enums & masks…", icon: Tags, onSelect: () => setSetsEditor({ key: null }), title: "Edit the names of methods, classes and other task values" },
       ],
     },
@@ -919,24 +957,38 @@ export default function App() {
       if (!window.confirm("Leave the path.data editor and discard its unsaved changes?")) return;
       setPathEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
     }
+    // The task_npc.data table lives in the editor itself, so leaving it discards unsaved changes.
+    if (workspace === "npc" && npcEditorState.dirty) {
+      if (!window.confirm("Leave the task_npc.data editor and discard its unsaved changes?")) return;
+      setNpcEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
+    }
     setWorkspace(next);
   };
   const activityBar = (
     <nav className="activity-bar" aria-label="Data files">
       <button className={"activity" + (workspace === "elements" ? " active" : "")} onClick={() => workspace === "elements" ? setPanel("lists") : switchWorkspace("elements")} title="elements.data editor" aria-label="elements.data">
-        <Database size={19} />
+        <Database size={18} />
+        <span className="activity-label">Elements</span>
       </button>
       <button className={"activity" + (workspace === "paths" ? " active" : "")} onClick={() => switchWorkspace("paths")} title="path.data editor" aria-label="path.data">
-        <FolderTree size={19} />
+        <FolderTree size={18} />
+        <span className="activity-label">Path</span>
         {pathEditorState.dirty && <span className="activity-dirty" />}
       </button>
       <button className={"activity" + (workspace === "tasks" ? " active" : "")} onClick={() => switchWorkspace("tasks")} title="tasks.data editor" aria-label="tasks.data">
-        <FileStack size={19} />
+        <FileStack size={18} />
+        <span className="activity-label">Tasks</span>
         {tasksEditorState.dirty && <span className="activity-dirty" />}
       </button>
       <button className={"activity" + (workspace === "dyn" ? " active" : "")} onClick={() => switchWorkspace("dyn")} title="dyn_tasks.data editor (dynamic gift tasks)" aria-label="dyn_tasks.data">
-        <Gift size={19} />
+        <Gift size={18} />
+        <span className="activity-label">Dyn Tasks</span>
         {dynEditorState.dirty && <span className="activity-dirty" />}
+      </button>
+      <button className={"activity" + (workspace === "npc" ? " active" : "")} onClick={() => switchWorkspace("npc")} title="task_npc.data editor (where the quest tracker finds NPCs)" aria-label="task_npc.data">
+        <MapPin size={18} />
+        <span className="activity-label">Task NPC</span>
+        {npcEditorState.dirty && <span className="activity-dirty" />}
       </button>
     </nav>
   );
@@ -1114,10 +1166,21 @@ export default function App() {
         </div>
       )}
 
-      {workspace === "dyn" ? (
+      {workspace === "npc" ? (
+        <main className="workspace path-data-workspace">
+          {activityBar}
+          <TaskNpcEditor
+            ref={npcEditor}
+            active
+            icon={icon}
+            defaultPath={npcEditorState.path ?? settingsView?.client?.dataFiles.find((file) => file.name.toLowerCase() === "task_npc.data")?.path ?? null}
+            onStateChange={setNpcEditorState}
+          />
+        </main>
+      ) : workspace === "dyn" ? (
         <main className="workspace tasks-data-workspace">
           {activityBar}
-          <DynTasksEditor ref={dynEditor} active onStateChange={setDynEditorState} />
+          <DynTasksEditor ref={dynEditor} active onStateChange={setDynEditorState} icon={icon} />
         </main>
       ) : workspace === "tasks" ? (
         <main className="workspace tasks-data-workspace">
@@ -1352,7 +1415,15 @@ export default function App() {
       )}
 
       <footer className="statusbar">
-        {workspace === "dyn" ? (
+        {workspace === "npc" ? (
+          <>
+            <span>task_npc.data</span>
+            {npcEditorState.path && <span className="mono truncate" title={npcEditorState.path}>{npcEditorState.path}</span>}
+            {npcEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
+            <span className="spacer" />
+            {npcEditorState.loaded && <span>{count(npcEditorState.rows)} NPC records</span>}
+          </>
+        ) : workspace === "dyn" ? (
           <>
             <span>dyn_tasks.data</span>
             {dynEditorState.path && <span className="mono truncate" title={dynEditorState.path}>{dynEditorState.path}</span>}
