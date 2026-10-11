@@ -2321,15 +2321,23 @@ export interface GShopProblem {
 
 /** A parameter of an AI condition or operation; `refers` says what an ID names (skill, monster, item, mine, task, trigger, timer, global, …). */
 export interface AiParam {
+  key: string;
   label: string;
+  /** How it is stored: u32, i32, f32, bool, name16 (16 characters) or text. */
+  kind: AiFieldKind;
   value: number | boolean | string;
   refers: string | null;
 }
+
+export type AiFieldKind = "u32" | "i32" | "f32" | "bool" | "name16" | "text";
+export type AiValue = number | boolean | string;
 
 export interface AiCondition {
   kind: number;
   name: string;
   params: AiParam[];
+  /** The parameter as stored (edits write over it). */
+  raw: number[];
   left: AiCondition | null;
   right: AiCondition | null;
 }
@@ -2338,6 +2346,7 @@ export interface AiOperation {
   kind: number;
   name: string;
   params: AiParam[];
+  raw: number[];
   target: number;
   targetName: string;
   /** The server uses the target for this operation. */
@@ -2381,6 +2390,76 @@ export interface AiPolicySummary {
   versions: number[];
   talks: number;
   shadowed: boolean;
+  /** Changed since the file was opened or saved. */
+  changed: boolean;
+}
+
+export interface AiEditState {
+  dirty: boolean;
+  canUndo: boolean;
+  canRedo: boolean;
+  history: { label: string; time: number; undone: boolean }[];
+}
+
+export interface AiEditResult {
+  state: AiEditState;
+  policy: AiPolicyView | null;
+  /** The policy list, when policies were added, removed or changed by undo/redo. */
+  file: AiFile | null;
+}
+
+export interface AiConditionEdit {
+  kind: number;
+  values: Record<string, AiValue>;
+  raw: number[];
+  left?: AiConditionEdit | null;
+  right?: AiConditionEdit | null;
+}
+
+export interface AiOperationEdit {
+  kind: number;
+  values: Record<string, AiValue>;
+  raw: number[];
+  target: number;
+  targetMask: number | null;
+}
+
+export interface AiTriggerEdit {
+  name: string;
+  active: boolean;
+  run: boolean;
+  battleOnly: boolean;
+  condition: AiConditionEdit;
+  operations: AiOperationEdit[];
+}
+
+export interface AiTypeInfo {
+  kind: number;
+  name: string;
+  fields: { key: string; label: string; kind: AiFieldKind; refers: string | null }[];
+  /** A number (variable, number, ranking level, arithmetic) rather than a condition. */
+  expression: boolean;
+  /** Parts: 1 for Not, 2 for and/or, comparisons and arithmetic. */
+  parts: number;
+  usesTarget: boolean;
+  newer: boolean;
+}
+
+export interface AiCatalog {
+  /** The file is for the newer server (version-12 triggers and types). */
+  newer: boolean;
+  conditions: AiTypeInfo[];
+  operations: AiTypeInfo[];
+  targets: [number, string][];
+}
+
+export interface AiProblem {
+  severity: "error" | "warning" | "note";
+  policy: number | null;
+  trigger: number | null;
+  policyId: number | null;
+  triggerId: number | null;
+  message: string;
 }
 
 export interface AiFile {
@@ -2390,6 +2469,7 @@ export interface AiFile {
   triggers: number;
   /** Trigger versions and how many triggers have each. */
   versions: [number, number][];
+  state: AiEditState;
 }
 
 /** An award of vipaward.data (VIP_AWARD_ITEM). */

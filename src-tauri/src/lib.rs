@@ -522,6 +522,76 @@ fn with_aipolicy<T>(state: &State<'_, AppState>, work: impl FnOnce(&aipolicy::Do
     work(state.aipolicy.lock().map_err(|_| "State lock poisoned")?.as_ref().ok_or("Open aipolicy.data first")?)
 }
 
+fn with_aipolicy_mut<T>(state: &State<'_, AppState>, work: impl FnOnce(&mut aipolicy::Document) -> Result<T, String>) -> Result<T, String> {
+    work(state.aipolicy.lock().map_err(|_| "State lock poisoned")?.as_mut().ok_or("Open aipolicy.data first")?)
+}
+
+/// Replaces a trigger with an edit (checked: shapes the server cannot load are refused).
+#[tauri::command]
+fn aipolicy_set_trigger(policy: usize, trigger: usize, edit: aipolicy::TriggerEdit, state: State<'_, AppState>) -> Result<aipolicy::EditResult, String> {
+    with_aipolicy_mut(&state, |document| document.set_trigger(policy, trigger, &edit))
+}
+
+#[tauri::command]
+fn aipolicy_trigger_action(policy: usize, trigger: usize, action: aipolicy::ListAction, state: State<'_, AppState>) -> Result<aipolicy::EditResult, String> {
+    with_aipolicy_mut(&state, |document| document.trigger_action(policy, trigger, &action))
+}
+
+#[tauri::command]
+fn aipolicy_policy_action(policy: usize, action: aipolicy::ListAction, state: State<'_, AppState>) -> Result<aipolicy::EditResult, String> {
+    with_aipolicy_mut(&state, |document| document.policy_action(policy, &action))
+}
+
+#[tauri::command]
+fn aipolicy_undo(state: State<'_, AppState>) -> Result<aipolicy::EditResult, String> {
+    with_aipolicy_mut(&state, aipolicy::Document::undo)
+}
+
+#[tauri::command]
+fn aipolicy_redo(state: State<'_, AppState>) -> Result<aipolicy::EditResult, String> {
+    with_aipolicy_mut(&state, aipolicy::Document::redo)
+}
+
+#[tauri::command]
+async fn aipolicy_save(target: Option<String>, backup: bool, replace_changed: bool, state: State<'_, AppState>) -> Result<aipolicy::SaveReport, String> {
+    with_aipolicy_mut(&state, |document| document.save(target.as_deref(), backup, replace_changed))
+}
+
+/// Problems by the server's rules; skills, monsters, items, mines and tasks are checked against the client and the
+/// open elements.data and tasks.data. One lock at a time: the policies, the other files, the policies again.
+#[tauri::command]
+async fn aipolicy_problems(state: State<'_, AppState>) -> Result<Vec<aipolicy::Problem>, String> {
+    let (skills, elements, tasks) = with_aipolicy(&state, |document| Ok(document.referenced_ids()))?;
+    let mut context = aipolicy::ProblemContext::default();
+    if let Some(resources) = state.resources() {
+        context.skills = Some(tauri::async_runtime::spawn_blocking(move || skills.into_iter().filter(|&id| resources.skill_name(id).is_some()).collect()).await.map_err(|error| error.to_string())?);
+    }
+    {
+        let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+        if let Some(document) = document.as_ref() {
+            context.elements = Some(elements.into_iter().filter(|&id| document.resolve_essence_id(id).is_some()).collect());
+            context.monsters = document.monsters_by_policy();
+        }
+    }
+    if let Some(names) = quest_names(&state) {
+        context.tasks = Some(tasks.into_iter().filter(|id| names.contains_key(id)).collect());
+    }
+    with_aipolicy(&state, |document| Ok(document.problems(&context)))
+}
+
+/// The condition, operation and target types the open file's server reads, with their fields.
+#[tauri::command]
+fn aipolicy_catalog(state: State<'_, AppState>) -> Result<aipolicy::TypeCatalog, String> {
+    with_aipolicy(&state, |document| Ok(aipolicy::catalog(aipolicy::is_newer(&document.file))))
+}
+
+/// Skills by name or ID (client skillstr.txt), for the AI editor's pickers.
+#[tauri::command]
+async fn pick_skill(query: String, page: usize, current: Option<u32>, state: State<'_, AppState>) -> Result<elements::picker::ResultPage, String> {
+    let resources = state.resources().ok_or("Set the game client folder in Settings to search skills")?;
+    tauri::async_runtime::spawn_blocking(move || elements::picker::resource_page(&resources, &elements::picker::Spec::resource("skill", current), &query, page)).await.map_err(|error| error.to_string())?
+}
+
 #[tauri::command]
 fn aipolicy_view(state: State<'_, AppState>) -> Result<Option<aipolicy::FileView>, String> {
     Ok(state.aipolicy.lock().map_err(|_| "State lock poisoned")?.as_ref().map(aipolicy::Document::view))
@@ -2304,6 +2374,15 @@ pub fn run() {
             aipolicy_policy,
             aipolicy_used_by,
             aipolicy_search,
+            aipolicy_set_trigger,
+            aipolicy_trigger_action,
+            aipolicy_policy_action,
+            aipolicy_undo,
+            aipolicy_redo,
+            aipolicy_save,
+            aipolicy_problems,
+            aipolicy_catalog,
+            pick_skill,
             skill_names,
             open_vipaward,
             save_vipaward,

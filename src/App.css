@@ -10391,3 +10391,111 @@ select.ie-control {
   font-size: 12px;
   white-space: pre-wrap;
 }
+.ai-trigger-tools {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 8px 4px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.ai-edit-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin: 4px 0 6px;
+}
+.ai-edit-name {
+  flex: 1 1 260px;
+}
+.ai-edit-name .dyn-input {
+  flex: 1;
+  min-width: 0;
+}
+.ai-edit-tree {
+  padding-left: 0;
+  list-style: none;
+}
+.ai-edit-tree .ai-cond-children {
+  margin-left: 8px;
+  padding-left: 14px;
+  border-left: 1px solid var(--border);
+  list-style: none;
+}
+.ai-edit-cond {
+  margin: 4px 0 !important;
+}
+.ai-edit-cond-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+.ai-side {
+  min-width: 12px;
+}
+.ai-edit-params {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+.ai-op .ai-edit-params {
+  margin-top: 5px;
+}
+.ai-edit-param {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.ai-edit-param .dyn-input {
+  width: 90px;
+}
+.ai-edit-param .dyn-input.wide {
+  width: 190px;
+}
+.ai-param-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.ai-param-name {
+  max-width: 220px;
+  overflow: hidden;
+  color: var(--accent);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ai-percent {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.ai-percent .dyn-input {
+  width: 64px !important;
+}
+.ai-mask {
+  width: 100px !important;
+}
+.ai-trigger-select {
+  max-width: 260px;
+}
+.ai-edit-op .ai-op-head .task-form-select {
+  max-width: 240px;
+}
+.ai-edit-talk {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 5px;
+}
+.ai-edit-talk .task-form-select {
+  align-self: flex-start;
+}
+.ai-add-op {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}

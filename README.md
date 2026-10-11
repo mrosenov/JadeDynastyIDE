@@ -726,15 +726,15 @@ subcategory, and removing one that items use asks where they go. **Tools › Che
 open `elements.data`), items the shop would not show (a missing category), repeated items and sale windows that end before they start. Every change can be undone. All 15 sample
 shop files (clients and servers) read and write back byte for byte.
 
-## aipolicy.data browser (monster AI)
+## aipolicy.data editor (monster AI)
 
-**AI** in the activity bar opens `aipolicy.data`, the monster AI the **server** runs (`PolicyData` in
-gs.conf; the client never reads it). It is read-only for now. A monster uses the policy whose ID is its
+**AI** in the activity bar edits `aipolicy.data`, the monster AI the **server** runs (`PolicyData` in
+gs.conf; the client never reads it). A monster uses the policy whose ID is its
 `common_strategy` in elements.data (`AIPolicy` in v160 layouts; `id_strategy` is its attack strategy, not a
 policy). In the schema editor such fields have the display role **aipolicy**; the built-in layouts set it on
 `MONSTER_ESSENCE.common_strategy`. The record inspector then shows the policy next to the value (its trigger
 count, or that aipolicy.data does not have it, in which case the server gives the monster no policy) and a
-click opens it in the AI browser.
+click opens it in the AI editor.
 
 - **Policies** (left): with the elements.data open, each shows the monsters that use it. The search finds a
   policy by its ID, a monster's ID or name, a trigger's name, a talk text, or any ID an operation names (a
@@ -753,8 +753,46 @@ click opens it in the AI browser.
   Talk texts show their channel (`$B` world broadcast, `$A` channel 9, `$F`/`$T` battle channels).
 
 The file has two trigger versions: 11 (the 2013 server) and 12 (newer servers, with *random select-one*,
-*leaves combat*, *everyone in aggro*, *scattered drop*, *whisper* and *talk with a portrait*). All six sample
-files read and write back byte for byte, so editing can follow.
+*leaves combat*, *everyone in aggro*, *scattered drop*, *whisper* and *talk with a portrait*). The header says
+which server the file is for (**2013 server** or **newer server**); a file for the 2013 server is only offered
+the types that server reads (it crashes on the others). All six sample files read and write back byte for byte.
+
+### Editing
+
+Every change applies at once and is one undo step (Ctrl+Z / Ctrl+Y); changed policies get a dot in the list.
+
+- **The trigger**: its name, *Enabled at start*, *Sub-trigger* and *In combat only*.
+- **When**: each part of the condition has a type and its values. Changing a part to **And**/**Or** keeps it
+  as the first part and adds a second one (*Random 100%*, always true); **Not** wraps it; comparisons start as
+  *global variable 0 > 0*. The arrow next to a part replaces the And/Or/Not above it with that part. Parts of
+  comparisons and arithmetic can only be numbers (a global variable, a number, a ranking level, arithmetic),
+  parts of And/Or/Not only conditions, so every tree is one the server can load. HP and chance are percentages.
+- **Then**: each operation has a type, its target (for operations that use one; *Classes* takes a class mask)
+  and its values. Skills, monsters, items and mines have a search button (monsters, items and mines need the
+  open elements.data, skills the configured client); "Run/Enable/Disable a trigger" picks a trigger of the
+  policy. Talk texts have a channel and the text. Operations can be moved, copied and removed, and **Add an
+  operation…** appends one.
+- **Triggers**: Clone (Ctrl+D, the next free trigger ID, below the original), move (Alt+↑/↓), delete (Del;
+  it names the triggers that run, enable or disable it). **Policies**: Clone (the next free policy ID; point a
+  monster's `common_strategy` at it to use it) and Delete (it names the monsters that use it).
+
+### Problems and saving
+
+**Problems** (Ctrl+Shift+M) checks the file with the server's rules; a click opens the policy and trigger:
+
+- **errors** (the 2013 server crashes or never finishes loading): a trigger that runs itself (directly or
+  through others), "run a trigger" naming a missing trigger, "use a range skill";
+- **warnings**: a repeated policy ID (the server keeps the first), repeated trigger IDs, event conditions that
+  are not the trigger's first condition (combat start, kill, death, birth and leave combat are then always
+  true, path end and skill hit never), enabling or disabling a missing trigger, a timer nothing starts, an
+  empty talk text, skills not in the client, monsters, items and mines not in the open elements.data, tasks
+  not in the open tasks.data, and monsters in elements.data naming a policy the file does not have;
+- **notes**: triggers without operations, sub-triggers nothing runs, triggers disabled at start that nothing
+  enables.
+
+**Save** (Ctrl+S) and **Save as…** (Ctrl+Shift+S) first check for errors and ask before saving a file the
+server would not load. The file must read back exactly; with **Backup**, the replaced file is first archived
+in `jdide_backups`. Restart the server to use the changes.
 
 ## vipaward.data editor (VIP awards)
 

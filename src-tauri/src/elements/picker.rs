@@ -71,6 +71,18 @@ pub(crate) struct Spec {
     current: Option<u32>,
 }
 
+impl Spec {
+    /// A search of a client resource (`skill`, `buff`, `title`) outside elements.data fields.
+    pub(crate) fn resource(kind: &str, current: Option<u32>) -> Spec {
+        let (title, scope) = match kind {
+            "skill" => ("Choose a skill", "Skills from configs.pck"),
+            "buff" => ("Choose a buff", "Buffs from configs.pck"),
+            _ => ("Choose a title", "Titles from interfaces.pck"),
+        };
+        Spec { source: Source::Resource(kind.to_string()), kind: kind.to_string(), title: title.into(), scope: scope.into(), current }
+    }
+}
+
 fn rank(query: &str, current: Option<u32>, id: u32, lower_name: &str) -> Option<u8> {
     let query = query.trim();
     if query.is_empty() {

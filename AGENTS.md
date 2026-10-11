@@ -11,8 +11,8 @@ Today it handles `elements.data` (all game items, NPCs, monsters, configs) acros
 versions v66–v176: browse, search, check, compare, export, edit, and save. A separate
 activity-bar workspace edits the client's `path.data`. The `tasks.data` workspace supports
 verified v165, v172 and v184 task sets, including browsing, schema analysis, safe editing,
-hierarchy operations and saving. Further workspaces edit dyn_tasks.data, task_npc.data, npcgen.data
-and the gshop shops.
+hierarchy operations and saving. Further workspaces edit dyn_tasks.data, task_npc.data, npcgen.data,
+the gshop shops, vipaward.data and aipolicy.data (monster AI).
 
 A previous Laravel/PHP version of the same idea lives in `C:/Users/mitko/Herd/jdide`. It is
 a reference for ideas only; JD IDE replaces it.
@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (205 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (208 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -81,7 +81,7 @@ Environment quirks (Windows 11, Git Bash):
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
 | `gshop/mod.rs`, `gshop/layout.rs`, `gshop/compare.rs`, `gshop/texts.rs`, `gshop/align.rs` | gshop.data / gshop1.data / gshop2.data: item layouts (built-in `formats/gshop/*.json` + user), reader/writer, document with journal, categories, problems, save; compare/copy and JSON export. |
 | `npcgen.rs` | `npcgen.data` (one server map's spawns): versions 1–14 reader/writer, document with journal (whole-item Replace/Insert/Remove per section), save. |
-| `aipolicy.rs` | `aipolicy.data` (monster AI, server only): byte-exact reader/writer of policies, triggers, condition trees and operations; read-only views, categories, search. |
+| `aipolicy.rs` | `aipolicy.data` (monster AI, server only): byte-exact reader/writer of policies, triggers, condition trees and operations; views, categories, search, parameter field table, trigger editing, journal, save, problems. |
 | `vipaward.rs` | `vipaward.data` (VIP awards): reader/writer keeping stored records, the server's rules as problems, the client's level names. |
 | `task_npc.rs` | `task_npc.data` reader/writer (12-byte header, 16-byte NPC_INFO records), save with backup and changed-on-disk guard. |
 | `client/game.rs` | Character position from a running `elementclient.exe` (read-only): exe code scan for the pointer chain, process list, ReadProcessMemory. |
@@ -489,7 +489,7 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   that are not types, services, configs, `MONSTER*`, `NPC*` or `MINE*`) + `picker_records`, command
   `pick_essence`; `ValuePicker` takes a `search` function instead of an elements field.
 
-## aipolicy.data browser
+## aipolicy.data editor
 
 - Sources: official editor ZElementData Policy.h/.cpp (= server gs/ai/policy.h/.cpp, trigger version 11),
   PolicyType.h (= server ai/policytype.h, identical in all three trees), the newer server
@@ -516,10 +516,28 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `aipolicy` (schema editor; built-in on common_strategy, v160 `AIPolicy`, added by hand to the five list_21
   files: running apply-type-rules.mjs would also apply never-applied v160 rules (money roles, sets, a ref fix)).
   `Document::monsters_by_policy` reads role fields (fallback: the field name); `get_record` hints them
-  (`annotate_policies`, aipolicy lock after the document's); the hint opens the AI browser (`showPolicy`).
-- UI `AiPolicyEditor.tsx` (read-only): commands open_aipolicy, aipolicy_view, aipolicy_policy, aipolicy_used_by
-  (`Document::monsters_by_policy`), aipolicy_search, skill_names. Next: editing (clone policies/triggers, add
-  operations and condition nodes), problems, then perhaps the simulator.
+  (`annotate_policies`, aipolicy lock after the document's); the hint opens the AI editor (`showPolicy`).
+- Parameters: `condition_fields`/`operation_fields(kind, version)` (`FieldSpec` key, label, `FieldKind` u32/i32/f32/
+  bool/name16/text, offset, `refers`) drive the views (`Param`) and `encode_params`, which writes values over the
+  stored bytes (`raw`) so padding and unknown bytes stay; unchanged texts keep their bytes, new ones get a NUL.
+- Editing: the UI sends a whole trigger (`TriggerEdit`, built from the view like the test `edit_of`);
+  `build_trigger` checks shapes (and/or two conditions, not one on the right, compare/arith two expressions,
+  leaves none: the 2013 server crashes on a missing child) and types: `is_newer(file)` (any v12 trigger or a
+  newer type/target) decides what is allowed, not the trigger's version (zx_18 has v11 triggers with op 32).
+  Trigger names keep their raw slot while unchanged (GBK ≤ 127 bytes), run_condition its byte.
+  `every_trigger_rebuilds_from_its_view_unchanged` covers all six samples. Journal: whole-policy
+  `PolicyChange`s (insert/remove/replace); clones take max ID + 1 (triggers in the policy, policies in the file)
+  and go below the source. `saved` (policies by ID at open/save) drives the changed dots. Save: changed-on-disk
+  guard, parse-back check, 7z backup, atomic replace.
+- `catalog(newer)`: the types the file's server reads, with fields (operation fields of version 12).
+- Problems (`Document::problems`, `ProblemContext` from skills (client), elements.data essence IDs, tasks.data
+  IDs and `monsters_by_policy`; command `aipolicy_problems` locks one state at a time). Events (no timer) below
+  the category path are always or never true; run-trigger cycles = infinite recursion while loading.
+  Official files: 0 errors.
+- UI `AiPolicyEditor.tsx` + `AiTriggerForm.tsx` (form, condition tree, operations; every change is one
+  `aipolicy_set_trigger`); commands open_aipolicy, aipolicy_view, aipolicy_policy, aipolicy_used_by,
+  aipolicy_search, skill_names, aipolicy_set_trigger/trigger_action/policy_action/undo/redo/save/problems/catalog,
+  pick_skill. Later ideas: cleanup of unreachable triggers, the simulator, compare/copy, JSON, translation.
 
 ## vipaward.data editor
 

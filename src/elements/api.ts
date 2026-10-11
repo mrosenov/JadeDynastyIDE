@@ -1,5 +1,9 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
+  AiCatalog,
+  AiEditResult,
+  AiProblem,
+  AiTriggerEdit,
   AiFile,
   AiPolicyView,
   VipAward,
@@ -403,6 +407,17 @@ export const aiPolicyUsedBy = () => invoke<Record<string, [number, string][]>>("
 /** Policy positions matching a search (IDs, monsters, trigger names, texts, IDs operations name). */
 export const aiPolicySearch = (query: string) => invoke<number[]>("aipolicy_search", { query });
 /** Skill names from the client's skillstr.txt. */
+export const aiPolicySetTrigger = (policy: number, trigger: number, edit: AiTriggerEdit) => invoke<AiEditResult>("aipolicy_set_trigger", { policy, trigger, edit });
+export type AiListAction = { op: "clone" } | { op: "delete" } | { op: "move"; to: number };
+export const aiPolicyTriggerAction = (policy: number, trigger: number, action: AiListAction) => invoke<AiEditResult>("aipolicy_trigger_action", { policy, trigger, action });
+export const aiPolicyPolicyAction = (policy: number, action: AiListAction) => invoke<AiEditResult>("aipolicy_policy_action", { policy, action });
+export const aiPolicyUndo = () => invoke<AiEditResult>("aipolicy_undo");
+export const aiPolicyRedo = () => invoke<AiEditResult>("aipolicy_redo");
+export const aiPolicySave = (target: string | null, backup: boolean, replaceChanged: boolean) => invoke<{ path: string; size: number; backup: string | null }>("aipolicy_save", { target, backup, replaceChanged });
+export const aiPolicyProblems = () => invoke<AiProblem[]>("aipolicy_problems");
+export const aiPolicyCatalog = () => invoke<AiCatalog>("aipolicy_catalog");
+/** Skills by name or ID from the client. */
+export const pickSkill = (query: string, page: number, current: number | null) => invoke<PickerResult>("pick_skill", { query, page, current });
 export const skillNames = (ids: number[]) => invoke<Record<string, string>>("skill_names", { ids });
 export const openVipAward = (path: string) => invoke<VipAwardFile>("open_vipaward", { path });
 export const saveVipAward = (request: { openedPath: string; targetPath: string; token: string; recordSize: number; awards: VipAward[]; backup: boolean; replaceChanged: boolean }) =>

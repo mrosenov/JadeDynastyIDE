@@ -196,7 +196,9 @@ export default function App() {
   const vipEditorStateRef = useRef(vipEditorState);
   vipEditorStateRef.current = vipEditorState;
   const aiEditor = useRef<AiPolicyEditorHandle>(null);
-  const [aiEditorState, setAiEditorState] = useState<AiPolicyEditorState>({ loaded: false, path: null, policies: 0 });
+  const [aiEditorState, setAiEditorState] = useState<AiPolicyEditorState>({ loaded: false, path: null, policies: 0, dirty: false, canUndo: false, canRedo: false });
+  const aiEditorStateRef = useRef(aiEditorState);
+  aiEditorStateRef.current = aiEditorState;
   const genEditor = useRef<NpcGenEditorHandle>(null);
   const shopEditor = useRef<GShopEditorHandle>(null);
   const [shopEditorState, setShopEditorState] = useState<GShopEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, kind: null });
@@ -204,7 +206,7 @@ export default function App() {
   shopEditorStateRef.current = shopEditorState;
   /** A file chosen in Settings, opened when its workspace is shown. */
   const [pendingOpen, setPendingOpen] = useState<{ workspace: DataWorkspace; path: string } | null>(null);
-  /** A policy to show once the AI browser is open (from a field with the aipolicy role). */
+  /** A policy to show once the AI editor is open (from a field with the aipolicy role). */
   const [pendingPolicy, setPendingPolicy] = useState<number | null>(null);
   useEffect(() => {
     if (pendingPolicy === null || workspace !== "ai" || !aiEditor.current) return;
@@ -354,6 +356,10 @@ export default function App() {
         return;
       }
       if (vipEditorStateRef.current.dirty && !window.confirm("vipaward.data has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
+      if (aiEditorStateRef.current.dirty && !window.confirm("aipolicy.data has unsaved changes. Close JD IDE and discard them?")) {
         event.preventDefault();
         return;
       }
@@ -1037,8 +1043,31 @@ export default function App() {
       accessKey: "f",
       items: [
         { label: "Open aipolicy.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => aiEditor.current?.choose() },
+        { label: "Save", icon: Save, shortcut: "Ctrl+S", onSelect: () => aiEditor.current?.save(), disabled: !aiEditorState.loaded || !aiEditorState.dirty },
+        { label: "Save as…", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: () => aiEditor.current?.saveAs(), disabled: !aiEditorState.loaded },
         "separator",
         { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => aiEditor.current?.undo(), disabled: !aiEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => aiEditor.current?.redo(), disabled: !aiEditorState.canRedo },
+        "separator",
+        { label: "Clone trigger", icon: Copy, shortcut: "Ctrl+D", onSelect: () => aiEditor.current?.triggerAction({ op: "clone" }), disabled: !aiEditorState.loaded },
+        { label: "Delete trigger…", icon: Trash2, shortcut: "Del", onSelect: () => aiEditor.current?.triggerAction({ op: "delete" }), disabled: !aiEditorState.loaded },
+        "separator",
+        { label: "Clone policy", icon: Copy, onSelect: () => aiEditor.current?.policyAction("clone"), disabled: !aiEditorState.loaded },
+        { label: "Delete policy…", icon: Trash2, onSelect: () => aiEditor.current?.policyAction("delete"), disabled: !aiEditorState.loaded },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => aiEditor.current?.openProblems(), disabled: !aiEditorState.loaded },
       ],
     },
   ] : workspace === "vip" ? [
@@ -1193,7 +1222,7 @@ export default function App() {
         <span className="activity-label">VIP</span>
         {vipEditorState.dirty && <span className="activity-dirty" />}
       </button>
-      <button className={"activity" + (workspace === "ai" ? " active" : "")} onClick={() => switchWorkspace("ai")} title="aipolicy.data browser (monster AI)" aria-label="aipolicy.data">
+      <button className={"activity" + (workspace === "ai" ? " active" : "")} onClick={() => switchWorkspace("ai")} title="aipolicy.data editor (monster AI)" aria-label="aipolicy.data">
         <Brain size={18} />
         <span className="activity-label">AI</span>
       </button>
@@ -1669,8 +1698,9 @@ export default function App() {
           <>
             <span>aipolicy.data</span>
             {aiEditorState.path && <span className="mono truncate" title={aiEditorState.path}>{aiEditorState.path}</span>}
+            {aiEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
             <span className="spacer" />
-            {aiEditorState.loaded && <span>{count(aiEditorState.policies)} policies (read-only)</span>}
+            {aiEditorState.loaded && <span>{count(aiEditorState.policies)} policies</span>}
           </>
         ) : workspace === "vip" ? (
           <>
