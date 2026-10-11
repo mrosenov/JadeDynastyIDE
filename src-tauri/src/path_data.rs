@@ -9,6 +9,10 @@
 //! Its loader rejects duplicate IDs and duplicate paths and reads each path
 //! into a 256-byte buffer. The editor therefore caps encoded paths at 255
 //! bytes and validates the complete table before replacing a file.
+//!
+//! `DynamicObjects.data` (the models and effects of npcgen.data's dynamic
+//! objects) is read by the same client class (`DataPathMan`), so it shares
+//! this reader and writer as [`Table::DynamicObjects`].
 
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
@@ -20,8 +24,36 @@ use serde::{Deserialize, Serialize};
 
 const MAGIC: u32 = 0x504d_4944;
 const MAX_PATH_BYTES: usize = 255;
-const JSON_FORMAT: &str = "jdide.path-data";
 const JSON_FORMAT_VERSION: u32 = 1;
+
+/// Which client table: both are `DataPathMan` files.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Table {
+    Paths,
+    DynamicObjects,
+}
+
+impl Table {
+    fn name(self) -> &'static str {
+        match self {
+            Table::Paths => "path.data",
+            Table::DynamicObjects => "DynamicObjects.data",
+        }
+    }
+
+    fn json_format(self) -> &'static str {
+        match self {
+            Table::Paths => "jdide.path-data",
+            Table::DynamicObjects => "jdide.dynamic-objects",
+        }
+    }
+
+    /// Official DynamicObjects.data keeps one entry with an empty path (ID 37 in every sample); the loader takes it
+    /// (paths only have to be unique). The path.data editor keeps refusing empty paths.
+    fn allows_empty(self) -> bool {
+        self == Table::DynamicObjects
+    }
+}
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -130,9 +162,9 @@ pub(crate) fn same_path(a: &Path, b: &Path) -> bool {
     }
 }
 
-fn validate(rows: &[Row]) -> Result<Vec<(u32, Vec<u8>)>, String> {
+fn validate(rows: &[Row], table: Table) -> Result<Vec<(u32, Vec<u8>)>, String> {
     if rows.len() > u32::MAX as usize {
-        return Err("path.data has too many rows".into());
+        return Err(format!("{} has too many rows", table.name()));
     }
     let mut ids = HashSet::with_capacity(rows.len());
     let mut paths = HashSet::with_capacity(rows.len());
@@ -145,7 +177,7 @@ fn validate(rows: &[Row]) -> Result<Vec<(u32, Vec<u8>)>, String> {
         if !ids.insert(row.id) {
             return Err(format!("Row {number}: ID {} is used more than once", row.id));
         }
-        if row.path.is_empty() {
+        if row.path.is_empty() && !table.allows_empty() {
             return Err(format!("Row {number}: path is empty"));
         }
         if row.path.contains('\0') {
@@ -166,8 +198,8 @@ fn validate(rows: &[Row]) -> Result<Vec<(u32, Vec<u8>)>, String> {
     Ok(encoded)
 }
 
-fn encode(rows: &[Row]) -> Result<Vec<u8>, String> {
-    let mut encoded = validate(rows)?;
+fn encode(rows: &[Row], table: Table) -> Result<Vec<u8>, String> {
+    let mut encoded = validate(rows, table)?;
     encoded.sort_unstable_by_key(|(id, _)| *id);
     let size = 8usize + encoded.iter().map(|(_, path)| 8 + path.len()).sum::<usize>();
     let mut out = Vec::with_capacity(size);
@@ -181,49 +213,58 @@ fn encode(rows: &[Row]) -> Result<Vec<u8>, String> {
     Ok(out)
 }
 
-fn parse(path: String, data: Vec<u8>) -> Result<FileView, String> {
+fn parse(path: String, data: Vec<u8>, table: Table) -> Result<FileView, String> {
+    let name = table.name();
     if data.len() < 8 || u32_at(&data, 0) != Some(MAGIC) {
-        return Err("path.data: wrong file signature (expected 0x504D4944)".into());
+        return Err(format!("{name}: wrong file signature (expected 0x504D4944)"));
     }
     let count = u32_at(&data, 4).unwrap() as usize;
     if count > (data.len() - 8) / 8 {
-        return Err(format!("path.data: header declares {count} rows, but the file is too short"));
+        return Err(format!("{name}: header declares {count} rows, but the file is too short"));
     }
     let mut rows = Vec::with_capacity(count);
     let mut at = 8usize;
     for index in 0..count {
-        let id = u32_at(&data, at).ok_or_else(|| format!("path.data: row {} has no ID", index + 1))?;
-        let len = u32_at(&data, at + 4).ok_or_else(|| format!("path.data: row {} has no path length", index + 1))? as usize;
+        let id = u32_at(&data, at).ok_or_else(|| format!("{name}: row {} has no ID", index + 1))?;
+        let len = u32_at(&data, at + 4).ok_or_else(|| format!("{name}: row {} has no path length", index + 1))? as usize;
         at += 8;
         if len > MAX_PATH_BYTES {
-            return Err(format!("path.data: row {} has a {len}-byte path; the client buffer holds 255 safely", index + 1));
+            return Err(format!("{name}: row {} has a {len}-byte path; the client buffer holds 255 safely", index + 1));
         }
-        let raw = data.get(at..at + len).ok_or_else(|| format!("path.data: row {} path runs past the end of the file", index + 1))?;
+        let raw = data.get(at..at + len).ok_or_else(|| format!("{name}: row {} path runs past the end of the file", index + 1))?;
         let path = GBK
             .decode_without_bom_handling_and_without_replacement(raw)
-            .ok_or_else(|| format!("path.data: row {} is not valid GBK", index + 1))?
+            .ok_or_else(|| format!("{name}: row {} is not valid GBK", index + 1))?
             .into_owned();
         rows.push(Row { id, path });
         at += len;
     }
     if at != data.len() {
-        return Err(format!("path.data: {} trailing bytes follow the declared rows", data.len() - at));
+        return Err(format!("{name}: {} trailing bytes follow the declared rows", data.len() - at));
     }
     // Apply the same uniqueness and string rules as the client loader.
-    validate(&rows)?;
+    validate(&rows, table)?;
     let size = data.len();
     Ok(FileView { path, size, token: token(&data), rows })
 }
 
 pub fn open(path: String) -> Result<FileView, String> {
+    open_table(path, Table::Paths)
+}
+
+pub fn open_table(path: String, table: Table) -> Result<FileView, String> {
     let data = std::fs::read(&path).map_err(|error| format!("Could not read {path}: {error}"))?;
-    parse(path, data)
+    parse(path, data, table)
 }
 
 pub fn export_json(path: String, source_path: String, rows: Vec<Row>) -> Result<JsonReport, String> {
-    validate(&rows)?;
+    export_table_json(path, source_path, rows, Table::Paths)
+}
+
+pub fn export_table_json(path: String, source_path: String, rows: Vec<Row>, table: Table) -> Result<JsonReport, String> {
+    validate(&rows, table)?;
     let export = JsonExport {
-        format: JSON_FORMAT,
+        format: table.json_format(),
         format_version: JSON_FORMAT_VERSION,
         source_path: &source_path,
         exported_at: Local::now().to_rfc3339(),
@@ -235,12 +276,16 @@ pub fn export_json(path: String, source_path: String, rows: Vec<Row>) -> Result<
 }
 
 pub fn import_json(path: String) -> Result<JsonImport, String> {
+    import_table_json(path, Table::Paths)
+}
+
+pub fn import_table_json(path: String, table: Table) -> Result<JsonImport, String> {
     let contents = std::fs::read_to_string(&path).map_err(|error| format!("Could not read {path}: {error}"))?;
-    let input: JsonInput = serde_json::from_str(&contents).map_err(|error| format!("Invalid path.data JSON: {error}"))?;
+    let input: JsonInput = serde_json::from_str(&contents).map_err(|error| format!("Invalid {} JSON: {error}", table.name()))?;
     let (rows, source_path, exported_at) = match input {
         JsonInput::Envelope(envelope) => {
-            if envelope.format != JSON_FORMAT {
-                return Err(format!("This JSON is “{}”, not a JD IDE path.data export", envelope.format));
+            if envelope.format != table.json_format() {
+                return Err(format!("This JSON is “{}”, not a JD IDE {} export", envelope.format, table.name()));
             }
             if envelope.format_version != JSON_FORMAT_VERSION {
                 return Err(format!("Path JSON format version {} is not supported", envelope.format_version));
@@ -250,7 +295,7 @@ pub fn import_json(path: String) -> Result<JsonImport, String> {
         // A plain array is useful for hand-authored tables and older scripts.
         JsonInput::Rows(rows) => (rows, None, None),
     };
-    validate(&rows)?;
+    validate(&rows, table)?;
     Ok(JsonImport { rows, source_path, exported_at })
 }
 
@@ -273,6 +318,10 @@ pub(crate) fn write_replacing(target: &Path, data: &[u8]) -> Result<(), String> 
 }
 
 pub fn save(request: SaveRequest) -> Result<SaveReport, String> {
+    save_table(request, Table::Paths)
+}
+
+pub fn save_table(request: SaveRequest, table: Table) -> Result<SaveReport, String> {
     let target = PathBuf::from(&request.target_path);
     let opened = Path::new(&request.opened_path);
     if !request.replace_changed && same_path(&target, opened) {
@@ -281,14 +330,15 @@ pub fn save(request: SaveRequest) -> Result<SaveReport, String> {
             return Err(format!("CHANGED_ON_DISK: {} was changed by another program since it was opened", target.display()));
         }
     }
-    let data = encode(&request.rows)?;
+    let data = encode(&request.rows, table)?;
     let backup = if request.backup && target.is_file() {
         Some(crate::backup::archive(&target, std::slice::from_ref(&target))?)
     } else {
         None
     };
     write_replacing(&target, &data)?;
-    let sibling = target.parent().map(|parent| parent.join("elements.data")).filter(|path| path.is_file());
+    // Only path.data is part of the elements.data checksum (DynamicObjects.data loads after it).
+    let sibling = target.parent().map(|parent| parent.join("elements.data")).filter(|path| table == Table::Paths && path.is_file());
     Ok(SaveReport {
         path: target.display().to_string(),
         size: data.len(),
@@ -304,24 +354,48 @@ pub fn save(request: SaveRequest) -> Result<SaveReport, String> {
 mod tests {
     use super::*;
 
+    fn encode_paths(rows: &[Row]) -> Result<Vec<u8>, String> {
+        encode(rows, Table::Paths)
+    }
+
+    #[test]
+    fn dynamic_object_tables_read_back_byte_for_byte() {
+        let paths = [
+            "E:/Games/XtremeJade/element/data/dynamicobjects.data",
+            "E:/Games/ForsakenJD/element/data/DynamicObjects.data",
+            "E:/Games/Elite Jade Dynasty - HDN/element/data/dynamicobjects.data",
+        ];
+        for path in paths {
+            let Ok(data) = std::fs::read(path) else { continue };
+            // path.data's stricter rules refuse the official empty path; the dynamic object table takes it.
+            assert!(parse(path.into(), data.clone(), Table::Paths).is_err());
+            let view = parse(path.into(), data.clone(), Table::DynamicObjects).unwrap();
+            assert!(view.rows.iter().any(|row| row.path.is_empty()));
+            assert_eq!(encode(&view.rows, Table::DynamicObjects).unwrap(), data, "{path}");
+        }
+        // Still only one empty path: paths must be unique.
+        let row = |id, path: &str| Row { id, path: path.into() };
+        assert!(encode(&[row(1, ""), row(2, "")], Table::DynamicObjects).is_err());
+    }
+
     #[test]
     fn round_trips_rows_in_official_id_order() {
         let rows = vec![Row { id: 9, path: "Surfaces\\测试.tga".into() }, Row { id: 2, path: "Models\\sword.ecm".into() }];
-        let data = encode(&rows).unwrap();
-        let view = parse("memory/path.data".into(), data.clone()).unwrap();
+        let data = encode(&rows, Table::Paths).unwrap();
+        let view = parse("memory/path.data".into(), data.clone(), Table::Paths).unwrap();
         assert_eq!(view.rows.iter().map(|row| row.id).collect::<Vec<_>>(), vec![2, 9]);
-        assert_eq!(encode(&view.rows).unwrap(), data);
+        assert_eq!(encode(&view.rows, Table::Paths).unwrap(), data);
     }
 
     #[test]
     fn rejects_values_the_client_loader_cannot_safely_use() {
         let row = |id, path: &str| Row { id, path: path.into() };
-        assert!(encode(&[row(0, "a")]).is_err());
-        assert!(encode(&[row(1, "a"), row(1, "b")]).is_err());
-        assert!(encode(&[row(1, "a"), row(2, "a")]).is_err());
-        assert!(encode(&[row(1, "")]).is_err());
-        assert!(encode(&[row(1, &"a".repeat(256))]).is_err());
-        assert!(encode(&[row(1, "emoji-😀")]).is_err());
+        assert!(encode_paths(&[row(0, "a")]).is_err());
+        assert!(encode_paths(&[row(1, "a"), row(1, "b")]).is_err());
+        assert!(encode_paths(&[row(1, "a"), row(2, "a")]).is_err());
+        assert!(encode_paths(&[row(1, "")]).is_err());
+        assert!(encode_paths(&[row(1, &"a".repeat(256))]).is_err());
+        assert!(encode_paths(&[row(1, "emoji-😀")]).is_err());
     }
 
     #[test]
@@ -333,8 +407,8 @@ mod tests {
         ];
         for path in paths {
             let Ok(data) = std::fs::read(path) else { continue };
-            let view = parse(path.into(), data.clone()).unwrap();
-            assert_eq!(encode(&view.rows).unwrap(), data);
+            let view = parse(path.into(), data.clone(), Table::Paths).unwrap();
+            assert_eq!(encode(&view.rows, Table::Paths).unwrap(), data);
         }
     }
 
@@ -344,7 +418,7 @@ mod tests {
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("path.data");
-        let original = encode(&[Row { id: 1, path: "one.tga".into() }]).unwrap();
+        let original = encode_paths(&[Row { id: 1, path: "one.tga".into() }]).unwrap();
         std::fs::write(&path, &original).unwrap();
         let opened = open(path.display().to_string()).unwrap();
         let request = SaveRequest {

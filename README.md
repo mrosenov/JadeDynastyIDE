@@ -914,7 +914,9 @@ The list on the left has four sections:
 - List rows show the first NPC or monster ID, its name and the number spawned; with an `elements.data`
   open, an ID it does not contain shows **not found** in red.
 - **Resources**: mine and herb areas with their mines (picker over `MINE_ESSENCE`), counts and respawn.
-- **Objects**: dynamic objects (decorations, gates) with position, direction, scale and controller.
+- **Objects**: dynamic objects (decorations, gates) with position, direction, scale and controller. With a
+  game client configured, each object shows its model or effect from the client's DynamicObjects.data (or
+  that the table lacks the ID: the object then shows nothing), and the Object ID has a picker over that table.
 - **Controllers**: named event triggers: trigger ID, wait and stop times, start and stop dates
   (−1 = any), repeat and time segments.
 
@@ -1013,6 +1015,31 @@ The file keeps its version when saved. Real files use versions 4 to 14; a field 
 store (for example the phase before version 14) shows "not in vN" and cannot be set. Saving checks that
 the file reads back exactly, can back up the old file and warns when another program changed it. All
 519 npcgen.data files of the sample servers read and write back byte-for-byte.
+
+## DynamicObjects.data editor (dynamic objects)
+
+**Objects** in the activity bar edits the client's `element\data\DynamicObjects.data`: the model (`.ecm`) or
+effect (`.gfx`) of every dynamic object ID. npcgen.data places dynamic objects (doors, portals, scene
+effects) by these IDs; the server sends the ID and the client shows the file. **Only the client reads it**, so
+every player needs the edited copy. It is not part of the elements.data checksum.
+
+- The table lists each object's ID, file, kind (model or effect), whether the configured client has the file,
+  and how many objects the map open in the NPC Gen editor places with that ID. Filter by kind, by problems, or
+  to the objects that map does not use.
+- **Add object…** chooses a model or effect from the client's packages (`models.pck`, `gfx.pck`) and gives it
+  the next free ID. The search button on a row changes its file the same way; files can also be typed.
+  Models are stored from the client root (`models\…`), effects without their `gfx\` folder (the client adds it).
+- **Problems** (Ctrl+Shift+M): a repeated ID or file, an ID of 0, or a path over 255 GBK bytes are errors
+  (the client then drops the whole table and no dynamic object has a model; saving is refused). Warnings: an
+  empty path or a file that is neither `.ecm` nor `.gfx`, a file the client does not have, and IDs the
+  open npcgen.data uses that the table lacks (those objects show nothing). Official tables have an empty
+  entry (ID 37) and a few missing effects.
+- **Compare with another file…** (Tools) pairs another client's DynamicObjects.data (or a JSON export) by ID;
+  tick objects with a different file or only there and copy them (one undo step). A file another ID already
+  uses here is flagged, since a repeated path would make the client drop the table.
+- Delete (Del) names the npcgen.data objects that use the ID. Undo/redo, JSON export/import, Save with a 7z
+  backup and the changed-on-disk guard work as in the path.data editor. Rows are written in ID order, as the
+  official map editor exports them; all three sample clients read back byte for byte.
 
 ## path.data editor
 

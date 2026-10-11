@@ -681,6 +681,17 @@ fn digest(data: &[u8]) -> String {
 }
 
 impl Document {
+    /// Dynamic object IDs this map places, with how many objects use each (DynamicObjects.data checks).
+    pub fn dynamic_object_uses(&self) -> std::collections::HashMap<u32, usize> {
+        let mut out = std::collections::HashMap::new();
+        for object in &self.file.dynamic_objects {
+            *out.entry(object.id).or_default() += 1;
+        }
+        out
+    }
+}
+
+impl Document {
     pub fn open(path: impl AsRef<Path>) -> Result<Self, String> {
         let path = path.as_ref().to_path_buf();
         let data = std::fs::read(&path).map_err(|error| format!("Could not read {}: {error}", path.display()))?;

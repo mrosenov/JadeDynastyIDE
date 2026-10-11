@@ -1,6 +1,7 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
   AiCatalog,
+  DynObjectCheck,
   AiCompareSummary,
   AiCopyReport,
   AiEditResult,
@@ -435,6 +436,15 @@ export const setMonsterPolicies = (places: [number, number, number, number][], p
 export const aiPolicyHistory = () => invoke<AiHistoryRow[]>("aipolicy_history");
 export const aiPolicyRevertEntry = (id: number, shown: number | null) => invoke<AiEditResult>("aipolicy_revert_entry", { id, shown });
 export const aiPolicyRevertAll = () => invoke<AiEditResult>("aipolicy_revert_all");
+/** DynamicObjects.data: the path.data table format with its own rules. */
+export const openDynObjects = (path: string) => invoke<PathDataFile>("open_dyn_objects", { path });
+export const saveDynObjects = (request: PathDataSaveRequest) => invoke<PathDataSaveReport>("save_dyn_objects", { request });
+export const exportDynObjectsJson = (path: string, sourcePath: string, rows: PathDataRow[]) => invoke<PathDataJsonReport>("export_dyn_objects_json", { path, sourcePath, rows });
+export const importDynObjectsJson = (path: string) => invoke<PathDataJsonImport>("import_dyn_objects_json", { path });
+export const dynObjectProblems = (rows: PathDataRow[]) => invoke<DynObjectCheck>("dyn_object_problems", { rows });
+export const clientDynFiles = (kind: "model" | "effect", query: string, offset: number, limit: number) => invoke<{ files: string[]; total: number }>("client_dyn_files", { kind, query, offset, limit });
+/** The configured client's DynamicObjects.data rows (as saved). */
+export const clientDynObjects = () => invoke<PathDataRow[]>("client_dyn_objects");
 export const aiPolicyUndo = () => invoke<AiEditResult>("aipolicy_undo");
 export const aiPolicyRedo = () => invoke<AiEditResult>("aipolicy_redo");
 export const aiPolicySave = (target: string | null, backup: boolean, replaceChanged: boolean) => invoke<{ path: string; size: number; backup: string | null }>("aipolicy_save", { target, backup, replaceChanged });

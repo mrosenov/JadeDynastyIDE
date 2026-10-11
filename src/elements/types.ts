@@ -2652,3 +2652,27 @@ export interface NpcGenView {
 }
 
 export interface NpcGenSaveReport { path: string; size: number; backup: string | null }
+
+/** DynamicObjects.data: one row's kind and whether the configured client has its file. */
+export interface DynObjectInfo {
+  id: number;
+  kind: "model" | "effect" | "empty" | "other";
+  /** The file the client loads (effects below gfx\\). */
+  file: string;
+  exists: boolean | null;
+}
+
+export interface DynObjectProblem {
+  severity: "error" | "warning";
+  id: number | null;
+  message: string;
+}
+
+export interface DynObjectCheck {
+  problems: DynObjectProblem[];
+  infos: DynObjectInfo[];
+  /** Objects of the open npcgen.data per dynamic object ID. */
+  uses: Record<string, number>;
+  npcgen: string | null;
+  client: boolean;
+}

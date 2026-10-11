@@ -12,7 +12,7 @@ versions v66–v176: browse, search, check, compare, export, edit, and save. A s
 activity-bar workspace edits the client's `path.data`. The `tasks.data` workspace supports
 verified v165, v172 and v184 task sets, including browsing, schema analysis, safe editing,
 hierarchy operations and saving. Further workspaces edit dyn_tasks.data, task_npc.data, npcgen.data,
-the gshop shops, vipaward.data and aipolicy.data (monster AI).
+the gshop shops, vipaward.data, aipolicy.data (monster AI) and DynamicObjects.data.
 
 A previous Laravel/PHP version of the same idea lives in `C:/Users/mitko/Herd/jdide`. It is
 a reference for ideas only; JD IDE replaces it.
@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (214 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (216 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -78,7 +78,8 @@ Environment quirks (Windows 11, Git Bash):
 | `client/pck.rs`, `client/dds.rs` | `.pck` 2.2/2.3 package reader, DDS decoding for icons. |
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
-| `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
+| `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer; `Table::DynamicObjects` for DynamicObjects.data (same loader, one empty path allowed). |
+| `dyn_objects.rs` | DynamicObjects.data: object kinds, client file checks (`models.pck`, `gfx.pck` + `gfx\`), problems, the client's model/effect list for the picker. |
 | `gshop/mod.rs`, `gshop/layout.rs`, `gshop/compare.rs`, `gshop/texts.rs`, `gshop/align.rs` | gshop.data / gshop1.data / gshop2.data: item layouts (built-in `formats/gshop/*.json` + user), reader/writer, document with journal, categories, problems, save; compare/copy and JSON export. |
 | `npcgen.rs` | `npcgen.data` (one server map's spawns): versions 1–14 reader/writer, document with journal (whole-item Replace/Insert/Remove per section), save. |
 | `aipolicy/mod.rs`, `aipolicy/compare.rs` | `aipolicy.data` (monster AI, server only): byte-exact reader/writer of policies, triggers, condition trees and operations; views, categories, search, parameter field table, trigger editing, journal, save, problems; compare/copy, JSON, text takeover. |
@@ -603,6 +604,27 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   the player's VIP level, special at or below; nothing 0:00–6:00. `Document::essence_number` reads
   `pile_num_max`. `problems` allows types 2 only in 172-byte files and VIP levels 7–8 there.
 - UI `VipAwardEditor.tsx` follows TaskNpcEditor (rows and undo in the component; save sends rows with `raw`).
+
+## DynamicObjects.data editor
+
+- Client only (ZElementClient): `CECGame::Init` loads `data\DynamicObjects.data` with `DataPathMan` (the path.data
+  class) after elements.data, so it is not in the checksum; a failed load is only logged (no dynamic object has a
+  model). `DataPathMan::Load` rejects repeated IDs or paths (the whole table) and reads paths into 256 bytes.
+  `CECMatter::Init`: matters of state 1 take `GetDynObjectPath(tid)`; `.ecm` → `QueueECModelForLoad`, `.gfx` →
+  `LoadGFXFromFile` (below `gfx\`); a missing ID gives "" (nothing shown, no crash). The server sends npcgen.data's
+  object ID as the matter type (`dyn_object_spawner::CreateDynObject`: `matter_type = ent.mid`) and never reads the
+  table (the zxserver config copy equals XtremeJade's client file and no conf names it). Written by the map editor's
+  `DynamicObjectManDlg::Export` (its names live in ResTable\DynamicObject.dat, never shipped).
+- Samples (XtremeJade 219, ForsakenJD 222, HDN 239 rows; IDs 7–250) are sorted, unique, and all have an empty
+  path at ID 37 plus a `.bon` and (ForsakenJD/HDN) a folder entry; `path_data::Table::DynamicObjects` allows the
+  empty path (path.data keeps refusing it) and round-trips all three. 215/219 (ForsakenJD) and 231/236 (HDN) files
+  exist in the clients; the misses are effects really absent there.
+- UI `DynObjectsEditor.tsx` (rows and undo in the component, like PathDataEditor), `DynFilePicker.tsx`
+  (`client_dyn_files`; also exports `DynObjectPicker`), `DynObjectsCompare.tsx` (UI-side, by ID; flags a copied
+  file another ID uses). Commands `open_dyn_objects`, `save_dyn_objects`, `export/import_dyn_objects_json`,
+  `dyn_object_check`, `dyn_object_problems` (rows + open npcgen.data's `Document::dynamic_object_uses`; returns
+  problems, per-row infos and uses), `client_dyn_files`, `client_dyn_objects` (the configured client's saved table,
+  used by NpcGenEditor's object rows and Object ID picker).
 
 ## task_npc.data editor
 

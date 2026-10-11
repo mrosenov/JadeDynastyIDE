@@ -1,6 +1,7 @@
 mod aipolicy;
 mod backup;
 mod client;
+mod dyn_objects;
 mod dyn_tasks;
 mod elements;
 mod gshop;
@@ -844,6 +845,89 @@ async fn client_maps(state: State<'_, AppState>) -> Result<Vec<ClientMap>, Strin
     })
     .await
     .map_err(|error| error.to_string())?
+}
+
+/// DynamicObjects.data: the path.data reader with that table's rules.
+#[tauri::command]
+async fn open_dyn_objects(path: String) -> Result<path_data::FileView, String> {
+    tauri::async_runtime::spawn_blocking(move || path_data::open_table(path, path_data::Table::DynamicObjects)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn save_dyn_objects(request: path_data::SaveRequest) -> Result<path_data::SaveReport, String> {
+    tauri::async_runtime::spawn_blocking(move || path_data::save_table(request, path_data::Table::DynamicObjects)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+fn export_dyn_objects_json(path: String, source_path: String, rows: Vec<path_data::Row>) -> Result<path_data::JsonReport, String> {
+    path_data::export_table_json(path, source_path, rows, path_data::Table::DynamicObjects)
+}
+
+#[tauri::command]
+fn import_dyn_objects_json(path: String) -> Result<path_data::JsonImport, String> {
+    path_data::import_table_json(path, path_data::Table::DynamicObjects)
+}
+
+/// Kinds of the rows and whether the configured client has their files.
+#[tauri::command]
+async fn dyn_object_check(rows: Vec<path_data::Row>, state: State<'_, AppState>) -> Result<Vec<dyn_objects::ObjectInfo>, String> {
+    let resources = state.resources();
+    tauri::async_runtime::spawn_blocking(move || dyn_objects::check(&rows, resources.as_deref())).await.map_err(|error| error.to_string())
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct DynObjectProblems {
+    problems: Vec<dyn_objects::Problem>,
+    /// Per row: kind, file and whether the client has it.
+    infos: Vec<dyn_objects::ObjectInfo>,
+    /// Objects of the open npcgen.data per dynamic object ID.
+    uses: HashMap<u32, usize>,
+    /// The npcgen.data whose objects were checked (open in its editor).
+    npcgen: Option<String>,
+    /// Whether files were checked against a configured client.
+    client: bool,
+}
+
+#[tauri::command]
+async fn dyn_object_problems(rows: Vec<path_data::Row>, state: State<'_, AppState>) -> Result<DynObjectProblems, String> {
+    let (used, npcgen) = {
+        let document = state.npcgen.lock().map_err(|_| "State lock poisoned")?;
+        match document.as_ref() {
+            Some(document) => (document.dynamic_object_uses(), Some(document.path.display().to_string())),
+            None => (HashMap::new(), None),
+        }
+    };
+    let resources = state.resources();
+    let client = resources.is_some();
+    let (problems, infos, uses) = tauri::async_runtime::spawn_blocking(move || {
+        let infos = dyn_objects::check(&rows, resources.as_deref());
+        (dyn_objects::problems(&rows, &infos, &used), infos, used)
+    })
+    .await
+    .map_err(|error| error.to_string())?;
+    Ok(DynObjectProblems { problems, infos, uses, npcgen, client })
+}
+
+/// Models or effects of the configured client, for choosing an object's file.
+#[tauri::command]
+async fn client_dyn_files(kind: String, query: String, offset: usize, limit: usize, state: State<'_, AppState>) -> Result<dyn_objects::FilePage, String> {
+    let resources = state.resources().ok_or("Set the game client folder in Settings to browse its models and effects")?;
+    tauri::async_runtime::spawn_blocking(move || dyn_objects::client_files(&resources, &kind, &query, offset, limit.min(500))).await.map_err(|error| error.to_string())?
+}
+
+/// The configured client's DynamicObjects.data (as saved), for naming npcgen.data's dynamic objects.
+#[tauri::command]
+fn client_dyn_objects(state: State<'_, AppState>) -> Result<Vec<path_data::Row>, String> {
+    let resources = state.resources().ok_or("No game client is configured")?;
+    let data = resources.element_dir().join("data");
+    let file = std::fs::read_dir(&data)
+        .map_err(|error| format!("Could not read {}: {error}", data.display()))?
+        .flatten()
+        .map(|entry| entry.path())
+        .find(|path| path.file_name().is_some_and(|name| name.to_string_lossy().eq_ignore_ascii_case("dynamicobjects.data")))
+        .ok_or("The configured client has no data\\DynamicObjects.data")?;
+    Ok(path_data::open_table(file.display().to_string(), path_data::Table::DynamicObjects)?.rows)
 }
 
 #[tauri::command]
@@ -2477,6 +2561,14 @@ pub fn run() {
             aipolicy_policy_action,
             aipolicy_unused_subtriggers,
             aipolicy_cleanup,
+            open_dyn_objects,
+            save_dyn_objects,
+            export_dyn_objects_json,
+            import_dyn_objects_json,
+            dyn_object_check,
+            dyn_object_problems,
+            client_dyn_files,
+            client_dyn_objects,
             aipolicy_history,
             aipolicy_revert_entry,
             aipolicy_revert_all,

@@ -1,10 +1,11 @@
 import { forwardRef, Fragment, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { ChevronDown, CircleAlert, Copy, Crosshair, Download, FolderOpen, Info, Loader2, Map as MapIcon, Plus, Redo2, RefreshCw, Save, Search, Trash2, TriangleAlert, Undo2, Users, X } from "lucide-react";
-import { clientMaps, cloneNpcGenItem, deleteNpcGenItem, dynTaskLabels, compareNpcGen, copyNpcGen, exportNpcGenJson, gameClients, gamePosition, importNpcGenNearby, midmapUrl, npcGenProblems, getNpcGenItem, npcGenView, openNpcGen, pickEssence, redoNpcGen, saveNpcGen, setNpcGenItem, undoNpcGen } from "../elements/api";
+import { clientDynObjects, clientMaps, cloneNpcGenItem, deleteNpcGenItem, dynTaskLabels, compareNpcGen, copyNpcGen, exportNpcGenJson, gameClients, gamePosition, importNpcGenNearby, midmapUrl, npcGenProblems, getNpcGenItem, npcGenView, openNpcGen, pickEssence, redoNpcGen, saveNpcGen, setNpcGenItem, undoNpcGen } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatDuration } from "../elements/time";
-import type { ClientMap, GamePosition, GenComparison, NearbyImport, NpcGenProblem, RunningClient, NpcGenArea, NpcGenController, NpcGenGenerator, NpcGenItem, NpcGenObject, NpcGenResource, NpcGenResourceArea, NpcGenSection, NpcGenSummary, NpcGenTime, NpcGenVec3, NpcGenView } from "../elements/types";
+import type { ClientMap, GamePosition, GenComparison, NearbyImport, NpcGenProblem, RunningClient, NpcGenArea, NpcGenController, NpcGenGenerator, NpcGenItem, NpcGenObject, NpcGenResource, NpcGenResourceArea, NpcGenSection, NpcGenSummary, NpcGenTime, NpcGenVec3, NpcGenView, PathDataRow } from "../elements/types";
+import { DynObjectPicker } from "./DynFilePicker";
 import { NumberInput, TextInput, VertInput } from "./DynTasksEditor";
 import { NpcGenCompare } from "./NpcGenCompare";
 import { CLASS_COLORS, emptyNearby, NearbyPanel, type NearbyState } from "./NpcGenNearby";
@@ -210,6 +211,8 @@ interface FormProps<T> {
   fromGame: (choose: boolean) => Promise<GamePosition | null>;
   /** Controllers: the areas and objects that name this one. */
   usedBy?: ControllerUse[];
+  /** The configured client's DynamicObjects.data (objects' files); null when it could not be read. */
+  objectFiles?: PathDataRow[] | null;
   onShow?: (section: NpcGenSection, index: number) => void;
 }
 
@@ -397,11 +400,15 @@ function ResourceForm({ value: area, version, labels, elementsOpen, controllers,
   </div>;
 }
 
-function ObjectForm({ value: object, version, controllers, onCommit, fromGame }: FormProps<NpcGenObject>) {
+function ObjectForm({ value: object, version, controllers, onCommit, fromGame, objectFiles }: FormProps<NpcGenObject>) {
   const set = (change: Partial<NpcGenObject>, label: string) => onCommit({ ...object, ...change }, label);
+  const [picking, setPicking] = useState(false);
+  const file = objectFiles?.find((row) => row.id === object.id);
+  const note = !objectFiles ? undefined : file ? <span className="mono" title="DynamicObjects.data of the configured client">{file.path || "(no file: shows nothing)"}</span> : <span className="ai-warn">not in the client's DynamicObjects.data: shows nothing</span>;
   return <div className="dyn-form npcgen-form"><div className="npcgen-cards">
     <Card title="General">
-      <Row label="Object ID" hint="dynamicobjects.data entry"><NumberInput value={object.id} onCommit={(id) => set({ id }, "Edit object ID")} /></Row>
+      <Row label="Object ID" hint="An entry of the client's DynamicObjects.data (its model or effect)" note={note}><NumberInput value={object.id} onCommit={(id) => set({ id }, "Edit object ID")} />{objectFiles && <button className="icon-btn small" title="Choose from DynamicObjects.data" onClick={() => setPicking(true)}><Search size={12} /></button>}</Row>
+      {picking && objectFiles && <DynObjectPicker objects={objectFiles} current={object.id} onClose={() => setPicking(false)} onPick={(id) => { setPicking(false); if (id !== object.id) set({ id }, "Edit object ID"); }} />}
       <Row label="Controller" hint="The controller that shows and hides it (0: always shown)"><Gate since={10} version={version}><ControllerSelect value={object.controller} controllers={controllers} onCommit={(controller) => set({ controller }, "Edit controller")} /></Gate></Row>
       <Row label="Phase" hint="0: everyone sees it; otherwise only players in this phase"><Gate since={14} version={version}><NumberInput min={I32_MIN} max={I32_MAX} value={object.phase} onCommit={(phase) => set({ phase }, "Edit phase")} /></Gate></Row>
     </Card>
@@ -692,6 +699,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
   const [query, setQuery] = useState("");
   const needle = useDeferredValue(query.trim().toLowerCase());
   const [labels, setLabels] = useState<Record<string, string>>({});
+  const [objectFiles, setObjectFiles] = useState<PathDataRow[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
@@ -713,6 +721,13 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
   const [mapFor, setMapFor] = useState<Record<string, number>>(() => readStored(MAP_FOR_KEY, {}));
   const [backgroundStyle, setBackgroundStyle] = useState(() => readStored(BACKGROUND_KEY, { on: true, opacity: 70 }));
   const [failedImage, setFailedImage] = useState<string | null>(null);
+  // The configured client's dynamic object files (read again when the client changes or the editor is shown).
+  useEffect(() => {
+    let cancelled = false;
+    clientDynObjects().then((rows) => { if (!cancelled) setObjectFiles(rows); }).catch(() => { if (!cancelled) setObjectFiles(null); });
+    return () => { cancelled = true; };
+  }, [mapGeneration]);
+  const objectPaths = useMemo(() => new Map((objectFiles ?? []).map((row) => [row.id, row.path])), [objectFiles]);
   useEffect(() => {
     setMaps(null);
     setMapsError(null);
@@ -991,7 +1006,11 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
   const rowLabel = (entry: NpcGenSummary) => {
     if (section === "controllers") return <><span className="mono">{entry.ids[0]}</span><span className="truncate">{entry.label || <span className="muted">(no name)</span>}{entry.controller !== 0 && <span className="muted small"> · trigger {entry.controller}</span>}</span>{entry.kind !== 0 ? <span className="tag ok">on</span> : <span />}{(() => { const uses = controllerUses.get(entry.ids[0])?.length ?? 0; return <span className={"small " + (uses ? "muted" : "npcgen-unused")} title={uses ? "Areas and objects using it" : "Nothing uses this controller"}>{uses ? `${uses}×` : "unused"}</span>; })()}</>;
     const badge = entry.controller !== 0 ? <span className="dyn-award-badge" title={`Controller ${entry.controller}`}>⚑{entry.controller}</span> : <span />;
-    if (section === "objects") return <><span className="mono">{entry.ids[0]}</span><span className="truncate muted">Object</span><span />{badge}</>;
+    if (section === "objects") {
+      const path = objectFiles ? objectPaths.get(entry.ids[0]) : undefined;
+      const name = path ? path.split(/[\\/]/).pop() : undefined;
+      return <><span className="mono">{entry.ids[0]}</span><span className="truncate" title={path}>{name ?? (objectFiles && path === undefined ? <span className="ai-warn small">not in DynamicObjects.data</span> : <span className="muted">Object</span>)}</span><span />{badge}</>;
+    }
     const first = entry.ids[0];
     const label = first ? labels[String(first)] : undefined;
     const name = !first ? <span className="muted">(empty)</span> : label ? shortName(label) : elementsPath ? <span className="npcgen-missing">not found</span> : null;
@@ -1004,7 +1023,7 @@ export const NpcGenEditor = forwardRef<NpcGenEditorHandle, Props>(function NpcGe
   };
   const form = item && selected !== null ? (() => {
     const key = `${item.section}:${selected}`;
-    const common = { version: view.version, labels, elementsOpen: !!elementsPath, controllers: view.controllers, pick, fromGame };
+    const common = { version: view.version, labels, elementsOpen: !!elementsPath, controllers: view.controllers, pick, fromGame, objectFiles };
     switch (item.section) {
       case "areas": return <AreaForm key={key} {...common} value={item.item} onCommit={(value, label) => commit({ section: "areas", item: value }, label)} />;
       case "resources": return <ResourceForm key={key} {...common} value={item.item} onCommit={(value, label) => commit({ section: "resources", item: value }, label)} />;

@@ -27,6 +27,7 @@ import { DialogViewer } from "./components/DialogViewer";
 import { SaveDialog } from "./components/SaveDialog";
 import { UnsavedDialog } from "./components/UnsavedDialog";
 import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } from "./components/PathDataEditor";
+import { DynObjectsEditor, type DynObjectsEditorHandle, type DynObjectsEditorState } from "./components/DynObjectsEditor";
 import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
 import { TaskNpcEditor, type TaskNpcEditorHandle, type TaskNpcEditorState } from "./components/TaskNpcEditor";
 import { VipAwardEditor, type VipAwardEditorHandle, type VipAwardEditorState } from "./components/VipAwardEditor";
@@ -63,6 +64,7 @@ import {
   ArrowDown,
   Table2,
   Crown,
+  Box,
   Brain,
   Type,
   FileText,
@@ -93,7 +95,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
+type DataWorkspace = "elements" | "paths" | "objects" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -181,6 +183,10 @@ export default function App() {
   const [pathEditorState, setPathEditorState] = useState<PathDataEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null });
   const pathEditorStateRef = useRef(pathEditorState);
   pathEditorStateRef.current = pathEditorState;
+  const objectsEditor = useRef<DynObjectsEditorHandle>(null);
+  const [objectsEditorState, setObjectsEditorState] = useState<DynObjectsEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, objects: 0 });
+  const objectsEditorStateRef = useRef(objectsEditorState);
+  objectsEditorStateRef.current = objectsEditorState;
   const tasksEditor = useRef<TasksEditorHandle>(null);
   const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null, unsupported: null, analysis: null, comparison: null, fieldCandidates: null, layoutPatch: null, referencePath: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
   const tasksEditorStateRef = useRef(tasksEditorState);
@@ -217,7 +223,7 @@ export default function App() {
   }, [pendingPolicy, workspace]);
   useEffect(() => {
     if (!pendingOpen || workspace !== pendingOpen.workspace) return;
-    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
+    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, objects: objectsEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
     const editor = editors[workspace]?.current;
     if (!editor) return;
     setPendingOpen(null);
@@ -345,6 +351,10 @@ export default function App() {
         event.preventDefault();
         return;
       }
+      if (objectsEditorStateRef.current.dirty && !window.confirm("DynamicObjects.data has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
       if (tasksEditorStateRef.current.dirty && !window.confirm("tasks.data has unsaved changes. Close JD IDE and discard them?")) {
         event.preventDefault();
         return;
@@ -439,6 +449,7 @@ export default function App() {
       if (document.querySelector('.import-records-dialog')) return;
       if (event.payload.type === "drop" && event.payload.paths.length) {
         if (workspaceRef.current === "paths") pathEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "objects") objectsEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "tasks") tasksEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "npc") npcEditor.current?.openPath(event.payload.paths[0]);
@@ -1086,6 +1097,40 @@ export default function App() {
         { label: "Export all policies as JSON…", icon: Download, onSelect: () => aiEditor.current?.exportJson(true), disabled: !aiEditorState.loaded },
       ],
     },
+  ] : workspace === "objects" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open DynamicObjects.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => objectsEditor.current?.choose() },
+        { label: "Save", icon: Save, shortcut: "Ctrl+S", onSelect: () => objectsEditor.current?.save(), disabled: !objectsEditorState.loaded || !objectsEditorState.dirty },
+        { label: "Save as…", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: () => objectsEditor.current?.saveAs(), disabled: !objectsEditorState.loaded },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => objectsEditor.current?.undo(), disabled: !objectsEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => objectsEditor.current?.redo(), disabled: !objectsEditorState.canRedo },
+        "separator",
+        { label: "Add object…", icon: Plus, onSelect: () => objectsEditor.current?.add(), disabled: !objectsEditorState.loaded },
+        { label: "Delete object…", icon: Trash2, shortcut: "Del", onSelect: () => objectsEditor.current?.deleteSelected(), disabled: !objectsEditorState.loaded },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => objectsEditor.current?.openProblems(), disabled: !objectsEditorState.loaded },
+        { label: "Compare with another file…", icon: GitCompareArrows, onSelect: () => objectsEditor.current?.compare(), disabled: !objectsEditorState.loaded },
+        "separator",
+        { label: "Export JSON…", icon: Download, onSelect: () => objectsEditor.current?.exportJson(), disabled: !objectsEditorState.loaded },
+        { label: "Import JSON…", icon: FileUp, onSelect: () => objectsEditor.current?.importJson(), disabled: !objectsEditorState.loaded },
+      ],
+    },
   ] : workspace === "vip" ? [
     {
       label: "File",
@@ -1185,6 +1230,11 @@ export default function App() {
       if (!window.confirm("Leave the path.data editor and discard its unsaved changes?")) return;
       setPathEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
     }
+    // The dynamic object table lives in its editor too.
+    if (workspace === "objects" && objectsEditorState.dirty) {
+      if (!window.confirm("Leave the DynamicObjects.data editor and discard its unsaved changes?")) return;
+      setObjectsEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
+    }
     // The task_npc.data table lives in the editor itself, so leaving it discards unsaved changes.
     if (workspace === "npc" && npcEditorState.dirty) {
       if (!window.confirm("Leave the task_npc.data editor and discard its unsaved changes?")) return;
@@ -1207,6 +1257,11 @@ export default function App() {
         <FolderTree size={18} />
         <span className="activity-label">Path</span>
         {pathEditorState.dirty && <span className="activity-dirty" />}
+      </button>
+      <button className={"activity" + (workspace === "objects" ? " active" : "")} onClick={() => switchWorkspace("objects")} title="DynamicObjects.data editor (models and effects of npcgen.data's dynamic objects)" aria-label="DynamicObjects.data">
+        <Box size={18} />
+        <span className="activity-label">Objects</span>
+        {objectsEditorState.dirty && <span className="activity-dirty" />}
       </button>
       <button className={"activity" + (workspace === "tasks" ? " active" : "")} onClick={() => switchWorkspace("tasks")} title="tasks.data editor" aria-label="tasks.data">
         <FileStack size={18} />
@@ -1393,7 +1448,7 @@ export default function App() {
           onSaved={onSettingsSaved}
           onOpenFile={(file) => {
             // The other editors open the file once their workspace is shown (they mount with it).
-            const others: Record<string, DataWorkspace> = { "dyn tasks": "dyn", gshop: "shop", npcgen: "gen", path: "paths", "task npc": "npc", "vip awards": "vip", "ai policy": "ai" };
+            const others: Record<string, DataWorkspace> = { "dyn tasks": "dyn", gshop: "shop", npcgen: "gen", path: "paths", "dynamic objects": "objects", "task npc": "npc", "vip awards": "vip", "ai policy": "ai" };
             if (others[file.kind]) {
               setPendingOpen({ workspace: others[file.kind], path: file.path });
               setWorkspace(others[file.kind]);
@@ -1486,6 +1541,17 @@ export default function App() {
             defaultPath={pathEditorState.path ?? (settingsView?.client?.hasPathData ? `${settingsView.client.elementDir}\\data\\path.data` : null)}
             onStateChange={setPathEditorState}
             onClientReloaded={() => getSettings().then(onSettingsSaved).catch((problem) => setError(String(problem)))}
+          />
+        </main>
+      ) : workspace === "objects" ? (
+        <main className="workspace path-data-workspace">
+          {activityBar}
+          <DynObjectsEditor
+            ref={objectsEditor}
+            active
+            npcgenPath={genEditorState.path}
+            defaultPath={objectsEditorState.path ?? settingsView?.client?.dataFiles.find((file) => file.name.toLowerCase() === "dynamicobjects.data")?.path ?? null}
+            onStateChange={setObjectsEditorState}
           />
         </main>
       ) : summary && editorOpen ? (
@@ -1761,6 +1827,14 @@ export default function App() {
             {pathEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
             <span className="spacer" />
             <span>PMID resource path table</span>
+          </>
+        ) : workspace === "objects" ? (
+          <>
+            <span>DynamicObjects.data</span>
+            {objectsEditorState.path && <span className="mono truncate" title={objectsEditorState.path}>{objectsEditorState.path}</span>}
+            {objectsEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
+            <span className="spacer" />
+            {objectsEditorState.loaded && <span>{count(objectsEditorState.objects)} objects</span>}
           </>
         ) : summary ? (
           <>

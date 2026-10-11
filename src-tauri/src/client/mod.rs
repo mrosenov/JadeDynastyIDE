@@ -119,7 +119,7 @@ pub fn inspect(picked: &Path) -> Result<ClientInfo, String> {
             let backup = name.to_lowercase().ends_with(".bak");
             (name.to_lowercase().contains(".data") && !pack && !backup).then(|| {
                 DataFile {
-                    supported: matches!(kind.as_str(), "elements" | "tasks" | "dyn tasks" | "gshop" | "npcgen" | "path" | "task npc" | "vip awards" | "ai policy"),
+                    supported: matches!(kind.as_str(), "elements" | "tasks" | "dyn tasks" | "gshop" | "npcgen" | "path" | "task npc" | "vip awards" | "ai policy" | "dynamic objects"),
                     path: e.path().display().to_string(),
                     size: e.metadata().map(|m| m.len()).unwrap_or(0),
                     name,
@@ -337,6 +337,11 @@ impl Resources {
         let pck = Arc::new(Pck::open(&self.element.join(format!("{key}.pck")))?);
         open.insert(key, pck.clone());
         Ok(pck)
+    }
+
+    /// The client's `element` folder.
+    pub fn element_dir(&self) -> &Path {
+        &self.element
     }
 
     /// The client's path.data (also part of the elements.data digest).
@@ -694,6 +699,7 @@ mod tests {
             // tasks.data stands for its numbered packs, which are not listed.
             assert!(info.data_files.iter().filter(|f| f.kind == "tasks").all(|f| f.name.eq_ignore_ascii_case("tasks.data") && f.supported));
             assert!(info.data_files.iter().any(|f| f.kind == "gshop" && f.supported));
+            assert!(info.data_files.iter().any(|f| f.kind == "dynamic objects" && f.supported));
             assert!(info.data_files.iter().all(|f| !f.name.to_lowercase().ends_with(".bak")));
             assert!(info.packages.iter().any(|p| p.name.eq_ignore_ascii_case("surfaces.pck")));
             assert!(info.has_path_data && info.has_item_icons);
