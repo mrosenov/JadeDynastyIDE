@@ -10,6 +10,7 @@ mod gshop;
 mod path_data;
 mod quiz;
 mod map_regions;
+mod lua_files;
 mod npcgen;
 mod settings;
 mod task_npc;
@@ -851,6 +852,44 @@ async fn client_maps(state: State<'_, AppState>) -> Result<Vec<ClientMap>, Strin
     })
     .await
     .map_err(|error| error.to_string())?
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct LotteryItem {
+    id: u32,
+    name: String,
+    icon: Option<u32>,
+    /// LOTTERY_ESSENCE, LOTTERY2_ESSENCE or LOTTERY3_ESSENCE.
+    kind: String,
+    /// How many numbers a ticket draws (`dice_count`; the server refuses 0 and more than its maximum).
+    dice: Option<i64>,
+}
+
+/// The open elements.data's lottery items (their scripts live in the server's lottery.lua).
+#[tauri::command]
+fn lottery_items(state: State<'_, AppState>) -> Result<Vec<LotteryItem>, String> {
+    let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    let Some(document) = document.as_ref() else { return Ok(Vec::new()) };
+    Ok(document
+        .records_with_number(&["LOTTERY_ESSENCE", "LOTTERY2_ESSENCE", "LOTTERY3_ESSENCE"], "dice_count")
+        .into_iter()
+        .map(|(kind, row, dice)| LotteryItem { id: row.id, name: row.name, icon: row.icon, kind, dice })
+        .collect())
+}
+
+/// Essence records by ID (name, icon, colour) from the open elements.data; IDs it lacks are left out.
+#[tauri::command]
+fn essence_rows(ids: Vec<u32>, state: State<'_, AppState>) -> Result<Vec<elements::RecordRow>, String> {
+    let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    let Some(document) = document.as_ref() else { return Ok(Vec::new()) };
+    Ok(ids.into_iter().filter_map(|id| document.essence_row(id)).collect())
+}
+
+/// A server Lua script, decoded (GBK or UTF-8), for the read-only Lua viewers.
+#[tauri::command]
+async fn read_lua_file(path: String) -> Result<lua_files::LuaFile, String> {
+    tauri::async_runtime::spawn_blocking(move || lua_files::read(std::path::Path::new(&path))).await.map_err(|error| error.to_string())?
 }
 
 /// A map's precinct.clt or region.clt (and the other one of its folder, for the map).
@@ -2767,6 +2806,9 @@ pub fn run() {
             aipolicy_policy_action,
             aipolicy_unused_subtriggers,
             aipolicy_cleanup,
+            read_lua_file,
+            lottery_items,
+            essence_rows,
             open_map_regions,
             read_map_sev,
             map_regions_problems,

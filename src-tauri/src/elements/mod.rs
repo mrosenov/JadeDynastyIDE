@@ -784,6 +784,30 @@ impl Document {
         out
     }
 
+    /// An essence record by ID as a list row (name, icon, colour), the way the game resolves the ID.
+    pub fn essence_row(&self, id: u32) -> Option<RecordRow> {
+        let (list, row, _) = self.resolve_essence_id(id)?;
+        let def = self.def(list).map(|(_, d)| d);
+        let bytes = self.file.record(list, row)?;
+        Some(RecordRow { index: row, id, name: Self::record_name(bytes, Self::name_field(def)), icon: self.record_icon(bytes, Self::icon_field(def)), color: self.name_color(list, id) })
+    }
+
+    /// The records of every list holding one of `structs` (upper case), with the number in `field` (by name).
+    pub fn records_with_number(&self, structs: &[&str], field: &str) -> Vec<(String, RecordRow, Option<i64>)> {
+        let mut out = Vec::new();
+        for list in 0..self.lists.len() {
+            let Some(name) = self.list_struct(list).map(str::to_ascii_uppercase) else { continue };
+            if !structs.contains(&name.as_str()) {
+                continue;
+            }
+            for row in self.records(list).unwrap_or_default() {
+                let number = self.essence_number(row.id, field);
+                out.push((name.clone(), row, number));
+            }
+        }
+        out
+    }
+
     /// The C structure a list holds (`MONSTER_ESSENCE`, …), when the layout names it.
     pub fn list_struct(&self, list: usize) -> Option<&str> {
         self.lists.get(list)?.struct_name.as_deref()

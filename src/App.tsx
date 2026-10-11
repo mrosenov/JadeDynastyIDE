@@ -32,6 +32,7 @@ import { DomainEditor, type DomainEditorHandle, type DomainEditorState } from ".
 import { DropsEditor, type DropsEditorHandle, type DropsEditorState } from "./components/DropsEditor";
 import { QuizEditor, type QuizEditorHandle, type QuizEditorState } from "./components/QuizEditor";
 import { MapRegionsEditor, type MapRegionsEditorHandle, type MapRegionsEditorState } from "./components/MapRegionsEditor";
+import { LuaViewer, type LuaViewerHandle, type LuaViewerState } from "./components/LuaViewer";
 import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
 import { TaskNpcEditor, type TaskNpcEditorHandle, type TaskNpcEditorState } from "./components/TaskNpcEditor";
 import { VipAwardEditor, type VipAwardEditorHandle, type VipAwardEditorState } from "./components/VipAwardEditor";
@@ -107,7 +108,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "objects" | "domains" | "drops" | "quiz" | "maps" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
+type DataWorkspace = "elements" | "paths" | "objects" | "domains" | "drops" | "quiz" | "maps" | "lua" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -215,6 +216,8 @@ export default function App() {
   const [mapsEditorState, setMapsEditorState] = useState<MapRegionsEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, kind: null, entries: 0 });
   const mapsEditorStateRef = useRef(mapsEditorState);
   mapsEditorStateRef.current = mapsEditorState;
+  const luaViewer = useRef<LuaViewerHandle>(null);
+  const [luaViewerState, setLuaViewerState] = useState<LuaViewerState>({ loaded: false, path: null });
   const tasksEditor = useRef<TasksEditorHandle>(null);
   const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null, unsupported: null, analysis: null, comparison: null, fieldCandidates: null, layoutPatch: null, referencePath: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
   const tasksEditorStateRef = useRef(tasksEditorState);
@@ -264,7 +267,7 @@ export default function App() {
   }, [pendingPolicy, workspace]);
   useEffect(() => {
     if (!pendingOpen || workspace !== pendingOpen.workspace) return;
-    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, objects: objectsEditor, domains: domainEditor, drops: dropsEditor, quiz: quizEditor, maps: mapsEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
+    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, objects: objectsEditor, domains: domainEditor, drops: dropsEditor, quiz: quizEditor, maps: mapsEditor, lua: luaViewer, npc: npcEditor, vip: vipEditor, ai: aiEditor };
     const editor = editors[workspace]?.current;
     if (!editor) return;
     setPendingOpen(null);
@@ -511,6 +514,7 @@ export default function App() {
         else if (workspaceRef.current === "drops") dropsEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "quiz") quizEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "maps") mapsEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "lua") luaViewer.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "tasks") tasksEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "npc") npcEditor.current?.openPath(event.payload.paths[0]);
@@ -1158,6 +1162,16 @@ export default function App() {
         { label: "Export all policies as JSON…", icon: Download, onSelect: () => aiEditor.current?.exportJson(true), disabled: !aiEditorState.loaded },
       ],
     },
+  ] : workspace === "lua" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open a Lua script…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => luaViewer.current?.choose() },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
   ] : workspace === "maps" ? [
     {
       label: "File",
@@ -1490,6 +1504,10 @@ export default function App() {
         <span className="activity-label">Quiz</span>
         {quizEditorState.dirty && <span className="activity-dirty" />}
       </button>
+      <button className={"activity" + (workspace === "lua" ? " active" : "")} onClick={() => switchWorkspace("lua")} title="Server Lua scripts, read-only (lotteries, pets, any script's data)" aria-label="Lua scripts">
+        <Braces size={18} />
+        <span className="activity-label">Lua</span>
+      </button>
       <button className={"activity" + (workspace === "maps" ? " active" : "")} onClick={() => switchWorkspace("maps")} title="Map areas: precinct.clt and region.clt (with their server .sev files)" aria-label="precinct and region files">
         <LandPlot size={18} />
         <span className="activity-label">Areas</span>
@@ -1774,6 +1792,11 @@ export default function App() {
             onStateChange={setPathEditorState}
             onClientReloaded={() => getSettings().then(onSettingsSaved).catch((problem) => setError(String(problem)))}
           />
+        </main>
+      ) : workspace === "lua" ? (
+        <main className="workspace path-data-workspace">
+          {activityBar}
+          <LuaViewer ref={luaViewer} active onStateChange={setLuaViewerState} iconGeneration={settingsView?.client ? settingsView.iconGeneration : null} />
         </main>
       ) : workspace === "maps" ? (
         <main className="workspace path-data-workspace">
@@ -2088,6 +2111,12 @@ export default function App() {
             {pathEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
             <span className="spacer" />
             <span>PMID resource path table</span>
+          </>
+        ) : workspace === "lua" ? (
+          <>
+            <span>Lua scripts (read-only)</span>
+            {luaViewerState.path && <span className="mono truncate" title={luaViewerState.path}>{luaViewerState.path}</span>}
+            <span className="spacer" />
           </>
         ) : workspace === "maps" ? (
           <>

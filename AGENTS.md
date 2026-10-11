@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (233 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (234 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -79,6 +79,7 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer; `Table::DynamicObjects` for DynamicObjects.data (same loader, one empty path allowed). |
+| `lua_files.rs` | Server Lua scripts read for the read-only Lua viewers (UTF-8/GBK decoding). |
 | `map_regions.rs` | precinct.clt/region.clt (UTF-16 text) and precinct.sev/region.sev (binary): readers/writers per version, problems, save of both with one timestamp. |
 | `quiz.rs` | zhuxian_question.data (gdeliveryd quiz contest): reader/writer, sets of 30 and the day → set rule, problems, save; JSON/CSV export and the compare/import source reader. |
 | `extra_drops.rs` | extra_drops.sev (server): reader/writer (v1/v2), the server's load checks as problems, save, monster/item index for the record inspector. |
@@ -629,6 +630,35 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `AppState.drops_source` caches `extra_drops::index` by the file's mtime; `get_record` sets `display: "drops"`
   and a hint on the record's `id` node (monsters: `Document::list_struct`); FieldTree/RecordInspector `onDrops` →
   App `pendingDrops` → `DropsEditorHandle.showId`.
+
+## Lua viewers (read-only)
+
+- Server side (zgame/gs): gmatrix.cpp `InitScriptSystem` makes LUA_ENV 0–9 (lottery, talisman, pet bedge, player,
+  summon, magic, transform, misc, rune, astrology), runs gs.conf `[Script] GlobalScript` in each and its `Init(index)`
+  names the entry file, loaded relative to gs's working folder (`gamed`); `ClearAll` removes io/file loading and
+  sets `math.random = __ABASE_Random`. Entry files define the `*_Entrance` functions the C++ calls and `xdofile` the
+  `script\*` files. Any failure: "初始化LUA脚本系统失败", exit -11. Reloading is commented out (restart needed).
+  `__ABASE_*` functions (RegisterObjectScript etc.) let scripts read/change object, talisman and pet data.
+- Lotteries (item_lottery.cpp): global_script.lua `Entry_Lottery_Generate(id, max_count, cur_count, ...)` →
+  `LotterySelectNumber(id, max_count, {previous digits})` once per digit (`dice_count` of LOTTERY/LOTTERY2/LOTTERY3
+  essence), then `Entry_Lottery_Cashing(id, ...)` → `LotteryCashing(id, digits)` returns 6 numbers: tier, money, item,
+  count, bind, period (each checked). Both dispatch with `if id==N` chains to `LotteryType<N>SelectNumber/Cashing`.
+  item_manager.cpp `MakeItem` runs `item_lottery::CheckScript` (one full draw) per lottery item at start-up; a failure
+  prints "脚本内部错误" and the item is not created. 1559: 288 lottery items, 26 without a script entry.
+- UI: `LuaViewer.tsx` (workspace `lua`; opens one file; the rule by file name: lottery*, petbedge_interface,
+  petbedge_grades, petbedge_skills; else the generic "All data"), `LuaLotteryView.tsx`, `LuaPetViews.tsx`.
+  `elements/luaData.ts` parses with `luaparse` (Lua 5.1, ranges and comments) into functions, literal data entries
+  (target, value, enclosing if/elseif/else and loop headers, line, comment) and returns; all sample scripts parse
+  (lottery.lua 17k lines in ~50 ms). `elements/luaRun.ts` runs lottery.lua in **fengari-web** (Lua 5.3 VM, the browser
+  build; plain `fengari` failed in the webview because the bundler hoists its Node-only `require`s) with 5.1 shims
+  (table.getn, unpack, math.mod, …); a Lua driver replaces every `*_Get_RanPoint` and `math.random(m, n)` with branch
+  points, walks all branches with their probabilities (cap 20,000 leaves) or samples 20,000 draws when a script uses
+  `math.random()`; the first-choice draw is the server's start-up test. Commands `read_lua_file`, `lottery_items`
+  (`Document::records_with_number`), `essence_rows` (`Document::essence_row`: name and icon by ID).
+- Pet names: horoscopes (Sun … Ketu), origins, races (`RACES` in LuaPetViews.tsx); the 13 grades from the comment in
+  petbedge_grades.lua (气血/精力/小攻/大攻/防御/命中/躲闪/眩晕/虚弱/定身/魅惑/昏睡/冰冻). Grade rows group consecutive entries
+  (two `else` branches of different ifs read alike).
+- The user chose: no Lua editor, viewers only, read-only first; pets after lotteries.
 
 ## precinct / region editor (map areas)
 

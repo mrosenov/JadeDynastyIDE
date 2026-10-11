@@ -1049,6 +1049,35 @@ count, then each item.
 - Save keeps a 7z backup and notices another program's changes; undo/redo cover every edit. The zxserver, 1559
   and zx_18 files read back byte for byte. Restart gs to load a saved file.
 
+## Lua scripts (read-only)
+
+**Lua** in the activity bar opens one of the game server's Lua scripts (`gamed` and `gamed\script`) and shows it
+read-only, with a view chosen by the file's name. Every script also has **All data**: each value the script sets
+(numbers, texts, tables), by function and under the `if` branches it sits in, with its comment and line.
+
+How gs uses them: gs.conf `[Script] GlobalScript` (global_script.lua) sets up ten script environments (lottery,
+talisman, pets, player, summon, magic, transform, misc, rune, astrology). Each loads its file from `gamed` (for
+example `gamed\lottery.lua`), which loads the rest from `gamed\script`. A script that does not load stops gs with
+**-11**; the viewer shows the parse error and its line. Some servers keep different copies of a script in `gamed`,
+`gamed\script` and `gamed\config`: open the one gs loads.
+
+- **lottery.lua**: every lottery item (from the open elements.data and the script) with its **exact odds**: the
+  viewer runs the script in a sandbox (a Lua interpreter inside JD IDE; nothing is written), walks every way the
+  digits and prizes can be drawn, and shows the chance of each number per digit and of each prize (item, count,
+  money, binding, time limit) by prize tier. The digit count is the item's `dice_count`. **Check all** runs the
+  server's start-up test for every lottery item: gs opens each lottery once when it starts and, when the script
+  fails or has no entry for the item, the item is **not created**. The 1559 server's elements.data has 288 lottery
+  items; 26 have no entry in its lottery.lua.
+- **petbedge_interface.lua**: the pets the scripts accept (template, race, crit, spirit item, which actions are
+  allowed, starting grade) and the name tables (races, horoscopes, origins, …). Race keys missing from the race
+  table are flagged (the race is then nil when the script runs).
+- **petbedge_grades.lua**: the horoscope chances (other pets and pets bought from NPCs) and the 13 grades (HP, MP,
+  attack, defense, hit, dodge and six resistances) per horoscope, origin and pet.
+- **petbedge_skills.lua**: how many skills a new pet draws (also after rebirth) and the skill pools with each
+  skill's chance, per horoscope, rebirth and pet.
+
+Conditions are shown with names (horoscope Sun · 日曜, origin NPC, pet names from elements.data).
+
 ## Map areas: precinct.clt and region.clt
 
 **Areas** in the activity bar edits a map's client files from `element\maps\<map>`:

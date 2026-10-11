@@ -15,6 +15,8 @@ import type {
   MapRegionProblem,
   MapScanRow,
   MapRegionLinks,
+  LuaFile,
+  LotteryItem,
   OpenedMapRegions,
   DynObjectCheck,
   LandRow,
@@ -463,6 +465,10 @@ export const openMapRegions = (path: string) => invoke<OpenedMapRegions>("open_m
 export const readMapSev = (path: string, kind: "precinct" | "region") => invoke<MapRegionFile>("read_map_sev", { path, kind });
 export const mapRegionsProblems = (file: MapRegionFile, server: MapRegionFile | null, instances: number[]) => invoke<MapRegionProblem[]>("map_regions_problems", { file, server, instances });
 export const saveMapRegions = (path: string, token: string | null, file: MapRegionFile, serverPath: string, backup: boolean, replaceChanged: boolean) => invoke<{ path: string; token: string; timestamp: number; serverPath: string; backups: string[] }>("save_map_regions", { path, token, file, serverPath, backup, replaceChanged });
+/** Server Lua scripts (read-only viewers). */
+export const readLuaFile = (path: string) => invoke<LuaFile>("read_lua_file", { path });
+export const lotteryItems = () => invoke<LotteryItem[]>("lottery_items");
+export const essenceRows = (ids: number[]) => invoke<RecordRow[]>("essence_rows", { ids });
 export const mapRegionLinks = (npcgenPath: string | null, files: string[]) => invoke<MapRegionLinks>("map_region_links", { npcgenPath, files });
 export const scanMapRegions = (clientRoot: string, serverRoot: string | null, aliases: Record<string, string[]>, instances: number[]) => invoke<MapScanRow[]>("scan_map_regions", { clientRoot, serverRoot, aliases, instances });
 export const syncMapServer = (clientPath: string, serverPath: string, backup: boolean) => invoke<string | null>("sync_map_server", { clientPath, serverPath, backup });

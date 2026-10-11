@@ -2923,3 +2923,21 @@ export interface MapRegionLinks {
   /** Files (below the client's element folder) the client lacks; null without a client folder. */
   missingFiles: string[] | null;
 }
+
+/** A server Lua script, decoded. */
+export interface LuaFile {
+  path: string;
+  encoding: "utf-8" | "utf-8-bom" | "gbk";
+  size: number;
+  text: string;
+}
+
+/** A lottery item of the open elements.data. */
+export interface LotteryItem {
+  id: number;
+  name: string;
+  icon?: number;
+  kind: string;
+  /** How many numbers a ticket draws (`dice_count`). */
+  dice: number | null;
+}

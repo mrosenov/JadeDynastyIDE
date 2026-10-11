@@ -11694,3 +11694,160 @@ select.ie-control {
   padding: 0;
   list-style: none;
 }
+
+/* Lua scripts (read-only viewers) */
+.lua-pane {
+  display: flex;
+  flex-direction: column;
+}
+.lua-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+.lua-split {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 300px minmax(0, 1fr);
+  min-height: 0;
+}
+.lua-split > .dyn-task-list {
+  border-right: 1px solid var(--border);
+}
+.dyn-task-row.lua-row {
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  gap: 6px;
+}
+.dyn-task-row.lua-fn-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.lua-row-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+}
+.lua-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+.lua-item img,
+.lua-item-blank {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+}
+.lua-item-blank {
+  background: var(--bg-elev);
+}
+.lua-dice input {
+  width: 56px;
+  margin-left: 6px;
+}
+.lua-digits {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lua-digit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+}
+.lua-digit > .muted {
+  width: 56px;
+}
+.lua-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-elev);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.lua-prizes {
+  width: 100%;
+}
+.lua-prizes td {
+  padding: 4px 8px;
+}
+.lua-prizes th:nth-child(2),
+.lua-prizes th:nth-child(4) {
+  width: 90px;
+}
+.lua-tier td {
+  background: var(--bg-elev);
+}
+.lua-source {
+  max-height: 360px;
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: pre;
+}
+.lua-fail-list {
+  margin: 0;
+  padding-left: 18px;
+}
+.lua-wide {
+  overflow-x: auto;
+}
+.lua-table td {
+  padding: 3px 7px;
+  vertical-align: top;
+}
+.lua-table th {
+  white-space: nowrap;
+}
+.lua-grades td.mono {
+  text-align: right;
+}
+.lua-group-start td {
+  border-top: 2px solid var(--border-strong);
+}
+.lua-conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lua-condition {
+  font-size: 12px;
+}
+.lua-data .lua-value {
+  max-width: 520px;
+  word-break: break-word;
+}
+.lua-inline-search {
+  min-width: 240px;
+  padding: 0 6px;
+}
+.lua-pool {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.lua-pool-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 10px;
+  margin-bottom: 4px;
+}
+.lua-pool-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
