@@ -12,7 +12,7 @@ versions v66–v176: browse, search, check, compare, export, edit, and save. A s
 activity-bar workspace edits the client's `path.data`. The `tasks.data` workspace supports
 verified v165, v172 and v184 task sets, including browsing, schema analysis, safe editing,
 hierarchy operations and saving. Further workspaces edit dyn_tasks.data, task_npc.data, npcgen.data,
-the gshop shops, vipaward.data, aipolicy.data (monster AI), DynamicObjects.data, the domain files and extra_drops.sev.
+the gshop shops, vipaward.data, aipolicy.data (monster AI), DynamicObjects.data, the domain files, extra_drops.sev and zhuxian_question.data.
 
 A previous Laravel/PHP version of the same idea lives in `C:/Users/mitko/Herd/jdide`. It is
 a reference for ideas only; JD IDE replaces it.
@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (223 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (225 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -79,6 +79,7 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer; `Table::DynamicObjects` for DynamicObjects.data (same loader, one empty path allowed). |
+| `quiz.rs` | zhuxian_question.data (gdeliveryd quiz contest): reader/writer, sets of 30 and the day → set rule, problems, save. |
 | `extra_drops.rs` | extra_drops.sev (server): reader/writer (v1/v2), the server's load checks as problems, save, monster/item index for the record inspector. |
 | `domain.rs` | domain.data, domain1–4.data, domainlandwar.data: reader/writer (optional `MOXB` marker), land.txt/landwar.txt rows, problems, multi-file save. |
 | `dyn_objects.rs` | DynamicObjects.data: object kinds, client file checks (`models.pck`, `gfx.pck` + `gfx\`), problems, the client's model/effect list for the picker. |
@@ -627,6 +628,23 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `AppState.drops_source` caches `extra_drops::index` by the file's mtime; `get_record` sets `display: "drops"`
   and a hint on the record's `id` node (monsters: `Document::list_struct`); FieldTree/RecordInspector `onDrops` →
   App `pendingDrops` → `DropsEditorHandle.showId`.
+
+## zhuxian_question.data editor
+
+- Format (znet/gdeliveryd/questionlib.cpp `CQuestionLib::Load`): i32 count; per question u8 key (correct answers,
+  bit 0 = A … bit 5 = F), i32 n + n × u16 question, i32 answers, answers × (i32 n + n × u16). No terminators.
+  Only gdeliveryd reads it (gamesys.conf `contest_file`); the client copies (HDN `element/data`) are unused.
+- Server (contestmanager.cpp): sets of 30 in file order (`SET`), the rest dropped; no full set → gdeliveryd exits.
+  `BroadcastQuestion` picks set `day >= sets ? day % sets : day` by the day of the month (`set_of_day`;
+  `BuildQuestion` is unused). Schedule: broadcasts 18:29/18:44/18:54, invite 18:59, start 19:00, a question every
+  25 s with 20 s to answer, score 10→1 by speed plus a streak bonus up to +100%. The answer must equal the key byte.
+  An empty text is a null pointer when sent (`GetLen`); more than 6 answers overflow `pAnswer[6]`.
+- The official ZElementData QuestionsDlg edits gacd's anti-cheat `Questions.data` (vector glyph answers), not this.
+- Samples: zxserver gdeliveryd 744 (24 sets), 1559 930 (31), HDN client 930, zxserver gs `zhuxian_questions.data`
+  931; all round-trip with no errors.
+- UI `QuizEditor.tsx` (questions and undo in the component, like DropsEditor). Commands `open_quiz`,
+  `quiz_problems` (debounced), `save_quiz` (token guard, backup, read-back check). Answer moves/removals shift
+  the key bits with the answers.
 
 ## Domain files editor
 

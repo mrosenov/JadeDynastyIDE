@@ -2786,3 +2786,24 @@ export interface DropProblem {
   table: number | null;
   message: string;
 }
+
+/** A question of zhuxian_question.data (gdeliveryd quiz contest). */
+export interface QuizQuestion {
+  /** Correct answers: bit 0 = A … bit 5 = F. */
+  key: number;
+  text: string;
+  answers: string[];
+}
+
+export interface OpenedQuiz {
+  path: string;
+  size: number;
+  token: string;
+  questions: QuizQuestion[];
+}
+
+export interface QuizProblem {
+  severity: "error" | "warning" | "note";
+  question: number | null;
+  message: string;
+}

@@ -1049,6 +1049,35 @@ count, then each item.
 - Save keeps a 7z backup and notices another program's changes; undo/redo cover every edit. The zxserver, 1559
   and zx_18 files read back byte for byte. Restart gs to load a saved file.
 
+## zhuxian_question.data editor (quiz contest)
+
+**Quiz** in the activity bar edits `zhuxian_question.data`, the questions of the daily quiz contest. Only the
+server's gdeliveryd reads it (gamesys.conf `contest_file`, in the gdeliveryd folder); copies in the client or gs
+folders are not used. The file opened last opens again.
+
+- **How the contest uses it**: gdeliveryd cuts the questions into **sets of 30** in file order; questions after the
+  last full set are never asked, and with fewer than 30 questions gdeliveryd does not start. Every day at 19:00
+  (announced at 18:29, 18:44 and 18:54, invitations at 18:59) it asks the 30 questions of one set, one every 25
+  seconds with 20 seconds to answer; faster answers score more (10 down to 1) and answer streaks add a bonus.
+  The **day of the month** picks the set: day *d* uses set *d* while there are more sets than *d*, otherwise set
+  *d* mod (number of sets), counting from 0 (the editor counts sets from 1, so day 31 with 31 sets uses set 1).
+- **The list** groups the questions by set, with the days each set runs, and shows the correct answers' letters.
+  Search by question or answer text, or by number. **New** adds an empty question below the selected one,
+  **Clone** (Ctrl+D) copies it, **Delete** (Del) removes it, **Move up/down** (Alt+↑/↓) and **Move to set** move it.
+  Adding, removing or moving a question shifts every later one, so later sets change by one question.
+- **The form**: the question and up to six answers (A–F), each with a **Correct** tick, move up/down and remove.
+  Players must pick exactly the ticked answers; official questions have one. Moving or removing an answer keeps
+  the ticks on their answers.
+- **Calendar** (the header button or Tools › Contest calendar) shows days 1–31 with the set each one asks and its
+  first question; a click opens the set. It notes sets that never run and questions outside a full set.
+- **Problems** (Ctrl+Shift+M) follow gdeliveryd: fewer than 30 questions (it does not start), an empty question or
+  answer (the server sends a null string and may crash) and more than six answers (it overflows its list) are
+  errors; questions with fewer than two answers, no correct answer or a ticked answer that does not exist (nobody
+  can answer them right) and zero characters in a text are warnings; repeated questions, questions outside a full
+  set and sets that never run are notes. Saving asks first when there are errors.
+- Save keeps a 7z backup and notices another program's changes; undo/redo cover every edit. The zxserver, 1559
+  and HDN files read back byte for byte. Restart gdeliveryd to load a saved file.
+
 ## Domain files editor (territory maps)
 
 **Domains** in the activity bar edits the client's territory maps, all together, one tab per file:

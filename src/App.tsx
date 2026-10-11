@@ -30,6 +30,7 @@ import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } f
 import { DynObjectsEditor, type DynObjectsEditorHandle, type DynObjectsEditorState } from "./components/DynObjectsEditor";
 import { DomainEditor, type DomainEditorHandle, type DomainEditorState } from "./components/DomainEditor";
 import { DropsEditor, type DropsEditorHandle, type DropsEditorState } from "./components/DropsEditor";
+import { QuizEditor, type QuizEditorHandle, type QuizEditorState } from "./components/QuizEditor";
 import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
 import { TaskNpcEditor, type TaskNpcEditorHandle, type TaskNpcEditorState } from "./components/TaskNpcEditor";
 import { VipAwardEditor, type VipAwardEditorHandle, type VipAwardEditorState } from "./components/VipAwardEditor";
@@ -69,6 +70,8 @@ import {
   Crown,
   Box,
   Castle,
+  MessageCircleQuestion,
+  CalendarDays,
   Brain,
   Type,
   FileText,
@@ -100,7 +103,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "objects" | "domains" | "drops" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
+type DataWorkspace = "elements" | "paths" | "objects" | "domains" | "drops" | "quiz" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -200,6 +203,10 @@ export default function App() {
   const [dropsEditorState, setDropsEditorState] = useState<DropsEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, tables: 0 });
   const dropsEditorStateRef = useRef(dropsEditorState);
   dropsEditorStateRef.current = dropsEditorState;
+  const quizEditor = useRef<QuizEditorHandle>(null);
+  const [quizEditorState, setQuizEditorState] = useState<QuizEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, questions: 0 });
+  const quizEditorStateRef = useRef(quizEditorState);
+  quizEditorStateRef.current = quizEditorState;
   const tasksEditor = useRef<TasksEditorHandle>(null);
   const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null, unsupported: null, analysis: null, comparison: null, fieldCandidates: null, layoutPatch: null, referencePath: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
   const tasksEditorStateRef = useRef(tasksEditorState);
@@ -249,7 +256,7 @@ export default function App() {
   }, [pendingPolicy, workspace]);
   useEffect(() => {
     if (!pendingOpen || workspace !== pendingOpen.workspace) return;
-    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, objects: objectsEditor, domains: domainEditor, drops: dropsEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
+    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, objects: objectsEditor, domains: domainEditor, drops: dropsEditor, quiz: quizEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
     const editor = editors[workspace]?.current;
     if (!editor) return;
     setPendingOpen(null);
@@ -389,6 +396,10 @@ export default function App() {
         event.preventDefault();
         return;
       }
+      if (quizEditorStateRef.current.dirty && !window.confirm("zhuxian_question.data has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
       if (tasksEditorStateRef.current.dirty && !window.confirm("tasks.data has unsaved changes. Close JD IDE and discard them?")) {
         event.preventDefault();
         return;
@@ -486,6 +497,7 @@ export default function App() {
         else if (workspaceRef.current === "objects") objectsEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "domains") domainEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "drops") dropsEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "quiz") quizEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "tasks") tasksEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "npc") npcEditor.current?.openPath(event.payload.paths[0]);
@@ -1133,6 +1145,37 @@ export default function App() {
         { label: "Export all policies as JSON…", icon: Download, onSelect: () => aiEditor.current?.exportJson(true), disabled: !aiEditorState.loaded },
       ],
     },
+  ] : workspace === "quiz" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open zhuxian_question.data…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => quizEditor.current?.choose() },
+        { label: "Save", icon: Save, shortcut: "Ctrl+S", onSelect: () => quizEditor.current?.save(), disabled: !quizEditorState.loaded || !quizEditorState.dirty },
+        { label: "Save as…", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: () => quizEditor.current?.saveAs(), disabled: !quizEditorState.loaded },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => quizEditor.current?.undo(), disabled: !quizEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => quizEditor.current?.redo(), disabled: !quizEditorState.canRedo },
+        "separator",
+        { label: "Clone question", icon: Copy, shortcut: "Ctrl+D", onSelect: () => quizEditor.current?.cloneSelected(), disabled: !quizEditorState.loaded },
+        { label: "Delete question…", icon: Trash2, shortcut: "Del", onSelect: () => quizEditor.current?.deleteSelected(), disabled: !quizEditorState.loaded },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => quizEditor.current?.openProblems(), disabled: !quizEditorState.loaded },
+        { label: "Contest calendar", icon: CalendarDays, onSelect: () => quizEditor.current?.showCalendar(), disabled: !quizEditorState.loaded },
+      ],
+    },
   ] : workspace === "drops" ? [
     {
       label: "File",
@@ -1337,6 +1380,10 @@ export default function App() {
       if (!window.confirm("Leave the extra_drops.sev editor and discard its unsaved changes?")) return;
       setDropsEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
     }
+    if (workspace === "quiz" && quizEditorState.dirty) {
+      if (!window.confirm("Leave the quiz question editor and discard its unsaved changes?")) return;
+      setQuizEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
+    }
     // So do the domain files.
     if (workspace === "domains" && domainEditorState.dirty) {
       if (!window.confirm("Leave the domain editor and discard its unsaved changes?")) return;
@@ -1384,6 +1431,11 @@ export default function App() {
         <Dices size={18} />
         <span className="activity-label">Drops</span>
         {dropsEditorState.dirty && <span className="activity-dirty" />}
+      </button>
+      <button className={"activity" + (workspace === "quiz" ? " active" : "")} onClick={() => switchWorkspace("quiz")} title="zhuxian_question.data editor (the daily quiz contest)" aria-label="zhuxian_question.data">
+        <MessageCircleQuestion size={18} />
+        <span className="activity-label">Quiz</span>
+        {quizEditorState.dirty && <span className="activity-dirty" />}
       </button>
       <button className={"activity" + (workspace === "tasks" ? " active" : "")} onClick={() => switchWorkspace("tasks")} title="tasks.data editor" aria-label="tasks.data">
         <FileStack size={18} />
@@ -1664,6 +1716,11 @@ export default function App() {
             onStateChange={setPathEditorState}
             onClientReloaded={() => getSettings().then(onSettingsSaved).catch((problem) => setError(String(problem)))}
           />
+        </main>
+      ) : workspace === "quiz" ? (
+        <main className="workspace path-data-workspace">
+          {activityBar}
+          <QuizEditor ref={quizEditor} active onStateChange={setQuizEditorState} />
         </main>
       ) : workspace === "drops" ? (
         <main className="workspace path-data-workspace">
@@ -1968,6 +2025,14 @@ export default function App() {
             {pathEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
             <span className="spacer" />
             <span>PMID resource path table</span>
+          </>
+        ) : workspace === "quiz" ? (
+          <>
+            <span>zhuxian_question.data</span>
+            {quizEditorState.path && <span className="mono truncate" title={quizEditorState.path}>{quizEditorState.path}</span>}
+            {quizEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
+            <span className="spacer" />
+            {quizEditorState.loaded && <span>{count(quizEditorState.questions)} questions · {count(Math.floor(quizEditorState.questions / 30))} sets</span>}
           </>
         ) : workspace === "drops" ? (
           <>

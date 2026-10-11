@@ -8,6 +8,7 @@ mod dyn_tasks;
 mod elements;
 mod gshop;
 mod path_data;
+mod quiz;
 mod npcgen;
 mod settings;
 mod task_npc;
@@ -849,6 +850,22 @@ async fn client_maps(state: State<'_, AppState>) -> Result<Vec<ClientMap>, Strin
     })
     .await
     .map_err(|error| error.to_string())?
+}
+
+/// zhuxian_question.data (gdeliveryd quiz contest).
+#[tauri::command]
+async fn open_quiz(path: String) -> Result<quiz::OpenedQuiz, String> {
+    tauri::async_runtime::spawn_blocking(move || quiz::open(std::path::Path::new(&path))).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+fn quiz_problems(questions: Vec<quiz::Question>) -> Vec<quiz::Problem> {
+    quiz::problems(&questions)
+}
+
+#[tauri::command]
+async fn save_quiz(path: String, token: Option<String>, questions: Vec<quiz::Question>, backup: bool, replace_changed: bool) -> Result<quiz::SaveReport, String> {
+    tauri::async_runtime::spawn_blocking(move || quiz::save(std::path::Path::new(&path), token.as_deref(), &questions, backup, replace_changed)).await.map_err(|error| error.to_string())?
 }
 
 /// extra_drops.sev (the server's extra drop tables).
@@ -2677,6 +2694,9 @@ pub fn run() {
             aipolicy_policy_action,
             aipolicy_unused_subtriggers,
             aipolicy_cleanup,
+            open_quiz,
+            quiz_problems,
+            save_quiz,
             open_extra_drops,
             set_extra_drops_source,
             read_extra_drops,

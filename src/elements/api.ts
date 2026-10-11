@@ -7,6 +7,9 @@ import type {
   DropFile,
   DropProblem,
   OpenedDrops,
+  OpenedQuiz,
+  QuizProblem,
+  QuizQuestion,
   DynObjectCheck,
   LandRow,
   Sev,
@@ -445,6 +448,10 @@ export const setMonsterPolicies = (places: [number, number, number, number][], p
 export const aiPolicyHistory = () => invoke<AiHistoryRow[]>("aipolicy_history");
 export const aiPolicyRevertEntry = (id: number, shown: number | null) => invoke<AiEditResult>("aipolicy_revert_entry", { id, shown });
 export const aiPolicyRevertAll = () => invoke<AiEditResult>("aipolicy_revert_all");
+/** zhuxian_question.data (gdeliveryd quiz contest). */
+export const openQuiz = (path: string) => invoke<OpenedQuiz>("open_quiz", { path });
+export const quizProblems = (questions: QuizQuestion[]) => invoke<QuizProblem[]>("quiz_problems", { questions });
+export const saveQuiz = (path: string, token: string | null, questions: QuizQuestion[], backup: boolean, replaceChanged: boolean) => invoke<{ path: string; size: number; token: string; backup: string | null }>("save_quiz", { path, token, questions, backup, replaceChanged });
 /** extra_drops.sev (the server's extra drop tables). */
 export const openExtraDrops = (path: string) => invoke<OpenedDrops>("open_extra_drops", { path });
 /** Another extra_drops.sev, read only (compare/copy). */
