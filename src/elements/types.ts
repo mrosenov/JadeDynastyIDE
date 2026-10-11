@@ -2807,3 +2807,19 @@ export interface QuizProblem {
   question: number | null;
   message: string;
 }
+
+/** A question of another question file (data, JSON or CSV), by its number (1 = the first). */
+export interface QuizSourceQuestion {
+  number: number;
+  /** null when the file does not say: the open file's correct answers stay. */
+  key: number | null;
+  text: string;
+  answers: string[];
+}
+
+export interface QuizSource {
+  path: string;
+  kind: "data" | "json" | "csv";
+  questions: QuizSourceQuestion[];
+  notes: string[];
+}

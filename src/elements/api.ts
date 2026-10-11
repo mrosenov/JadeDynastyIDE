@@ -10,6 +10,7 @@ import type {
   OpenedQuiz,
   QuizProblem,
   QuizQuestion,
+  QuizSource,
   DynObjectCheck,
   LandRow,
   Sev,
@@ -452,6 +453,8 @@ export const aiPolicyRevertAll = () => invoke<AiEditResult>("aipolicy_revert_all
 export const openQuiz = (path: string) => invoke<OpenedQuiz>("open_quiz", { path });
 export const quizProblems = (questions: QuizQuestion[]) => invoke<QuizProblem[]>("quiz_problems", { questions });
 export const saveQuiz = (path: string, token: string | null, questions: QuizQuestion[], backup: boolean, replaceChanged: boolean) => invoke<{ path: string; size: number; token: string; backup: string | null }>("save_quiz", { path, token, questions, backup, replaceChanged });
+export const readQuizSource = (path: string) => invoke<QuizSource>("read_quiz_source", { path });
+export const exportQuiz = (path: string, sourcePath: string, questions: QuizQuestion[], format: "json" | "csv") => invoke<{ path: string; questions: number }>("export_quiz", { path, sourcePath, questions, format });
 /** extra_drops.sev (the server's extra drop tables). */
 export const openExtraDrops = (path: string) => invoke<OpenedDrops>("open_extra_drops", { path });
 /** Another extra_drops.sev, read only (compare/copy). */

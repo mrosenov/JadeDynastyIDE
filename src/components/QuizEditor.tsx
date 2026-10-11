@@ -1,10 +1,11 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { AlertTriangle, ArrowDown, ArrowUp, CalendarDays, CircleAlert, Copy, FolderOpen, Info, ListChecks, Loader2, MessageCircleQuestion, Plus, Redo2, Save, Search, Trash2, TriangleAlert, Undo2, X } from "lucide-react";
-import { openQuiz, quizProblems, saveQuiz } from "../elements/api";
+import { exportQuiz, openQuiz, quizProblems, readQuizSource, saveQuiz } from "../elements/api";
 import { bytes, count } from "../elements/format";
-import type { QuizProblem, QuizQuestion } from "../elements/types";
+import type { QuizProblem, QuizQuestion, QuizSource } from "../elements/types";
 import { TextInput } from "./DynTasksEditor";
+import { QuizCompare } from "./QuizCompare";
 
 export interface QuizEditorState {
   loaded: boolean;
@@ -26,6 +27,8 @@ export interface QuizEditorHandle {
   deleteSelected: () => void;
   openProblems: () => void;
   showCalendar: () => void;
+  compare: () => void;
+  exportAs: (format: "json" | "csv") => void;
 }
 
 interface Props {
@@ -61,6 +64,7 @@ export const QuizEditor = forwardRef<QuizEditorHandle, Props>(function QuizEdito
   const [backup, setBackup] = useState(() => { try { return localStorage.getItem(BACKUP_KEY) !== "0"; } catch { return true; } });
   const [problems, setProblems] = useState<QuizProblem[] | null>(null);
   const [problemsOpen, setProblemsOpen] = useState(false);
+  const [other, setOther] = useState<QuizSource | null>(null);
   const saved = useRef<QuizQuestion[] | null>(null);
   const autoOpened = useRef(false);
   const backedUp = useRef(new Set<string>());
@@ -198,7 +202,39 @@ export const QuizEditor = forwardRef<QuizEditorHandle, Props>(function QuizEdito
     if (typeof target === "string") await saveTo(target);
   }, [busy, meta, saveTo]);
 
-  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => guard(() => void load(path)), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, cloneSelected, deleteSelected, openProblems: () => setProblemsOpen(true), showCalendar: () => setView("calendar") }), [choose, cloneSelected, deleteSelected, guard, load, redo, saveAs, saveCurrent, undo]);
+  /** Another question file, a JSON or a CSV to compare with and take questions or texts from. */
+  const compare = useCallback(async () => {
+    if (!questions || busy) return;
+    const picked = await open({ multiple: false, directory: false, defaultPath: other?.path ?? meta?.path, title: "Compare with or import from", filters: [{ name: "Questions (zhuxian_question.data, JSON, CSV)", extensions: ["data", "json", "csv", "tsv", "txt"] }, { name: "All files", extensions: ["*"] }] });
+    if (typeof picked !== "string") return;
+    setBusy(true);
+    setError(null);
+    try {
+      setOther(await readQuizSource(picked));
+    } catch (problem) {
+      setError(messageOf(problem));
+    } finally {
+      setBusy(false);
+    }
+  }, [busy, meta?.path, other?.path, questions]);
+  const exportAs = useCallback(async (format: "json" | "csv") => {
+    if (!questions || !meta || busy) return;
+    const stem = meta.path.replace(/\.[^.\\/]*$/, "");
+    const target = await save({ defaultPath: `${stem}.${format}`, title: format === "csv" ? "Export the questions as CSV (spreadsheets, translation)" : "Export the questions as JSON", filters: [format === "csv" ? { name: "CSV", extensions: ["csv"] } : { name: "JSON", extensions: ["json"] }] });
+    if (typeof target !== "string") return;
+    setBusy(true);
+    setError(null);
+    try {
+      const report = await exportQuiz(target, meta.path, questions, format);
+      setNote(`Exported ${count(report.questions)} questions to ${report.path}.${format === "csv" ? " Edit it in a spreadsheet and bring it back with Tools › Compare / import (keep the header row; save as CSV UTF-8)." : ""}`);
+    } catch (problem) {
+      setError(messageOf(problem));
+    } finally {
+      setBusy(false);
+    }
+  }, [busy, meta, questions]);
+
+  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => guard(() => void load(path)), save: saveCurrent, saveAs: () => void saveAs(), undo, redo, cloneSelected, deleteSelected, openProblems: () => setProblemsOpen(true), showCalendar: () => setView("calendar"), compare: () => void compare(), exportAs: (format) => void exportAs(format) }), [choose, cloneSelected, compare, deleteSelected, exportAs, guard, load, redo, saveAs, saveCurrent, undo]);
   useEffect(() => onStateChange({ loaded: !!questions, dirty, canUndo: history.cursor > 0, canRedo: history.cursor + 1 < history.states.length, path: meta?.path ?? null, questions: questions?.length ?? 0 }), [dirty, history.cursor, history.states.length, meta?.path, onStateChange, questions]);
 
   useEffect(() => {
@@ -208,6 +244,7 @@ export const QuizEditor = forwardRef<QuizEditorHandle, Props>(function QuizEdito
       const typing = event.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName);
       const key = event.key.toLowerCase();
       if (event.key === "Escape" && problemsOpen) { event.preventDefault(); setProblemsOpen(false); return; }
+      if (other) { if (event.key === "Escape") { event.preventDefault(); setOther(null); } return; }
       if (mod && event.shiftKey && key === "m") { event.preventDefault(); event.stopImmediatePropagation(); setProblemsOpen(true); return; }
       if (mod && ["o", "s", "z", "y", "d"].includes(key)) {
         if (typing && (key === "z" || key === "y")) return;
@@ -228,7 +265,7 @@ export const QuizEditor = forwardRef<QuizEditorHandle, Props>(function QuizEdito
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [active, choose, cloneSelected, deleteSelected, moveTo, problemsOpen, redo, saveAs, saveCurrent, selected, undo]);
+  }, [active, choose, cloneSelected, deleteSelected, moveTo, other, problemsOpen, redo, saveAs, saveCurrent, selected, undo]);
 
   const flagged = useMemo(() => {
     const out = new Map<number, string>();
@@ -396,6 +433,7 @@ export const QuizEditor = forwardRef<QuizEditorHandle, Props>(function QuizEdito
         </>}
       </div>
     </div>}
+    {other && <QuizCompare key={other.path} other={other} questions={questions} onChooseOther={() => void compare()} onClose={() => setOther(null)} onApply={(next, message) => { commit(next, `import:${Date.now()}`); setNote(message); }} />}
     {problemsOpen && <div className="modal-backdrop" onMouseDown={() => setProblemsOpen(false)}>
       <div className="modal npcgen-problems-dialog" role="dialog" aria-label="Problems" onMouseDown={(event) => event.stopPropagation()}>
         <header className="modal-head"><h3>Problems</h3><span className="muted small">{count(errors)} error{errors === 1 ? "" : "s"}</span><span className="spacer" /><button className="icon-btn" onClick={() => setProblemsOpen(false)} aria-label="Close"><X size={16} /></button></header>

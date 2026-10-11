@@ -868,6 +868,17 @@ async fn save_quiz(path: String, token: Option<String>, questions: Vec<quiz::Que
     tauri::async_runtime::spawn_blocking(move || quiz::save(std::path::Path::new(&path), token.as_deref(), &questions, backup, replace_changed)).await.map_err(|error| error.to_string())?
 }
 
+/// Another question file (zhuxian_question.data, JSON or CSV) to compare with or import from.
+#[tauri::command]
+async fn read_quiz_source(path: String) -> Result<quiz::QuizSource, String> {
+    tauri::async_runtime::spawn_blocking(move || quiz::read_source(std::path::Path::new(&path))).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+async fn export_quiz(path: String, source_path: String, questions: Vec<quiz::Question>, format: String) -> Result<quiz::ExportReport, String> {
+    tauri::async_runtime::spawn_blocking(move || quiz::export(std::path::Path::new(&path), &source_path, &questions, &format)).await.map_err(|error| error.to_string())?
+}
+
 /// extra_drops.sev (the server's extra drop tables).
 #[tauri::command]
 async fn open_extra_drops(path: String, state: State<'_, AppState>) -> Result<extra_drops::OpenedDrops, String> {
@@ -2697,6 +2708,8 @@ pub fn run() {
             open_quiz,
             quiz_problems,
             save_quiz,
+            read_quiz_source,
+            export_quiz,
             open_extra_drops,
             set_extra_drops_source,
             read_extra_drops,

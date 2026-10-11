@@ -211,9 +211,371 @@ pub fn save(path: &Path, token_now: Option<&str>, questions: &[Question], backup
     Ok(SaveReport { path: path.display().to_string(), size: data.len(), token: token(&data), backup })
 }
 
+/// The correct answers' letters ("B", "AC").
+pub fn letters(key: u8) -> String {
+    (0..8).filter(|bit| key & (1 << bit) != 0).map(|bit| (b'A' + bit) as char).collect()
+}
+
+/// Letters A–F in any case, with or without separators; empty = not given.
+pub fn parse_letters(text: &str) -> Result<Option<u8>, String> {
+    let mut key = 0u8;
+    let mut any = false;
+    for c in text.chars() {
+        match c.to_ascii_uppercase() {
+            letter @ 'A'..='F' => {
+                key |= 1 << (letter as u8 - b'A');
+                any = true;
+            }
+            ',' | ';' | '/' | '+' | '&' | ' ' | '\t' => {}
+            _ => return Err(format!("“{text}” is not a list of answer letters A–F")),
+        }
+    }
+    Ok(any.then_some(key))
+}
+
+/// A question of another file (zhuxian_question.data, JSON or CSV) by its number (1 = the first).
+#[derive(Debug, Clone, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SourceQuestion {
+    pub number: usize,
+    /// None when the file does not say (an empty Correct column): the open file's answers stay.
+    pub key: Option<u8>,
+    pub text: String,
+    pub answers: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct QuizSource {
+    pub path: String,
+    /// `data`, `json` or `csv`.
+    pub kind: &'static str,
+    pub questions: Vec<SourceQuestion>,
+    pub notes: Vec<String>,
+}
+
+pub const JSON_FORMAT: &str = "jdide-quiz";
+const JSON_FORMAT_VERSION: u32 = 1;
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonQuestion {
+    #[serde(default)]
+    number: Option<usize>,
+    /// Letters, e.g. "B".
+    #[serde(default)]
+    correct: Option<String>,
+    text: String,
+    #[serde(default)]
+    answers: Vec<String>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonExport<'a> {
+    format: &'static str,
+    format_version: u32,
+    source_path: &'a str,
+    exported_at: String,
+    questions: Vec<JsonQuestion>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct JsonEnvelope {
+    format: String,
+    format_version: u32,
+    questions: Vec<JsonQuestion>,
+}
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum JsonInput {
+    Envelope(JsonEnvelope),
+    /// A plain list, for hand-made files.
+    List(Vec<JsonQuestion>),
+}
+
+pub fn to_json(questions: &[Question], source_path: &str) -> String {
+    let export = JsonExport {
+        format: JSON_FORMAT,
+        format_version: JSON_FORMAT_VERSION,
+        source_path,
+        exported_at: chrono::Local::now().to_rfc3339(),
+        questions: questions.iter().enumerate().map(|(index, question)| JsonQuestion { number: Some(index + 1), correct: Some(letters(question.key)), text: question.text.clone(), answers: question.answers.clone() }).collect(),
+    };
+    serde_json::to_string_pretty(&export).expect("questions serialize")
+}
+
+pub fn from_json(text: &str) -> Result<Vec<SourceQuestion>, String> {
+    let input: JsonInput = serde_json::from_str(text.trim_start_matches('\u{feff}')).map_err(|error| format!("Invalid quiz JSON: {error}"))?;
+    let questions = match input {
+        JsonInput::Envelope(envelope) => {
+            if envelope.format != JSON_FORMAT {
+                return Err(format!("This JSON is “{}”, not a JD IDE quiz export", envelope.format));
+            }
+            if envelope.format_version != JSON_FORMAT_VERSION {
+                return Err(format!("Quiz JSON format version {} is not supported", envelope.format_version));
+            }
+            envelope.questions
+        }
+        JsonInput::List(questions) => questions,
+    };
+    let out = questions
+        .into_iter()
+        .enumerate()
+        .map(|(index, question)| {
+            let key = match &question.correct {
+                Some(correct) => parse_letters(correct).map_err(|error| format!("Question {}: {error}", question.number.unwrap_or(index + 1)))?,
+                None => None,
+            };
+            Ok(SourceQuestion { number: question.number.unwrap_or(index + 1), key, text: question.text, answers: question.answers })
+        })
+        .collect::<Result<Vec<_>, String>>()?;
+    check_numbers(&out)?;
+    Ok(out)
+}
+
+fn check_numbers(questions: &[SourceQuestion]) -> Result<(), String> {
+    let mut seen = std::collections::HashSet::new();
+    for question in questions {
+        if question.number == 0 {
+            return Err("Question numbers start at 1".into());
+        }
+        if !seen.insert(question.number) {
+            return Err(format!("Question {} is in the file twice", question.number));
+        }
+    }
+    Ok(())
+}
+
+/// CSV for spreadsheets and translators: UTF-8 with a BOM (Excel), `#, Correct, Question, A … F`, texts quoted.
+pub fn to_csv(questions: &[Question]) -> Vec<u8> {
+    let columns = questions.iter().map(|question| question.answers.len()).max().unwrap_or(0).max(6);
+    let quote = |text: &str| format!("\"{}\"", text.replace('"', "\"\""));
+    let mut out = String::from("\u{feff}#,Correct,Question");
+    for column in 0..columns {
+        out.push(',');
+        out.push_str(&answer_header(column));
+    }
+    out.push_str("\r\n");
+    for (index, question) in questions.iter().enumerate() {
+        out.push_str(&format!("{},{},{}", index + 1, letters(question.key), quote(&question.text)));
+        for column in 0..columns {
+            out.push(',');
+            if let Some(answer) = question.answers.get(column) {
+                out.push_str(&quote(answer));
+            }
+        }
+        out.push_str("\r\n");
+    }
+    out.into_bytes()
+}
+
+fn answer_header(column: usize) -> String {
+    if column < 26 { ((b'A' + column as u8) as char).to_string() } else { format!("Answer {}", column + 1) }
+}
+
+/// Text of a CSV file: UTF-8 (with or without a BOM), UTF-16 with a BOM (Excel's "Unicode Text"), else GBK.
+fn decode_text(bytes: &[u8], notes: &mut Vec<String>) -> String {
+    if let Some(rest) = bytes.strip_prefix(&[0xef, 0xbb, 0xbf]) {
+        return String::from_utf8_lossy(rest).into_owned();
+    }
+    if let Some(rest) = bytes.strip_prefix(&[0xff, 0xfe]) {
+        return encoding_rs::UTF_16LE.decode_without_bom_handling(rest).0.into_owned();
+    }
+    if let Some(rest) = bytes.strip_prefix(&[0xfe, 0xff]) {
+        return encoding_rs::UTF_16BE.decode_without_bom_handling(rest).0.into_owned();
+    }
+    match std::str::from_utf8(bytes) {
+        Ok(text) => text.to_string(),
+        Err(_) => {
+            notes.push("The file is not UTF-8: it was read as GBK (Chinese ANSI). Check the texts; saving the sheet as “CSV UTF-8” avoids this.".into());
+            encoding_rs::GBK.decode_without_bom_handling(bytes).0.into_owned()
+        }
+    }
+}
+
+/// RFC 4180 records (quoted cells may hold delimiters, quotes and line breaks), with the line each starts on.
+fn csv_records(text: &str, delimiter: char) -> Result<Vec<(usize, Vec<String>)>, String> {
+    let mut records = Vec::new();
+    let mut record = Vec::new();
+    let mut cell = String::new();
+    let mut quoted = false;
+    let mut line = 1;
+    let mut start = 1;
+    let mut chars = text.chars().peekable();
+    while let Some(c) = chars.next() {
+        if quoted {
+            if c == '"' {
+                if chars.peek() == Some(&'"') {
+                    chars.next();
+                    cell.push('"');
+                } else {
+                    quoted = false;
+                }
+            } else {
+                if c == '\n' {
+                    line += 1;
+                }
+                cell.push(c);
+            }
+            continue;
+        }
+        match c {
+            '"' if cell.is_empty() => quoted = true,
+            c if c == delimiter => record.push(std::mem::take(&mut cell)),
+            '\r' if chars.peek() == Some(&'\n') => {}
+            '\n' | '\r' => {
+                record.push(std::mem::take(&mut cell));
+                records.push((start, std::mem::take(&mut record)));
+                line += 1;
+                start = line;
+            }
+            c => cell.push(c),
+        }
+    }
+    if quoted {
+        return Err(format!("Line {start}: a quoted cell is not closed"));
+    }
+    if !cell.is_empty() || !record.is_empty() {
+        record.push(cell);
+        records.push((start, record));
+    }
+    Ok(records)
+}
+
+/// Reads a CSV made by `to_csv` or edited in a spreadsheet: the header names the columns (`#` optional, Correct
+/// optional, Question, then one column per answer); comma, semicolon or tab separated.
+pub fn from_csv(bytes: &[u8]) -> Result<(Vec<SourceQuestion>, Vec<String>), String> {
+    let mut notes = Vec::new();
+    let text = decode_text(bytes, &mut notes);
+    let first = text.lines().next().unwrap_or("");
+    let delimiter = [',', ';', '\t'].into_iter().max_by_key(|delimiter| first.matches(*delimiter).count()).filter(|delimiter| first.contains(*delimiter)).unwrap_or(',');
+    let mut records = csv_records(&text, delimiter)?.into_iter().filter(|(_, cells)| cells.iter().any(|cell| !cell.trim().is_empty()));
+    let (_, header) = records.next().ok_or("The file is empty")?;
+    let (mut number, mut correct, mut question, mut answers) = (None, None, None, Vec::new());
+    for (index, name) in header.iter().enumerate() {
+        let name = name.trim().trim_start_matches('\u{feff}').to_lowercase();
+        match name.as_str() {
+            "#" | "no" | "no." | "nr" | "number" => number = Some(index),
+            "correct" | "key" | "correct answer" | "correct answers" => correct = Some(index),
+            "question" | "text" => question = Some(index),
+            _ if name.len() == 1 && name.chars().all(|c| c.is_ascii_alphabetic()) || name.starts_with("answer") => answers.push(index),
+            _ => {}
+        }
+    }
+    let question = question.ok_or("The first row must name the columns: #, Correct, Question, A, B, … (as the CSV export writes them)")?;
+    if answers.is_empty() {
+        return Err("The header has no answer columns (A, B, …)".into());
+    }
+    let cell = |cells: &[String], index: usize| cells.get(index).cloned().unwrap_or_default();
+    let mut out = Vec::new();
+    for (row, (line, cells)) in records.enumerate() {
+        let number = match number.map(|index| cell(&cells, index)).filter(|value| !value.trim().is_empty()) {
+            Some(value) => value.trim().parse::<usize>().map_err(|_| format!("Line {line}: “{value}” is not a question number"))?,
+            None => row + 1,
+        };
+        let key = match correct {
+            Some(index) => parse_letters(&cell(&cells, index)).map_err(|error| format!("Line {line}: {error}"))?,
+            None => None,
+        };
+        let mut texts: Vec<String> = answers.iter().map(|index| cell(&cells, *index)).collect();
+        while texts.last().is_some_and(|text| text.is_empty()) {
+            texts.pop();
+        }
+        out.push(SourceQuestion { number, key, text: cell(&cells, question), answers: texts });
+    }
+    check_numbers(&out)?;
+    if correct.is_none() {
+        notes.push("No Correct column: the correct answers stay as they are.".into());
+    }
+    Ok((out, notes))
+}
+
+/// Another question file for comparing or importing: by extension JSON, CSV (also .tsv/.txt), else zhuxian_question.data.
+pub fn read_source(path: &Path) -> Result<QuizSource, String> {
+    let bytes = std::fs::read(path).map_err(|error| format!("Could not read {}: {error}", path.display()))?;
+    let extension = path.extension().map(|extension| extension.to_string_lossy().to_lowercase()).unwrap_or_default();
+    let fail = |error: String| format!("{}: {error}", path.display());
+    let (kind, questions, notes) = match extension.as_str() {
+        "json" => ("json", from_json(&String::from_utf8_lossy(&bytes)).map_err(fail)?, Vec::new()),
+        "csv" | "tsv" | "txt" => {
+            let (questions, notes) = from_csv(&bytes).map_err(fail)?;
+            ("csv", questions, notes)
+        }
+        _ => {
+            let questions = parse(&bytes).map_err(fail)?;
+            ("data", questions.into_iter().enumerate().map(|(index, question)| SourceQuestion { number: index + 1, key: Some(question.key), text: question.text, answers: question.answers }).collect(), Vec::new())
+        }
+    };
+    Ok(QuizSource { path: path.display().to_string(), kind, questions, notes })
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ExportReport {
+    pub path: String,
+    pub questions: usize,
+}
+
+/// Writes the questions as `json` or `csv`.
+pub fn export(path: &Path, source_path: &str, questions: &[Question], format: &str) -> Result<ExportReport, String> {
+    let data = match format {
+        "json" => to_json(questions, source_path).into_bytes(),
+        "csv" => to_csv(questions),
+        other => return Err(format!("Unknown export format “{other}”")),
+    };
+    crate::path_data::write_replacing(path, &data)?;
+    Ok(ExportReport { path: path.display().to_string(), questions: questions.len() })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn sourced(questions: &[Question]) -> Vec<SourceQuestion> {
+        questions.iter().enumerate().map(|(index, question)| SourceQuestion { number: index + 1, key: Some(question.key), text: question.text.clone(), answers: question.answers.clone() }).collect()
+    }
+
+    #[test]
+    fn samples_survive_json_and_csv() {
+        for path in samples() {
+            let Ok(data) = std::fs::read(path) else { continue };
+            let questions = parse(&data).unwrap();
+            assert_eq!(from_json(&to_json(&questions, path)).unwrap(), sourced(&questions), "{path} JSON");
+            let (back, notes) = from_csv(&to_csv(&questions)).unwrap();
+            assert_eq!(back, sourced(&questions), "{path} CSV");
+            assert!(notes.is_empty());
+        }
+    }
+
+    #[test]
+    fn csv_from_spreadsheets() {
+        // Semicolons, no # column, a quoted line break and quotes, lower-case letters, an empty Correct cell.
+        let text = "Question;correct;A;B;C\r\n\"Say \"\"hi\"\"\nplease\";b;x;y;\r\nSecond;;1;2;3\r\n;;;;\r\n";
+        let (questions, notes) = from_csv(text.as_bytes()).unwrap();
+        assert!(notes.is_empty());
+        assert_eq!(questions[0], SourceQuestion { number: 1, key: Some(2), text: "Say \"hi\"\nplease".into(), answers: vec!["x".into(), "y".into()] });
+        assert_eq!(questions[1].key, None);
+        assert_eq!(questions[1].answers.len(), 3);
+        assert_eq!(questions.len(), 2);
+        // Excel's "Unicode Text": UTF-16LE with a BOM, tab separated.
+        let mut utf16 = vec![0xff, 0xfe];
+        for unit in "#\tCorrect\tQuestion\tA\tB\r\n7\tA, C\t问题\t甲\t乙\r\n".encode_utf16() {
+            utf16.extend_from_slice(&unit.to_le_bytes());
+        }
+        let (questions, _) = from_csv(&utf16).unwrap();
+        assert_eq!(questions[0], SourceQuestion { number: 7, key: Some(5), text: "问题".into(), answers: vec!["甲".into(), "乙".into()] });
+        // ANSI (GBK) from a Chinese Excel.
+        let (gbk, _, _) = encoding_rs::GBK.encode("Question,A,B\r\n问题,甲,乙\r\n");
+        let (questions, notes) = from_csv(&gbk).unwrap();
+        assert_eq!(questions[0].text, "问题");
+        assert_eq!(notes.len(), 2);
+        assert!(from_csv(b"#,Question,A\r\n1,x,y\r\n1,z,w\r\n").unwrap_err().contains("twice"));
+        assert!(from_csv(b"Question,Correct,A\r\nx,G,y\r\n").unwrap_err().starts_with("Line 2"));
+        assert!(from_csv(b"Foo,Bar\r\n1,2\r\n").is_err());
+    }
 
     fn samples() -> Vec<&'static str> {
         vec![

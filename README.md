@@ -1075,6 +1075,21 @@ folders are not used. The file opened last opens again.
   errors; questions with fewer than two answers, no correct answer or a ticked answer that does not exist (nobody
   can answer them right) and zero characters in a text are warnings; repeated questions, questions outside a full
   set and sets that never run are notes. Saving asks first when there are errors.
+- **Export** (Tools): **CSV** for spreadsheets and translators (UTF-8 with a BOM, so Excel shows Chinese; columns
+  `#`, `Correct` (letters, e.g. `B`), `Question`, `A`–`F`) or **JSON** (`jdide-quiz` version 1).
+- **Compare / import** (Tools) opens another zhuxian_question.data, a JSON or a CSV and shows the questions side by
+  side. **Pair by number** (the default for JSON and CSV) is for translations of this file; **pair by question
+  text** (the default for question files) is for other question banks, where "only there" are the questions this
+  file lacks (the zxserver, 1559 and HDN banks share only 15–18 questions). Pick questions and take:
+  - **Texts only**: the question and answer texts; the correct answers stay. A question whose number of answers
+    differs needs Whole questions.
+  - **Whole questions**: texts and correct answers (kept when the file has no Correct column); questions only in
+    the other file are added at the end.
+  One undo step. CSV files from spreadsheets are read with a header row naming the columns (`#` and `Correct`
+  optional; without `#` rows count from 1), comma, semicolon or tab separated, in UTF-8, UTF-16 (Excel's
+  "Unicode Text") or GBK. Save the sheet as **CSV UTF-8**: plain "CSV" in a non-Chinese Windows loses Chinese
+  characters. Excel turns cells such as `-50` into numbers; they come back the same, but check answers like
+  `+5` or `007`.
 - Save keeps a 7z backup and notices another program's changes; undo/redo cover every edit. The zxserver, 1559
   and HDN files read back byte for byte. Restart gdeliveryd to load a saved file.
 

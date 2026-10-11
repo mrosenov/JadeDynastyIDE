@@ -1174,6 +1174,10 @@ export default function App() {
       items: [
         { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => quizEditor.current?.openProblems(), disabled: !quizEditorState.loaded },
         { label: "Contest calendar", icon: CalendarDays, onSelect: () => quizEditor.current?.showCalendar(), disabled: !quizEditorState.loaded },
+        "separator",
+        { label: "Compare / import (question file, JSON, CSV)…", icon: GitCompareArrows, onSelect: () => quizEditor.current?.compare(), disabled: !quizEditorState.loaded },
+        { label: "Export as CSV (spreadsheets, translation)…", icon: Download, onSelect: () => quizEditor.current?.exportAs("csv"), disabled: !quizEditorState.loaded },
+        { label: "Export as JSON…", icon: Download, onSelect: () => quizEditor.current?.exportAs("json"), disabled: !quizEditorState.loaded },
       ],
     },
   ] : workspace === "drops" ? [

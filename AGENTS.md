@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (225 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (227 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -79,7 +79,7 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer; `Table::DynamicObjects` for DynamicObjects.data (same loader, one empty path allowed). |
-| `quiz.rs` | zhuxian_question.data (gdeliveryd quiz contest): reader/writer, sets of 30 and the day → set rule, problems, save. |
+| `quiz.rs` | zhuxian_question.data (gdeliveryd quiz contest): reader/writer, sets of 30 and the day → set rule, problems, save; JSON/CSV export and the compare/import source reader. |
 | `extra_drops.rs` | extra_drops.sev (server): reader/writer (v1/v2), the server's load checks as problems, save, monster/item index for the record inspector. |
 | `domain.rs` | domain.data, domain1–4.data, domainlandwar.data: reader/writer (optional `MOXB` marker), land.txt/landwar.txt rows, problems, multi-file save. |
 | `dyn_objects.rs` | DynamicObjects.data: object kinds, client file checks (`models.pck`, `gfx.pck` + `gfx\`), problems, the client's model/effect list for the picker. |
@@ -645,6 +645,15 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 - UI `QuizEditor.tsx` (questions and undo in the component, like DropsEditor). Commands `open_quiz`,
   `quiz_problems` (debounced), `save_quiz` (token guard, backup, read-back check). Answer moves/removals shift
   the key bits with the answers.
+- Export/import (`read_quiz_source`, `export_quiz`; `QuizCompare.tsx`): JSON `jdide-quiz` v1 (number, correct letters,
+  text, answers; a plain list is accepted); CSV = BOM + `#,Correct,Question,A…F`, texts always quoted, CRLF rows.
+  `from_csv` finds columns by header name, the delimiter from the header line (`,` `;` tab), decodes UTF-8/UTF-16
+  BOM/else GBK (with a note), RFC 4180 quoting with line breaks. `SourceQuestion.key` is None without a Correct
+  value. Sample texts: line breaks are LF (Excel keeps them), 1559 has answers `-50` etc. The dialog pairs by number
+  (translations) or by trimmed question text (repeats in order); the zxserver, 1559 and HDN banks are different
+  question sets (15–18 shared texts, none at the same position), so text pairing is the default for .data.
+  Texts-only refuses questions with another answer count; whole questions need a key when adding or when the count
+  changes. One `commit` in the editor. The dialog is keyed by the source path (its state resets per file).
 
 ## Domain files editor
 

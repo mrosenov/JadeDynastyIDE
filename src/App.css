@@ -11386,3 +11386,37 @@ select.ie-control {
   max-width: none;
   width: 100%;
 }
+.ai-cmp-row.quiz-cmp-row {
+  grid-template-columns: 18px 34px minmax(0, 1fr) auto;
+  row-gap: 0;
+}
+.quiz-cmp-row .quiz-cmp-parts {
+  grid-column: 3 / -1;
+}
+.quiz-cmp-text {
+  margin-bottom: 6px;
+  white-space: pre-wrap;
+}
+.quiz-cmp-answers {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.quiz-cmp-answers li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+}
+.quiz-cmp-answers li > b {
+  width: 14px;
+  color: var(--text-dim);
+}
+.quiz-cmp-correct {
+  color: var(--accent);
+}
+.quiz-cmp-diff {
+  background: var(--warn-soft);
+}
