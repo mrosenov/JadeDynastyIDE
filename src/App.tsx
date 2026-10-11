@@ -18,6 +18,7 @@ import { ExportDialog } from "./components/ExportMenu";
 import { ImportRecordsDialog } from "./components/ImportRecordsDialog";
 import { TranslationDialog } from "./components/TranslationDialog";
 import { type Menu, MenuBar } from "./components/MenuBar";
+import { AboutDialog } from "./components/AboutDialog";
 import { SchemaEditor } from "./components/SchemaEditor";
 import { TabBar, type TabLabel } from "./components/TabBar";
 import { SettingsDialog } from "./components/SettingsDialog";
@@ -296,6 +297,7 @@ export default function App() {
   const [editorIntent, setEditorIntent] = useState<{ list: number; offset: number; spec: FieldSpec } | null>(null);
   const [settingsView, setSettingsView] = useState<SettingsView | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   // The enums & masks editor, open at a set (or none).
   const [setsEditor, setSetsEditor] = useState<{ key: string | null } | null>(null);
   /** Bumped when enums or masks change, so the task form reloads its names. */
@@ -1559,7 +1561,7 @@ export default function App() {
           <img className="logo" src={logo} alt="" draggable={false} />
           JD IDE
         </div>
-        <MenuBar menus={menus} />
+        <MenuBar menus={[...menus, { label: "About", accessKey: "a", items: [], onSelect: () => setAboutOpen(true) }]} />
         {workspace === "elements" && summary && (
           <div className="file-chip" title={summary.path}>
             <span className="truncate">{fileName(summary.path)}</span>
@@ -1692,6 +1694,7 @@ export default function App() {
         />
       )}
 
+      {aboutOpen && <AboutDialog onClose={() => setAboutOpen(false)} />}
       {settingsOpen && settingsView && (
         <SettingsDialog
           view={settingsView}

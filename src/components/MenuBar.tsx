@@ -24,6 +24,8 @@ export interface Menu {
   /** Alt+key opens the menu. */
   accessKey: string;
   items: MenuEntry[];
+  /** A menu without items acts as a button: clicking it (or Alt+key) runs this. */
+  onSelect?: () => void;
 }
 
 /** A desktop-style menu bar: click a menu, hover to switch, Esc or a click outside closes. */
@@ -43,6 +45,11 @@ export function MenuBar({ menus }: { menus: Menu[] }) {
         const i = menus.findIndex((m) => m.accessKey.toLowerCase() === e.key.toLowerCase());
         if (i >= 0) {
           e.preventDefault();
+          if (!menus[i].items.length && menus[i].onSelect) {
+            close();
+            menus[i].onSelect!();
+            return;
+          }
           setOpen((o) => (o === i ? null : i));
           setSub(null);
           return;
@@ -109,13 +116,18 @@ export function MenuBar({ menus }: { menus: Menu[] }) {
           <button
             className={"menu-title" + (open === i ? " open" : "")}
             role="menuitem"
-            aria-haspopup="menu"
-            aria-expanded={open === i}
+            aria-haspopup={m.items.length ? "menu" : undefined}
+            aria-expanded={m.items.length ? open === i : undefined}
             onClick={() => {
+              if (!m.items.length && m.onSelect) {
+                close();
+                m.onSelect();
+                return;
+              }
               setOpen(open === i ? null : i);
               setSub(null);
             }}
-            onMouseEnter={() => open !== null && open !== i && (setOpen(i), setSub(null))}
+            onMouseEnter={() => open !== null && open !== i && m.items.length > 0 && (setOpen(i), setSub(null))}
             title={`${m.label} (Alt+${m.accessKey.toUpperCase()})`}
           >
             {m.label}

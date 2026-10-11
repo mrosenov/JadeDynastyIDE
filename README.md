@@ -6,6 +6,8 @@ Desktop editor for Jade Dynasty (Zhu Xian) data files, built with Tauri 2
 Reads, edits and saves `elements.data` across versions, with separate tools for the
 client resource table in `path.data` and static quests in `tasks.data`.
 
+**About** (the last entry of the menu bar, Alt+A) shows who made JD IDE and that it is free.
+
 ## How a file is read
 
 1. **Layout.** Every built-in layout for the file's version is tried. A
