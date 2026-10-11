@@ -10499,6 +10499,11 @@ select.ie-control {
   gap: 6px;
   margin-top: 8px;
 }
+/* The AI edit history takes the place of the trigger pane. */
+.ai-history-panel.pane {
+  min-height: 0;
+  border-right: 0;
+}
 .ai-sim-dialog,
 .ai-flow-dialog {
   display: flex;

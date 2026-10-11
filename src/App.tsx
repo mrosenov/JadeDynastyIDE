@@ -1057,6 +1057,8 @@ export default function App() {
       items: [
         { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => aiEditor.current?.undo(), disabled: !aiEditorState.canUndo },
         { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => aiEditor.current?.redo(), disabled: !aiEditorState.canRedo },
+        { label: "History", icon: History, shortcut: "Ctrl+H", onSelect: () => aiEditor.current?.toggleHistory(), disabled: !aiEditorState.loaded },
+        { label: "Revert all changes…", icon: RotateCcw, onSelect: () => aiEditor.current?.revertAll(), disabled: !aiEditorState.dirty },
         "separator",
         { label: "Clone trigger", icon: Copy, shortcut: "Ctrl+D", onSelect: () => aiEditor.current?.triggerAction({ op: "clone" }), disabled: !aiEditorState.loaded },
         { label: "Delete trigger…", icon: Trash2, shortcut: "Del", onSelect: () => aiEditor.current?.triggerAction({ op: "delete" }), disabled: !aiEditorState.loaded },

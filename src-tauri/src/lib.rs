@@ -555,6 +555,22 @@ fn aipolicy_cleanup(policy: Option<usize>, shown: Option<usize>, state: State<'_
     with_aipolicy_mut(&state, |document| document.cleanup(policy, shown))
 }
 
+/// Every AI edit, newest first, with what each changed and whether it can be reverted on its own.
+#[tauri::command]
+fn aipolicy_history(state: State<'_, AppState>) -> Result<Vec<aipolicy::HistoryRow>, String> {
+    with_aipolicy(&state, |document| Ok(document.history()))
+}
+
+#[tauri::command]
+fn aipolicy_revert_entry(id: u64, shown: Option<usize>, state: State<'_, AppState>) -> Result<aipolicy::EditResult, String> {
+    with_aipolicy_mut(&state, |document| document.revert_entry(id, shown))
+}
+
+#[tauri::command]
+fn aipolicy_revert_all(state: State<'_, AppState>) -> Result<aipolicy::EditResult, String> {
+    with_aipolicy_mut(&state, aipolicy::Document::revert_all)
+}
+
 #[tauri::command]
 fn aipolicy_undo(state: State<'_, AppState>) -> Result<aipolicy::EditResult, String> {
     with_aipolicy_mut(&state, aipolicy::Document::undo)
@@ -2461,6 +2477,9 @@ pub fn run() {
             aipolicy_policy_action,
             aipolicy_unused_subtriggers,
             aipolicy_cleanup,
+            aipolicy_history,
+            aipolicy_revert_entry,
+            aipolicy_revert_all,
             compare_aipolicy,
             aipolicy_compare_policy,
             copy_aipolicy,

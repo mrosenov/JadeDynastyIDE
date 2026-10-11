@@ -4,6 +4,7 @@ import type {
   AiCompareSummary,
   AiCopyReport,
   AiEditResult,
+  AiHistoryRow,
   AiPolicyDiff,
   AiTextUpdate,
   AiTranslationPreview,
@@ -431,6 +432,9 @@ export const applyAiPolicyTexts = (updates: AiTextUpdate[], shown: number | null
 /** Where the records of these Essence IDs (open elements.data) store their AI policy. */
 export const monsterPolicySlots = (ids: number[]) => invoke<PolicySlot[]>("monster_policy_slots", { ids });
 export const setMonsterPolicies = (places: [number, number, number, number][], policy: number) => invoke<EditState>("set_monster_policies", { places, policy });
+export const aiPolicyHistory = () => invoke<AiHistoryRow[]>("aipolicy_history");
+export const aiPolicyRevertEntry = (id: number, shown: number | null) => invoke<AiEditResult>("aipolicy_revert_entry", { id, shown });
+export const aiPolicyRevertAll = () => invoke<AiEditResult>("aipolicy_revert_all");
 export const aiPolicyUndo = () => invoke<AiEditResult>("aipolicy_undo");
 export const aiPolicyRedo = () => invoke<AiEditResult>("aipolicy_redo");
 export const aiPolicySave = (target: string | null, backup: boolean, replaceChanged: boolean) => invoke<{ path: string; size: number; backup: string | null }>("aipolicy_save", { target, backup, replaceChanged });

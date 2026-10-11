@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (213 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (214 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -569,7 +569,15 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `elements::Document::policy_fields` (aipolicy role, else MONSTER_ESSENCE `common_strategy`/`aipolicy`, 4 bytes),
   `policy_slots`, `set_policy_places` (`set_u32_places`, shared with the quest-ID places; stale guard; one
   elements journal entry); the editor passes the EditState to App's `afterEdits`.
-  Later ideas: compare in the history, a policy picker in the elements field.
+- History (`AiHistoryPanel.tsx`, commands `aipolicy_history`, `aipolicy_revert_entry`, `aipolicy_revert_all`), the
+  task history's rules: `JournalEntry` has an id, the trigger and `HistoryField`s (`trigger_fields`: name, flags,
+  when, one operation or the list) and `reverts`; reverts are not listed and mark the original (reverting again
+  does nothing). `revert_blocked`: each policy the entry produced must still be in the file (`find_policy` by
+  equality; positions may have moved), else it names the later edit of that policy ID. `revert_entry` locates
+  the inverse on a working copy. `saved_mark` gives the Saved line; `saved_list` (file order at open/save) drives
+  Revert all and `dirty` (content, not journal position, so Revert all clears it). `EditState` carries the undo
+  and redo labels instead of the whole history.
+  Later ideas: a policy picker in the elements field, find and replace IDs, a global variables overview.
 
 ## vipaward.data editor
 

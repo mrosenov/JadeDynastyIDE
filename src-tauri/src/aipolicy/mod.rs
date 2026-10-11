@@ -842,10 +842,13 @@ pub struct Document {
     pub file: PolicyFile,
     /// The policies as opened or last saved (by ID), to mark changed ones.
     saved: HashMap<u32, Policy>,
+    /// The same, in file order (Revert all).
+    saved_list: Vec<Policy>,
     done: Vec<JournalEntry>,
     undone: Vec<JournalEntry>,
-    /// Journal length at the last save (none: unreachable by undo/redo).
-    saved_at: Option<usize>,
+    next_id: u64,
+    /// The last listed entry in the saved file, and when (unix ms); the history shows a Saved line after it.
+    saved_mark: Option<(Option<u64>, i64)>,
     /// MD5 of the file as read or written (changed-on-disk guard).
     disk: String,
     backed_up: bool,
@@ -864,7 +867,8 @@ impl Document {
         for policy in &file.policies {
             saved.entry(policy.id).or_insert_with(|| policy.clone());
         }
-        Ok(Document { path: path.to_string(), size: data.len(), file, saved, done: Vec::new(), undone: Vec::new(), saved_at: Some(0), disk: token(&data), backed_up: false })
+        let saved_list = file.policies.clone();
+        Ok(Document { path: path.to_string(), size: data.len(), file, saved, saved_list, done: Vec::new(), undone: Vec::new(), next_id: 0, saved_mark: None, disk: token(&data), backed_up: false })
     }
 
     fn first_of_ids(&self) -> HashMap<u32, usize> {
@@ -1184,17 +1188,45 @@ struct PolicyChange {
 
 #[derive(Debug, Clone)]
 struct JournalEntry {
+    id: u64,
     label: String,
+    /// Unix milliseconds.
     time: i64,
     changes: Vec<PolicyChange>,
+    /// The trigger an edit changed (to open it from the history).
+    trigger: Option<u32>,
+    fields: Vec<HistoryField>,
+    /// The entry this one reverted from the history; such entries are not listed, the reverted one shows as
+    /// reverted instead (so reverting never goes back and forth).
+    reverts: Option<u64>,
+}
+
+/// One changed part of a trigger: name, flags, condition or operations, before and after.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HistoryField {
+    pub field: String,
+    pub old: String,
+    pub new: String,
 }
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HistoryRow {
+    pub id: u64,
     pub label: String,
     pub time: i64,
     pub undone: bool,
+    /// The policy and trigger it changed (IDs), to open them.
+    pub policy_id: Option<u32>,
+    pub trigger_id: Option<u32>,
+    pub fields: Vec<HistoryField>,
+    /// When a later revert from the history took this entry back (unix ms).
+    pub reverted_at: Option<i64>,
+    /// The file was last saved after this entry (unix ms).
+    pub saved_at: Option<i64>,
+    /// Why this entry cannot be reverted on its own now.
+    pub revert_blocked: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -1203,7 +1235,64 @@ pub struct EditState {
     pub dirty: bool,
     pub can_undo: bool,
     pub can_redo: bool,
-    pub history: Vec<HistoryRow>,
+    /// Labels of the steps Undo and Redo would take.
+    pub undo: Option<String>,
+    pub redo: Option<String>,
+    /// When the file was last saved in this session (unix ms).
+    pub last_saved: Option<i64>,
+}
+
+/// A trigger in a few words, for the history: an operation's type and values.
+fn operation_summary(operation: &Operation, version: u32) -> String {
+    let params = operation_params(operation, version);
+    let values: Vec<String> = params
+        .iter()
+        .map(|param| match &param.value {
+            ParamValue::Text(text) => {
+                let short: String = text.chars().take(40).collect();
+                format!("“{short}{}”", if text.chars().count() > 40 { "…" } else { "" })
+            }
+            ParamValue::Bool(flag) => format!("{} {}", param.label, if *flag { "yes" } else { "no" }),
+            ParamValue::Int(value) => format!("{} {value}", param.label),
+            ParamValue::Float(value) => format!("{} {value}", param.label),
+        })
+        .collect();
+    let target = if needs_target(operation.kind) { format!(" → {}", target_name(operation.target)) } else { String::new() };
+    if values.is_empty() { format!("{}{target}", operation_name(operation.kind)) } else { format!("{} ({}){target}", operation_name(operation.kind), values.join(", ")) }
+}
+
+fn flags_text(trigger: &Trigger) -> String {
+    let mut parts = vec![if trigger.run { "sub-trigger" } else if trigger.active { "enabled at start" } else { "disabled at start" }];
+    if trigger.run_condition != 0 {
+        parts.push("in combat only");
+    }
+    parts.join(", ")
+}
+
+/// What an edit changed in a trigger.
+fn trigger_fields(old: &Trigger, new: &Trigger) -> Vec<HistoryField> {
+    let mut out = Vec::new();
+    let mut add = |field: &str, old: String, new: String| out.push(HistoryField { field: field.into(), old, new });
+    if trigger_name(old) != trigger_name(new) {
+        add("name", trigger_name(old), trigger_name(new));
+    }
+    if flags_text(old) != flags_text(new) {
+        add("flags", flags_text(old), flags_text(new));
+    }
+    if old.condition != new.condition {
+        add("when", expression(&old.condition), expression(&new.condition));
+    }
+    if old.operations != new.operations {
+        let changed: Vec<usize> = (0..old.operations.len().max(new.operations.len())).filter(|&at| old.operations.get(at) != new.operations.get(at)).collect();
+        if old.operations.len() == new.operations.len() && changed.len() == 1 {
+            let at = changed[0];
+            add(&format!("operation {}", at + 1), operation_summary(&old.operations[at], old.version), operation_summary(&new.operations[at], new.version));
+        } else {
+            let list = |trigger: &Trigger| trigger.operations.iter().map(|operation| operation_name(operation.kind)).collect::<Vec<_>>().join(" · ");
+            add("operations", format!("{}: {}", old.operations.len(), list(old)), format!("{}: {}", new.operations.len(), list(new)));
+        }
+    }
+    out
 }
 
 /// What an edit changed: the editing state, the policy to show, and the list when policies moved.
@@ -1230,9 +1319,127 @@ fn token(data: &[u8]) -> String {
 
 impl Document {
     pub fn edit_state(&self) -> EditState {
-        let mut history: Vec<HistoryRow> = self.done.iter().map(|entry| HistoryRow { label: entry.label.clone(), time: entry.time, undone: false }).collect();
-        history.extend(self.undone.iter().rev().map(|entry| HistoryRow { label: entry.label.clone(), time: entry.time, undone: true }));
-        EditState { dirty: self.saved_at != Some(self.done.len()), can_undo: !self.done.is_empty(), can_redo: !self.undone.is_empty(), history }
+        EditState {
+            dirty: self.file.policies != self.saved_list,
+            can_undo: !self.done.is_empty(),
+            can_redo: !self.undone.is_empty(),
+            undo: self.done.last().map(|entry| entry.label.clone()),
+            redo: self.undone.last().map(|entry| entry.label.clone()),
+            last_saved: self.saved_mark.map(|(_, time)| time),
+        }
+    }
+
+    /// Every listed edit, newest first: those Redo would apply again, then the applied ones. Reverts from the
+    /// history are not listed; the entry they took back shows as reverted.
+    pub fn history(&self) -> Vec<HistoryRow> {
+        let reverted_at: HashMap<u64, i64> = self.done.iter().filter_map(|entry| Some((entry.reverts?, entry.time))).collect();
+        let row = |entry: &JournalEntry, undone: bool| HistoryRow {
+            id: entry.id,
+            label: entry.label.clone(),
+            time: entry.time,
+            undone,
+            policy_id: entry.changes.first().and_then(|change| change.after.as_ref().or(change.before.as_ref())).map(|policy| policy.id),
+            trigger_id: entry.trigger,
+            fields: entry.fields.clone(),
+            reverted_at: reverted_at.get(&entry.id).copied(),
+            saved_at: self.saved_mark.and_then(|(last, time)| (last == Some(entry.id)).then_some(time)),
+            revert_blocked: if undone || reverted_at.contains_key(&entry.id) { None } else { self.revert_blocked(entry) },
+        };
+        self.undone
+            .iter()
+            .filter(|entry| entry.reverts.is_none())
+            .map(|entry| row(entry, true))
+            .chain(self.done.iter().rev().filter(|entry| entry.reverts.is_none()).map(|entry| row(entry, false)))
+            .collect()
+    }
+
+    /// Where a policy an entry produced is now (none: a later edit changed or removed it).
+    fn find_policy(&self, policy: &Policy, hint: usize) -> Option<usize> {
+        if self.file.policies.get(hint) == Some(policy) {
+            return Some(hint);
+        }
+        self.file.policies.iter().position(|entry| entry.id == policy.id && entry == policy)
+    }
+
+    /// Why an applied entry cannot be reverted on its own: a later edit changed what it produced.
+    fn revert_blocked(&self, entry: &JournalEntry) -> Option<String> {
+        for change in &entry.changes {
+            let Some(after) = &change.after else { continue };
+            if self.find_policy(after, change.index).is_none() {
+                let later = self
+                    .done
+                    .iter()
+                    .rev()
+                    .take_while(|other| other.id != entry.id)
+                    .find(|other| other.changes.iter().any(|other| other.before.as_ref().or(other.after.as_ref()).is_some_and(|policy| policy.id == after.id)))
+                    .map(|other| other.label.clone());
+                return Some(match later {
+                    Some(label) => format!("“{label}” changed policy {} later. Undo or revert it first.", after.id),
+                    None => format!("Policy {} changed after this edit.", after.id),
+                });
+            }
+        }
+        None
+    }
+
+    /// Puts back what one applied entry changed, keeping later edits (one undo step; the entry shows as reverted).
+    pub fn revert_entry(&mut self, id: u64, shown: Option<usize>) -> Result<EditResult, String> {
+        if self.done.iter().any(|entry| entry.reverts == Some(id)) {
+            return self.result(shown, false);
+        }
+        let entry = self.done.iter().find(|entry| entry.id == id && entry.reverts.is_none()).cloned().ok_or("That edit is not applied (undone, or no longer in the history)")?;
+        if let Some(reason) = self.revert_blocked(&entry) {
+            return Err(reason);
+        }
+        // The inverse, located in the current list (later edits may have moved the policies).
+        let mut working = self.file.policies.clone();
+        let mut inverse = Vec::new();
+        for change in entry.changes.iter().rev() {
+            let step = match (&change.before, &change.after) {
+                (before, Some(after)) => {
+                    let at = if working.get(change.index) == Some(after) { change.index } else { working.iter().position(|policy| policy == after).ok_or("The policy changed after this edit")? };
+                    PolicyChange { index: at, before: Some(after.clone()), after: before.clone() }
+                }
+                (Some(before), None) => PolicyChange { index: change.index.min(working.len()), before: None, after: Some(before.clone()) },
+                (None, None) => continue,
+            };
+            match (&step.before, &step.after) {
+                (Some(_), Some(policy)) => working[step.index] = policy.clone(),
+                (Some(_), None) => {
+                    working.remove(step.index);
+                }
+                (None, Some(policy)) => working.insert(step.index, policy.clone()),
+                (None, None) => {}
+            }
+            inverse.push(step);
+        }
+        let shown_id = shown.and_then(|index| self.file.policies.get(index)).map(|policy| policy.id);
+        self.record_entry(format!("Revert “{}”", entry.label), inverse, entry.trigger, Vec::new(), Some(id));
+        let shown = shown_id.and_then(|id| self.policy_by_id(id).map(|(index, _)| index)).or(Self::touched(self.done.last().unwrap()));
+        self.result(shown, true)
+    }
+
+    /// Back to the file as opened or last saved (one undo step).
+    pub fn revert_all(&mut self) -> Result<EditResult, String> {
+        if self.file.policies == self.saved_list {
+            return self.result(None, false);
+        }
+        let changes: Vec<PolicyChange> = if self.file.policies.len() == self.saved_list.len() {
+            self.file
+                .policies
+                .iter()
+                .zip(&self.saved_list)
+                .enumerate()
+                .filter(|(_, (now, saved))| now != saved)
+                .map(|(index, (now, saved))| PolicyChange { index, before: Some(now.clone()), after: Some(saved.clone()) })
+                .collect()
+        } else {
+            let mut changes: Vec<PolicyChange> = self.file.policies.iter().enumerate().rev().map(|(index, policy)| PolicyChange { index, before: Some(policy.clone()), after: None }).collect();
+            changes.extend(self.saved_list.iter().enumerate().map(|(index, policy)| PolicyChange { index, before: None, after: Some(policy.clone()) }));
+            changes
+        };
+        self.record("Revert all changes".into(), changes);
+        self.result(None, true)
     }
 
     fn apply(&mut self, change: &PolicyChange, forward: bool) {
@@ -1248,14 +1455,16 @@ impl Document {
     }
 
     fn record(&mut self, label: String, changes: Vec<PolicyChange>) {
+        self.record_entry(label, changes, None, Vec::new(), None);
+    }
+
+    fn record_entry(&mut self, label: String, changes: Vec<PolicyChange>, trigger: Option<u32>, fields: Vec<HistoryField>, reverts: Option<u64>) {
         for change in &changes {
             self.apply(change, true);
         }
-        if self.saved_at.is_some_and(|saved| saved > self.done.len()) {
-            self.saved_at = None;
-        }
         self.undone.clear();
-        self.done.push(JournalEntry { label, time: chrono::Local::now().timestamp(), changes });
+        self.next_id += 1;
+        self.done.push(JournalEntry { id: self.next_id, label, time: chrono::Local::now().timestamp_millis(), changes, trigger, fields, reverts });
     }
 
     fn result(&self, policy: Option<usize>, list_changed: bool) -> Result<EditResult, String> {
@@ -1270,9 +1479,11 @@ impl Document {
         if &new == old {
             return self.result(Some(policy), false);
         }
+        let fields = trigger_fields(old, &new);
+        let (trigger_id, label) = (old.id, format!("Edit trigger {} of policy {}", old.id, before.id));
         let mut after = before.clone();
         after.triggers[trigger] = new;
-        self.record(format!("Edit trigger {} of policy {}", old.id, before.id), vec![PolicyChange { index: policy, before: Some(before), after: Some(after) }]);
+        self.record_entry(label, vec![PolicyChange { index: policy, before: Some(before), after: Some(after) }], Some(trigger_id), fields, None);
         self.result(Some(policy), false)
     }
 
@@ -1426,7 +1637,9 @@ impl Document {
         self.path = path.display().to_string();
         self.size = data.len();
         self.disk = token(&data);
-        self.saved_at = Some(self.done.len());
+        let last = self.done.iter().rev().find(|entry| entry.reverts.is_none()).map(|entry| entry.id);
+        self.saved_mark = Some((last, chrono::Local::now().timestamp_millis()));
+        self.saved_list = self.file.policies.clone();
         self.saved = HashMap::new();
         for policy in &self.file.policies {
             self.saved.entry(policy.id).or_insert_with(|| policy.clone());
@@ -1941,6 +2154,56 @@ mod tests {
             assert!(problems.iter().any(|problem| problem.message.contains("server keeps the first")));
             assert_eq!(count("error"), 0, "{path}");
         }
+    }
+
+    #[test]
+    fn history_reverts_single_entries_and_blocks_overlaps() {
+        let Some(path) = samples().into_iter().next() else { return };
+        let mut document = Document::open(&path).unwrap();
+        let original = document.file.clone();
+        let edit_name = |document: &mut Document, policy: usize, name: &str| {
+            let view = document.policy(policy).unwrap();
+            let mut edit = edit_of(&view.triggers[0]);
+            edit.name = name.into();
+            document.set_trigger(policy, 0, &edit).unwrap();
+        };
+        edit_name(&mut document, 0, "First");
+        edit_name(&mut document, 1, "Second");
+        edit_name(&mut document, 0, "Third");
+        let history = document.history();
+        assert_eq!(history.len(), 3);
+        // Newest first; each names its policy and trigger and what changed.
+        assert_eq!(history[0].fields[0].field, "name");
+        assert_eq!(history[0].fields[0].new, "Third");
+        assert_eq!(history[2].policy_id, Some(original.policies[0].id));
+        assert_eq!(history[2].trigger_id, Some(original.policies[0].triggers[0].id));
+        // The first edit's policy was changed again later: blocked; the second can be reverted on its own.
+        assert!(history[2].revert_blocked.as_deref().is_some_and(|reason| reason.contains("Edit trigger")));
+        assert!(document.revert_entry(history[2].id, None).is_err());
+        assert!(history[1].revert_blocked.is_none());
+        document.revert_entry(history[1].id, Some(0)).unwrap();
+        assert_eq!(document.file.policies[1], original.policies[1]);
+        assert_eq!(trigger_name(&document.file.policies[0].triggers[0]), "Third");
+        // Not listed again; the original shows as reverted, and reverting it again does nothing.
+        let history = document.history();
+        assert_eq!(history.len(), 3);
+        assert!(history[1].reverted_at.is_some());
+        let before = document.file.clone();
+        document.revert_entry(history[1].id, None).unwrap();
+        assert_eq!(document.file, before);
+        // Undo takes the revert back.
+        document.undo().unwrap();
+        assert_eq!(trigger_name(&document.file.policies[1].triggers[0]), "Second");
+        // Reverting a policy clone removes it even after policies before it moved.
+        document.policy_action(5, &ListAction::Clone).unwrap();
+        let clone = document.history()[0].id;
+        document.policy_action(0, &ListAction::Clone).unwrap();
+        document.revert_entry(clone, None).unwrap();
+        assert_eq!(document.file.policies.len(), original.policies.len() + 1);
+        // Revert all goes back to the file as opened.
+        document.revert_all().unwrap();
+        assert_eq!(document.file, original);
+        assert!(!document.edit_state().dirty);
     }
 
     #[test]

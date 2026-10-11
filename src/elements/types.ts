@@ -2398,7 +2398,25 @@ export interface AiEditState {
   dirty: boolean;
   canUndo: boolean;
   canRedo: boolean;
-  history: { label: string; time: number; undone: boolean }[];
+  /** Labels of the steps Undo and Redo would take. */
+  undo: string | null;
+  redo: string | null;
+  /** When the file was last saved in this session (unix ms). */
+  lastSaved: number | null;
+}
+
+export interface AiHistoryRow {
+  id: number;
+  label: string;
+  /** Unix ms. */
+  time: number;
+  undone: boolean;
+  policyId: number | null;
+  triggerId: number | null;
+  fields: { field: string; old: string; new: string }[];
+  revertedAt: number | null;
+  savedAt: number | null;
+  revertBlocked: string | null;
 }
 
 export interface AiEditResult {

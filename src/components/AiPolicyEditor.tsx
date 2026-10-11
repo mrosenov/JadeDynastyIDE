@@ -1,12 +1,13 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, ArrowDown, ArrowUp, Brain, Eraser, Network, Play, Users, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, CircleAlert, Copy, FolderOpen, Info, Loader2, Redo2, Save, Search, Trash2, TriangleAlert, Undo2, X } from "lucide-react";
-import { aiPolicyCatalog, aiPolicyCleanup, aiPolicyPolicy, closeAiPolicyComparison, compareAiPolicy, exportAiPolicyJson, aiPolicyPolicyAction, aiPolicyProblems, aiPolicyRedo, aiPolicySave, aiPolicySearch, aiPolicySetTrigger, aiPolicyTriggerAction, aiPolicyUndo, aiPolicyUnusedSubtriggers, aiPolicyUsedBy, aiPolicyView, dynTaskLabels, openAiPolicy, pickEssence, pickSkill, skillNames, type AiListAction } from "../elements/api";
+import { AlertTriangle, ArrowDown, ArrowUp, Brain, Eraser, History, Network, Play, Users, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, CircleAlert, Copy, FolderOpen, Info, Loader2, Redo2, Save, Search, Trash2, TriangleAlert, Undo2, X } from "lucide-react";
+import { aiPolicyCatalog, aiPolicyCleanup, aiPolicyPolicy, closeAiPolicyComparison, compareAiPolicy, exportAiPolicyJson, aiPolicyPolicyAction, aiPolicyProblems, aiPolicyRedo, aiPolicyRevertAll, aiPolicyRevertEntry, aiPolicySave, aiPolicySearch, aiPolicySetTrigger, aiPolicyTriggerAction, aiPolicyUndo, aiPolicyUnusedSubtriggers, aiPolicyUsedBy, aiPolicyView, dynTaskLabels, openAiPolicy, pickEssence, pickSkill, skillNames, type AiListAction } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatDuration } from "../elements/time";
 import type { AiCatalog, AiCompareSummary, AiCondition, AiEditResult, EditState, AiFile, AiOperation, AiParam, AiPolicyView, AiProblem, AiTriggerEdit, PickerResult } from "../elements/types";
 import { AiTriggerForm, ATTACK_TYPES, PATH_TYPES, type FormContext } from "./AiTriggerForm";
 import { AiCompare } from "./AiCompare";
+import { AiHistoryPanel } from "./AiHistoryPanel";
 import { AiPolicyFlow } from "./AiPolicyFlow";
 import { AiTranslate } from "./AiTranslate";
 import { AiUseForMonsters } from "./AiUseForMonsters";
@@ -43,6 +44,8 @@ export interface AiPolicyEditorHandle {
   exportJson: (whole: boolean) => void;
   translate: () => void;
   useForMonsters: () => void;
+  toggleHistory: () => void;
+  revertAll: () => void;
 }
 
 interface Props {
@@ -133,6 +136,7 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
   const [comparison, setComparison] = useState<AiCompareSummary | null>(null);
   const [translatePath, setTranslatePath] = useState<string | null>(null);
   const [useOpen, setUseOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [simOpen, setSimOpen] = useState(false);
   const [flowOpen, setFlowOpen] = useState(false);
   const [picking, setPicking] = useState<{ refers: string; current: number; apply: (value: number) => void } | null>(null);
@@ -211,9 +215,10 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
     aiPolicyPolicy(selected).then((view) => {
       if (cancelled) return;
       setPolicy(view);
-      const at = wantedTrigger.current;
+      let at = wantedTrigger.current;
       wantedTrigger.current = null;
-      setTrigger(at !== null && at < view.triggers.length ? at : view.triggers.length ? 0 : null);
+      if (at !== null && at < 0) { const id = -1 - at; at = view.triggers.findIndex((entry) => entry.id === id); }
+      setTrigger(at !== null && at >= 0 && at < view.triggers.length ? at : view.triggers.length ? 0 : null);
     }).catch((problem) => setError(messageOf(problem)));
     return () => { cancelled = true; };
   }, [selected]);
@@ -470,6 +475,33 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
     setUseOpen(true);
   }, [elementsPath, policy]);
 
+  const revertAll = useCallback(() => {
+    if (!file?.state.dirty || busy) return;
+    if (!window.confirm("Put every policy back as it was when the file was opened or last saved? Undo brings the changes back.")) return;
+    void run(aiPolicyRevertAll);
+  }, [busy, file?.state.dirty, run]);
+  const revertEntry = useCallback(async (id: number) => {
+    await run(() => aiPolicyRevertEntry(id, policy?.index ?? null));
+  }, [policy, run]);
+  /** Opens a policy (the first of its ID) and one of its triggers by ID. */
+  const openPolicy = useCallback((id: number, triggerId: number | null) => {
+    if (!file) return;
+    const position = file.policies.findIndex((entry) => entry.id === id);
+    if (position < 0) { setError(`Policy ${id} is no longer in the file.`); return; }
+    setQuery("");
+    setMatches(null);
+    setPage(Math.floor(position / PAGE));
+    const summary = file.policies[position];
+    if (summary.index === selected && policy) {
+      const at = triggerId === null ? -1 : policy.triggers.findIndex((entry) => entry.id === triggerId);
+      if (at >= 0) setTrigger(at);
+    } else {
+      wantedTrigger.current = triggerId === null ? null : -1 - triggerId;
+      setSelected(summary.index);
+    }
+    window.setTimeout(() => document.querySelector(".ai-policy-row.selected")?.scrollIntoView({ block: "center" }), 50);
+  }, [file, policy, selected]);
+
   useImperativeHandle(ref, () => ({
     choose: () => void choose(),
     openPath: (path) => void load(path),
@@ -488,7 +520,9 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
     exportJson: (whole) => void exportJson(whole),
     translate: () => void translate(),
     useForMonsters,
-  }), [checkProblems, choose, cleanup, compare, exportJson, load, policy, policyAction, redo, saveAs, saveCurrent, translate, triggerAction, undo, useForMonsters]);
+    toggleHistory: () => setHistoryOpen((current) => !current),
+    revertAll,
+  }), [revertAll, checkProblems, choose, cleanup, compare, exportJson, load, policy, policyAction, redo, saveAs, saveCurrent, translate, triggerAction, undo, useForMonsters]);
 
   useEffect(() => {
     if (!active || !file) return;
@@ -499,6 +533,7 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
       if (event.key === "Escape" && (problemsOpen || simOpen || flowOpen)) { event.preventDefault(); setProblemsOpen(false); setSimOpen(false); setFlowOpen(false); return; }
       if (picking || simOpen || flowOpen || comparison || translatePath || useOpen) return;
       if (mod && event.shiftKey && key === "m") { event.preventDefault(); event.stopImmediatePropagation(); void checkProblems(); return; }
+      if (mod && !event.shiftKey && key === "h") { event.preventDefault(); event.stopImmediatePropagation(); setHistoryOpen((current) => !current); return; }
       if (mod && ["o", "s", "z", "y", "d"].includes(key)) {
         if (typing && (key === "z" || key === "y")) return;
         event.preventDefault();
@@ -573,8 +608,6 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
     </div>
   </section>;
 
-  const lastStep = file.state.history.filter((row) => !row.undone).pop();
-  const nextStep = file.state.history.find((row) => row.undone);
   return <section className="dyn-tasks-pane" aria-busy={busy}>
     <header className="tasks-head">
       <div><h2>AI policies {dirty && <span className="tag warn">unsaved</span>}{catalog && <span className="tag" title={catalog.newer ? "The file has version-12 triggers or types only newer servers read: all types are offered" : "Version-11 triggers (the 2013 server source): types that server does not read are not offered"}>{catalog.newer ? "newer server" : "2013 server"}</span>}</h2><div className="tasks-file-line">
@@ -584,8 +617,9 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
         <span className="path-data-badge" title="Trigger versions: 11 is the 2013 server source's, 12 the newer server's (more conditions and operations)"><b>Versions:</b> {file.versions.map(([version, number]) => `${version} (${count(number)})`).join(", ")}</span>
         <span className="path-data-badge"><b>Size:</b> {bytes(file.size)}</span>
       </div></div>
-      <button className="btn" onClick={undo} disabled={busy || !file.state.canUndo} title={lastStep ? `Undo: ${lastStep.label} (Ctrl+Z)` : "Undo (Ctrl+Z)"}><Undo2 size={14} /></button>
-      <button className="btn" onClick={redo} disabled={busy || !file.state.canRedo} title={nextStep ? `Redo: ${nextStep.label} (Ctrl+Y)` : "Redo (Ctrl+Y)"}><Redo2 size={14} /></button>
+      <button className="btn" onClick={undo} disabled={busy || !file.state.canUndo} title={file.state.undo ? `Undo: ${file.state.undo} (Ctrl+Z)` : "Undo (Ctrl+Z)"}><Undo2 size={14} /></button>
+      <button className="btn" onClick={redo} disabled={busy || !file.state.canRedo} title={file.state.redo ? `Redo: ${file.state.redo} (Ctrl+Y)` : "Redo (Ctrl+Y)"}><Redo2 size={14} /></button>
+      <button className={"btn" + (historyOpen ? " active" : "")} onClick={() => setHistoryOpen((current) => !current)} title="Edit history (Ctrl+H)"><History size={14} /></button>
       <button className="btn" onClick={() => void checkProblems()} disabled={busy} title="Check problems (Ctrl+Shift+M)"><CircleAlert size={14} /> Problems</button>
       <button className="btn primary" onClick={saveCurrent} disabled={busy || !dirty} title="Save (Ctrl+S)"><Save size={14} /> Save</button>
       <label className="check" title="Before the first save over a file, archive it in jdide_backups next to it"><input type="checkbox" checked={backup} onChange={(event) => { setBackup(event.target.checked); try { localStorage.setItem(BACKUP_KEY, event.target.checked ? "1" : "0"); } catch { /* optional */ } }} /> Backup</label>
@@ -649,7 +683,7 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
           </div>
         </>}
       </aside>
-      <div className="dyn-task-form-scroll">
+      {historyOpen ? <AiHistoryPanel state={file.state} busy={busy} onUndo={undo} onRedo={redo} onRevertAll={revertAll} onRevert={revertEntry} onOpen={openPolicy} onClose={() => setHistoryOpen(false)} /> : <div className="dyn-task-form-scroll">
         {!selectedTrigger ? <div className="empty-note">{policy ? "Select a trigger." : "Policies are lists of triggers. A trigger runs its operations when its condition holds; which list it is tested in depends on its first condition (birth, combat start, timer, heartbeat, …)."}</div> : <>
           <div className="dyn-task-title"><h3>Trigger {selectedTrigger.id}</h3><span className="muted">{selectedTrigger.name}</span><span className="muted small">version {selectedTrigger.version}</span></div>
           <div className="ai-flags">
@@ -661,7 +695,7 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
           {selectedTrigger.run && !selectedTrigger.calledBy.length && <p className="small ai-warn">No trigger of this policy runs it: it never runs (the official editor's cleanup removes such triggers).</p>}
           {formContext ? <AiTriggerForm key={`${policy!.index}:${selectedTrigger.index}`} trigger={selectedTrigger} ctx={formContext} onApply={applyTrigger} /> : <div className="empty-note"><Loader2 size={14} className="spin" /> Loading the types…</div>}
         </>}
-      </div>
+      </div>}
     </div>
     {comparison && <AiCompare summary={comparison} newer={!!catalog?.newer} describe={describeOperation} shown={policy?.index ?? null} onChooseOther={() => void compare()} onClose={closeComparison} onCopied={(result) => { applyResult(result); compareAiPolicy(null).then(setComparison).catch((problem) => setError(messageOf(problem))); }} />}
     {translatePath && <AiTranslate path={translatePath} shown={policy?.index ?? null} onClose={() => setTranslatePath(null)} onApplied={(result, taken) => { applyResult(result); setTranslatePath(null); setNote(`Took over ${count(taken)} text${taken === 1 ? "" : "s"}. Undo brings the old ones back.`); }} />}

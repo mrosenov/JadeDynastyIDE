@@ -761,6 +761,15 @@ the types that server reads (it crashes on the others). All six sample files rea
 
 Every change applies at once and is one undo step (Ctrl+Z / Ctrl+Y); changed policies get a dot in the list.
 
+**History** (Ctrl+H, the clock button or Edit › History) takes the place of the trigger pane. It lists every AI
+edit, newest first, with its time, the policy and trigger it changed (a click opens them), and what changed:
+name, flags, condition (**when**, as before → after expressions) or operations. A **Saved** line marks where
+the file was last saved. **Revert** puts the policies one edit changed back as they were, keeping later
+edits; it is refused while a later edit changed the same policy (the button says which). A revert adds no
+entry of its own: the edit shows as *reverted*, reverting it again does nothing, and Ctrl+Z takes the revert
+back. **Revert all changes** (in the panel or the Edit menu) goes back to the file as opened or last saved,
+as one undo step. The file counts as unsaved only while its policies differ from the saved ones.
+
 - **The trigger**: its name, *Enabled at start*, *Sub-trigger* and *In combat only*.
 - **When**: each part of the condition has a type and its values. Changing a part to **And**/**Or** keeps it
   as the first part and adds a second one (*Random 100%*, always true); **Not** wraps it; comparisons start as
