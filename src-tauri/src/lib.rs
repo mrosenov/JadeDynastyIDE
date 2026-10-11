@@ -542,6 +542,17 @@ fn aipolicy_policy_action(policy: usize, action: aipolicy::ListAction, state: St
     with_aipolicy_mut(&state, |document| document.policy_action(policy, &action))
 }
 
+/// Sub-triggers nothing runs (one policy or all): (policy position, policy ID, trigger IDs).
+#[tauri::command]
+fn aipolicy_unused_subtriggers(policy: Option<usize>, state: State<'_, AppState>) -> Result<Vec<(usize, u32, Vec<u32>)>, String> {
+    with_aipolicy(&state, |document| Ok(document.unused_subtriggers(policy).into_iter().map(|(index, ids)| (index, document.file.policies[index].id, ids)).collect()))
+}
+
+#[tauri::command]
+fn aipolicy_cleanup(policy: Option<usize>, shown: Option<usize>, state: State<'_, AppState>) -> Result<aipolicy::EditResult, String> {
+    with_aipolicy_mut(&state, |document| document.cleanup(policy, shown))
+}
+
 #[tauri::command]
 fn aipolicy_undo(state: State<'_, AppState>) -> Result<aipolicy::EditResult, String> {
     with_aipolicy_mut(&state, aipolicy::Document::undo)
@@ -2377,6 +2388,8 @@ pub fn run() {
             aipolicy_set_trigger,
             aipolicy_trigger_action,
             aipolicy_policy_action,
+            aipolicy_unused_subtriggers,
+            aipolicy_cleanup,
             aipolicy_undo,
             aipolicy_redo,
             aipolicy_save,

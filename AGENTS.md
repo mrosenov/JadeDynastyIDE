@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (208 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (209 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -537,7 +537,23 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 - UI `AiPolicyEditor.tsx` + `AiTriggerForm.tsx` (form, condition tree, operations; every change is one
   `aipolicy_set_trigger`); commands open_aipolicy, aipolicy_view, aipolicy_policy, aipolicy_used_by,
   aipolicy_search, skill_names, aipolicy_set_trigger/trigger_action/policy_action/undo/redo/save/problems/catalog,
-  pick_skill. Later ideas: cleanup of unreachable triggers, the simulator, compare/copy, JSON, translation.
+  pick_skill, aipolicy_unused_subtriggers, aipolicy_cleanup (`Document::cleanup`, the official `DelRedundancy`:
+  sub-triggers not reached by run chains from top-level triggers; one journal entry).
+- Server runtime (gs/aitrigger.h `policy`/`trigger`, aipolicy.cpp; the same in the 2013 and newer trees), modelled
+  by the simulator (`src/elements/aiSim.ts`, `AiSimulator.tsx`): event lists = top-level triggers by category;
+  `CheckTriggers` skips disabled ones and stops the list when `TestTrigger` returns false (an op returned
+  false: skip operation, change aggro without a target, a sub-trigger that stopped); timers use `NoBreak`; start
+  combat uses `NoTest` (ignores enabled). Heartbeat in combat = timers + all heartbeat triggers + the non-combat
+  ones again (`OnPeaceHeartbeatInCombat`); out of combat = timers + non-combat ones. Timers: `RefreshTimer`
+  (timeout counts down, fires at 0, times > 0 count down to -1), `RemoveEmptyTimer` clears the flag. Timers
+  remember the creating trigger's battle flag. Leaving combat (`EnableCombat(false)` → `Reset`): combat-only
+  triggers back to default, combat timers removed, then leave-combat triggers. Death: Reset, death triggers,
+  `ResetAll`. `op_exec_trigger` holds a copy of the sub-trigger (enable flags never read; the newer server makes
+  a missing one a no-op). Aggro count is `>` (display fixed from ≥). `trigger::Reset` calls `_ops->Reset()`
+  (virtual) on a null list for a trigger without operations: a crash at death/leaving combat, now a Problems
+  error for top-level triggers (none in the six samples).
+- Flow view `AiPolicyFlow.tsx`: arc diagram (SVG) from the view's operations and timer conditions.
+  Later ideas: compare/copy, JSON, translation of talk texts.
 
 ## vipaward.data editor
 

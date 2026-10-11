@@ -1,11 +1,13 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, ArrowDown, ArrowUp, Brain, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, CircleAlert, Copy, FolderOpen, Info, Loader2, Redo2, Save, Search, Trash2, TriangleAlert, Undo2, X } from "lucide-react";
-import { aiPolicyCatalog, aiPolicyPolicy, aiPolicyPolicyAction, aiPolicyProblems, aiPolicyRedo, aiPolicySave, aiPolicySearch, aiPolicySetTrigger, aiPolicyTriggerAction, aiPolicyUndo, aiPolicyUsedBy, aiPolicyView, dynTaskLabels, openAiPolicy, pickEssence, pickSkill, skillNames, type AiListAction } from "../elements/api";
+import { AlertTriangle, ArrowDown, ArrowUp, Brain, Eraser, Network, Play, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, CircleAlert, Copy, FolderOpen, Info, Loader2, Redo2, Save, Search, Trash2, TriangleAlert, Undo2, X } from "lucide-react";
+import { aiPolicyCatalog, aiPolicyCleanup, aiPolicyPolicy, aiPolicyPolicyAction, aiPolicyProblems, aiPolicyRedo, aiPolicySave, aiPolicySearch, aiPolicySetTrigger, aiPolicyTriggerAction, aiPolicyUndo, aiPolicyUnusedSubtriggers, aiPolicyUsedBy, aiPolicyView, dynTaskLabels, openAiPolicy, pickEssence, pickSkill, skillNames, type AiListAction } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatDuration } from "../elements/time";
-import type { AiCatalog, AiCondition, AiEditResult, AiFile, AiParam, AiPolicyView, AiProblem, AiTriggerEdit, PickerResult } from "../elements/types";
-import { AiTriggerForm, type FormContext } from "./AiTriggerForm";
+import type { AiCatalog, AiCondition, AiEditResult, AiFile, AiOperation, AiParam, AiPolicyView, AiProblem, AiTriggerEdit, PickerResult } from "../elements/types";
+import { AiTriggerForm, ATTACK_TYPES, PATH_TYPES, type FormContext } from "./AiTriggerForm";
+import { AiPolicyFlow } from "./AiPolicyFlow";
+import { AiSimulator } from "./AiSimulator";
 import { ValuePicker } from "./ValuePicker";
 
 export interface AiPolicyEditorState {
@@ -29,6 +31,10 @@ export interface AiPolicyEditorHandle {
   triggerAction: (action: AiListAction) => void;
   policyAction: (action: "clone" | "delete") => void;
   openProblems: () => void;
+  openSimulator: () => void;
+  openFlow: () => void;
+  /** Removes sub-triggers nothing runs from the shown policy or the whole file. */
+  cleanup: (whole: boolean) => void;
 }
 
 interface Props {
@@ -114,6 +120,8 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
   const [backup, setBackup] = useState(() => { try { return localStorage.getItem(BACKUP_KEY) !== "0"; } catch { return true; } });
   const [problems, setProblems] = useState<AiProblem[] | null>(null);
   const [problemsOpen, setProblemsOpen] = useState(false);
+  const [simOpen, setSimOpen] = useState(false);
+  const [flowOpen, setFlowOpen] = useState(false);
   const [picking, setPicking] = useState<{ refers: string; current: number; apply: (value: number) => void } | null>(null);
   const dirty = !!file?.state.dirty;
 
@@ -389,6 +397,24 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
     window.setTimeout(() => document.querySelector(".ai-policy-row.selected")?.scrollIntoView({ block: "center" }), 50);
   };
 
+  const cleanup = useCallback(async (whole: boolean) => {
+    if (!file || busy || (!whole && !policy)) return;
+    const scope = whole ? null : policy!.index;
+    try {
+      const found = await aiPolicyUnusedSubtriggers(scope);
+      const total = found.reduce((sum, [, , ids]) => sum + ids.length, 0);
+      if (!total) {
+        setNote(whole ? "No policy has sub-triggers that nothing runs." : `Every sub-trigger of policy ${policy!.id} is run by another trigger.`);
+        return;
+      }
+      const sample = found.slice(0, 6).map(([, id, ids]) => `policy ${id}: ${ids.join(", ")}`).join("\n");
+      if (!window.confirm(`Remove ${count(total)} sub-trigger${total === 1 ? "" : "s"} that nothing runs${whole ? ` from ${count(found.length)} polic${found.length === 1 ? "y" : "ies"}` : ""}? No top-level trigger reaches them through "Run a trigger", so the server never runs them.\n\n${sample}${found.length > 6 ? "\n…" : ""}\n\nUndo brings them back.`)) return;
+      await run(() => aiPolicyCleanup(scope, policy?.index ?? null));
+    } catch (problem) {
+      setError(messageOf(problem));
+    }
+  }, [busy, file, policy, run]);
+
   useImperativeHandle(ref, () => ({
     choose: () => void choose(),
     openPath: (path) => void load(path),
@@ -400,7 +426,10 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
     triggerAction,
     policyAction,
     openProblems: () => void checkProblems(),
-  }), [checkProblems, choose, load, policyAction, redo, saveAs, saveCurrent, triggerAction, undo]);
+    openSimulator: () => { if (policy) setSimOpen(true); },
+    openFlow: () => { if (policy) setFlowOpen(true); },
+    cleanup: (whole) => void cleanup(whole),
+  }), [checkProblems, choose, cleanup, load, policy, policyAction, redo, saveAs, saveCurrent, triggerAction, undo]);
 
   useEffect(() => {
     if (!active || !file) return;
@@ -408,8 +437,8 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
       const mod = event.ctrlKey || event.metaKey;
       const typing = event.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName);
       const key = event.key.toLowerCase();
-      if (event.key === "Escape" && problemsOpen) { event.preventDefault(); setProblemsOpen(false); return; }
-      if (picking) return;
+      if (event.key === "Escape" && (problemsOpen || simOpen || flowOpen)) { event.preventDefault(); setProblemsOpen(false); setSimOpen(false); setFlowOpen(false); return; }
+      if (picking || simOpen || flowOpen) return;
       if (mod && event.shiftKey && key === "m") { event.preventDefault(); event.stopImmediatePropagation(); void checkProblems(); return; }
       if (mod && ["o", "s", "z", "y", "d"].includes(key)) {
         if (typing && (key === "z" || key === "y")) return;
@@ -430,7 +459,7 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [active, checkProblems, choose, file, picking, problemsOpen, redo, saveAs, saveCurrent, trigger, triggerAction, undo]);
+  }, [active, checkProblems, choose, file, flowOpen, picking, problemsOpen, redo, simOpen, saveAs, saveCurrent, trigger, triggerAction, undo]);
 
   const showTrigger = (id: number) => {
     const found = policy?.triggers.findIndex((entry) => entry.id === id) ?? -1;
@@ -455,6 +484,21 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
       }
       default: return param.label.includes("(s") && value >= 60 ? <span className="muted small">{formatDuration(value)}</span> : null;
     }
+  };
+  const paramText = (param: AiParam): ReactNode => {
+    const value = param.value;
+    if (typeof value === "boolean") return value ? "yes" : "no";
+    if (typeof value === "string") return value || "(empty)";
+    if (param.key === "ratio" || param.key === "chance") return `${Math.round(value * 1000) / 10}%`;
+    if (param.refers === "trigger") { const target = byId.get(value); return `${value}${target?.name ? ` · ${target.name}` : target ? "" : " (missing)"}`; }
+    if (param.refers === "attack") return ATTACK_TYPES[value] ?? value;
+    if (param.refers === "path_type") return PATH_TYPES[value] ?? value;
+    if (param.refers === "global") return `global[${value}]`;
+    return value;
+  };
+  const describeOperation = (operation: AiOperation): ReactNode => {
+    const text = operation.params.find((param) => param.kind === "text");
+    return <span className="ai-sim-op"><b>{operation.name}</b>{operation.usesTarget && <span className="muted small"> → {operation.targetName}</span>}{text ? <> “{String(text.value)}”</> : operation.params.map((param) => { const name = param.refers && param.refers !== "trigger" && param.refers !== "timer" ? nameOf(param) : null; return <span key={param.key} className="ai-param"><span className="muted small">{param.label}</span> {paramText(param)}{name && <> <span className="ai-name">{name}</span></>}</span>; })}</span>;
   };
   const formContext: FormContext | null = catalog && policy ? { catalog, triggers: policy.triggers, busy, nameOf, pick: (refers, current, apply) => setPicking({ refers, current, apply }) } : null;
   const pickerSearch = useMemo(() => picking ? (text: string, page: number): Promise<PickerResult> => picking.refers === "skill" ? pickSkill(text, page, picking.current || null) : pickEssence(picking.refers as "monster" | "item" | "mine", text, page, picking.current || null) : undefined, [picking]);
@@ -517,6 +561,9 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
             <b>Policy {policy.id}</b>
             {policy.shadowedBy !== null && <span className="tag warn" title="The server keeps the first policy of an ID">the server uses policy #{policy.shadowedBy + 1} instead</span>}
             <span className="spacer" />
+            <button className="icon-btn small" onClick={() => setFlowOpen(true)} title="Flow: which triggers run, enable or disable others and which start timers"><Network size={13} /></button>
+            <button className="icon-btn small" onClick={() => setSimOpen(true)} title="Simulate the policy as the server runs it"><Play size={13} /></button>
+            <button className="icon-btn small" onClick={() => void cleanup(false)} disabled={busy} title="Remove sub-triggers nothing runs"><Eraser size={13} /></button>
             <button className="icon-btn small" onClick={() => policyAction("clone")} disabled={busy} title="Clone the policy (next free policy ID); point a monster's common_strategy at the new ID to use it"><Copy size={13} /></button>
             <button className="icon-btn small danger" onClick={() => policyAction("delete")} disabled={busy} title="Delete the policy"><Trash2 size={13} /></button>
             <div className="muted small ai-used-by">{monstersOf(policy.id).length ? <>Used by {monstersOf(policy.id).slice(0, 6).map(([id, name]) => `${name || "?"} (${id})`).join(", ")}{monstersOf(policy.id).length > 6 ? ` and ${monstersOf(policy.id).length - 6} more` : ""}</> : elementsPath ? "No monster in the open elements.data uses it." : null}</div>
@@ -556,6 +603,8 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
         </>}
       </div>
     </div>
+    {simOpen && policy && <AiSimulator policy={policy} newer={!!catalog?.newer} describe={describeOperation} onShowTrigger={(index) => { setTrigger(index); setSimOpen(false); }} onClose={() => setSimOpen(false)} />}
+    {flowOpen && policy && <AiPolicyFlow policy={policy} onShowTrigger={(index) => { setTrigger(index); setFlowOpen(false); }} onClose={() => setFlowOpen(false)} />}
     {picking && <ValuePicker search={pickerSearch} onApply={async (value) => { const id = Number(value); if (!Number.isInteger(id) || id < 0) return "Choose an entry"; picking.apply(id); setPicking(null); return null; }} onClose={() => setPicking(null)} />}
     {problemsOpen && (() => {
       const errors = (problems ?? []).filter((problem) => problem.severity === "error").length;

@@ -54,6 +54,8 @@ import {
   Map as MapIcon,
   Users,
   Eraser,
+  Network,
+  Play,
   Plus,
   Radar,
   ShoppingCart,
@@ -1068,6 +1070,12 @@ export default function App() {
       accessKey: "t",
       items: [
         { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => aiEditor.current?.openProblems(), disabled: !aiEditorState.loaded },
+        "separator",
+        { label: "Simulate policy…", icon: Play, onSelect: () => aiEditor.current?.openSimulator(), disabled: !aiEditorState.loaded },
+        { label: "Policy flow…", icon: Network, onSelect: () => aiEditor.current?.openFlow(), disabled: !aiEditorState.loaded },
+        "separator",
+        { label: "Remove unused sub-triggers of the policy…", icon: Eraser, onSelect: () => aiEditor.current?.cleanup(false), disabled: !aiEditorState.loaded },
+        { label: "Remove unused sub-triggers of all policies…", icon: Eraser, onSelect: () => aiEditor.current?.cleanup(true), disabled: !aiEditorState.loaded },
       ],
     },
   ] : workspace === "vip" ? [

@@ -371,7 +371,7 @@ pub fn condition_fields(kind: i32) -> &'static [FieldSpec] {
     const HP: &[FieldSpec] = &[field("ratio", "ratio", F32, 0, None)];
     const RANDOM: &[FieldSpec] = &[field("chance", "chance", F32, 0, None)];
     const PATH: &[FieldSpec] = &[field("path", "path", U32, 0, Some("path"))];
-    const ENMITY: &[FieldSpec] = &[field("players", "players", I32, 0, None), field("level", "player level (unused)", I32, 4, None)];
+    const ENMITY: &[FieldSpec] = &[field("players", "more than (players)", I32, 0, None), field("level", "player level (unused)", I32, 4, None)];
     const DISTANCE: &[FieldSpec] = &[field("distance", "distance (m)", F32, 0, None)];
     const SKILL: &[FieldSpec] = &[field("skill", "skill", U32, 0, Some("skill"))];
     const VAR: &[FieldSpec] = &[field("variable", "variable", I32, 0, Some("global"))];
@@ -716,7 +716,7 @@ pub fn expression(node: &Condition) -> String {
         C_AND => format!("{} AND {}", wrap(&node.left), wrap(&node.right)),
         C_DIED => "dies".into(),
         C_PATH_END => format!("reaches the end of path {}", u32_at(p, 0)),
-        C_ENMITY_REACH => format!("≥ {} players in aggro", i32_at(p, 0)),
+        C_ENMITY_REACH => format!("more than {} players in aggro", i32_at(p, 0)),
         C_DISTANCE_REACH => format!("> {} m from the combat start", f32_at(p, 0)),
         12 => format!("{} + {}", wrap(&node.left), wrap(&node.right)),
         13 => format!("{} − {}", wrap(&node.left), wrap(&node.right)),
@@ -1309,6 +1309,59 @@ impl Document {
         }
     }
 
+    /// Sub-triggers no top-level trigger reaches through "run a trigger" (the official editor's `DelRedundancy`),
+    /// per policy: (policy position, trigger IDs).
+    pub fn unused_subtriggers(&self, policy: Option<usize>) -> Vec<(usize, Vec<u32>)> {
+        let positions: Vec<usize> = match policy {
+            Some(index) => vec![index],
+            None => (0..self.file.policies.len()).collect(),
+        };
+        positions
+            .into_iter()
+            .filter_map(|index| {
+                let policy = self.file.policies.get(index)?;
+                let by_id: HashMap<u32, &Trigger> = policy.triggers.iter().rev().map(|trigger| (trigger.id, trigger)).collect();
+                let mut reached = HashSet::new();
+                let mut stack: Vec<u32> = policy.triggers.iter().filter(|trigger| !trigger.run).map(|trigger| trigger.id).collect();
+                while let Some(id) = stack.pop() {
+                    if !reached.insert(id) {
+                        continue;
+                    }
+                    if let Some(trigger) = by_id.get(&id) {
+                        stack.extend(trigger.operations.iter().filter(|operation| operation.kind == O_RUN_TRIGGER).map(|operation| u32_at(&operation.param, 0) as u32));
+                    }
+                }
+                let unused: Vec<u32> = policy.triggers.iter().filter(|trigger| trigger.run && !reached.contains(&trigger.id)).map(|trigger| trigger.id).collect();
+                (!unused.is_empty()).then_some((index, unused))
+            })
+            .collect()
+    }
+
+    /// Removes the sub-triggers nothing runs from one policy or all (one undo step); `shown` is the policy to return.
+    pub fn cleanup(&mut self, policy: Option<usize>, shown: Option<usize>) -> Result<EditResult, String> {
+        let unused = self.unused_subtriggers(policy);
+        if unused.is_empty() {
+            return self.result(policy.or(shown), false);
+        }
+        let mut removed = 0;
+        let changes: Vec<PolicyChange> = unused
+            .iter()
+            .map(|(index, ids)| {
+                let before = self.file.policies[*index].clone();
+                let mut after = before.clone();
+                after.triggers.retain(|trigger| !(trigger.run && ids.contains(&trigger.id)));
+                removed += before.triggers.len() - after.triggers.len();
+                PolicyChange { index: *index, before: Some(before), after: Some(after) }
+            })
+            .collect();
+        let label = match policy {
+            Some(index) => format!("Remove {removed} unused sub-trigger{} of policy {}", if removed == 1 { "" } else { "s" }, self.file.policies[index].id),
+            None => format!("Remove {removed} unused sub-trigger{} from {} policies", if removed == 1 { "" } else { "s" }, changes.len()),
+        };
+        self.record(label, changes);
+        self.result(policy.or(shown), true)
+    }
+
     /// The policy the last step changed (to show after undo/redo).
     fn touched(entry: &JournalEntry) -> Option<usize> {
         entry.changes.iter().find(|change| change.after.is_some() || change.before.is_some()).map(|change| change.index)
@@ -1592,7 +1645,12 @@ impl Document {
                     add("warning", Some(position), format!("\"{}\" only works as the trigger's first condition (it decides when the trigger is tested); here it is {effect}", label(kind)));
                 }
                 if trigger.operations.is_empty() {
-                    add("note", Some(position), "The trigger has no operations".into());
+                    if trigger.run {
+                        add("note", Some(position), "The sub-trigger has no operations".into());
+                    } else {
+                        // policy::ResetAll (death) and Reset (leaving combat, battle triggers) call _ops->Reset() on a null list.
+                        add("error", Some(position), format!("The trigger has no operations: the server crashes when the monster dies{}", if trigger.run_condition != 0 { " or leaves combat" } else { "" }));
+                    }
                 }
                 for operation in &trigger.operations {
                     let id = u32_at(&operation.param, 0) as u32;
@@ -1864,8 +1922,37 @@ mod tests {
             for problem in problems.iter().filter(|problem| problem.severity != "note").take(6) {
                 println!("PROBLEMS   {} {:?}", problem.severity, problem.message);
             }
-            // Every sample repeats one policy ID.
+            // Every sample repeats one policy ID; official files load, so nothing is an error.
             assert!(problems.iter().any(|problem| problem.message.contains("server keeps the first")));
+            assert_eq!(count("error"), 0, "{path}");
+        }
+    }
+
+    #[test]
+    fn cleanup_removes_subtriggers_nothing_runs() {
+        for path in samples() {
+            let mut document = Document::open(&path).unwrap();
+            let unused = document.unused_subtriggers(None);
+            let total: usize = unused.iter().map(|(_, ids)| ids.len()).sum();
+            let triggers: usize = document.file.policies.iter().map(|policy| policy.triggers.len()).sum();
+            println!("CLEANUP {path}: {total} unused sub-triggers in {} policies", unused.len());
+            let original = document.file.clone();
+            document.cleanup(None, None).unwrap();
+            assert!(document.unused_subtriggers(None).is_empty());
+            assert_eq!(document.file.policies.iter().map(|policy| policy.triggers.len()).sum::<usize>(), triggers - total);
+            // Every remaining "run a trigger" still finds its trigger when it did before.
+            for (before, after) in original.policies.iter().zip(&document.file.policies) {
+                for trigger in after.triggers.iter().filter(|trigger| !trigger.run) {
+                    for operation in trigger.operations.iter().filter(|operation| operation.kind == O_RUN_TRIGGER) {
+                        let id = u32_at(&operation.param, 0) as u32;
+                        assert_eq!(before.triggers.iter().any(|entry| entry.id == id), after.triggers.iter().any(|entry| entry.id == id));
+                    }
+                }
+            }
+            if total > 0 {
+                document.undo().unwrap();
+                assert_eq!(document.file, original);
+            }
         }
     }
 
@@ -1895,6 +1982,4 @@ mod tests {
         assert!(!document.search("$B", &HashMap::new()).is_empty());
     }
 }
-
-
 

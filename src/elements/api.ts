@@ -411,6 +411,9 @@ export const aiPolicySetTrigger = (policy: number, trigger: number, edit: AiTrig
 export type AiListAction = { op: "clone" } | { op: "delete" } | { op: "move"; to: number };
 export const aiPolicyTriggerAction = (policy: number, trigger: number, action: AiListAction) => invoke<AiEditResult>("aipolicy_trigger_action", { policy, trigger, action });
 export const aiPolicyPolicyAction = (policy: number, action: AiListAction) => invoke<AiEditResult>("aipolicy_policy_action", { policy, action });
+/** Sub-triggers nothing runs, in one policy or all: [policy position, policy ID, trigger IDs]. */
+export const aiPolicyUnusedSubtriggers = (policy: number | null) => invoke<[number, number, number[]][]>("aipolicy_unused_subtriggers", { policy });
+export const aiPolicyCleanup = (policy: number | null, shown: number | null) => invoke<AiEditResult>("aipolicy_cleanup", { policy, shown });
 export const aiPolicyUndo = () => invoke<AiEditResult>("aipolicy_undo");
 export const aiPolicyRedo = () => invoke<AiEditResult>("aipolicy_redo");
 export const aiPolicySave = (target: string | null, backup: boolean, replaceChanged: boolean) => invoke<{ path: string; size: number; backup: string | null }>("aipolicy_save", { target, backup, replaceChanged });

@@ -781,14 +781,48 @@ Every change applies at once and is one undo step (Ctrl+Z / Ctrl+Y); changed pol
 **Problems** (Ctrl+Shift+M) checks the file with the server's rules; a click opens the policy and trigger:
 
 - **errors** (the 2013 server crashes or never finishes loading): a trigger that runs itself (directly or
-  through others), "run a trigger" naming a missing trigger, "use a range skill";
+  through others), "run a trigger" naming a missing trigger, "use a range skill", and a top-level trigger
+  without operations (every server crashes when the monster dies, or leaves combat for a combat-only
+  trigger: it resets the trigger's empty operation list; no official file has one);
 - **warnings**: a repeated policy ID (the server keeps the first), repeated trigger IDs, event conditions that
   are not the trigger's first condition (combat start, kill, death, birth and leave combat are then always
   true, path end and skill hit never), enabling or disabling a missing trigger, a timer nothing starts, an
   empty talk text, skills not in the client, monsters, items and mines not in the open elements.data, tasks
   not in the open tasks.data, and monsters in elements.data naming a policy the file does not have;
-- **notes**: triggers without operations, sub-triggers nothing runs, triggers disabled at start that nothing
-  enables.
+- **notes**: sub-triggers without operations, sub-triggers nothing runs, triggers disabled at start that
+  nothing enables.
+
+### Cleanup, flow and simulator
+
+The policy header has three more buttons (also in **Tools**):
+
+- **Remove sub-triggers nothing runs** (the eraser; Tools also offers it for all policies), like the official
+  editor's cleanup: sub-triggers that no top-level trigger reaches through "Run a trigger", directly or through
+  other sub-triggers. It lists them first; one undo step.
+- **Flow**: the policy as a diagram. Triggers are listed in the order the server tests them; on the right,
+  arrows show which triggers run (blue), enable (green) or disable (red) others, and on the left which
+  triggers start a timer and which test it (orange, with the timer number). A red dot marks a link to a missing
+  trigger or a timer nothing tests. Hovering a trigger shows only its links; a click opens it.
+- **Simulate**: runs the policy the way the server does. Send events (**Spawn**, **Start combat**, **Kill
+  its target**, **Hit by skill**, **Path end**, **Leave combat**, **Die**) and let time pass (**1 s**, or
+  **Run** for several seconds); set the monster's HP, the players in its aggro list, its distance from where
+  combat started, whether random conditions roll, hold or fail, and the global variables and ranking levels
+  the policy reads. The log shows each trigger that fires and its operations (with sub-triggers indented),
+  timers firing, and what stops; the middle shows which triggers are enabled and the running timers. It
+  follows the server's rules:
+  - only top-level triggers are in the event lists; "Run a trigger" tests the sub-trigger's condition
+    (Enable/Disable a trigger never changes a sub-trigger);
+  - **Start combat** runs its triggers even when they are disabled;
+  - heartbeat triggers are tested every second; out of combat only those not marked *In combat only*, and in
+    combat those are tested twice per second;
+  - an operation that stops ("Skip the remaining operations", "Change aggro" without a target, a sub-trigger
+    that stopped) also skips the later triggers of the same event (timer triggers excepted);
+  - HP below, players in aggro (*more than* the number), distance and skill hit disable their trigger after
+    it fires;
+  - leaving combat puts combat-only triggers back to their start state and removes the timers they started;
+    dying resets every trigger and removes every timer.
+
+  Skills, summons, talks and drops are only listed; the simulator does not model targets or the aggro list.
 
 **Save** (Ctrl+S) and **Save as…** (Ctrl+Shift+S) first check for errors and ask before saving a file the
 server would not load. The file must read back exactly; with **Backup**, the replaced file is first archived

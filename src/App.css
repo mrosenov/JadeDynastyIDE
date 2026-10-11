@@ -10010,7 +10010,7 @@ select.ie-control {
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
 }
 .gshop-hex .dyn-input {
-  font-family: var(--mono, monospace);
+  font-family: var(--mono);
 }
 .gshop-layout-backdrop {
   padding: 10px;
@@ -10117,7 +10117,7 @@ select.ie-control {
   cursor: pointer;
 }
 .gshop-icon-tile:hover {
-  background: var(--bg-hover, var(--bg-pane));
+  background: var(--bg-hover);
 }
 .gshop-icon-tile.selected {
   border-color: var(--accent);
@@ -10498,4 +10498,216 @@ select.ie-control {
   align-items: center;
   gap: 6px;
   margin-top: 8px;
+}
+.ai-sim-dialog,
+.ai-flow-dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(1280px, 96vw);
+  max-width: none;
+  height: min(860px, 92vh);
+  max-height: none;
+}
+.ai-flow-dialog {
+  width: min(980px, 96vw);
+}
+.ai-sim-body {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 290px 300px minmax(0, 1fr);
+  min-height: 0;
+  border-top: 1px solid var(--border);
+}
+.ai-sim-body > section {
+  min-height: 0;
+  padding: 8px 12px;
+  overflow: auto;
+}
+.ai-sim-body > section + section {
+  border-left: 1px solid var(--border);
+}
+.ai-sim-body h4 {
+  margin: 10px 0 6px;
+  font-size: 12px;
+}
+.ai-sim-body h4:first-child {
+  margin-top: 2px;
+}
+.ai-sim-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.ai-sim-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+.ai-sim-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+  font-size: 12px;
+}
+.ai-sim-field > span:first-child {
+  flex: 1;
+  min-width: 0;
+}
+.ai-sim-field input[type="range"] {
+  width: 90px;
+}
+.ai-sim-triggers {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ai-sim-trigger {
+  display: grid;
+  grid-template-columns: 10px 40px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.ai-sim-trigger:hover {
+  background: var(--bg-hover);
+}
+.ai-sim-trigger.off {
+  opacity: 0.55;
+}
+.ai-sim-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+.ai-sim-dot.on {
+  background: var(--accent);
+}
+.ai-sim-timers {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.ai-sim-timers th,
+.ai-sim-timers td {
+  padding: 2px 4px;
+  text-align: left;
+}
+.ai-sim-log {
+  font-size: 12px;
+}
+.ai-sim-line {
+  padding: 2px 8px;
+  line-height: 1.5;
+}
+.ai-sim-line.event {
+  margin-top: 6px;
+  border-top: 1px solid var(--border);
+  padding-top: 5px;
+}
+.ai-sim-time {
+  display: inline-block;
+  min-width: 42px;
+  margin-right: 6px;
+}
+.ai-sim-op .ai-param {
+  margin-left: 8px;
+}
+.ai-flow-legend {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-left: 12px;
+  font-size: 12px;
+}
+.ai-flow-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.ai-flow-scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 8px;
+  overflow: auto;
+  border-top: 1px solid var(--border);
+}
+.ai-flow {
+  display: block;
+  margin: 0 auto;
+}
+.ai-flow-edge {
+  fill: none;
+  stroke-width: 1.6;
+}
+.ai-flow-edge.run {
+  stroke: #4f8fd8;
+}
+.ai-flow-head.run {
+  fill: #4f8fd8;
+}
+.ai-flow-edge.enable {
+  stroke: #3fa66b;
+}
+.ai-flow-head.enable {
+  fill: #3fa66b;
+}
+.ai-flow-edge.disable {
+  stroke: var(--danger);
+}
+.ai-flow-head.disable {
+  fill: var(--danger);
+}
+.ai-flow-edge.timer {
+  stroke: var(--warn);
+}
+.ai-flow-head.timer {
+  fill: var(--warn);
+}
+.ai-flow-edge.timer {
+  stroke-dasharray: 5 3;
+}
+.ai-flow-dim {
+  opacity: 0.12;
+}
+.ai-flow-label {
+  fill: var(--warn);
+  font-size: 11px;
+}
+.ai-flow-node {
+  cursor: pointer;
+}
+.ai-flow-node rect {
+  fill: var(--bg-pane);
+  stroke: var(--border);
+}
+.ai-flow-node.sub rect {
+  stroke-dasharray: 4 3;
+}
+.ai-flow-node.hover rect {
+  stroke: var(--accent);
+}
+.ai-flow-node text {
+  fill: var(--text);
+  font-size: 12px;
+}
+.ai-flow-id {
+  font-family: var(--mono);
+  opacity: 0.7;
+}
+.ai-flow-cat {
+  font-size: 10px !important;
+  opacity: 0.7;
+}
+.ai-flow-missing {
+  fill: var(--danger);
 }
