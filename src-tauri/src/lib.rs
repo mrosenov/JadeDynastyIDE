@@ -9,6 +9,7 @@ mod elements;
 mod gshop;
 mod path_data;
 mod quiz;
+mod map_regions;
 mod npcgen;
 mod settings;
 mod task_npc;
@@ -850,6 +851,29 @@ async fn client_maps(state: State<'_, AppState>) -> Result<Vec<ClientMap>, Strin
     })
     .await
     .map_err(|error| error.to_string())?
+}
+
+/// A map's precinct.clt or region.clt (and the other one of its folder, for the map).
+#[tauri::command]
+async fn open_map_regions(path: String) -> Result<map_regions::Opened, String> {
+    tauri::async_runtime::spawn_blocking(move || map_regions::open(std::path::Path::new(&path))).await.map_err(|error| error.to_string())?
+}
+
+/// The server copy (precinct.sev / region.sev) of a client file.
+#[tauri::command]
+async fn read_map_sev(path: String, kind: String) -> Result<map_regions::MapFile, String> {
+    tauri::async_runtime::spawn_blocking(move || map_regions::read_sev(std::path::Path::new(&path), &kind)).await.map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+fn map_regions_problems(file: map_regions::MapFile, server: Option<map_regions::MapFile>, instances: Vec<i32>) -> Vec<map_regions::Problem> {
+    map_regions::problems(&file, server.as_ref(), &instances)
+}
+
+/// Writes the client file and its server file with one new timestamp.
+#[tauri::command]
+async fn save_map_regions(path: String, token: Option<String>, file: map_regions::MapFile, server_path: String, backup: bool, replace_changed: bool) -> Result<map_regions::SaveReport, String> {
+    tauri::async_runtime::spawn_blocking(move || map_regions::save(std::path::Path::new(&path), token.as_deref(), &file, std::path::Path::new(&server_path), backup, replace_changed)).await.map_err(|error| error.to_string())?
 }
 
 /// zhuxian_question.data (gdeliveryd quiz contest).
@@ -2705,6 +2729,10 @@ pub fn run() {
             aipolicy_policy_action,
             aipolicy_unused_subtriggers,
             aipolicy_cleanup,
+            open_map_regions,
+            read_map_sev,
+            map_regions_problems,
+            save_map_regions,
             open_quiz,
             quiz_problems,
             save_quiz,

@@ -2823,3 +2823,73 @@ export interface QuizSource {
   questions: QuizSourceQuestion[];
   notes: string[];
 }
+
+/** precinct.clt / region.clt and their server copies (.sev). */
+export interface MapVec3 {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface MapMark {
+  name: string;
+  pos: MapVec3;
+}
+
+export interface MapPrecinct {
+  name: string;
+  /** 0 = client only (not in the server file). */
+  id: number;
+  /** Overlapping precincts: the lowest number wins (the later one on a tie). */
+  priority: number;
+  cityInstance: number;
+  musicInterval: number;
+  musicLoop: number;
+  instance: number;
+  domain: number;
+  city: MapVec3;
+  rebirths: number;
+  levelMax: number;
+  levelMin: number;
+  kickCity: number;
+  kickPos: MapVec3;
+  points: MapVec3[];
+  marks: MapMark[];
+  sound: string;
+  music: string[];
+  soundNight: string;
+  minimap: string;
+}
+
+export type MapRegionItem =
+  | { kind: "region"; name: string; regionType: number; points: MapVec3[] }
+  | { kind: "portal"; target: number; instance: number; level: number; line: number; controller: number; pos: MapVec3; extents: MapVec3; targetPos: MapVec3 }
+  | { kind: "guildBuilding"; template: number; width: number; height: number; pos: MapVec3; dir: MapVec3; up: MapVec3 };
+
+export interface MapBuffRegion {
+  /** Regions and portals before it in the server file. */
+  after: number;
+  template: number;
+  monster: number;
+  points: MapVec3[];
+}
+
+export type MapRegionFile =
+  | { kind: "precinct"; version: number; timestamp: number; precincts: MapPrecinct[] }
+  | { kind: "region"; version: number; timestamp: number; items: MapRegionItem[]; buffs: MapBuffRegion[] };
+
+export interface OpenedMapRegions {
+  path: string;
+  token: string;
+  file: MapRegionFile;
+  sibling: { path: string; file: MapRegionFile } | null;
+  siblingError: string | null;
+  folder: string;
+}
+
+export interface MapRegionProblem {
+  severity: "error" | "warning" | "note";
+  target: "precinct" | "item" | "buff" | "file";
+  index: number | null;
+  message: string;
+}

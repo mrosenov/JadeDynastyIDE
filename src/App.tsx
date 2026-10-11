@@ -31,6 +31,7 @@ import { DynObjectsEditor, type DynObjectsEditorHandle, type DynObjectsEditorSta
 import { DomainEditor, type DomainEditorHandle, type DomainEditorState } from "./components/DomainEditor";
 import { DropsEditor, type DropsEditorHandle, type DropsEditorState } from "./components/DropsEditor";
 import { QuizEditor, type QuizEditorHandle, type QuizEditorState } from "./components/QuizEditor";
+import { MapRegionsEditor, type MapRegionsEditorHandle, type MapRegionsEditorState } from "./components/MapRegionsEditor";
 import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
 import { TaskNpcEditor, type TaskNpcEditorHandle, type TaskNpcEditorState } from "./components/TaskNpcEditor";
 import { VipAwardEditor, type VipAwardEditorHandle, type VipAwardEditorState } from "./components/VipAwardEditor";
@@ -71,6 +72,8 @@ import {
   Box,
   Castle,
   MessageCircleQuestion,
+  LandPlot,
+  Server,
   CalendarDays,
   Brain,
   Type,
@@ -103,7 +106,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "objects" | "domains" | "drops" | "quiz" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
+type DataWorkspace = "elements" | "paths" | "objects" | "domains" | "drops" | "quiz" | "maps" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -207,6 +210,10 @@ export default function App() {
   const [quizEditorState, setQuizEditorState] = useState<QuizEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, questions: 0 });
   const quizEditorStateRef = useRef(quizEditorState);
   quizEditorStateRef.current = quizEditorState;
+  const mapsEditor = useRef<MapRegionsEditorHandle>(null);
+  const [mapsEditorState, setMapsEditorState] = useState<MapRegionsEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, kind: null, entries: 0 });
+  const mapsEditorStateRef = useRef(mapsEditorState);
+  mapsEditorStateRef.current = mapsEditorState;
   const tasksEditor = useRef<TasksEditorHandle>(null);
   const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null, unsupported: null, analysis: null, comparison: null, fieldCandidates: null, layoutPatch: null, referencePath: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
   const tasksEditorStateRef = useRef(tasksEditorState);
@@ -256,7 +263,7 @@ export default function App() {
   }, [pendingPolicy, workspace]);
   useEffect(() => {
     if (!pendingOpen || workspace !== pendingOpen.workspace) return;
-    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, objects: objectsEditor, domains: domainEditor, drops: dropsEditor, quiz: quizEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
+    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, objects: objectsEditor, domains: domainEditor, drops: dropsEditor, quiz: quizEditor, maps: mapsEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
     const editor = editors[workspace]?.current;
     if (!editor) return;
     setPendingOpen(null);
@@ -400,6 +407,10 @@ export default function App() {
         event.preventDefault();
         return;
       }
+      if (mapsEditorStateRef.current.dirty && !window.confirm("The open map file has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
       if (tasksEditorStateRef.current.dirty && !window.confirm("tasks.data has unsaved changes. Close JD IDE and discard them?")) {
         event.preventDefault();
         return;
@@ -498,6 +509,7 @@ export default function App() {
         else if (workspaceRef.current === "domains") domainEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "drops") dropsEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "quiz") quizEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "maps") mapsEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "tasks") tasksEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "npc") npcEditor.current?.openPath(event.payload.paths[0]);
@@ -1145,6 +1157,36 @@ export default function App() {
         { label: "Export all policies as JSON…", icon: Download, onSelect: () => aiEditor.current?.exportJson(true), disabled: !aiEditorState.loaded },
       ],
     },
+  ] : workspace === "maps" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open precinct.clt or region.clt…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => mapsEditor.current?.choose() },
+        { label: "Save (client and server file)", icon: Save, shortcut: "Ctrl+S", onSelect: () => mapsEditor.current?.save(), disabled: !mapsEditorState.loaded },
+        { label: "Choose the server file (.sev)…", icon: Server, onSelect: () => mapsEditor.current?.chooseServer(), disabled: !mapsEditorState.loaded },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => mapsEditor.current?.undo(), disabled: !mapsEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => mapsEditor.current?.redo(), disabled: !mapsEditorState.canRedo },
+        "separator",
+        { label: "Clone", icon: Copy, shortcut: "Ctrl+D", onSelect: () => mapsEditor.current?.cloneSelected(), disabled: !mapsEditorState.loaded },
+        { label: "Delete…", icon: Trash2, shortcut: "Del", onSelect: () => mapsEditor.current?.deleteSelected(), disabled: !mapsEditorState.loaded },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => mapsEditor.current?.openProblems(), disabled: !mapsEditorState.loaded },
+      ],
+    },
   ] : workspace === "quiz" ? [
     {
       label: "File",
@@ -1384,6 +1426,10 @@ export default function App() {
       if (!window.confirm("Leave the extra_drops.sev editor and discard its unsaved changes?")) return;
       setDropsEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
     }
+    if (workspace === "maps" && mapsEditorState.dirty) {
+      if (!window.confirm("Leave the map file editor and discard its unsaved changes?")) return;
+      setMapsEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
+    }
     if (workspace === "quiz" && quizEditorState.dirty) {
       if (!window.confirm("Leave the quiz question editor and discard its unsaved changes?")) return;
       setQuizEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
@@ -1440,6 +1486,11 @@ export default function App() {
         <MessageCircleQuestion size={18} />
         <span className="activity-label">Quiz</span>
         {quizEditorState.dirty && <span className="activity-dirty" />}
+      </button>
+      <button className={"activity" + (workspace === "maps" ? " active" : "")} onClick={() => switchWorkspace("maps")} title="Map areas: precinct.clt and region.clt (with their server .sev files)" aria-label="precinct and region files">
+        <LandPlot size={18} />
+        <span className="activity-label">Areas</span>
+        {mapsEditorState.dirty && <span className="activity-dirty" />}
       </button>
       <button className={"activity" + (workspace === "tasks" ? " active" : "")} onClick={() => switchWorkspace("tasks")} title="tasks.data editor" aria-label="tasks.data">
         <FileStack size={18} />
@@ -1720,6 +1771,11 @@ export default function App() {
             onStateChange={setPathEditorState}
             onClientReloaded={() => getSettings().then(onSettingsSaved).catch((problem) => setError(String(problem)))}
           />
+        </main>
+      ) : workspace === "maps" ? (
+        <main className="workspace path-data-workspace">
+          {activityBar}
+          <MapRegionsEditor ref={mapsEditor} active onStateChange={setMapsEditorState} mapGeneration={settingsView?.client ? settingsView.iconGeneration : null} />
         </main>
       ) : workspace === "quiz" ? (
         <main className="workspace path-data-workspace">
@@ -2029,6 +2085,14 @@ export default function App() {
             {pathEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
             <span className="spacer" />
             <span>PMID resource path table</span>
+          </>
+        ) : workspace === "maps" ? (
+          <>
+            <span>{mapsEditorState.kind === "region" ? "region.clt" : mapsEditorState.kind === "precinct" ? "precinct.clt" : "Map areas"}</span>
+            {mapsEditorState.path && <span className="mono truncate" title={mapsEditorState.path}>{mapsEditorState.path}</span>}
+            {mapsEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
+            <span className="spacer" />
+            {mapsEditorState.loaded && <span>{count(mapsEditorState.entries)} entries</span>}
           </>
         ) : workspace === "quiz" ? (
           <>

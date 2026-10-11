@@ -1049,6 +1049,47 @@ count, then each item.
 - Save keeps a 7z backup and notices another program's changes; undo/redo cover every edit. The zxserver, 1559
   and zx_18 files read back byte for byte. Restart gs to load a saved file.
 
+## Map areas: precinct.clt and region.clt
+
+**Areas** in the activity bar edits a map's client files from `element\maps\<map>`:
+
+- **precinct.clt**: named areas. Each has a priority (where areas overlap, the lowest number wins), the
+  instance it belongs to (one map folder can hold several), a domain, a return city (where "return to city" and
+  reviving take players), level limits with a kick-out city and point (version 7+), map marks, sound, music and
+  minimap.
+- **region.clt**: safe zones and PK regions, portals (a box; walking in moves the player to a target instance and
+  position, with a level limit, line and controller), and guild buildings.
+
+**Saving writes the server copy too.** The server reads binary `precinct.sev` / `region.sev` from
+`gamed\config\<map>`. Each save writes the `.clt` and its `.sev` with one new timestamp, as the map editor
+exports them. The first save asks where the `.sev` goes, and the editor remembers it (File › Choose the server
+file). Both files keep their version. Why both at once:
+
+- the client compares both timestamps with the server's when entering a map and shows an instance data error when
+  they differ;
+- the client sends the server the **number** of the portal it walked into, so portals must be in the same order in
+  both files;
+- precincts with **ID 0** are client only (names and music): the server file leaves them out;
+- **buff regions** (a region template and a monster) exist only in the server file. The editor reads them from the
+  chosen `.sev`, shows and edits them under Buff regions, and writes them back.
+
+**The map** shows the map image from `surfaces.pck` (Settings › client folder) with this file's shapes and the
+folder's other file faded: areas (client-only ones dashed), safe zones, PK regions, portals, buff regions, guild
+buildings, and for the selected area its return city, kick-out point and marks. Click a shape to select it; picking
+from the list zooms to it. Points are edited as numbers (or pasted as text, one `x y z` per line). An instance
+filter shows one instance of a shared folder.
+
+**Problems** (Ctrl+Shift+M): outlines with fewer than 3 points or crossing themselves (the map editor refuses to
+export them), repeated precinct IDs, instances not in the client's instance.txt, level limits without a kick-out
+city or with min above max, portals without size, buff regions in a file older than version 8, and against the
+server file: another timestamp, other portals, another precinct count. Saving asks first when there are errors.
+
+Opening reports exactly where a file breaks the format (the game drops a file it cannot read). Examples in shipped
+clients: ForsakenJD/HDN `q3/region.clt` has portal lines with a value too many for its version 5, ForsakenJD
+`z31/precinct.clt` a missing quote, HDN `gut/precinct.clt` an extra text. All other 1,662 sample files read,
+1,591 write back byte for byte (the rest differ only in spacing), and the server files exported from the clients
+equal the shipped ones of the same timestamp (400 of 400).
+
 ## zhuxian_question.data editor (quiz contest)
 
 **Quiz** in the activity bar edits `zhuxian_question.data`, the questions of the daily quiz contest. Only the

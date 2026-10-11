@@ -12,7 +12,7 @@ versions v66–v176: browse, search, check, compare, export, edit, and save. A s
 activity-bar workspace edits the client's `path.data`. The `tasks.data` workspace supports
 verified v165, v172 and v184 task sets, including browsing, schema analysis, safe editing,
 hierarchy operations and saving. Further workspaces edit dyn_tasks.data, task_npc.data, npcgen.data,
-the gshop shops, vipaward.data, aipolicy.data (monster AI), DynamicObjects.data, the domain files, extra_drops.sev and zhuxian_question.data.
+the gshop shops, vipaward.data, aipolicy.data (monster AI), DynamicObjects.data, the domain files, extra_drops.sev, zhuxian_question.data and the maps' precinct/region files.
 
 A previous Laravel/PHP version of the same idea lives in `C:/Users/mitko/Herd/jdide`. It is
 a reference for ideas only; JD IDE replaces it.
@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (227 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (231 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -79,6 +79,7 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer; `Table::DynamicObjects` for DynamicObjects.data (same loader, one empty path allowed). |
+| `map_regions.rs` | precinct.clt/region.clt (UTF-16 text) and precinct.sev/region.sev (binary): readers/writers per version, problems, save of both with one timestamp. |
 | `quiz.rs` | zhuxian_question.data (gdeliveryd quiz contest): reader/writer, sets of 30 and the day → set rule, problems, save; JSON/CSV export and the compare/import source reader. |
 | `extra_drops.rs` | extra_drops.sev (server): reader/writer (v1/v2), the server's load checks as problems, save, monster/item index for the record inspector. |
 | `domain.rs` | domain.data, domain1–4.data, domainlandwar.data: reader/writer (optional `MOXB` marker), land.txt/landwar.txt rows, problems, multi-file save. |
@@ -628,6 +629,35 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   `AppState.drops_source` caches `extra_drops::index` by the file's mtime; `get_record` sets `display: "drops"`
   and a hint on the record's `id` node (monsters: `Document::list_struct`); FieldTree/RecordInspector `onDrops` →
   App `pendingDrops` → `DropsEditorHandle.showId`.
+
+## precinct / region editor (map areas)
+
+- Sources: ZCommon EL_Precinct.cpp / EL_Region.cpp (`_ELEMENTCLIENT`: text via AWScriptFile; otherwise binary, the
+  same as the servers' template/el_precinct.cpp, el_region.cpp; both server trees read version ≤ 8), client
+  EC_World.cpp (loads `maps\<map>\*.clt`; a failed load is only logged and the set stays empty), the map editor's
+  ZElementEditor AIGenExportor.cpp (writes all four files with one `time(NULL)` timestamp), server
+  city_region.cpp (uses), player.cpp `TestRegion` and item_telestation.cpp (level limits).
+- Formats: see the `map_regions.rs` header. Text: UTF-16LE with BOM, LF, tokens split by white space and commas,
+  quoted texts, `//` comments; the reader enforces the editor's layout (same-line values, a new line per group) and
+  names the line of any deviation. Writer = the exporter's `fwprintf` layout per version (`%f` = `{:.6}` of the
+  f32 as f64), so official files write back byte for byte. Server: precincts only with ID ≠ 0 (`// Only save
+  non-zero ID precincts for server`); regions and portals in client order; buff regions (type 2, v8, server only)
+  keep their position (`BuffRegion.after` = regions/portals before them) so a server file writes back exactly.
+  `parse_sev` gives precincts IDs 1, 2, … (the file stores none).
+- Rules: `CheckOutInst` compares the region and precinct timestamps with the server's (instance data error);
+  `c2s_CmdEnterInstance(index, target)` → `GetRegionTransport(ridx)` takes the portal by index, so order and count
+  must match. `IsPointIn` picks the lowest priority number (later on ties) among precincts of the source instance;
+  the server treats every region as a safe zone (`IsInSanctuary` → `IsPointInRegion`). Level limits: ignored unless
+  kick city > 0, values ≥ 0 and not both 0; player level = level + rebirths × 150 against min/max + rebirths × 150.
+- Samples (ForsakenJD/HDN clients, zxserver/1559/zx_18 servers): 1,668 files, 1,591 byte-identical, 6 known broken
+  client files fail with line numbers (q3 region v5 with v6 portal fields, z31 missing quote, gut extra text, z1_old
+  without BOM); `client_files_export_the_server_files`: 400/400 same-timestamp pairs equal within 0.001.
+- UI `MapRegionsEditor.tsx` (file and undo in the component; one `.clt` at a time, the folder's other file drawn
+  faded; the `.sev` path is remembered per `.clt` in localStorage `jdide.maps.serverFor`, its folder's parent as
+  `jdide.maps.serverRoot`; buff regions come from that file). Map: `client_maps` entries whose path equals the
+  folder name, `midmapUrl`, ±rows × 512, x and −z (as npcgen); picking from the list zooms (`focus`).
+  Commands `open_map_regions`, `read_map_sev`, `map_regions_problems`, `save_map_regions`. The user chose:
+  open `.clt` only, export the `.sev` on every save, preview only (no dragging), keep each file's version.
 
 ## zhuxian_question.data editor
 
