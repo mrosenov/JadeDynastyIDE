@@ -4984,7 +4984,23 @@ select.sf-control {
   gap: 6px;
 }
 .drops-form {
-  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 16px 24px;
+}
+.drops-form > .dyn-section {
+  flex-shrink: 0;
+}
+.drops-form .dyn-section > header {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.drops-form .dyn-section-body {
+  padding: 10px 12px 12px;
+}
+.drops-form .dyn-section-body > p {
+  margin: 0;
 }
 .drops-form .dyn-section header {
   flex-wrap: wrap;
@@ -4992,7 +5008,7 @@ select.sf-control {
 }
 .drops-grid {
   display: grid;
-  grid-template-columns: 110px minmax(0, 420px);
+  grid-template-columns: 120px minmax(0, 440px);
   align-items: center;
   gap: 6px 10px;
   font-size: 12px;
@@ -5001,32 +5017,53 @@ select.sf-control {
   color: var(--text-dim);
 }
 .drops-counts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 10px 14px;
 }
 .drops-counts label {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 .drops-counts .dyn-input,
 .drops-items .ai-percent .dyn-input {
-  width: 76px !important;
+  width: 72px !important;
 }
 .drops-ids {
   width: 160px;
 }
 .drops-monsters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  width: 100%;
+  max-width: 560px;
 }
-.drops-clash {
-  border-color: var(--danger);
+.drops-monsters th:first-child {
+  width: 80px;
+}
+.drops-monsters th:last-child {
+  width: 40px;
+}
+.drops-monsters td {
+  padding: 4px 8px;
+}
+.drops-monsters td:last-child {
+  text-align: right;
+}
+.drops-monsters td:last-child .icon-btn {
+  display: inline-grid;
+}
+.drops-monsters tr.drops-clash td {
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
 }
 .drops-items {
-  width: auto;
+  width: 100%;
+  max-width: 820px;
+}
+.drops-items th:first-child {
+  width: 40px;
+}
+.drops-items th:nth-child(3) {
+  width: 120px;
 }
 .drops-items td {
   padding: 2px 6px;
@@ -5036,7 +5073,8 @@ select.sf-control {
   white-space: nowrap;
 }
 .drops-items td:last-child .icon-btn {
-  display: inline-flex;
+  display: inline-grid;
+  vertical-align: middle;
 }
 .drops-items .dyn-input {
   width: 90px;
@@ -5049,7 +5087,7 @@ select.sf-control {
   opacity: 0.5;
 }
 .drops-add {
-  margin-top: 6px;
+  align-self: flex-start;
 }
 .drops-version {
   margin-left: 4px;

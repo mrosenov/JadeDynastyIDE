@@ -390,6 +390,7 @@ export const DropsEditor = forwardRef<DropsEditorHandle, Props>(function DropsEd
           {(problems ?? []).filter((problem) => problem.table === selected).map((problem, index) => <div key={index} className={"path-data-message" + (problem.severity === "error" ? " error" : "")}>{problem.severity === "error" ? <CircleAlert size={13} /> : <TriangleAlert size={13} />} {problem.message}</div>)}
           <section className="dyn-section">
             <header><b>Table</b></header>
+            <div className="dyn-section-body">
             <div className="drops-grid">
               <label>Name</label><TextInput value={table.name} max={127} onCommit={(name) => setTable(selected, { name }, "name")} />
               <label>Type</label>
@@ -400,28 +401,38 @@ export const DropsEditor = forwardRef<DropsEditorHandle, Props>(function DropsEd
               {file.version === 2 && <><label title="Version 2 only; the zx_18 server source reads it and ignores it">Extra value</label><NumberInput value={table.extra} onCommit={(extra) => setTable(selected, { extra }, "extra")} /></>}
             </div>
             <p className="muted small">{table.type === 1 ? "The monsters drop only from this table (their elements.data drops are skipped)." : table.type === 2 ? "The monsters drop from this table and from their elements.data drops." : ""}</p>
+            </div>
           </section>
           <section className="dyn-section">
             <header><b>How many items drop</b><span className={"small " + (exact(countSum) ? "muted" : "ai-warn")}>total {percent(countSum)}</span><span className="muted small">· {Math.round(expected * 100) / 100} items per kill on average</span><span className="spacer" /><button className="btn small" disabled={exact(countSum)} onClick={() => { const next = scaled(table.counts); if (next) setTable(selected, { counts: next }, `counts:${Date.now()}`); }} title="Scale the chances to exactly 100%"><Scale size={12} /> Scale to 100%</button></header>
+            <div className="dyn-section-body">
             <div className="drops-counts">
               {table.counts.map((value, index) => <label key={index}><span className="muted small">{index} item{index === 1 ? "" : "s"}</span><PercentInput value={value} invalid={!exact(countSum)} onCommit={(next) => setTable(selected, { counts: table.counts.map((entry, at) => at === index ? next : entry) }, `count:${index}`)} /></label>)}
             </div>
             <p className="muted small">The server first rolls the monster's drop rate (level difference, events), then how many items drop, then each item by its chance. The chances must add up to exactly 100% or gs does not start.</p>
+            </div>
           </section>
           <section className="dyn-section">
             <header><b>Monsters</b><span className="muted small">{count(table.monsters.length)}</span><span className="spacer" />
               <button className="btn small" onClick={() => setPicking({ kind: "monster", current: 0, apply: (id) => addMonsters([id]) })}><Search size={12} /> Choose…</button>
               <input className="dyn-input drops-ids" value={monsterIds} placeholder="IDs: 1234, 5678" onChange={(event) => setMonsterIds(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { addMonsters(monsterIds.split(/[^0-9]+/).filter(Boolean).map(Number)); setMonsterIds(""); } }} />
             </header>
-            <div className="drops-monsters">
-              {table.monsters.map((id, index) => {
+            <div className="dyn-section-body">
+            {table.monsters.length ? <table className="dyn-table drops-monsters">
+              <thead><tr><th>ID</th><th>Monster</th><th /></tr></thead>
+              <tbody>{table.monsters.map((id, index) => {
                 const other = owners.get(id);
-                return <span key={index} className={"domain-chip" + (other !== undefined && other !== selected ? " drops-clash" : "")} title={other !== undefined && other !== selected ? `Also in “${file.tables[other].name}”: gs does not start` : undefined}>
-                  <span className="mono">{id}</span> {nameOf(id) ?? (elementsPath ? <span className="ai-warn small">not found</span> : null)}
-                  <button className="icon-btn small" title="Remove" onClick={() => setTable(selected, { monsters: table.monsters.filter((_, at) => at !== index) }, `monsters:${Date.now()}`)}><X size={10} /></button>
-                </span>;
-              })}
-              {!table.monsters.length && <span className="muted small">No monster uses this table.</span>}
+                const clash = other !== undefined && other !== selected;
+                return <tr key={index} className={clash ? "drops-clash" : undefined}>
+                  <td className="mono">{id}</td>
+                  <td>
+                    {nameOf(id) ?? (elementsPath ? <span className="ai-warn small">not in elements.data</span> : <span className="muted small">open elements.data for the name</span>)}
+                    {clash && <div className="ai-warn small">Also in “{file.tables[other].name}”: gs does not start</div>}
+                  </td>
+                  <td><button className="icon-btn small danger" title="Remove from this table" onClick={() => setTable(selected, { monsters: table.monsters.filter((_, at) => at !== index) }, `monsters:${Date.now()}`)}><Trash2 size={12} /></button></td>
+                </tr>;
+              })}</tbody>
+            </table> : <span className="muted small">No monster uses this table.</span>}
             </div>
           </section>
           <section className="dyn-section">
@@ -430,6 +441,7 @@ export const DropsEditor = forwardRef<DropsEditorHandle, Props>(function DropsEd
               <button className="btn small" disabled={used.length === table.items.filter((item) => item.id !== 0).length} onClick={() => setItems([...table.items.filter((item) => item.id !== 0), ...table.items.filter((item) => item.id === 0)], `compact:${Date.now()}`)} title="Move empty slots to the end (the official export does this): the server stops at the first empty slot"><ArrowDown size={12} /> Empty slots last</button>
               <button className="btn small" disabled={used.length < 2} onClick={() => setItems([...[...used].sort((a, b) => b.chance - a.chance), ...table.items.slice(used.length)], `sort:${Date.now()}`)} title="Sort the used items by chance, highest first"><ArrowDownWideNarrow size={12} /> Sort</button>
             </header>
+            <div className="dyn-section-body">
             <table className="dyn-table drops-items">
               <thead><tr><th>#</th><th>Item</th><th>Chance</th><th /></tr></thead>
               <tbody>{table.items.map((item, index) => {
@@ -448,6 +460,7 @@ export const DropsEditor = forwardRef<DropsEditorHandle, Props>(function DropsEd
             </table>
             <button className="btn small drops-add" disabled={table.items.length >= 256} onClick={() => setPicking({ kind: "item", current: 0, apply: (id) => setItems([...used, { id, chance: 0 }, ...table.items.slice(used.length)], `add:${Date.now()}`) })}><Plus size={12} /> Add an item…</button>
             <p className="muted small">The server keeps the items up to the first empty slot; their chances must add up to exactly 100% or gs does not start. A new item starts at 0%: give it a chance, then scale.</p>
+            </div>
           </section>
         </>}
       </div>
