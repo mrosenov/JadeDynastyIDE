@@ -4,6 +4,9 @@ import type {
   DomainData,
   DomainFile,
   DomainProblem,
+  DropFile,
+  DropProblem,
+  OpenedDrops,
   DynObjectCheck,
   LandRow,
   Sev,
@@ -442,6 +445,14 @@ export const setMonsterPolicies = (places: [number, number, number, number][], p
 export const aiPolicyHistory = () => invoke<AiHistoryRow[]>("aipolicy_history");
 export const aiPolicyRevertEntry = (id: number, shown: number | null) => invoke<AiEditResult>("aipolicy_revert_entry", { id, shown });
 export const aiPolicyRevertAll = () => invoke<AiEditResult>("aipolicy_revert_all");
+/** extra_drops.sev (the server's extra drop tables). */
+export const openExtraDrops = (path: string) => invoke<OpenedDrops>("open_extra_drops", { path });
+/** Another extra_drops.sev, read only (compare/copy). */
+export const readExtraDrops = (path: string) => invoke<OpenedDrops>("read_extra_drops", { path });
+/** The extra_drops.sev the record inspector reads (its tables are shown on monster and item IDs). */
+export const setExtraDropsSource = (path: string) => invoke<void>("set_extra_drops_source", { path });
+export const extraDropsProblems = (file: DropFile) => invoke<DropProblem[]>("extra_drops_problems", { file });
+export const saveExtraDrops = (path: string, token: string | null, file: DropFile, backup: boolean, replaceChanged: boolean) => invoke<{ path: string; size: number; token: string; backup: string | null }>("save_extra_drops", { path, token, file, backup, replaceChanged });
 /** Every domain*.data file in the folder of a domain file (or the folder itself). */
 export const openDomains = (path: string) => invoke<DomainFile[]>("open_domains", { path });
 /** The configured client's land.txt / landwar.txt rows, by the domain file they override. */

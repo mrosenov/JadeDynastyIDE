@@ -1016,6 +1016,39 @@ store (for example the phase before version 14) shows "not in vN" and cannot be 
 the file reads back exactly, can back up the old file and warns when another program changed it. All
 519 npcgen.data files of the sample servers read and write back byte-for-byte.
 
+## extra_drops.sev editor (extra drop tables)
+
+**Drops** in the activity bar edits the server's `extra_drops.sev` (gs.conf `[Template] DropData`, in the gs config
+folder; the file opened last opens again). Each table names monsters and what they drop: how many items (0–7,
+by chance) and which (up to 256 items, by chance). Type **1** replaces the monsters' own elements.data drops, type
+**2** adds to them. On a kill the server rolls the monster's drop rate (level difference, events), then the
+count, then each item.
+
+- **The list** shows each table's type, monsters and items; search by table name, or a monster or item (ID or
+  name, with elements.data open). **Clone** (Ctrl+D) copies a table without its monsters (a monster may be in one
+  table only); **Delete** (Del).
+- **The form**: name, type, the eight count chances (with their total and the average items per kill), the
+  monsters (names, a picker over elements.data monsters, or IDs typed), and the items (names, a picker, chance,
+  order). **Scale to 100%** makes the counts or the items add up exactly (the server's own sum); **Empty slots
+  last** moves empty slots to the end (the server stops at the first empty slot, as the official export
+  arranges it); **Sort** orders items by chance. Version 2 files show each table's extra value.
+- **Problems** (Ctrl+Shift+M) are the server's checks when it loads the file: a type other than 1 or 2, count or
+  item chances not adding up to 100% (within 0.001%), and a monster in two tables (or twice in one) stop gs (-6).
+  Also: a table that can drop items but has none, items after an empty slot (ignored), negative chances,
+  monsters and items not in the open elements.data, tables without monsters. Saving asks first when there are
+  errors.
+- **Versions**: version 1 is read by every server; version 2 (the zx_18 server; 1559 uses it) adds a value per
+  table that the zx_18 source ignores (1–3 in official files). The 2013 server cannot read version 2 (gs stops
+  with -5). Change it in the header or Tools › Convert to version 1/2.
+- **Compare with another extra_drops.sev…** (Tools) pairs tables by name and shows them side by side; tick
+  tables (changed or only there) and copy them: a copy replaces the table of the same name or is added at the
+  end (one undo step). Monsters a copy would share with another table are flagged.
+- **elements.data link**: with an extra_drops.sev opened once, a monster's record shows its table on its ID (and
+  whether it replaces or adds to its drops), an item's record the tables that drop it; a click opens the table.
+  The link reads the saved file.
+- Save keeps a 7z backup and notices another program's changes; undo/redo cover every edit. The zxserver, 1559
+  and zx_18 files read back byte for byte. Restart gs to load a saved file.
+
 ## Domain files editor (territory maps)
 
 **Domains** in the activity bar edits the client's territory maps, all together, one tab per file:

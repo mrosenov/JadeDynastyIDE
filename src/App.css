@@ -4967,6 +4967,104 @@ select.sf-control {
 .path-data-table th:nth-child(1) { width: 120px; }
 .path-data-table th:nth-child(3) { width: 82px; }
 .path-data-table th:nth-child(4) { width: 42px; }
+/* extra_drops.sev: table list | form. */
+.drops-body {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 300px minmax(0, 1fr);
+  min-height: 0;
+}
+.drops-body > .dyn-task-list {
+  border-right: 1px solid var(--border);
+}
+.drops-row {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+}
+.drops-form {
+  padding: 10px 14px;
+}
+.drops-form .dyn-section header {
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+.drops-grid {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 420px);
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 12px;
+}
+.drops-grid > label {
+  color: var(--text-dim);
+}
+.drops-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+.drops-counts label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.drops-counts .dyn-input,
+.drops-items .ai-percent .dyn-input {
+  width: 76px !important;
+}
+.drops-ids {
+  width: 160px;
+}
+.drops-monsters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.drops-clash {
+  border-color: var(--danger);
+}
+.drops-items {
+  width: auto;
+}
+.drops-items td {
+  padding: 2px 6px;
+}
+.drops-items td:last-child {
+  width: 96px;
+  white-space: nowrap;
+}
+.drops-items td:last-child .icon-btn {
+  display: inline-flex;
+}
+.drops-items .dyn-input {
+  width: 90px;
+}
+.drops-name {
+  max-width: 260px;
+  font-size: 12px;
+}
+.drops-ignored td {
+  opacity: 0.5;
+}
+.drops-add {
+  margin-top: 6px;
+}
+.drops-version {
+  margin-left: 4px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+.ai-cmp-row.drops-cmp-row {
+  grid-template-columns: 18px minmax(0, 1fr) auto minmax(0, 0.8fr);
+}
+.ai-cmp-pair-head.drops-cmp-head,
+.ai-cmp-pair.drops-cmp-pair {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
 /* Domain files: tabs per file, list | map | form. */
 .domain-tabs {
   display: flex;

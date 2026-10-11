@@ -2753,3 +2753,36 @@ export interface DomainProblem {
   domain: number | null;
   message: string;
 }
+
+/** An extra drop table of extra_drops.sev (server). */
+export interface DropTable {
+  name: string;
+  nameRaw: number[];
+  /** 1 replace the monster's own drops, 2 add to them. */
+  type: number;
+  monsters: number[];
+  /** Item slots up to the last used one (the file has 256). */
+  items: { id: number; chance: number }[];
+  /** Chances of dropping 0–7 items. */
+  counts: number[];
+  /** Version 2: a value the zx_18 server source ignores. */
+  extra: number;
+}
+
+export interface DropFile {
+  version: number;
+  tables: DropTable[];
+}
+
+export interface OpenedDrops {
+  path: string;
+  size: number;
+  token: string;
+  file: DropFile;
+}
+
+export interface DropProblem {
+  severity: "error" | "warning" | "note";
+  table: number | null;
+  message: string;
+}

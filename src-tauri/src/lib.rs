@@ -3,6 +3,7 @@ mod backup;
 mod client;
 mod domain;
 mod dyn_objects;
+mod extra_drops;
 mod dyn_tasks;
 mod elements;
 mod gshop;
@@ -53,6 +54,8 @@ struct AppState {
     compared_gshop: Mutex<Option<gshop::ComparedShop>>,
     /// The open aipolicy.data (read only for now).
     aipolicy: Mutex<Option<aipolicy::Document>>,
+    /// The extra_drops.sev opened last, and its index (read from the saved file, refreshed when it changes).
+    drops_source: Mutex<Option<(std::path::PathBuf, Option<std::time::SystemTime>, Arc<extra_drops::DropIndex>)>>,
     /// Another aipolicy.data or JSON export, read-only (lock order: aipolicy, then compared_aipolicy).
     compared_aipolicy: Mutex<Option<aipolicy::compare::Compared>>,
     /// Another npcgen.data opened read-only for comparing (lock order: npcgen, then compared_npcgen).
@@ -846,6 +849,74 @@ async fn client_maps(state: State<'_, AppState>) -> Result<Vec<ClientMap>, Strin
     })
     .await
     .map_err(|error| error.to_string())?
+}
+
+/// extra_drops.sev (the server's extra drop tables).
+#[tauri::command]
+async fn open_extra_drops(path: String, state: State<'_, AppState>) -> Result<extra_drops::OpenedDrops, String> {
+    let opened = tauri::async_runtime::spawn_blocking(move || extra_drops::open(std::path::Path::new(&path))).await.map_err(|error| error.to_string())??;
+    remember_drops(&state, &opened.path, &opened.file);
+    Ok(opened)
+}
+
+/// Another extra_drops.sev, read only (compare/copy); the record inspector keeps its file.
+#[tauri::command]
+async fn read_extra_drops(path: String) -> Result<extra_drops::OpenedDrops, String> {
+    tauri::async_runtime::spawn_blocking(move || extra_drops::open(std::path::Path::new(&path))).await.map_err(|error| error.to_string())?
+}
+
+/// Names the extra_drops.sev the record inspector reads (the one opened last, at start).
+#[tauri::command]
+async fn set_extra_drops_source(path: String, state: State<'_, AppState>) -> Result<(), String> {
+    let read = path.clone();
+    let opened = tauri::async_runtime::spawn_blocking(move || extra_drops::open(std::path::Path::new(&read))).await.map_err(|error| error.to_string())??;
+    remember_drops(&state, &path, &opened.file);
+    Ok(())
+}
+
+/// Keeps the index of a saved or opened extra_drops.sev for the record inspector.
+fn remember_drops(state: &State<'_, AppState>, path: &str, file: &extra_drops::DropFile) {
+    let path = std::path::PathBuf::from(path);
+    let modified = std::fs::metadata(&path).and_then(|meta| meta.modified()).ok();
+    if let Ok(mut source) = state.drops_source.lock() {
+        *source = Some((path, modified, Arc::new(extra_drops::index(file))));
+    }
+}
+
+/// The index of the remembered extra_drops.sev, read again when the file changed on disk.
+fn drops_index(state: &State<'_, AppState>) -> Option<Arc<extra_drops::DropIndex>> {
+    let mut source = state.drops_source.lock().ok()?;
+    let (path, modified, index) = source.as_mut()?;
+    let now = std::fs::metadata(&*path).and_then(|meta| meta.modified()).ok();
+    if now != *modified {
+        let file = extra_drops::open(path).ok()?.file;
+        *index = Arc::new(extra_drops::index(&file));
+        *modified = now;
+    }
+    Some(index.clone())
+}
+
+/// The server's load checks, and monster/item IDs against the open elements.data.
+#[tauri::command]
+fn extra_drops_problems(file: extra_drops::DropFile, state: State<'_, AppState>) -> Result<Vec<extra_drops::Problem>, String> {
+    let mut known = extra_drops::Known::default();
+    {
+        let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+        if let Some(document) = document.as_ref() {
+            let monsters: HashSet<u32> = file.tables.iter().flat_map(|table| table.monsters.iter().copied()).collect();
+            let items: HashSet<u32> = file.tables.iter().flat_map(|table| extra_drops::used_items(table).iter().map(|item| item.id)).collect();
+            known.monsters = Some(monsters.into_iter().filter(|&id| document.essence_struct(id).is_some_and(|(name, _)| name == "MONSTER_ESSENCE")).collect());
+            known.items = Some(items.into_iter().filter(|&id| document.resolve_essence_id(id).is_some()).collect());
+        }
+    }
+    Ok(extra_drops::problems(&file, &known))
+}
+
+#[tauri::command]
+async fn save_extra_drops(path: String, token: Option<String>, file: extra_drops::DropFile, backup: bool, replace_changed: bool, state: State<'_, AppState>) -> Result<extra_drops::SaveReport, String> {
+    let (report, file) = tauri::async_runtime::spawn_blocking(move || extra_drops::save(std::path::Path::new(&path), token.as_deref(), &file, backup, replace_changed).map(|report| (report, file))).await.map_err(|error| error.to_string())??;
+    remember_drops(&state, &report.path, &file);
+    Ok(report)
 }
 
 /// Every domain*.data file in the folder of `path` (a domain file or the folder).
@@ -2072,7 +2143,16 @@ async fn referenced_by(list: usize, row: usize, state: State<'_, AppState>) -> R
 
 #[tauri::command]
 async fn get_record(list: usize, index: usize, state: State<'_, AppState>) -> Result<RecordDetail, String> {
-    let mut detail = state.with_document(|doc| doc.record(list, index))?;
+    let (mut detail, monsters) = state.with_document(|doc| Ok((doc.record(list, index)?, doc.list_struct(list).is_some_and(|name| name.eq_ignore_ascii_case("MONSTER_ESSENCE")))))?;
+    // The record's ID: its extra drop table (monsters) or the tables that drop it (items).
+    if let Some(drops) = drops_index(&state) {
+        if let Some(node) = detail.nodes.iter_mut().find(|node| node.name.eq_ignore_ascii_case("id")) {
+            if let Some(hint) = node.value.as_deref().and_then(|value| value.parse::<u32>().ok()).and_then(|id| extra_drops::hint(&drops, id, monsters)) {
+                node.hint = Some(hint);
+                node.display = Some("drops".into());
+            }
+        }
+    }
     // Fields with the aipolicy role: the policy they name, when aipolicy.data is open (locked after the document).
     if let Ok(policies) = state.aipolicy.lock() {
         if let Some(policies) = policies.as_ref() {
@@ -2471,6 +2551,7 @@ pub fn run() {
                 gshop: Mutex::new(None),
                 compared_gshop: Mutex::new(None),
                 aipolicy: Mutex::new(None),
+                drops_source: Mutex::new(None),
                 compared_aipolicy: Mutex::new(None),
                 compared_npcgen: Mutex::new(None),
                 compared: Mutex::new(None),
@@ -2596,6 +2677,11 @@ pub fn run() {
             aipolicy_policy_action,
             aipolicy_unused_subtriggers,
             aipolicy_cleanup,
+            open_extra_drops,
+            set_extra_drops_source,
+            read_extra_drops,
+            extra_drops_problems,
+            save_extra_drops,
             open_domains,
             domain_land_tables,
             domain_problems,

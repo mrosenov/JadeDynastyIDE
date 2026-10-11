@@ -784,6 +784,11 @@ impl Document {
         out
     }
 
+    /// The C structure a list holds (`MONSTER_ESSENCE`, …), when the layout names it.
+    pub fn list_struct(&self, list: usize) -> Option<&str> {
+        self.lists.get(list)?.struct_name.as_deref()
+    }
+
     /// The fields of a list that name an AI policy: the `aipolicy` display role, else `MONSTER_ESSENCE.common_strategy`.
     fn policy_fields(&self, list: usize) -> Vec<&format::Field> {
         let Some((_, definition)) = self.def(list) else { return Vec::new() };

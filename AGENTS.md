@@ -12,7 +12,7 @@ versions v66–v176: browse, search, check, compare, export, edit, and save. A s
 activity-bar workspace edits the client's `path.data`. The `tasks.data` workspace supports
 verified v165, v172 and v184 task sets, including browsing, schema analysis, safe editing,
 hierarchy operations and saving. Further workspaces edit dyn_tasks.data, task_npc.data, npcgen.data,
-the gshop shops, vipaward.data, aipolicy.data (monster AI), DynamicObjects.data and the domain files.
+the gshop shops, vipaward.data, aipolicy.data (monster AI), DynamicObjects.data, the domain files and extra_drops.sev.
 
 A previous Laravel/PHP version of the same idea lives in `C:/Users/mitko/Herd/jdide`. It is
 a reference for ideas only; JD IDE replaces it.
@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (220 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (223 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -79,6 +79,7 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer; `Table::DynamicObjects` for DynamicObjects.data (same loader, one empty path allowed). |
+| `extra_drops.rs` | extra_drops.sev (server): reader/writer (v1/v2), the server's load checks as problems, save, monster/item index for the record inspector. |
 | `domain.rs` | domain.data, domain1–4.data, domainlandwar.data: reader/writer (optional `MOXB` marker), land.txt/landwar.txt rows, problems, multi-file save. |
 | `dyn_objects.rs` | DynamicObjects.data: object kinds, client file checks (`models.pck`, `gfx.pck` + `gfx\`), problems, the client's model/effect list for the picker. |
 | `gshop/mod.rs`, `gshop/layout.rs`, `gshop/compare.rs`, `gshop/texts.rs`, `gshop/align.rs` | gshop.data / gshop1.data / gshop2.data: item layouts (built-in `formats/gshop/*.json` + user), reader/writer, document with journal, categories, problems, save; compare/copy and JSON export. |
@@ -605,6 +606,27 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   the player's VIP level, special at or below; nothing 0:00–6:00. `Document::essence_number` reads
   `pile_num_max`. `problems` allows types 2 only in 172-byte files and VIP levels 7–8 there.
 - UI `VipAwardEditor.tsx` follows TaskNpcEditor (rows and undo in the component; save sends rows with `raw`).
+
+## extra_drops.sev editor
+
+- Format (zgame/gs/template/extra_drop_table.cpp; official writer ZElementData MounsterResetFallList.h
+  `CMounsterResetFallListData::Save`): u32 version, i32 count; per table i32 n + n u32 monsters, 256 × {u32 item, f32
+  chance}, char name[128] GBK, i32 type, 8 f32 count chances; version 2 (zx_18 loader only) + u32 per table (read and
+  ignored; 1–3 in 1559/zx_18 files). `DropTable.items` keeps slots up to the last non-(0, 0.0) one; encode pads.
+- Server (global_drop.cpp `LoadDropList`, gmatrix.cpp): -5 when the file cannot be read or has another version
+  (2013: version 1 only), -6 when a type is not 1/2, the count or item chances (items up to the first ID 0) do not
+  add up to 1 within 1e-5 as an f32 sum, or a monster ID is put twice (`_drop_table.put`). npc.cpp
+  `DropItemFromGlobal`: drop rate roll (level punishment, anti-wallow, skill), count by `RandSelect`, items by
+  chance (empty list with count > 0 reads `drop_list[0]`); type 1 returns false so `DropItemFromData` is skipped.
+  The official export compacts empty slots; its normalization is commented out (we offer Scale to 100%, f32-exact).
+- Samples: zxserver v1 151 tables, 1559 v2 184, zx_18 v2 259; all round-trip (also through JSON) with no errors.
+- UI `DropsEditor.tsx` (file and undo in the component), `DropsCompare.tsx` (UI-side, tables by name; the extra
+  value is compared only when both files are v2). Commands `open_extra_drops` (also remembers the path for the
+  inspector), `read_extra_drops` (compare, not remembered), `extra_drops_problems` (IDs against elements.data:
+  monsters = MONSTER_ESSENCE), `save_extra_drops`, `set_extra_drops_source` (App passes the last path at start).
+  `AppState.drops_source` caches `extra_drops::index` by the file's mtime; `get_record` sets `display: "drops"`
+  and a hint on the record's `id` node (monsters: `Document::list_struct`); FieldTree/RecordInspector `onDrops` →
+  App `pendingDrops` → `DropsEditorHandle.showId`.
 
 ## Domain files editor
 

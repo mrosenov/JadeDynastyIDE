@@ -288,6 +288,8 @@ interface Props {
   onPick?: (path: Path, node: FieldNode) => void;
   /** Opens an AI policy (a field with the aipolicy role) in the aipolicy.data browser. */
   onPolicy?: (id: number) => void;
+  /** Opens the extra drop tables of a monster or item ID (a record ID annotated with them). */
+  onDrops?: (id: number) => void;
   onCancelEdit?: () => void;
   /** Numeric leaf fields picked for the inspector's quick editor. */
   checked?: Set<Path>;
@@ -297,7 +299,7 @@ interface Props {
   original?: number[];
 }
 
-export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, image, onSet, editing, onStartEdit, onCommit, onPick, onPolicy, onCancelEdit, checked, onCheck, bytes, original }: Props) {
+export function FieldTree({ nodes, expanded, selected, onToggle, onSelect, onHover, onFollow, icon, image, onSet, editing, onStartEdit, onCommit, onPick, onPolicy, onDrops, onCancelEdit, checked, onCheck, bytes, original }: Props) {
   const rows = flatten(nodes, expanded);
   const checkable = !!onCheck;
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -415,7 +417,18 @@ ${node.comment}` : ""}` : node.comment}
                   <Search size={12} />
                 </button>
               )}
-              {node.display === "aipolicy" && onPolicy && Number(node.value) > 0 ? (
+              {node.display === "drops" && onDrops && node.hint ? (
+                <button
+                  className="hint link-hint"
+                  title="Open in the extra_drops.sev editor"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDrops(Number(node.value));
+                  }}
+                >
+                  {node.hint}
+                </button>
+              ) : node.display === "aipolicy" && onPolicy && Number(node.value) > 0 ? (
                 <button
                   className="hint link-hint"
                   title="Open this policy in the aipolicy.data browser"

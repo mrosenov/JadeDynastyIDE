@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { cloneRecord, deleteRecord, editRecord, editTalkText, fileSummary, getRecord, getSettings, getTalk, iconUrl, imageUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, revertTalk, saveElements, undoEdit } from "./elements/api";
+import { cloneRecord, setExtraDropsSource, deleteRecord, editRecord, editTalkText, fileSummary, getRecord, getSettings, getTalk, iconUrl, imageUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, revertTalk, saveElements, undoEdit } from "./elements/api";
 import type { EditState, Saved, SaveOptions, ExportSource, FieldEdit, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail, TalkTextEdit } from "./elements/types";
 import { bytes, count } from "./elements/format";
 import { ListPicker, type ListPickerHandle } from "./components/ListPicker";
@@ -29,6 +29,7 @@ import { UnsavedDialog } from "./components/UnsavedDialog";
 import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } from "./components/PathDataEditor";
 import { DynObjectsEditor, type DynObjectsEditorHandle, type DynObjectsEditorState } from "./components/DynObjectsEditor";
 import { DomainEditor, type DomainEditorHandle, type DomainEditorState } from "./components/DomainEditor";
+import { DropsEditor, type DropsEditorHandle, type DropsEditorState } from "./components/DropsEditor";
 import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
 import { TaskNpcEditor, type TaskNpcEditorHandle, type TaskNpcEditorState } from "./components/TaskNpcEditor";
 import { VipAwardEditor, type VipAwardEditorHandle, type VipAwardEditorState } from "./components/VipAwardEditor";
@@ -48,6 +49,7 @@ import {
   ChevronRight,
   CircleAlert,
   Database,
+  Dices,
   Download,
   FileUp,
   FileStack,
@@ -82,6 +84,7 @@ import {
   ListFilter,
   Languages,
   Redo2,
+  RefreshCw,
   RotateCcw,
   Save,
   SaveAll,
@@ -97,7 +100,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "objects" | "domains" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
+type DataWorkspace = "elements" | "paths" | "objects" | "domains" | "drops" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -193,6 +196,10 @@ export default function App() {
   const [domainEditorState, setDomainEditorState] = useState<DomainEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, files: 0 });
   const domainEditorStateRef = useRef(domainEditorState);
   domainEditorStateRef.current = domainEditorState;
+  const dropsEditor = useRef<DropsEditorHandle>(null);
+  const [dropsEditorState, setDropsEditorState] = useState<DropsEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, tables: 0 });
+  const dropsEditorStateRef = useRef(dropsEditorState);
+  dropsEditorStateRef.current = dropsEditorState;
   const tasksEditor = useRef<TasksEditorHandle>(null);
   const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null, unsupported: null, analysis: null, comparison: null, fieldCandidates: null, layoutPatch: null, referencePath: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
   const tasksEditorStateRef = useRef(tasksEditorState);
@@ -220,6 +227,19 @@ export default function App() {
   shopEditorStateRef.current = shopEditorState;
   /** A file chosen in Settings, opened when its workspace is shown. */
   const [pendingOpen, setPendingOpen] = useState<{ workspace: DataWorkspace; path: string } | null>(null);
+  /** A monster or item ID whose extra drop tables to show once the Drops editor is open. */
+  const [pendingDrops, setPendingDrops] = useState<number | null>(null);
+  useEffect(() => {
+    if (pendingDrops === null || workspace !== "drops" || !dropsEditor.current || !dropsEditorState.loaded) return;
+    dropsEditor.current.showId(pendingDrops);
+    setPendingDrops(null);
+  }, [dropsEditorState.loaded, pendingDrops, workspace]);
+  // The record inspector shows the extra drop tables of the extra_drops.sev opened last.
+  useEffect(() => {
+    let last: string | null = null;
+    try { last = localStorage.getItem("jdide.drops.lastPath"); } catch { /* optional */ }
+    if (last) void setExtraDropsSource(last).catch(() => {});
+  }, []);
   /** A policy to show once the AI editor is open (from a field with the aipolicy role). */
   const [pendingPolicy, setPendingPolicy] = useState<number | null>(null);
   useEffect(() => {
@@ -229,7 +249,7 @@ export default function App() {
   }, [pendingPolicy, workspace]);
   useEffect(() => {
     if (!pendingOpen || workspace !== pendingOpen.workspace) return;
-    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, objects: objectsEditor, domains: domainEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
+    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, objects: objectsEditor, domains: domainEditor, drops: dropsEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
     const editor = editors[workspace]?.current;
     if (!editor) return;
     setPendingOpen(null);
@@ -365,6 +385,10 @@ export default function App() {
         event.preventDefault();
         return;
       }
+      if (dropsEditorStateRef.current.dirty && !window.confirm("extra_drops.sev has unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
       if (tasksEditorStateRef.current.dirty && !window.confirm("tasks.data has unsaved changes. Close JD IDE and discard them?")) {
         event.preventDefault();
         return;
@@ -461,6 +485,7 @@ export default function App() {
         if (workspaceRef.current === "paths") pathEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "objects") objectsEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "domains") domainEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "drops") dropsEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "tasks") tasksEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "npc") npcEditor.current?.openPath(event.payload.paths[0]);
@@ -1108,6 +1133,40 @@ export default function App() {
         { label: "Export all policies as JSON…", icon: Download, onSelect: () => aiEditor.current?.exportJson(true), disabled: !aiEditorState.loaded },
       ],
     },
+  ] : workspace === "drops" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open extra_drops.sev…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => dropsEditor.current?.choose() },
+        { label: "Save", icon: Save, shortcut: "Ctrl+S", onSelect: () => dropsEditor.current?.save(), disabled: !dropsEditorState.loaded || !dropsEditorState.dirty },
+        { label: "Save as…", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: () => dropsEditor.current?.saveAs(), disabled: !dropsEditorState.loaded },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => dropsEditor.current?.undo(), disabled: !dropsEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => dropsEditor.current?.redo(), disabled: !dropsEditorState.canRedo },
+        "separator",
+        { label: "Clone table", icon: Copy, shortcut: "Ctrl+D", onSelect: () => dropsEditor.current?.cloneSelected(), disabled: !dropsEditorState.loaded },
+        { label: "Delete table…", icon: Trash2, shortcut: "Del", onSelect: () => dropsEditor.current?.deleteSelected(), disabled: !dropsEditorState.loaded },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => dropsEditor.current?.openProblems(), disabled: !dropsEditorState.loaded },
+        { label: "Compare with another extra_drops.sev…", icon: GitCompareArrows, onSelect: () => dropsEditor.current?.compare(), disabled: !dropsEditorState.loaded },
+        "separator",
+        { label: "Convert to version 1 (every server)", icon: RefreshCw, onSelect: () => dropsEditor.current?.setVersion(1), disabled: !dropsEditorState.loaded },
+        { label: "Convert to version 2 (zx_18 server)", icon: RefreshCw, onSelect: () => dropsEditor.current?.setVersion(2), disabled: !dropsEditorState.loaded },
+      ],
+    },
   ] : workspace === "domains" ? [
     {
       label: "File",
@@ -1273,6 +1332,11 @@ export default function App() {
       if (!window.confirm("Leave the path.data editor and discard its unsaved changes?")) return;
       setPathEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
     }
+    // And the extra drop tables.
+    if (workspace === "drops" && dropsEditorState.dirty) {
+      if (!window.confirm("Leave the extra_drops.sev editor and discard its unsaved changes?")) return;
+      setDropsEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
+    }
     // So do the domain files.
     if (workspace === "domains" && domainEditorState.dirty) {
       if (!window.confirm("Leave the domain editor and discard its unsaved changes?")) return;
@@ -1315,6 +1379,11 @@ export default function App() {
         <Castle size={18} />
         <span className="activity-label">Domains</span>
         {domainEditorState.dirty && <span className="activity-dirty" />}
+      </button>
+      <button className={"activity" + (workspace === "drops" ? " active" : "")} onClick={() => switchWorkspace("drops")} title="extra_drops.sev editor (the server's extra drop tables)" aria-label="extra_drops.sev">
+        <Dices size={18} />
+        <span className="activity-label">Drops</span>
+        {dropsEditorState.dirty && <span className="activity-dirty" />}
       </button>
       <button className={"activity" + (workspace === "tasks" ? " active" : "")} onClick={() => switchWorkspace("tasks")} title="tasks.data editor" aria-label="tasks.data">
         <FileStack size={18} />
@@ -1596,6 +1665,11 @@ export default function App() {
             onClientReloaded={() => getSettings().then(onSettingsSaved).catch((problem) => setError(String(problem)))}
           />
         </main>
+      ) : workspace === "drops" ? (
+        <main className="workspace path-data-workspace">
+          {activityBar}
+          <DropsEditor ref={dropsEditor} active elementsPath={summary?.path ?? null} onStateChange={setDropsEditorState} />
+        </main>
       ) : workspace === "domains" ? (
         <main className="workspace path-data-workspace">
           {activityBar}
@@ -1765,6 +1839,10 @@ export default function App() {
                   setPendingPolicy(id);
                   switchWorkspace("ai");
                 }}
+                onDrops={(id) => {
+                  setPendingDrops(id);
+                  switchWorkspace("drops");
+                }}
                 onDefine={(list, offset, spec) => {
                   setEditorIntent({ list, offset, spec });
                   setEditorOpen(true);
@@ -1890,6 +1968,14 @@ export default function App() {
             {pathEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
             <span className="spacer" />
             <span>PMID resource path table</span>
+          </>
+        ) : workspace === "drops" ? (
+          <>
+            <span>extra_drops.sev</span>
+            {dropsEditorState.path && <span className="mono truncate" title={dropsEditorState.path}>{dropsEditorState.path}</span>}
+            {dropsEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
+            <span className="spacer" />
+            {dropsEditorState.loaded && <span>{count(dropsEditorState.tables)} tables</span>}
           </>
         ) : workspace === "domains" ? (
           <>
