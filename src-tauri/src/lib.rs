@@ -870,6 +870,44 @@ fn map_regions_problems(file: map_regions::MapFile, server: Option<map_regions::
     map_regions::problems(&file, server.as_ref(), &instances)
 }
 
+/// What a map file refers to elsewhere: the map's server npcgen.data controllers, domain.data names, and which of
+/// `files` (paths below the client's `element` folder) the configured client lacks.
+#[tauri::command]
+async fn map_region_links(npcgen_path: Option<String>, files: Vec<String>, state: State<'_, AppState>) -> Result<map_regions::Links, String> {
+    let resources = state.resources();
+    tauri::async_runtime::spawn_blocking(move || {
+        let mut links = map_regions::Links::default();
+        if let Some(path) = npcgen_path.filter(|path| std::path::Path::new(path).is_file()) {
+            match map_regions::controllers_of(std::path::Path::new(&path)) {
+                Ok(found) => links.controllers = Some(found),
+                Err(error) => links.controllers_error = Some(error),
+            }
+        }
+        if let Some(resources) = resources {
+            let domain = resources.element_dir().join("data").join("domain.data");
+            if let Ok(file) = domain::open_file(&domain) {
+                links.domains = Some(file.data.domains.iter().map(|entry| (entry.id, entry.name.clone())).collect());
+            }
+            links.missing_files = Some(files.into_iter().filter(|file| !file.trim().is_empty() && !resources.has_file(file)).collect());
+        }
+        links
+    })
+    .await
+    .map_err(|error| error.to_string())
+}
+
+/// Every map of a client `maps` folder against a server `config` folder.
+#[tauri::command]
+async fn scan_map_regions(client_root: String, server_root: Option<String>, aliases: std::collections::HashMap<String, Vec<String>>, instances: Vec<i32>) -> Result<Vec<map_regions::ScanRow>, String> {
+    tauri::async_runtime::spawn_blocking(move || map_regions::scan(std::path::Path::new(&client_root), server_root.as_deref().map(std::path::Path::new), &aliases, &instances)).await.map_err(|error| error.to_string())?
+}
+
+/// Writes a server file from its client file, keeping the client's timestamp; returns the backup.
+#[tauri::command]
+async fn sync_map_server(client_path: String, server_path: String, backup: bool) -> Result<Option<String>, String> {
+    tauri::async_runtime::spawn_blocking(move || map_regions::sync_server(std::path::Path::new(&client_path), std::path::Path::new(&server_path), backup)).await.map_err(|error| error.to_string())?
+}
+
 /// Writes the client file and its server file with one new timestamp.
 #[tauri::command]
 async fn save_map_regions(path: String, token: Option<String>, file: map_regions::MapFile, server_path: String, backup: bool, replace_changed: bool) -> Result<map_regions::SaveReport, String> {
@@ -2733,6 +2771,9 @@ pub fn run() {
             read_map_sev,
             map_regions_problems,
             save_map_regions,
+            scan_map_regions,
+            map_region_links,
+            sync_map_server,
             open_quiz,
             quiz_problems,
             save_quiz,

@@ -11577,3 +11577,120 @@ select.ie-control {
   stroke-width: 2;
   stroke-dasharray: 5 4;
 }
+.maps-position {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.maps-readout {
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.maps-map > svg.maps-testing {
+  cursor: crosshair;
+}
+.maps-tester {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elev);
+}
+.maps-tester-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+.maps-tester-results {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.maps-character circle {
+  fill: none;
+  stroke: #00e5ff;
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+.maps-character circle.dot {
+  fill: #00e5ff;
+}
+.maps-character text {
+  fill: #00e5ff;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.8);
+  stroke-width: 0.25em;
+}
+.maps-spot path,
+.maps-spot circle {
+  fill: none;
+  stroke: #ff3df0;
+  stroke-width: 2;
+}
+.maps-scan-dialog {
+  width: min(1100px, 94vw);
+}
+.maps-scan-folders {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.maps-scan-list {
+  flex: 1;
+  min-height: 240px;
+  overflow: auto;
+}
+.maps-scan-list .dyn-table {
+  width: 100%;
+}
+.maps-scan-list td {
+  padding: 4px 8px;
+  vertical-align: top;
+}
+.maps-scan-table th:nth-child(1) { width: 28px; }
+.maps-scan-table th:nth-child(2) { width: 22%; }
+.maps-scan-table th:nth-child(3) { width: 110px; }
+.maps-scan-table th:nth-child(4) { width: 120px; }
+.maps-scan-table th:nth-child(6) { width: 70px; }
+.maps-scan-table td:nth-child(4) .tag { white-space: nowrap; }
+.maps-destination-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.maps-destination {
+  display: grid;
+  grid-template-columns: minmax(160px, 260px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+.maps-destination-map {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+}
+.maps-destination-blank {
+  fill: var(--bg-elev);
+}
+.maps-destination-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

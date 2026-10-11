@@ -344,6 +344,17 @@ impl Resources {
         &self.element
     }
 
+    /// Whether the client has a file by its path below `element` (`music\x.mp3`, `surfaces\x.dds`): loose, or in
+    /// the package named by its first folder.
+    pub fn has_file(&self, path: &str) -> bool {
+        let normal = path.replace('/', "\\");
+        if self.element.join(&normal).is_file() {
+            return true;
+        }
+        let first = normal.split('\\').next().unwrap_or_default();
+        !first.is_empty() && self.package(first).is_ok_and(|pck| pck.find(&normal).is_some())
+    }
+
     /// The client's path.data (also part of the elements.data digest).
     pub fn path_data_file(&self) -> PathBuf {
         self.element.join("data/path.data")

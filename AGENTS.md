@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (231 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (233 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -658,6 +658,19 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   folder name, `midmapUrl`, ±rows × 512, x and −z (as npcgen); picking from the list zooms (`focus`).
   Commands `open_map_regions`, `read_map_sev`, `map_regions_problems`, `save_map_regions`. The user chose:
   open `.clt` only, export the `.sev` on every save, preview only (no dragging), keep each file's version.
+- Additions (the user's list, in order): From game (`FromGame` exported from NpcGenEditor, `gameClients`/`gamePosition`;
+  a client chooser like npcgen's); "What's here?" (`elements/mapRegions.ts`: `pointIn` is the exact port of
+  `IsPointIn`/`IsCrossLine`, `whatsHere` applies the precinct tie rule and the 3D portal box); pointer readout and
+  Ctrl+click copy; Check all maps (`scan`, `sync_server`: writes the .sev from the .clt with the client's timestamp and
+  the server's buff regions, only into existing server map folders; `differences` compares exports rounded to 0.001;
+  commands `scan_map_regions`, `sync_map_server`; `MapScanDialog.tsx`); portal destinations (`PortalDestination` reads
+  the target folder's region.clt via `open_map_regions`); links (`map_region_links`: controllers by **trigger ID**
+  (`controller_id`; `TranslateCtrlID` is the identity outside battle maps, the exporter writes `nControllerID`; all
+  426 + 126 controlled server portals match their map's npcgen), domain.data names, `Resources::has_file` (loose under
+  `element` or in the package named by the first folder); the UI adds these as problems); compare/copy and names only
+  (`MapCompareDialog.tsx`, UI-side); "Who wins" (`ownershipGrid`, 110 × 110 samples, cached per file and instance).
+- Marks are **not** a reliable "inside the area" check: the exporter does not add the project offset to marks
+  (`// v.x += fSceneOffX;` is commented out), and 2,753 of 4,045 ForsakenJD marks lie outside their area.
 
 ## zhuxian_question.data editor
 

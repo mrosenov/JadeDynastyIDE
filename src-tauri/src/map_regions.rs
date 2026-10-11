@@ -784,6 +784,171 @@ pub fn save(path: &Path, token_now: Option<&str>, file: &MapFile, server_path: &
     Ok(SaveReport { path: path.display().to_string(), token: token(&client), timestamp: file.timestamp(), server_path: server_path.display().to_string(), backups })
 }
 
+// ---------------------------------------------------------------- all maps
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ScanRow {
+    /// The client's map folder.
+    pub folder: String,
+    pub kind: &'static str,
+    pub client_path: Option<String>,
+    pub server_path: Option<String>,
+    pub client_error: Option<String>,
+    pub server_error: Option<String>,
+    pub client_version: Option<u32>,
+    pub server_version: Option<u32>,
+    pub client_timestamp: Option<u32>,
+    pub server_timestamp: Option<u32>,
+    pub errors: usize,
+    pub warnings: usize,
+    /// How the server file differs from the one the client file exports (empty: in step).
+    pub differences: Vec<String>,
+    /// The server file can be written from the client file (`sync_server`).
+    pub can_sync: bool,
+}
+
+/// The server file a client file exports, with the server's buff regions (the client file has none) and the client's
+/// timestamp, so clients that already have the file stay in step.
+fn export_for(client: &MapFile, server: Option<&MapFile>) -> MapFile {
+    let mut file = client.clone();
+    if let (MapFile::Region { buffs, .. }, Some(MapFile::Region { buffs: server_buffs, .. })) = (&mut file, server) {
+        *buffs = server_buffs.clone();
+    }
+    file
+}
+
+/// Numbers rounded to three decimals: the client text keeps six, so exports differ from the editor's own server
+/// files by a few millionths.
+fn rounded(file: &MapFile) -> String {
+    serde_json::to_string(file).unwrap_or_default().split(|c: char| matches!(c, ',' | ':' | '[' | ']' | '{' | '}')).map(|part| part.parse::<f64>().map(|n| format!("{n:.3}")).unwrap_or_else(|_| part.to_string())).collect::<Vec<_>>().join("|")
+}
+
+fn differences(client: &MapFile, server: &MapFile) -> Vec<String> {
+    let mut out = Vec::new();
+    if client.version() != server.version() {
+        out.push(format!("version {} here, {} on the server", client.version(), server.version()));
+    }
+    if client.timestamp() != server.timestamp() {
+        out.push("other timestamp (players see an instance data error)".into());
+    }
+    match (client, server) {
+        (MapFile::Region { items, .. }, MapFile::Region { items: server_items, .. }) => {
+            let portals = |items: &[RegionItem]| items.iter().filter(|item| matches!(item, RegionItem::Portal { .. })).count();
+            let regions = |items: &[RegionItem]| items.iter().filter(|item| matches!(item, RegionItem::Region { .. })).count();
+            if portals(items) != portals(server_items) {
+                out.push(format!("{} portals here, {} on the server", portals(items), portals(server_items)));
+            }
+            if regions(items) != regions(server_items) {
+                out.push(format!("{} regions here, {} on the server", regions(items), regions(server_items)));
+            }
+        }
+        (MapFile::Precinct { precincts, .. }, MapFile::Precinct { precincts: server_precincts, .. }) => {
+            let here = precincts.iter().filter(|p| p.id != 0).count();
+            if here != server_precincts.len() {
+                out.push(format!("{here} server precincts here, {} on the server", server_precincts.len()));
+            }
+        }
+        _ => {}
+    }
+    if out.is_empty() {
+        let exported = export_for(client, Some(server));
+        let back = write_sev(&exported).ok().and_then(|bytes| parse_sev(&bytes, client.kind()).ok());
+        if back.as_ref().map(rounded) != Some(rounded(server)) {
+            out.push("other values (outlines, positions or settings)".into());
+        }
+    }
+    out
+}
+
+/// Every map folder of a client `maps` folder against a server `config` folder (optional). `aliases`: client folder →
+/// server folder names to try first (the instance's data path; servers name some folders differently).
+pub fn scan(client_root: &Path, server_root: Option<&Path>, aliases: &std::collections::HashMap<String, Vec<String>>, instances: &[i32]) -> Result<Vec<ScanRow>, String> {
+    let mut folders: Vec<_> = std::fs::read_dir(client_root).map_err(|error| format!("Could not read {}: {error}", client_root.display()))?.flatten().filter(|entry| entry.path().is_dir()).map(|entry| entry.file_name().to_string_lossy().into_owned()).collect();
+    folders.sort_by_key(|name| name.to_lowercase());
+    let mut out = Vec::new();
+    for folder in folders {
+        for kind in ["precinct", "region"] {
+            let client_path = client_root.join(&folder).join(format!("{kind}.clt"));
+            if !client_path.is_file() {
+                continue;
+            }
+            let mut row = ScanRow { folder: folder.clone(), kind, client_path: Some(client_path.display().to_string()), server_path: None, client_error: None, server_error: None, client_version: None, server_version: None, client_timestamp: None, server_timestamp: None, errors: 0, warnings: 0, differences: Vec::new(), can_sync: false };
+            let client = match read_clt(&client_path) {
+                Ok((file, _)) => {
+                    row.client_version = Some(file.version());
+                    row.client_timestamp = Some(file.timestamp());
+                    Some(file)
+                }
+                Err(error) => {
+                    row.client_error = Some(error);
+                    None
+                }
+            };
+            let server_path = server_root.map(|root| {
+                let mut names = aliases.get(&folder.to_lowercase()).cloned().unwrap_or_default();
+                names.push(folder.clone());
+                names.iter().map(|name| root.join(name).join(format!("{kind}.sev"))).find(|path| path.is_file()).unwrap_or_else(|| root.join(&folder).join(format!("{kind}.sev")))
+            });
+            let server = server_path.as_ref().and_then(|path| {
+                row.server_path = Some(path.display().to_string());
+                if !path.is_file() {
+                    row.server_error = Some("missing".into());
+                    return None;
+                }
+                match read_sev(path, kind) {
+                    Ok(file) => {
+                        row.server_version = Some(file.version());
+                        row.server_timestamp = Some(file.timestamp());
+                        Some(file)
+                    }
+                    Err(error) => {
+                        row.server_error = Some(error);
+                        None
+                    }
+                }
+            });
+            if let Some(client) = &client {
+                let checked = export_for(client, server.as_ref());
+                for problem in problems(&checked, server.as_ref(), instances) {
+                    match problem.severity {
+                        "error" => row.errors += 1,
+                        "warning" => row.warnings += 1,
+                        _ => {}
+                    }
+                }
+                if let Some(server) = &server {
+                    row.differences = differences(client, server);
+                } else if server_root.is_some() {
+                    row.differences.push(if row.server_error.as_deref() == Some("missing") { "no server file".into() } else { "the server file cannot be read".into() });
+                }
+                let buffs_fit = !matches!((client, &server), (MapFile::Region { version, .. }, Some(MapFile::Region { buffs, .. })) if *version < 8 && !buffs.is_empty());
+                let folder_exists = server_path.as_ref().and_then(|path| path.parent()).is_some_and(Path::is_dir);
+                row.can_sync = folder_exists && !row.differences.is_empty() && buffs_fit;
+            }
+            out.push(row);
+        }
+    }
+    Ok(out)
+}
+
+/// Writes the server file from the client file with the client's timestamp (the client file is not touched), keeping
+/// the server's buff regions.
+pub fn sync_server(client_path: &Path, server_path: &Path, backup: bool) -> Result<Option<String>, String> {
+    let (client, _) = read_clt(client_path)?;
+    let server = if server_path.is_file() { Some(read_sev(server_path, client.kind())?) } else { None };
+    let file = export_for(&client, server.as_ref());
+    let bytes = write_sev(&file)?;
+    parse_sev(&bytes, file.kind())?;
+    let folder = server_path.parent().ok_or("The server file has no folder")?;
+    if !folder.is_dir() {
+        return Err(format!("The server has no map folder {} (it does not host this map)", folder.display()));
+    }
+    let archived = if backup && server_path.is_file() { Some(crate::backup::archive(server_path, &[server_path.to_path_buf()])?.display().to_string()) } else { None };
+    crate::path_data::write_replacing(server_path, &bytes)?;
+    Ok(archived)
+}
+
 // ---------------------------------------------------------------- problems
 
 #[derive(Debug, Clone, Serialize)]
@@ -824,6 +989,25 @@ fn polygon_problem(points: &[Vec3]) -> Option<String> {
         }
     }
     None
+}
+
+#[derive(Debug, Clone, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Links {
+    /// The map's npcgen.data controllers (trigger ID, name): a portal names the trigger ID (the map editor writes
+    /// `nControllerID`; the server asks `IsActiveCtrl` for it, across all maps).
+    pub controllers: Option<Vec<(i32, String)>>,
+    pub controllers_error: Option<String>,
+    /// domain.data territories (ID, name), for precinct domains.
+    pub domains: Option<Vec<(i32, String)>>,
+    /// Of the files asked about, those the client does not have (None: no client folder).
+    pub missing_files: Option<Vec<String>>,
+}
+
+/// Controllers of a server npcgen.data by trigger ID.
+pub fn controllers_of(path: &Path) -> Result<Vec<(i32, String)>, String> {
+    let data = std::fs::read(path).map_err(|error| format!("Could not read {}: {error}", path.display()))?;
+    Ok(crate::npcgen::parse(&data)?.controllers.iter().map(|controller| (controller.controller_id, controller.name.clone())).collect())
 }
 
 /// `instances`: IDs from the client's instance.txt (empty: not checked).
@@ -1072,6 +1256,70 @@ mod tests {
         let _ = std::fs::remove_dir_all(&dir);
     }
 
+    /// The scan pairs client and server maps; syncing writes the server file with the client timestamp only.
+    #[test]
+    fn scanning_and_syncing_maps() {
+        let (client, server) = (Path::new("E:/Games/ForsakenJD/element/maps"), Path::new("E:/Game Dev/JD/1559/gamed/config"));
+        if !client.is_dir() || !server.is_dir() {
+            return;
+        }
+        let rows = scan(client, Some(server), &Default::default(), &[]).unwrap();
+        let in_step = rows.iter().filter(|row| row.differences.is_empty() && row.client_error.is_none() && row.server_error.is_none()).count();
+        let unreadable = rows.iter().filter(|row| row.client_error.is_some()).count();
+        let missing = rows.iter().filter(|row| row.server_error.as_deref() == Some("missing")).count();
+        let syncable = rows.iter().filter(|row| row.can_sync).count();
+        println!("MAPSCAN rows {}, in step {in_step}, client unreadable {unreadable}, server missing {missing}, can sync {syncable}", rows.len());
+        for row in rows.iter().filter(|row| !row.differences.is_empty() && row.server_error.is_none()).take(12) {
+            println!("MAPSCAN {} {}: {}", row.folder, row.kind, row.differences.join("; "));
+        }
+        assert!(in_step >= 200, "most ForsakenJD maps match the 1559 server ({in_step})");
+        let row = rows.iter().find(|row| row.can_sync && row.server_error.is_none() && row.kind == "region").expect("a map to sync");
+        let dir = std::env::temp_dir().join(format!("jdide-map-sync-{}", std::process::id()));
+        std::fs::create_dir_all(dir.join("c")).unwrap();
+        std::fs::create_dir_all(dir.join("s")).unwrap();
+        let (clt, sev) = (dir.join("c").join("region.clt"), dir.join("s").join("region.sev"));
+        std::fs::copy(row.client_path.as_ref().unwrap(), &clt).unwrap();
+        std::fs::copy(row.server_path.as_ref().unwrap(), &sev).unwrap();
+        let before = std::fs::read(&clt).unwrap();
+        sync_server(&clt, &sev, false).unwrap();
+        assert_eq!(std::fs::read(&clt).unwrap(), before, "the client file is not touched");
+        let (client_file, _) = read_clt(&clt).unwrap();
+        let synced = read_sev(&sev, "region").unwrap();
+        assert!(differences(&client_file, &synced).is_empty(), "{:?}", differences(&client_file, &synced));
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// Sound, music and minimap paths resolve in the client (loose under `element` or in a package) for nearly every
+    /// precinct of the user's client.
+    #[test]
+    fn precinct_files_point_at_client_files() {
+        let dir = std::path::PathBuf::from("E:/Games/ForsakenJD");
+        let Ok(info) = crate::client::inspect(&dir) else { return };
+        let resources = crate::client::Resources::new(info);
+        let (mut asked, mut missing) = (0, Vec::new());
+        for entry in std::fs::read_dir(dir.join("element/maps")).unwrap().flatten() {
+            let Ok((MapFile::Precinct { precincts, .. }, _)) = read_clt(&entry.path().join("precinct.clt")) else { continue };
+            for p in &precincts {
+                let mut files: Vec<String> = [&p.sound, &p.sound_night].iter().filter(|text| !text.is_empty()).map(|text| format!("music\\{text}")).collect();
+                files.extend(p.music.iter().filter(|text| !text.is_empty()).cloned());
+                if !p.minimap.is_empty() {
+                    files.push(format!("surfaces\\{}", p.minimap));
+                }
+                for file in files {
+                    asked += 1;
+                    if !resources.has_file(&file) {
+                        missing.push(file);
+                    }
+                }
+            }
+        }
+        missing.sort();
+        missing.dedup();
+        println!("MAPFILES asked {asked}, missing {} distinct: {:?}", missing.len(), missing.iter().take(12).collect::<Vec<_>>());
+        assert!(missing.len() * 20 < asked, "most files exist");
+        assert!(asked > 1000);
+    }
+
     #[test]
     fn reading_reports_lines_and_problems() {
         let text = "//  Element region file (client version)\n\nversion  5\n1331203618\n\n[region]\n\"Safe\"\n1  3\n0 0 0\n10 0 0\n0 0 10\n\n[trans]\n5  3  0\t0\n1, 2, 3\n1, 1, 1\n4, 5, 6\n";
@@ -1089,4 +1337,7 @@ mod tests {
         assert_eq!(parse_precinct_clt(&text).unwrap(), precincts);
     }
 }
+
+
+
 

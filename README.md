@@ -1079,6 +1079,42 @@ buildings, and for the selected area its return city, kick-out point and marks. 
 from the list zooms to it. Points are edited as numbers (or pasted as text, one `x y z` per line). An instance
 filter shows one instance of a shared folder.
 
+**From the game.** Every position (return city, kick-out point, marks, portal box and arrival, guild buildings) has
+a **From game** button that takes your character's position in a running client (as in the npcgen.data editor;
+Shift+click chooses the client when several run). Outlines have **Add my position**: walk the border and click at
+each corner. **Where am I** shows your character on the map.
+
+**What's here?** (map bar): click the map, type a position or take your character's, and the editor answers with
+the game's own rules, from this file and the folder's other one: the area the game picks (the lowest priority
+number among the instance's areas, the later one on a tie, with the others listed), its return city and level
+limit, the safe zone or PK region, the portal you are standing in (the box includes the height) and buff regions.
+The map bar also shows the position under the pointer; Ctrl+click copies it.
+
+**Who wins** (precinct files, or a region file with its precinct.clt) colours the map by the area the game picks at
+each spot; red spots are ties between areas of the same priority, where their order in the file decides.
+
+**Portal destinations.** A portal's form shows the target map with the arrival point and that map's portals, and
+warns when the arrival is off the map, lands inside another portal (players are sent on at once), or no portal
+leads back.
+
+**Links to other files.** With the server file chosen, a portal's controller is looked up in that map's server
+npcgen.data by its **trigger ID** (the map editor stores the trigger ID; every controlled portal of the zxserver and
+1559 servers finds one in its own map). Precinct domains are named from the client's domain.data; sounds (`music\`),
+music and minimaps (`Surfaces\`) are checked against the client (loose files or packages): ForsakenJD names 14
+files its client lacks. Buff region monsters are named from the open elements.data.
+
+**Compare with another copy** (Tools or Compare…): another client's or server set's copy of the same file. Areas pair
+by ID (else name), regions by name (then by order), portals by source → target, guild buildings by template and
+place. Copy whole entries, or **names only** (area names with their marks' names, region names) to take over a
+translation. One undo step.
+
+**Check all maps** (All maps…): the client's `maps` folder against the server's `config` folder (server folders by map
+name or the instance's data path). It lists files the game cannot read, server files out of step (timestamp,
+portals, precinct count, values) and problems, and **writes the server files from the client files** with the
+client file's timestamp, so clients need no update (buff regions are kept; maps the server does not host are left
+alone). ForsakenJD against the 1559 server: 249 of 342 files in step, 31 to sync, among them x1, where the client has
+11 portals and the server 12.
+
 **Problems** (Ctrl+Shift+M): outlines with fewer than 3 points or crossing themselves (the map editor refuses to
 export them), repeated precinct IDs, instances not in the client's instance.txt, level limits without a kick-out
 city or with min above max, portals without size, buff regions in a file older than version 8, and against the

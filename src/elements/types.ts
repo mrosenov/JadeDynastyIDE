@@ -2893,3 +2893,33 @@ export interface MapRegionProblem {
   index: number | null;
   message: string;
 }
+
+/** One map file of a client `maps` folder against its server copy. */
+export interface MapScanRow {
+  folder: string;
+  kind: "precinct" | "region";
+  clientPath: string | null;
+  serverPath: string | null;
+  clientError: string | null;
+  serverError: string | null;
+  clientVersion: number | null;
+  serverVersion: number | null;
+  clientTimestamp: number | null;
+  serverTimestamp: number | null;
+  errors: number;
+  warnings: number;
+  /** How the server file differs from the client's export (empty: in step). */
+  differences: string[];
+  canSync: boolean;
+}
+
+/** What a map file refers to elsewhere. */
+export interface MapRegionLinks {
+  /** The map's server npcgen.data controllers (trigger ID, name). */
+  controllers: [number, string][] | null;
+  controllersError: string | null;
+  /** domain.data territories (ID, name). */
+  domains: [number, string][] | null;
+  /** Files (below the client's element folder) the client lacks; null without a client folder. */
+  missingFiles: string[] | null;
+}

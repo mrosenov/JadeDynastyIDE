@@ -73,6 +73,7 @@ import {
   Castle,
   MessageCircleQuestion,
   LandPlot,
+  ListChecks,
   Server,
   CalendarDays,
   Brain,
@@ -1185,6 +1186,8 @@ export default function App() {
       accessKey: "t",
       items: [
         { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => mapsEditor.current?.openProblems(), disabled: !mapsEditorState.loaded },
+        { label: "Check all maps…", icon: ListChecks, onSelect: () => mapsEditor.current?.checkAllMaps(), disabled: !mapsEditorState.loaded },
+        { label: "Compare with another copy…", icon: GitCompareArrows, onSelect: () => mapsEditor.current?.compare(), disabled: !mapsEditorState.loaded },
       ],
     },
   ] : workspace === "quiz" ? [

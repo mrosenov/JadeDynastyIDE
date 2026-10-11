@@ -229,7 +229,7 @@ function UsedBy({ uses, onShow }: { uses: ControllerUse[]; onShow?: (section: Np
 }
 
 /** Takes the position of the character in the running game client. */
-function FromGame({ read, onPosition, label = "From game" }: { read: (choose: boolean) => Promise<GamePosition | null>; onPosition: (position: GamePosition) => void; label?: string }) {
+export function FromGame({ read, onPosition, label = "From game" }: { read: (choose: boolean) => Promise<GamePosition | null>; onPosition: (position: GamePosition) => void; label?: string }) {
   const [busy, setBusy] = useState(false);
   return <button className="btn small" disabled={busy} title={label === "From game" ? "Put it where your character stands, facing the same way, in the running game client (Shift+click: choose the client when several run)" : "Turn it the way your character faces in the running game client (Shift+click: choose the client when several run)"}
     onClick={(event) => {
