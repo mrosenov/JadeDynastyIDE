@@ -1136,6 +1136,8 @@ export default function App() {
       accessKey: "t",
       items: [
         { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => domainEditor.current?.openProblems(), disabled: !domainEditorState.loaded },
+        "separator",
+        { label: "Export domain.sev for the server…", icon: Download, onSelect: () => domainEditor.current?.exportSev(), disabled: !domainEditorState.loaded },
       ],
     },
   ] : workspace === "objects" ? [

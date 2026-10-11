@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (219 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (220 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -629,7 +629,16 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
 - UI `DomainEditor.tsx` (all files' data in one undo history, `DomainMap.tsx` SVG map with pan/zoom and center
   drag; `effective` names/classes from land.txt). Commands `open_domains` (the folder of a domain file),
   `domain_land_tables` (configs.pck), `domain_problems`, `save_domains` (several files, one backup).
-  Next (agreed): outline editing (re-triangulate), `domain.sev` export at the end.
+- domain.sev (`sev_from`, `encode_sev`, `parse_sev`, `sev_preview`, `export_sev`; commands `domain_sev_preview`,
+  `export_domain_sev`; `DomainSevExport.tsx`): count, per territory id, type, item lower, upper, neighbours; times;
+  max. From domain1 + land.txt as `globalsave` (rows by ID override type 1–3 else 0, limits, neighbours; others keep
+  the file's type/neighbours with 0 limits; the challenge item is not written). Both server loaders (2013 and zx_18)
+  hard-code the times (Sat/Sun/Fri 20:00 …) and max 7 after reading. `domain_sev_matches_the_official_export`:
+  XtremeJade → zxserver and ForsakenJD → 1559 equal byte for byte with max 0.
+- land.txt is read by tab columns (`parse_land`); the client's `sscanf %s` stops names at spaces, so rows with
+  spaced names (XtremeJade's English file) are misread in game: `LandRow.space_in_name` → a Problems warning.
+  Reading by whitespace (like the client) parsed no XtremeJade row and only 5 ForsakenJD rows.
+  Next (agreed): outline editing (re-triangulate).
 
 ## DynamicObjects.data editor
 

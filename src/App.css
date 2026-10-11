@@ -5153,6 +5153,24 @@ select.sf-control {
 .domain-times .dyn-table .dyn-input {
   width: 56px;
 }
+.domain-sev-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 12px;
+}
+.domain-sev-target {
+  max-width: 520px;
+}
+.domain-sev-changed td,
+.domain-sev-new td {
+  background: color-mix(in srgb, var(--warn) 8%, transparent);
+}
+.domain-sev-removed td {
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
+  text-decoration: line-through;
+}
 /* DynamicObjects.data: ID, file, kind, client, npcgen, delete. */
 .dyn-objects-table th:nth-child(3) { width: 96px; }
 .dyn-objects-table th:nth-child(4) { width: 70px; }

@@ -1022,7 +1022,7 @@ the file reads back exactly, can back up the old file and warns when another pro
 **domain.data** (guild map), **domain1.data** (territory war), **domain2.data**, **domain3.data** and
 **domain4.data** (the world map's cross-server, overall and ancient-world layers) and **domainlandwar.data** (land
 war). Choosing any of them opens every `domain*.data` file of its folder. **Only the client reads them**; the
-territory war server reads `domain.sev` (exported from domain1.data; an export is planned).
+territory war server reads `domain.sev` (see the export below).
 
 - **The map** draws each domain as the client does (its triangles filled by class, its outline, the name at
   its center); wheel zooms, dragging moves, double-click fits. Click a domain to select it; drag the selected
@@ -1039,10 +1039,20 @@ territory war server reads `domain.sev` (exported from domain1.data; an export i
   neighbours from `configs\land.txt` in configs.pck. With a client configured, the editor shows those values
   (in the list, on the map and in a "What the client uses" box) and marks the overridden fields. domainlandwar.data
   is matched to `configs\landwar.txt` the same way (newer clients; our source does not show that loader).
+  The client reads land.txt with `sscanf`, which stops a name at a space and then misreads the rest of the row:
+  Problems warns about such names (XtremeJade's English land.txt has them).
 - **Problems** (Ctrl+Shift+M): repeated IDs, names over 15 characters and triangles pointing past the outline
   points are errors; unknown classes, missing neighbours, a domain listing itself and battle times outside a
   week are warnings; neighbours that do not list the domain back, centers outside their area and land.txt rows
   without a domain (or the reverse) are notes. Neighbour 0 is an empty entry.
+- **Export domain.sev for the server…** (Tools, or the link in domain1.data's land.txt line) writes what the
+  territory war server (gdeliveryd) reads, as the client's `globalsave` does: domain1.data's territories (as open,
+  unsaved changes included) with class, declaration item limits and neighbours from land.txt (territories without
+  a row keep the file's class and neighbours and get no item limits), the battle times and the battles per slot (0
+  like the official client, or the file's value). Choose the server's file (remembered); the list shows each
+  territory and what differs from that file now. Both server sources replace the battle times and the battles per
+  slot with fixed ones after reading, so only the territories matter. Exports from XtremeJade and ForsakenJD
+  equal the zxserver and 1559 `domain.sev` byte for byte. Restart gdeliveryd after replacing it.
 - **Save** (Ctrl+S) writes the shown file, **Save all** (Ctrl+Shift+S) every changed one, asking first when a
   file has errors. Files keep the `MOXB` marker of newer clients when they have it; every file must read back
   exactly, one 7z backup holds the replaced files, and another program's changes are noticed. Undo/redo cover

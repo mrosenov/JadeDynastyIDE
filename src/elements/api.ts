@@ -6,6 +6,8 @@ import type {
   DomainProblem,
   DynObjectCheck,
   LandRow,
+  Sev,
+  SevPreview,
   AiCompareSummary,
   AiCopyReport,
   AiEditResult,
@@ -446,6 +448,8 @@ export const openDomains = (path: string) => invoke<DomainFile[]>("open_domains"
 export const domainLandTables = () => invoke<Record<string, LandRow[]>>("domain_land_tables");
 export const domainProblems = (name: string, data: DomainData, land: LandRow[] | null) => invoke<DomainProblem[]>("domain_problems", { name, data, land });
 export const saveDomains = (files: { path: string; token: string | null; data: DomainData }[], backup: boolean, replaceChanged: boolean) => invoke<{ files: [string, number, string][]; backup: string | null }>("save_domains", { files, backup, replaceChanged });
+export const domainSevPreview = (data: DomainData, land: LandRow[] | null, timeMax: number, target: string | null) => invoke<SevPreview>("domain_sev_preview", { data, land, timeMax, target });
+export const exportDomainSev = (sev: Sev, target: string, backup: boolean) => invoke<{ files: [string, number, string][]; backup: string | null }>("export_domain_sev", { sev, target, backup });
 /** DynamicObjects.data: the path.data table format with its own rules. */
 export const openDynObjects = (path: string) => invoke<PathDataFile>("open_dyn_objects", { path });
 export const saveDynObjects = (request: PathDataSaveRequest) => invoke<PathDataSaveReport>("save_dyn_objects", { request });

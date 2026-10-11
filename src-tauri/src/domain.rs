@@ -252,13 +252,18 @@ pub struct LandRow {
     pub lower: i32,
     pub upper: i32,
     pub neighbours: Vec<i32>,
+    /// The name has a space: the client's `sscanf("%d %s %d …")` stops the name there and misreads the rest of the
+    /// row (class, items and neighbours become leftovers), so this row does not work in game.
+    #[serde(default)]
+    pub space_in_name: bool,
 }
 
-/// Rows as the client reads them (`sscanf("%d %s %d %d %d %d %s")`): whitespace-separated, the header skipped.
+/// Rows by their tab-separated columns (what the file means; spaces separate columns when a line has no tabs),
+/// the header skipped. Names with spaces are marked: the client itself splits at any whitespace.
 pub fn parse_land(text: &str) -> Vec<LandRow> {
     text.lines()
         .filter_map(|line| {
-            let parts: Vec<&str> = line.split_whitespace().collect();
+            let parts: Vec<&str> = if line.contains('\t') { line.split('\t').map(str::trim).filter(|part| !part.is_empty()).collect() } else { line.split_whitespace().collect() };
             if parts.len() < 6 {
                 return None;
             }
@@ -271,6 +276,7 @@ pub fn parse_land(text: &str) -> Vec<LandRow> {
                 lower: number(4)?,
                 upper: number(5)?,
                 neighbours: parts.get(6).map(|list| list.split(';').filter_map(|id| id.trim().parse().ok()).collect()).unwrap_or_default(),
+                space_in_name: parts[1].contains(char::is_whitespace),
             })
         })
         .collect()
@@ -381,6 +387,10 @@ pub fn problems(file_name: &str, data: &DomainData, land: Option<&[LandRow]>) ->
     if let Some(land) = land {
         let rows: HashSet<i32> = land.iter().map(|row| row.id).collect();
         let source = if file_name.eq_ignore_ascii_case("domainlandwar.data") { "landwar.txt" } else { "land.txt" };
+        for row in land.iter().filter(|row| row.space_in_name) {
+            let index = data.domains.iter().position(|domain| domain.id == row.id);
+            out.push(Problem { severity: "warning", domain: index, message: format!("configs\\{source}: the name “{}” has a space; the client reads names only up to a space, so it misreads this row's class, declaration items and neighbours", row.name) });
+        }
         for (index, domain) in data.domains.iter().enumerate() {
             if !rows.contains(&domain.id) {
                 out.push(Problem { severity: "note", domain: Some(index), message: format!("Not in configs\\{source}: the client keeps this file's name and type and has no declaration item for it") });
@@ -393,6 +403,126 @@ pub fn problems(file_name: &str, data: &DomainData, land: Option<&[LandRow]>) ->
         }
     }
     out
+}
+
+// ── domain.sev (the territory war server's copy) ──
+
+/// A territory as the server reads it from `domain.sev` (gdeliveryd domaindataman.cpp `domain_data_load`).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SevDomain {
+    pub id: i32,
+    #[serde(rename = "type")]
+    pub kind: i32,
+    /// Declaration items: the least and the most a guild may bid.
+    pub lower: i32,
+    pub upper: i32,
+    pub neighbours: Vec<i32>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Sev {
+    pub domains: Vec<SevDomain>,
+    pub times: Vec<[i32; 3]>,
+    pub time_max: i32,
+}
+
+/// What the client's `globalsave` writes (globaldataman.cpp): domain1.data's territories after `configs\land.txt`
+/// replaced their type (level 1–3, else 0), item limits and neighbours (the last row of an ID wins); a territory
+/// without a row keeps the file's type and neighbours and has no item limits. `time_max`: the official client
+/// writes 0 (its `nTimeMax` is never set); both servers replace the times and the maximum with fixed ones anyway.
+pub fn sev_from(data: &DomainData, land: Option<&[LandRow]>, time_max: i32) -> Sev {
+    let rows: HashMap<i32, &LandRow> = land.unwrap_or_default().iter().map(|row| (row.id, row)).collect();
+    let mut seen = HashSet::new();
+    let domains = data
+        .domains
+        .iter()
+        .map(|domain| {
+            // The client applies a row to the first domain of its ID only.
+            let row = if seen.insert(domain.id) { rows.get(&domain.id) } else { None };
+            match row {
+                Some(row) => SevDomain { id: domain.id, kind: if (1..=3).contains(&row.level) { row.level } else { 0 }, lower: row.lower, upper: row.upper, neighbours: row.neighbours.clone() },
+                None => SevDomain { id: domain.id, kind: domain.kind, lower: 0, upper: 0, neighbours: domain.neighbours.clone() },
+            }
+        })
+        .collect();
+    Sev { domains, times: data.times.clone().unwrap_or_default(), time_max }
+}
+
+pub fn encode_sev(sev: &Sev) -> Vec<u8> {
+    let mut out = Vec::new();
+    let mut put = |value: i32| out.extend_from_slice(&value.to_le_bytes());
+    put(sev.domains.len() as i32);
+    for domain in &sev.domains {
+        for value in [domain.id, domain.kind, domain.lower, domain.upper, domain.neighbours.len() as i32] {
+            put(value);
+        }
+        for &neighbour in &domain.neighbours {
+            put(neighbour);
+        }
+    }
+    put(sev.times.len() as i32);
+    for time in &sev.times {
+        for &value in time {
+            put(value);
+        }
+    }
+    put(sev.time_max);
+    out
+}
+
+pub fn parse_sev(data: &[u8]) -> Result<Sev, String> {
+    let mut reader = Reader { data, at: 0 };
+    let count = reader.count("the territory count", 20)?;
+    let mut domains = Vec::with_capacity(count);
+    for index in 0..count {
+        let what = format!("territory {}", index + 1);
+        let (id, kind, lower, upper) = (reader.i32(&what)?, reader.i32(&what)?, reader.i32(&what)?, reader.i32(&what)?);
+        let neighbours = (0..reader.count(&what, 4)?).map(|_| reader.i32(&what)).collect::<Result<Vec<_>, String>>()?;
+        domains.push(SevDomain { id, kind, lower, upper, neighbours });
+    }
+    let times = (0..reader.count("the battle time count", 12)?).map(|_| Ok([reader.i32("a battle time")?, reader.i32("a battle time")?, reader.i32("a battle time")?])).collect::<Result<Vec<_>, String>>()?;
+    let time_max = reader.i32("the battles per time slot")?;
+    if reader.at != data.len() {
+        return Err(format!("{} bytes follow the battle times", data.len() - reader.at));
+    }
+    Ok(Sev { domains, times, time_max })
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SevPreview {
+    pub sev: Sev,
+    /// The target file as it is now (none: it does not exist or is not a domain.sev).
+    pub existing: Option<Sev>,
+    /// Why the target could not be read.
+    pub existing_error: Option<String>,
+    /// The export would write exactly the target's bytes.
+    pub same: bool,
+}
+
+pub fn sev_preview(data: &DomainData, land: Option<&[LandRow]>, time_max: i32, target: Option<&Path>) -> SevPreview {
+    let sev = sev_from(data, land, time_max);
+    let (existing, existing_error, same) = match target.map(std::fs::read) {
+        Some(Ok(bytes)) => match parse_sev(&bytes) {
+            Ok(existing) => (Some(existing), None, encode_sev(&sev) == bytes),
+            Err(error) => (None, Some(error), false),
+        },
+        _ => (None, None, false),
+    };
+    SevPreview { sev, existing, existing_error, same }
+}
+
+/// Writes domain.sev (atomic, 7z backup of the replaced file); the bytes must read back as the territories.
+pub fn export_sev(sev: &Sev, target: &Path, backup: bool) -> Result<SaveReport, String> {
+    let data = encode_sev(sev);
+    if parse_sev(&data)? != *sev {
+        return Err("The written domain.sev would not read back the same; nothing was written".into());
+    }
+    let backup = if backup && target.is_file() { Some(crate::backup::archive(target, &[target.to_path_buf()])?.display().to_string()) } else { None };
+    crate::path_data::write_replacing(target, &data)?;
+    Ok(SaveReport { files: vec![(target.display().to_string(), data.len(), token(&data))], backup })
 }
 
 // ── Saving ──
@@ -514,6 +644,29 @@ mod tests {
         let stale = save(&[SaveFile { path: target.display().to_string(), token: Some(opened.token), data: opened.data }], false, false).unwrap_err();
         assert!(stale.starts_with("CHANGED_ON_DISK:"));
         let _ = std::fs::remove_dir_all(dir);
+    }
+
+    #[test]
+    fn domain_sev_matches_the_official_export() {
+        // Each server's domain.sev against the client it belongs to: domain1.data + the client's land.txt.
+        let pairs = [
+            ("E:/Games/XtremeJade", "E:/Game Dev/JD/zxserver/znet/gdeliveryd/domain.sev"),
+            ("E:/Games/ForsakenJD", "E:/Game Dev/JD/1559/gdeliveryd/domain.sev"),
+        ];
+        for (client, sev_path) in pairs {
+            let (Ok(info), Ok(official)) = (crate::client::inspect(Path::new(client)), std::fs::read(sev_path)) else { continue };
+            let resources = crate::client::Resources::new(info);
+            let land = land_tables(&resources);
+            let domain1 = open_file(&Path::new(client).join("element/data/domain1.data")).unwrap();
+            let sev = sev_from(&domain1.data, land.get("domain1.data").map(Vec::as_slice), 0);
+            let ours = encode_sev(&sev);
+            let parsed = parse_sev(&official).unwrap();
+            let differing: Vec<i32> = sev.domains.iter().zip(&parsed.domains).filter(|(a, b)| a != b).map(|(a, _)| a.id).collect();
+            println!("SEV {client} vs {sev_path}: {} territories, same bytes {}, differing {differing:?}, times same {}", sev.domains.len(), ours == official, sev.times == parsed.times);
+            assert!(ours == official, "the export equals the official globalsave output");
+            assert_eq!(encode_sev(&parsed), official, "domain.sev reads back byte for byte");
+            assert_eq!(sev.domains.len(), parsed.domains.len());
+        }
     }
 
     #[test]

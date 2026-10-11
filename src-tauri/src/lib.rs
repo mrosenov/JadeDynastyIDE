@@ -866,6 +866,17 @@ fn domain_problems(name: String, data: domain::DomainData, land: Option<Vec<doma
     domain::problems(&name, &data, land.as_deref())
 }
 
+/// What domain.sev would hold for domain1.data (+ land.txt rows), compared with the target file when it exists.
+#[tauri::command]
+fn domain_sev_preview(data: domain::DomainData, land: Option<Vec<domain::LandRow>>, time_max: i32, target: Option<String>) -> domain::SevPreview {
+    domain::sev_preview(&data, land.as_deref(), time_max, target.as_deref().map(std::path::Path::new))
+}
+
+#[tauri::command]
+async fn export_domain_sev(sev: domain::Sev, target: String, backup: bool) -> Result<domain::SaveReport, String> {
+    tauri::async_runtime::spawn_blocking(move || domain::export_sev(&sev, std::path::Path::new(&target), backup)).await.map_err(|error| error.to_string())?
+}
+
 #[tauri::command]
 async fn save_domains(files: Vec<domain::SaveFile>, backup: bool, replace_changed: bool) -> Result<domain::SaveReport, String> {
     tauri::async_runtime::spawn_blocking(move || domain::save(&files, backup, replace_changed)).await.map_err(|error| error.to_string())?
@@ -2589,6 +2600,8 @@ pub fn run() {
             domain_land_tables,
             domain_problems,
             save_domains,
+            domain_sev_preview,
+            export_domain_sev,
             open_dyn_objects,
             save_dyn_objects,
             export_dyn_objects_json,

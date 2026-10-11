@@ -2721,6 +2721,31 @@ export interface LandRow {
   lower: number;
   upper: number;
   neighbours: number[];
+  /** The name has a space: the client misreads the rest of the row. */
+  spaceInName: boolean;
+}
+
+/** A territory as the server reads it from domain.sev. */
+export interface SevDomain {
+  id: number;
+  type: number;
+  lower: number;
+  upper: number;
+  neighbours: number[];
+}
+
+export interface Sev {
+  domains: SevDomain[];
+  times: [number, number, number][];
+  timeMax: number;
+}
+
+export interface SevPreview {
+  sev: Sev;
+  existing: Sev | null;
+  existingError: string | null;
+  /** The export would write exactly the target's bytes. */
+  same: boolean;
 }
 
 export interface DomainProblem {

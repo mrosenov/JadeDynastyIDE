@@ -7,6 +7,7 @@ import { formatMoney } from "../elements/money";
 import type { DomainData, DomainEntry, DomainFile, DomainProblem, LandRow } from "../elements/types";
 import { NumberInput, TextInput } from "./DynTasksEditor";
 import { DomainMap } from "./DomainMap";
+import { DomainSevExport } from "./DomainSevExport";
 
 export interface DomainEditorState {
   loaded: boolean;
@@ -28,6 +29,8 @@ export interface DomainEditorHandle {
   cloneSelected: () => void;
   deleteSelected: () => void;
   openProblems: () => void;
+  /** domain.sev for the server, from domain1.data. */
+  exportSev: () => void;
 }
 
 interface Props {
@@ -67,6 +70,7 @@ export const DomainEditor = forwardRef<DomainEditorHandle, Props>(function Domai
   const [itemNames, setItemNames] = useState<Record<string, string>>({});
   const [problems, setProblems] = useState<DomainProblem[] | null>(null);
   const [problemsOpen, setProblemsOpen] = useState(false);
+  const [sevOpen, setSevOpen] = useState(false);
   const saved = useRef<DomainData[]>([]);
   const autoOpened = useRef<string | null>(null);
   const backedUp = useRef(new Set<string>());
@@ -212,7 +216,7 @@ export const DomainEditor = forwardRef<DomainEditorHandle, Props>(function Domai
   const saveCurrent = useCallback(() => { if (dirtyFiles[tab]) void saveFiles([tab]); }, [dirtyFiles, saveFiles, tab]);
   const saveAll = useCallback(() => void saveFiles(dirtyFiles.map((flag, index) => flag ? index : -1).filter((index) => index >= 0)), [dirtyFiles, saveFiles]);
 
-  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => guard(() => void load(path)), save: saveCurrent, saveAll, undo, redo, cloneSelected, deleteSelected, openProblems: () => setProblemsOpen(true) }), [choose, cloneSelected, deleteSelected, guard, load, redo, saveAll, saveCurrent, undo]);
+  useImperativeHandle(ref, () => ({ choose: () => void choose(), openPath: (path) => guard(() => void load(path)), save: saveCurrent, saveAll, undo, redo, cloneSelected, deleteSelected, openProblems: () => setProblemsOpen(true), exportSev: () => { if (files?.some((entry) => entry.name.toLowerCase() === "domain1.data")) setSevOpen(true); else setError("domain.sev is made from domain1.data, which is not among the open files."); } }), [files, choose, cloneSelected, deleteSelected, guard, load, redo, saveAll, saveCurrent, undo]);
   useEffect(() => onStateChange({ loaded: !!files, dirty, canUndo: history.cursor > 0, canRedo: history.cursor + 1 < history.states.length, path: files?.[0] ? folderOf(files[0].path) : null, files: files?.length ?? 0 }), [dirty, files, history.cursor, history.states.length, onStateChange]);
 
   useEffect(() => {
@@ -221,6 +225,7 @@ export const DomainEditor = forwardRef<DomainEditorHandle, Props>(function Domai
       const mod = event.ctrlKey || event.metaKey;
       const typing = event.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName);
       const key = event.key.toLowerCase();
+      if (sevOpen) return;
       if (event.key === "Escape" && problemsOpen) { event.preventDefault(); setProblemsOpen(false); return; }
       if (mod && event.shiftKey && key === "m") { event.preventDefault(); event.stopImmediatePropagation(); setProblemsOpen(true); return; }
       if (mod && ["o", "s", "z", "y", "d"].includes(key)) {
@@ -239,7 +244,7 @@ export const DomainEditor = forwardRef<DomainEditorHandle, Props>(function Domai
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [active, choose, cloneSelected, deleteSelected, problemsOpen, redo, saveAll, saveCurrent, undo]);
+  }, [active, choose, cloneSelected, deleteSelected, problemsOpen, sevOpen, redo, saveAll, saveCurrent, undo]);
 
   const flagged = useMemo(() => new Set((problems ?? []).filter((problem) => problem.severity !== "note" && problem.domain !== null).map((problem) => problem.domain!)), [problems]);
   const effective = useMemo(() => landRows ? new Map(landRows.map((row) => [row.id, { name: row.name, type: row.level >= 1 && row.level <= 3 ? row.level : 0 }])) : undefined, [landRows]);
@@ -295,7 +300,7 @@ export const DomainEditor = forwardRef<DomainEditorHandle, Props>(function Domai
     {(error || note) && <div className={error ? "path-data-message error" : "path-data-message"} role={error ? "alert" : "status"}>
       {error ? <AlertTriangle size={14} /> : <Info size={14} />}{error || note} <button className="link" onClick={() => { setError(null); setNote(null); }}>Dismiss</button>
     </div>}
-    {landRows && <div className="path-data-message"><Info size={14} /> The client takes this file's names, classes, declaration items and neighbours from configs\{landName} ({count(landRows.length)} rows){file.name.toLowerCase() === "domainlandwar.data" ? " (by its name; the source of this client version is not available)" : ""}: those fields here only matter for domains it lacks.</div>}
+    {landRows && <div className="path-data-message"><Info size={14} /> The client takes this file's names, classes, declaration items and neighbours from configs\{landName} ({count(landRows.length)} rows){file.name.toLowerCase() === "domainlandwar.data" ? " (by its name; the source of this client version is not available)" : ""}: those fields here only matter for domains it lacks.{file.name.toLowerCase() === "domain1.data" && <> <button className="link" onClick={() => setSevOpen(true)}>Export domain.sev for the server…</button></>}</div>}
     <div className="domain-body">
       <aside className="dyn-task-list">
         <div className="dyn-task-search"><Search size={13} /><input value={query} placeholder="Name or ID" onChange={(event) => setQuery(event.target.value)} />{query && <button className="icon-btn small" onClick={() => setQuery("")}><X size={12} /></button>}</div>
@@ -385,6 +390,10 @@ export const DomainEditor = forwardRef<DomainEditorHandle, Props>(function Domai
         </div>
       </aside>
     </div>
+    {sevOpen && (() => {
+      const at = files.findIndex((entry) => entry.name.toLowerCase() === "domain1.data");
+      return at >= 0 ? <DomainSevExport data={datas[at]} land={land["domain1.data"] ?? null} sourcePath={files[at].path} backup={backup} onClose={() => setSevOpen(false)} onExported={(message) => { setSevOpen(false); setNote(message); }} /> : null;
+    })()}
     {problemsOpen && <div className="modal-backdrop" onMouseDown={() => setProblemsOpen(false)}>
       <div className="modal npcgen-problems-dialog" role="dialog" aria-label="Problems" onMouseDown={(event) => event.stopPropagation()}>
         <header className="modal-head"><h3>Problems: {file.name}</h3><span className="spacer" /><button className="icon-btn" onClick={() => setProblemsOpen(false)} aria-label="Close"><X size={16} /></button></header>
