@@ -24,6 +24,8 @@ use std::collections::{HashMap, HashSet};
 use encoding_rs::GBK;
 use serde::{Deserialize, Serialize};
 
+pub mod compare;
+
 // ── Condition, operation and target types (CTriggerData enums) ──
 
 pub const C_TIME_COME: i32 = 0;
@@ -866,11 +868,7 @@ impl Document {
     }
 
     fn first_of_ids(&self) -> HashMap<u32, usize> {
-        let mut out = HashMap::new();
-        for (index, policy) in self.file.policies.iter().enumerate() {
-            out.entry(policy.id).or_insert(index);
-        }
-        out
+        first_of_ids(&self.file.policies)
     }
 
     pub fn view(&self) -> FileView {
@@ -905,54 +903,7 @@ impl Document {
     }
 
     pub fn policy(&self, index: usize) -> Result<PolicyView, String> {
-        let policy = self.file.policies.get(index).ok_or_else(|| format!("No policy {}", index + 1))?;
-        let mut called_by: HashMap<u32, Vec<u32>> = HashMap::new();
-        for trigger in &policy.triggers {
-            for operation in &trigger.operations {
-                if matches!(operation.kind, O_RUN_TRIGGER | O_STOP_TRIGGER | O_ACTIVE_TRIGGER) {
-                    let entry = called_by.entry(u32_at(&operation.param, 0) as u32).or_default();
-                    if !entry.contains(&trigger.id) {
-                        entry.push(trigger.id);
-                    }
-                }
-            }
-        }
-        let triggers = policy
-            .triggers
-            .iter()
-            .enumerate()
-            .map(|(index, trigger)| TriggerView {
-                index,
-                id: trigger.id,
-                name: trigger_name(trigger),
-                version: trigger.version,
-                active: trigger.active,
-                run: trigger.run,
-                battle_only: trigger.run_condition != 0,
-                category: category(&trigger.condition),
-                fires_once: fires_once(&trigger.condition),
-                select_one: select_one(&trigger.condition),
-                expression: expression(&trigger.condition),
-                condition: condition_view(&trigger.condition),
-                operations: trigger
-                    .operations
-                    .iter()
-                    .map(|operation| OperationView {
-                        kind: operation.kind,
-                        name: operation_name(operation.kind),
-                        params: operation_params(operation, trigger.version),
-                        raw: operation.param.clone(),
-                        target: operation.target,
-                        target_name: target_name(operation.target),
-                        uses_target: needs_target(operation.kind),
-                        target_mask: operation.target_param,
-                    })
-                    .collect(),
-                called_by: called_by.get(&trigger.id).cloned().unwrap_or_default(),
-            })
-            .collect();
-        let shadowed_by = self.first_of_ids().get(&policy.id).copied().filter(|&first| first != index);
-        Ok(PolicyView { index, id: policy.id, triggers, shadowed_by })
+        policy_view(&self.file.policies, index)
     }
 
     /// Policies matching a search: a number matches policy IDs, trigger IDs and every ID an operation or
@@ -988,6 +939,70 @@ impl Document {
         }
         out
     }
+}
+
+/// The first policy of each ID (the one the server keeps).
+pub(crate) fn first_of_ids(policies: &[Policy]) -> HashMap<u32, usize> {
+    let mut out = HashMap::new();
+    for (index, policy) in policies.iter().enumerate() {
+    out.entry(policy.id).or_insert(index);
+    }
+    out
+}
+
+pub(crate) fn trigger_view(index: usize, trigger: &Trigger, called_by: Vec<u32>) -> TriggerView {
+    TriggerView {
+    index,
+    id: trigger.id,
+    name: trigger_name(trigger),
+    version: trigger.version,
+    active: trigger.active,
+    run: trigger.run,
+    battle_only: trigger.run_condition != 0,
+    category: category(&trigger.condition),
+    fires_once: fires_once(&trigger.condition),
+    select_one: select_one(&trigger.condition),
+    expression: expression(&trigger.condition),
+    condition: condition_view(&trigger.condition),
+    operations: trigger
+        .operations
+        .iter()
+        .map(|operation| OperationView {
+            kind: operation.kind,
+            name: operation_name(operation.kind),
+            params: operation_params(operation, trigger.version),
+            raw: operation.param.clone(),
+            target: operation.target,
+            target_name: target_name(operation.target),
+            uses_target: needs_target(operation.kind),
+            target_mask: operation.target_param,
+        })
+        .collect(),
+    called_by,
+    }
+}
+
+pub(crate) fn policy_view(policies: &[Policy], index: usize) -> Result<PolicyView, String> {
+    let policy = policies.get(index).ok_or_else(|| format!("No policy {}", index + 1))?;
+    let mut called_by: HashMap<u32, Vec<u32>> = HashMap::new();
+    for trigger in &policy.triggers {
+        for operation in &trigger.operations {
+            if matches!(operation.kind, O_RUN_TRIGGER | O_STOP_TRIGGER | O_ACTIVE_TRIGGER) {
+                let entry = called_by.entry(u32_at(&operation.param, 0) as u32).or_default();
+                if !entry.contains(&trigger.id) {
+                    entry.push(trigger.id);
+                }
+            }
+        }
+    }
+    let triggers = policy
+        .triggers
+        .iter()
+        .enumerate()
+        .map(|(index, trigger)| trigger_view(index, trigger, called_by.get(&trigger.id).cloned().unwrap_or_default()))
+        .collect();
+    let shadowed_by = first_of_ids(policies).get(&policy.id).copied().filter(|&first| first != index);
+    Ok(PolicyView { index, id: policy.id, triggers, shadowed_by })
 }
 
 // ── Editing ──

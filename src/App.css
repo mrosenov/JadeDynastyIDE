@@ -10711,3 +10711,126 @@ select.ie-control {
 .ai-flow-missing {
   fill: var(--danger);
 }
+.ai-cmp-search {
+  width: 180px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+.ai-cmp-body {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 330px minmax(0, 1fr);
+  min-height: 0;
+  border-top: 1px solid var(--border);
+}
+.ai-cmp-list {
+  min-height: 0;
+  overflow: auto;
+  border-right: 1px solid var(--border);
+}
+.ai-cmp-list-head {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-pane);
+}
+.ai-cmp-row {
+  display: grid;
+  grid-template-columns: 18px 56px auto minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.ai-cmp-row:hover {
+  background: var(--bg-hover);
+}
+.ai-cmp-row.selected {
+  background: var(--accent-soft, var(--bg-hover));
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+.tag.ai-cmp-changed {
+  color: var(--warn);
+}
+.tag.ai-cmp-there {
+  color: var(--accent);
+}
+.tag.ai-cmp-here {
+  color: var(--danger);
+}
+.ai-cmp-detail {
+  min-height: 0;
+  padding: 8px 12px;
+  overflow: auto;
+}
+.ai-cmp-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ai-cmp-pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ai-cmp-pair-head,
+.ai-cmp-pair {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+}
+.ai-cmp-pair-head {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.7;
+}
+.ai-cmp-pair {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.ai-cmp-pair.ai-cmp-changed {
+  border-left: 3px solid var(--warn);
+}
+.ai-cmp-pair.ai-cmp-there {
+  border-left: 3px solid var(--accent);
+}
+.ai-cmp-pair.ai-cmp-here {
+  border-left: 3px solid var(--danger);
+}
+.ai-cmp-pair-id {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+}
+.ai-cmp-side {
+  min-width: 0;
+  font-size: 12px;
+}
+.ai-cmp-side.empty {
+  align-self: center;
+  text-align: center;
+}
+.ai-cmp-expr {
+  margin: 2px 0;
+  overflow-wrap: anywhere;
+  opacity: 0.85;
+}
+.ai-cmp-ops {
+  margin: 2px 0 0;
+  padding-left: 18px;
+}
+.ai-cmp-ops li {
+  overflow-wrap: anywhere;
+}
+.ai-use-dialog .npcgen-nearby-bar .dyn-input {
+  flex: 1;
+  min-width: 160px;
+}

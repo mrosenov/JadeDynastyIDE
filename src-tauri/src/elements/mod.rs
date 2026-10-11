@@ -26,6 +26,19 @@ use decode::{decode_record, gap_node, guess_name, read_wstr, Annotation, Node};
 use format::{builtin_layout, Catalog, Field, Layout, LayoutMeta, ListDef, ListHead, Marker, MarkerKind, Ty};
 use reader::{ElementsFile, Segment, SegmentKind};
 
+/// Where a record stores its AI policy (`Document::policy_slots`).
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PolicySlot {
+    pub id: u32,
+    pub name: String,
+    pub list: usize,
+    pub row: usize,
+    pub off: usize,
+    pub field: String,
+    pub policy: u32,
+}
+
 use crate::client::Resources;
 
 /// Where a list's definition comes from and how well it fits the records.
@@ -752,16 +765,11 @@ impl Document {
     pub fn monsters_by_policy(&self) -> HashMap<u32, Vec<(u32, String)>> {
         let mut out: HashMap<u32, Vec<(u32, String)>> = HashMap::new();
         for list in 0..self.lists.len() {
-            let Some((_, definition)) = self.def(list) else { continue };
-            let monsters = self.lists[list].struct_name.as_deref().is_some_and(|name| name.eq_ignore_ascii_case("MONSTER_ESSENCE"));
-            let mut fields: Vec<&format::Field> = definition.fields.iter().filter(|field| field.display.as_deref() == Some("aipolicy")).collect();
-            if fields.is_empty() && monsters {
-                fields.extend(definition.fields.iter().find(|field| field.name.eq_ignore_ascii_case("common_strategy") || field.name.eq_ignore_ascii_case("aipolicy")));
-            }
+            let fields = self.policy_fields(list);
             if fields.is_empty() {
                 continue;
             }
-            let name_at = Self::name_field(Some(definition));
+            let name_at = Self::name_field(self.def(list).map(|(_, definition)| definition));
             for row in 0..self.file.lists[list].count {
                 let Some(bytes) = self.file.record(list, row) else { continue };
                 for field in &fields {
@@ -771,6 +779,33 @@ impl Document {
                         out.entry(policy).or_default().push((Self::record_id(bytes), Self::record_name(bytes, name_at)));
                     }
                 }
+            }
+        }
+        out
+    }
+
+    /// The fields of a list that name an AI policy: the `aipolicy` display role, else `MONSTER_ESSENCE.common_strategy`.
+    fn policy_fields(&self, list: usize) -> Vec<&format::Field> {
+        let Some((_, definition)) = self.def(list) else { return Vec::new() };
+        let mut fields: Vec<&format::Field> = definition.fields.iter().filter(|field| field.display.as_deref() == Some("aipolicy") && field.t.size() == 4).collect();
+        let monsters = self.lists[list].struct_name.as_deref().is_some_and(|name| name.eq_ignore_ascii_case("MONSTER_ESSENCE"));
+        if fields.is_empty() && monsters {
+            fields.extend(definition.fields.iter().find(|field| (field.name.eq_ignore_ascii_case("common_strategy") || field.name.eq_ignore_ascii_case("aipolicy")) && field.t.size() == 4));
+        }
+        fields
+    }
+
+    /// Where records (by Essence ID) store their AI policy, with the policy they have now. IDs without such a field
+    /// are left out.
+    pub fn policy_slots(&self, ids: &[u32]) -> Vec<PolicySlot> {
+        let mut out = Vec::new();
+        for &id in ids {
+            let Some((list, row, _)) = self.resolve_essence_id(id) else { continue };
+            let Some(bytes) = self.file.record(list, row) else { continue };
+            let name = Self::record_name(bytes, Self::name_field(self.def(list).map(|(_, definition)| definition)));
+            for field in self.policy_fields(list) {
+                let Some(slot) = bytes.get(field.off..field.off + 4) else { continue };
+                out.push(PolicySlot { id, name: name.clone(), list, row, off: field.off, field: field.name.clone(), policy: u32::from_le_bytes(slot.try_into().unwrap()) });
             }
         }
         out

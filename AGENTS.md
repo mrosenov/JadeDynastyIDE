@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (209 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (213 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -81,7 +81,7 @@ Environment quirks (Windows 11, Git Bash):
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer. |
 | `gshop/mod.rs`, `gshop/layout.rs`, `gshop/compare.rs`, `gshop/texts.rs`, `gshop/align.rs` | gshop.data / gshop1.data / gshop2.data: item layouts (built-in `formats/gshop/*.json` + user), reader/writer, document with journal, categories, problems, save; compare/copy and JSON export. |
 | `npcgen.rs` | `npcgen.data` (one server map's spawns): versions 1–14 reader/writer, document with journal (whole-item Replace/Insert/Remove per section), save. |
-| `aipolicy.rs` | `aipolicy.data` (monster AI, server only): byte-exact reader/writer of policies, triggers, condition trees and operations; views, categories, search, parameter field table, trigger editing, journal, save, problems. |
+| `aipolicy/mod.rs`, `aipolicy/compare.rs` | `aipolicy.data` (monster AI, server only): byte-exact reader/writer of policies, triggers, condition trees and operations; views, categories, search, parameter field table, trigger editing, journal, save, problems; compare/copy, JSON, text takeover. |
 | `vipaward.rs` | `vipaward.data` (VIP awards): reader/writer keeping stored records, the server's rules as problems, the client's level names. |
 | `task_npc.rs` | `task_npc.data` reader/writer (12-byte header, 16-byte NPC_INFO records), save with backup and changed-on-disk guard. |
 | `client/game.rs` | Character position from a running `elementclient.exe` (read-only): exe code scan for the pointer chain, process list, ReadProcessMemory. |
@@ -499,7 +499,7 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   sub-triggers nothing runs), PolicyTriggerDlg, ConditionDlg (`Check`: arithmetic/compare take expression
   children, and/or/not condition children; `TraverselTree` renders the expression), PolicyOperationDlg.
   ElementLocalize PolicyTemplate.cpp translates talk texts and summon names. JadeEditor (C#) has a partial reader.
-- Format: see `aipolicy.rs` header. Operation parameters have no size: `operation_size` per type and trigger
+- Format: see the `aipolicy/mod.rs` header. Operation parameters have no size: `operation_size` per type and trigger
   version (structs not packed: O_SUMMON 56, O_ACTIVE_CONTROLLER 8, O_SUMMON_MINERAL 20; v0 reads fewer types,
   v<9 change path 4 bytes). Conditions carry their size. Trigger names keep raw bytes (~75% have bytes after
   the terminator). Samples: XtremeJade v11, zxserver v11, ForsakenJD v12, 1559 v12, zx_18 (+ -cn) v11+v12; all
@@ -553,7 +553,23 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   (virtual) on a null list for a trigger without operations: a crash at death/leaving combat, now a Problems
   error for top-level triggers (none in the six samples).
 - Flow view `AiPolicyFlow.tsx`: arc diagram (SVG) from the view's operations and timer conditions.
-  Later ideas: compare/copy, JSON, translation of talk texts.
+- Between files (`aipolicy/compare.rs`, `AiCompare.tsx`, `AiTranslate.tsx`): `Compared` (`AppState.compared_aipolicy`, lock
+  order aipolicy then compared_aipolicy) reads an aipolicy.data or `jdide-aipolicy` JSON. Policies pair by
+  `first_of_ids`, triggers by (ID, occurrence) (`pair_triggers`); `same_trigger` ignores the trigger version
+  (v11/v12 bytes are equal for types ≤ 29; the 2013 loader reads any version ≥ 1 the same way). Copy
+  (`copy_compared`, one journal entry): whole policies replace the first of their ID or are inserted before the
+  first larger ID; triggers replace by ID or append; `adapt` refuses newer types for a non-newer file and caps
+  the version at 11 (a v12 trigger would flip `is_newer`). zxserver ← 1559: 1,572 changed, 285 only there, 32
+  skipped. JSON (`to_json`/`from_json`): conditions/operations as `values` + `raw` hex (talk texts value only),
+  `nameRaw` kept while it decodes to `name`; import goes through `build_trigger(…, newer = true)`, so edited
+  values apply and unedited exports of all six samples read back byte for byte. Texts (`translation`/`apply_texts`):
+  names, talk texts, summon names (`param[16..48]`) where operation types match; apply checks `current` (stale
+  guard). zxserver ← 1559: 7,232 texts, 43 triggers skipped.
+- Use for monsters (`AiUseForMonsters.tsx`, commands `monster_policy_slots`, `set_monster_policies`):
+  `elements::Document::policy_fields` (aipolicy role, else MONSTER_ESSENCE `common_strategy`/`aipolicy`, 4 bytes),
+  `policy_slots`, `set_policy_places` (`set_u32_places`, shared with the quest-ID places; stale guard; one
+  elements journal entry); the editor passes the EditState to App's `afterEdits`.
+  Later ideas: compare in the history, a policy picker in the elements field.
 
 ## vipaward.data editor
 

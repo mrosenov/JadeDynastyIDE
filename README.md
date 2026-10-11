@@ -773,8 +773,12 @@ Every change applies at once and is one undo step (Ctrl+Z / Ctrl+Y); changed pol
   policy. Talk texts have a channel and the text. Operations can be moved, copied and removed, and **Add an
   operation…** appends one.
 - **Triggers**: Clone (Ctrl+D, the next free trigger ID, below the original), move (Alt+↑/↓), delete (Del;
-  it names the triggers that run, enable or disable it). **Policies**: Clone (the next free policy ID; point a
-  monster's `common_strategy` at it to use it) and Delete (it names the monsters that use it).
+  it names the triggers that run, enable or disable it). **Policies**: Clone (the next free policy ID) and
+  Delete (it names the monsters that use it).
+- **Use for monsters** (the people button, or Edit › Use policy for monsters…): sets the policy on monsters of
+  the open elements.data (their `common_strategy`, or fields with the *aipolicy* role). Choose monsters with the
+  search or type their IDs; the list shows each one's policy now. It is an elements.data edit (one undo step
+  there): save elements.data for the server.
 
 ### Problems and saving
 
@@ -823,6 +827,26 @@ The policy header has three more buttons (also in **Tools**):
     dying resets every trigger and removes every timer.
 
   Skills, summons, talks and drops are only listed; the simulator does not model targets or the aggro list.
+
+### Between files
+
+- **Compare / import JSON…** (Tools) opens another aipolicy.data (another server, a backup) or a JSON export.
+  Policies pair by ID (the first of each ID, as the server keeps), triggers by ID; the list shows each policy
+  as *changed*, *only there*, *only here* or *same*, filtered by these. A policy shows its triggers side by
+  side (condition, operations), only the differing ones by default. Tick whole policies (replace the one of
+  the same ID, or are added in ID order) or single triggers (replace the one of their ID, or are added at the
+  end), then **Copy** (one undo step). Trigger versions are ignored when comparing (versions 11 and 12 store
+  the same bytes). Into a file for the 2013 server, triggers with types that server does not read are skipped
+  (the report names them) and version-12 triggers are stored as version 11.
+- **Export policy as JSON…** / **Export all policies as JSON…** (Tools) write `jdide-aipolicy` JSON: per trigger
+  its name, flags, condition tree and operations with readable `values` (and the stored bytes in `raw`).
+  Values edited in the JSON (texts, IDs, numbers) are used; everything else keeps its bytes, so an unedited
+  export reads back byte for byte. Import a JSON with **Compare / import JSON…** and copy from it.
+- **Take texts over from another file…** (Tools): trigger names, talk texts and summoned monsters' names from
+  another aipolicy.data or JSON export, for example a translated copy. Policies and triggers pair by ID; talk
+  and summon texts only where both triggers have the same operations (in order). Choose the kinds, untick
+  single texts, then take them over (one undo step). Names that do not fit (GBK, 127 bytes; summon names 16
+  characters) are counted and left out.
 
 **Save** (Ctrl+S) and **Save as…** (Ctrl+Shift+S) first check for errors and ask before saving a file the
 server would not load. The file must read back exactly; with **Backup**, the replaced file is first archived

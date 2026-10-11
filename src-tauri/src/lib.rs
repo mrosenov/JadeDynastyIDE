@@ -51,6 +51,8 @@ struct AppState {
     compared_gshop: Mutex<Option<gshop::ComparedShop>>,
     /// The open aipolicy.data (read only for now).
     aipolicy: Mutex<Option<aipolicy::Document>>,
+    /// Another aipolicy.data or JSON export, read-only (lock order: aipolicy, then compared_aipolicy).
+    compared_aipolicy: Mutex<Option<aipolicy::compare::Compared>>,
     /// Another npcgen.data opened read-only for comparing (lock order: npcgen, then compared_npcgen).
     compared_npcgen: Mutex<Option<npcgen::ComparedGen>>,
     catalog: RwLock<Arc<Catalog>>,
@@ -616,6 +618,74 @@ fn aipolicy_policy(index: usize, state: State<'_, AppState>) -> Result<aipolicy:
 /// Monsters of the open elements.data by the policy they use (empty without one).
 fn monsters_by_policy(state: &State<'_, AppState>) -> HashMap<u32, Vec<(u32, String)>> {
     state.document.lock().ok().and_then(|document| document.as_ref().map(elements::Document::monsters_by_policy)).unwrap_or_default()
+}
+
+/// Compares the open aipolicy.data with another one or a JSON export (`path`), or again with the one chosen before.
+#[tauri::command]
+async fn compare_aipolicy(path: Option<String>, state: State<'_, AppState>) -> Result<aipolicy::compare::CompareSummary, String> {
+    if let Some(path) = path {
+        let other = tauri::async_runtime::spawn_blocking(move || aipolicy::compare::Compared::open(&path)).await.map_err(|error| error.to_string())??;
+        *state.compared_aipolicy.lock().map_err(|_| "State lock poisoned")? = Some(other);
+    }
+    let document = state.aipolicy.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared_aipolicy.lock().map_err(|_| "State lock poisoned")?;
+    Ok(aipolicy::compare::compare(&document.as_ref().ok_or("Open aipolicy.data first")?.file, compared.as_ref().ok_or("Choose a file to compare with")?))
+}
+
+/// One policy (by ID) in both files, with its triggers paired.
+#[tauri::command]
+fn aipolicy_compare_policy(id: u32, state: State<'_, AppState>) -> Result<aipolicy::compare::PolicyDiff, String> {
+    let document = state.aipolicy.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared_aipolicy.lock().map_err(|_| "State lock poisoned")?;
+    aipolicy::compare::policy_diff(&document.as_ref().ok_or("Open aipolicy.data first")?.file, compared.as_ref().ok_or("Choose a file to compare with")?, id)
+}
+
+/// Copies whole policies or some of their triggers from the compared file (one undo step).
+#[tauri::command]
+fn copy_aipolicy(items: Vec<aipolicy::compare::CopyItem>, shown: Option<usize>, state: State<'_, AppState>) -> Result<aipolicy::compare::CopyResult, String> {
+    let mut document = state.aipolicy.lock().map_err(|_| "State lock poisoned")?;
+    let compared = state.compared_aipolicy.lock().map_err(|_| "State lock poisoned")?;
+    document.as_mut().ok_or("Open aipolicy.data first")?.copy_compared(compared.as_ref().ok_or("Choose a file to compare with")?, &items, shown)
+}
+
+#[tauri::command]
+fn close_aipolicy_comparison(state: State<'_, AppState>) -> Result<(), String> {
+    *state.compared_aipolicy.lock().map_err(|_| "State lock poisoned")? = None;
+    Ok(())
+}
+
+/// Writes the policies at `policies` (all when none) as `jdide-aipolicy` JSON; returns how many.
+#[tauri::command]
+fn export_aipolicy_json(target: String, policies: Option<Vec<usize>>, state: State<'_, AppState>) -> Result<usize, String> {
+    let (json, count) = with_aipolicy(&state, |document| Ok((aipolicy::compare::to_json(&document.file, policies.as_deref(), &document.path)?, policies.as_ref().map_or(document.file.policies.len(), Vec::len))))?;
+    std::fs::write(&target, json).map_err(|error| format!("Could not write {target}: {error}"))?;
+    Ok(count)
+}
+
+/// Texts (trigger names, talk texts, summon names) another aipolicy.data or JSON export has differently.
+#[tauri::command]
+async fn aipolicy_translation(path: String, state: State<'_, AppState>) -> Result<aipolicy::compare::TranslationPreview, String> {
+    let source = tauri::async_runtime::spawn_blocking(move || aipolicy::compare::Compared::open(&path)).await.map_err(|error| error.to_string())??;
+    with_aipolicy(&state, |document| Ok(document.translation(&source.file)))
+}
+
+#[tauri::command]
+fn apply_aipolicy_texts(updates: Vec<aipolicy::compare::TextUpdate>, shown: Option<usize>, state: State<'_, AppState>) -> Result<aipolicy::EditResult, String> {
+    with_aipolicy_mut(&state, |document| document.apply_texts(&updates, shown))
+}
+
+/// Where the records of these Essence IDs store their AI policy (open elements.data).
+#[tauri::command]
+fn monster_policy_slots(ids: Vec<u32>, state: State<'_, AppState>) -> Result<Vec<elements::PolicySlot>, String> {
+    let document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    Ok(document.as_ref().ok_or("Open elements.data first")?.policy_slots(&ids))
+}
+
+/// Sets the AI policy of records in the open elements.data (one undo step there).
+#[tauri::command]
+fn set_monster_policies(places: Vec<(usize, usize, usize, u32)>, policy: u32, state: State<'_, AppState>) -> Result<elements::edit::EditState, String> {
+    let mut document = state.document.lock().map_err(|_| "State lock poisoned")?;
+    document.as_mut().ok_or("Open elements.data first")?.set_policy_places(&places, policy)
 }
 
 #[tauri::command]
@@ -2266,6 +2336,7 @@ pub fn run() {
                 gshop: Mutex::new(None),
                 compared_gshop: Mutex::new(None),
                 aipolicy: Mutex::new(None),
+                compared_aipolicy: Mutex::new(None),
                 compared_npcgen: Mutex::new(None),
                 compared: Mutex::new(None),
                 compared_tasks: Mutex::new(None),
@@ -2390,6 +2461,15 @@ pub fn run() {
             aipolicy_policy_action,
             aipolicy_unused_subtriggers,
             aipolicy_cleanup,
+            compare_aipolicy,
+            aipolicy_compare_policy,
+            copy_aipolicy,
+            close_aipolicy_comparison,
+            export_aipolicy_json,
+            aipolicy_translation,
+            apply_aipolicy_texts,
+            monster_policy_slots,
+            set_monster_policies,
             aipolicy_undo,
             aipolicy_redo,
             aipolicy_save,

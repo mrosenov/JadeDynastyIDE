@@ -1062,6 +1062,7 @@ export default function App() {
         { label: "Delete trigger…", icon: Trash2, shortcut: "Del", onSelect: () => aiEditor.current?.triggerAction({ op: "delete" }), disabled: !aiEditorState.loaded },
         "separator",
         { label: "Clone policy", icon: Copy, onSelect: () => aiEditor.current?.policyAction("clone"), disabled: !aiEditorState.loaded },
+        { label: "Use policy for monsters…", icon: Users, onSelect: () => aiEditor.current?.useForMonsters(), disabled: !aiEditorState.loaded },
         { label: "Delete policy…", icon: Trash2, onSelect: () => aiEditor.current?.policyAction("delete"), disabled: !aiEditorState.loaded },
       ],
     },
@@ -1076,6 +1077,11 @@ export default function App() {
         "separator",
         { label: "Remove unused sub-triggers of the policy…", icon: Eraser, onSelect: () => aiEditor.current?.cleanup(false), disabled: !aiEditorState.loaded },
         { label: "Remove unused sub-triggers of all policies…", icon: Eraser, onSelect: () => aiEditor.current?.cleanup(true), disabled: !aiEditorState.loaded },
+        "separator",
+        { label: "Compare / import JSON…", icon: GitCompareArrows, onSelect: () => aiEditor.current?.compare(), disabled: !aiEditorState.loaded },
+        { label: "Take texts over from another file…", icon: Languages, onSelect: () => aiEditor.current?.translate(), disabled: !aiEditorState.loaded },
+        { label: "Export policy as JSON…", icon: Download, onSelect: () => aiEditor.current?.exportJson(false), disabled: !aiEditorState.loaded },
+        { label: "Export all policies as JSON…", icon: Download, onSelect: () => aiEditor.current?.exportJson(true), disabled: !aiEditorState.loaded },
       ],
     },
   ] : workspace === "vip" ? [
@@ -1428,7 +1434,7 @@ export default function App() {
       ) : workspace === "ai" ? (
         <main className="workspace tasks-data-workspace">
           {activityBar}
-          <AiPolicyEditor ref={aiEditor} active elementsPath={summary?.path ?? null} defaultPath={aiEditorState.path ?? settingsView?.client?.dataFiles.find((file) => file.name.toLowerCase() === "aipolicy.data")?.path ?? null} onStateChange={setAiEditorState} />
+          <AiPolicyEditor ref={aiEditor} active elementsPath={summary?.path ?? null} onElementsEdited={afterEdits} defaultPath={aiEditorState.path ?? settingsView?.client?.dataFiles.find((file) => file.name.toLowerCase() === "aipolicy.data")?.path ?? null} onStateChange={setAiEditorState} />
         </main>
       ) : workspace === "vip" ? (
         <main className="workspace tasks-data-workspace">

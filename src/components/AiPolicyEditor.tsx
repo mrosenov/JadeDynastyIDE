@@ -1,12 +1,15 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, ArrowDown, ArrowUp, Brain, Eraser, Network, Play, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, CircleAlert, Copy, FolderOpen, Info, Loader2, Redo2, Save, Search, Trash2, TriangleAlert, Undo2, X } from "lucide-react";
-import { aiPolicyCatalog, aiPolicyCleanup, aiPolicyPolicy, aiPolicyPolicyAction, aiPolicyProblems, aiPolicyRedo, aiPolicySave, aiPolicySearch, aiPolicySetTrigger, aiPolicyTriggerAction, aiPolicyUndo, aiPolicyUnusedSubtriggers, aiPolicyUsedBy, aiPolicyView, dynTaskLabels, openAiPolicy, pickEssence, pickSkill, skillNames, type AiListAction } from "../elements/api";
+import { AlertTriangle, ArrowDown, ArrowUp, Brain, Eraser, Network, Play, Users, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, CircleAlert, Copy, FolderOpen, Info, Loader2, Redo2, Save, Search, Trash2, TriangleAlert, Undo2, X } from "lucide-react";
+import { aiPolicyCatalog, aiPolicyCleanup, aiPolicyPolicy, closeAiPolicyComparison, compareAiPolicy, exportAiPolicyJson, aiPolicyPolicyAction, aiPolicyProblems, aiPolicyRedo, aiPolicySave, aiPolicySearch, aiPolicySetTrigger, aiPolicyTriggerAction, aiPolicyUndo, aiPolicyUnusedSubtriggers, aiPolicyUsedBy, aiPolicyView, dynTaskLabels, openAiPolicy, pickEssence, pickSkill, skillNames, type AiListAction } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatDuration } from "../elements/time";
-import type { AiCatalog, AiCondition, AiEditResult, AiFile, AiOperation, AiParam, AiPolicyView, AiProblem, AiTriggerEdit, PickerResult } from "../elements/types";
+import type { AiCatalog, AiCompareSummary, AiCondition, AiEditResult, EditState, AiFile, AiOperation, AiParam, AiPolicyView, AiProblem, AiTriggerEdit, PickerResult } from "../elements/types";
 import { AiTriggerForm, ATTACK_TYPES, PATH_TYPES, type FormContext } from "./AiTriggerForm";
+import { AiCompare } from "./AiCompare";
 import { AiPolicyFlow } from "./AiPolicyFlow";
+import { AiTranslate } from "./AiTranslate";
+import { AiUseForMonsters } from "./AiUseForMonsters";
 import { AiSimulator } from "./AiSimulator";
 import { ValuePicker } from "./ValuePicker";
 
@@ -35,6 +38,11 @@ export interface AiPolicyEditorHandle {
   openFlow: () => void;
   /** Removes sub-triggers nothing runs from the shown policy or the whole file. */
   cleanup: (whole: boolean) => void;
+  /** Compares with another aipolicy.data or a JSON export (also the JSON import). */
+  compare: () => void;
+  exportJson: (whole: boolean) => void;
+  translate: () => void;
+  useForMonsters: () => void;
 }
 
 interface Props {
@@ -43,6 +51,8 @@ interface Props {
   /** elements.data open: names of monsters, items and tasks, and the monsters using each policy. */
   elementsPath: string | null;
   onStateChange: (state: AiPolicyEditorState) => void;
+  /** elements.data was edited here (policies set on monsters). */
+  onElementsEdited?: (state: EditState) => void;
 }
 
 const CATEGORY_HINTS: Record<string, string> = {
@@ -92,7 +102,7 @@ interface Names {
   tasks: Record<string, string>;
 }
 
-export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function AiPolicyEditor({ defaultPath, active, elementsPath, onStateChange }, ref) {
+export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function AiPolicyEditor({ defaultPath, active, elementsPath, onStateChange, onElementsEdited }, ref) {
   const [file, setFile] = useState<AiFile | null>(null);
   const [usedBy, setUsedBy] = useState<Record<string, [number, string][]>>({});
   const [query, setQuery] = useState("");
@@ -120,6 +130,9 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
   const [backup, setBackup] = useState(() => { try { return localStorage.getItem(BACKUP_KEY) !== "0"; } catch { return true; } });
   const [problems, setProblems] = useState<AiProblem[] | null>(null);
   const [problemsOpen, setProblemsOpen] = useState(false);
+  const [comparison, setComparison] = useState<AiCompareSummary | null>(null);
+  const [translatePath, setTranslatePath] = useState<string | null>(null);
+  const [useOpen, setUseOpen] = useState(false);
   const [simOpen, setSimOpen] = useState(false);
   const [flowOpen, setFlowOpen] = useState(false);
   const [picking, setPicking] = useState<{ refers: string; current: number; apply: (value: number) => void } | null>(null);
@@ -415,6 +428,48 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
     }
   }, [busy, file, policy, run]);
 
+  const DATA_FILTERS = [{ name: "aipolicy.data or JSON export", extensions: ["data", "json", "data-cn"] }, { name: "All files", extensions: ["*"] }];
+  const compare = useCallback(async () => {
+    if (!file) return;
+    const picked = await open({ multiple: false, directory: false, defaultPath: file.path, title: "Compare with another aipolicy.data or a JSON export", filters: DATA_FILTERS });
+    if (typeof picked !== "string") return;
+    setBusy(true);
+    setError(null);
+    try {
+      setComparison(await compareAiPolicy(picked));
+    } catch (problem) {
+      setError(messageOf(problem));
+    } finally {
+      setBusy(false);
+    }
+  }, [file]);
+  const closeComparison = () => {
+    setComparison(null);
+    void closeAiPolicyComparison().catch(() => {});
+  };
+  const exportJson = useCallback(async (whole: boolean) => {
+    if (!file || (!whole && !policy)) return;
+    const folder = file.path.replace(/[\\/][^\\/]*$/, "");
+    const target = await save({ defaultPath: `${folder}/${whole ? "aipolicy" : `aipolicy_${policy!.id}`}.json`, title: whole ? "Export all policies as JSON" : `Export policy ${policy!.id} as JSON`, filters: [{ name: "JSON", extensions: ["json"] }] });
+    if (typeof target !== "string") return;
+    try {
+      const written = await exportAiPolicyJson(target, whole ? null : [policy!.index]);
+      setNote(`Exported ${count(written)} polic${written === 1 ? "y" : "ies"} to ${target}. Import it with Tools › Compare / import (it opens as the file to copy from).`);
+    } catch (problem) {
+      setError(messageOf(problem));
+    }
+  }, [file, policy]);
+  const translate = useCallback(async () => {
+    if (!file) return;
+    const picked = await open({ multiple: false, directory: false, defaultPath: file.path, title: "Take texts over from another aipolicy.data or a JSON export", filters: DATA_FILTERS });
+    if (typeof picked === "string") setTranslatePath(picked);
+  }, [file]);
+  const useForMonsters = useCallback(() => {
+    if (!policy) return;
+    if (!elementsPath) { setError("Open the server's elements.data first: the policy is set on its monsters."); return; }
+    setUseOpen(true);
+  }, [elementsPath, policy]);
+
   useImperativeHandle(ref, () => ({
     choose: () => void choose(),
     openPath: (path) => void load(path),
@@ -429,7 +484,11 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
     openSimulator: () => { if (policy) setSimOpen(true); },
     openFlow: () => { if (policy) setFlowOpen(true); },
     cleanup: (whole) => void cleanup(whole),
-  }), [checkProblems, choose, cleanup, load, policy, policyAction, redo, saveAs, saveCurrent, triggerAction, undo]);
+    compare: () => void compare(),
+    exportJson: (whole) => void exportJson(whole),
+    translate: () => void translate(),
+    useForMonsters,
+  }), [checkProblems, choose, cleanup, compare, exportJson, load, policy, policyAction, redo, saveAs, saveCurrent, translate, triggerAction, undo, useForMonsters]);
 
   useEffect(() => {
     if (!active || !file) return;
@@ -438,7 +497,7 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
       const typing = event.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName);
       const key = event.key.toLowerCase();
       if (event.key === "Escape" && (problemsOpen || simOpen || flowOpen)) { event.preventDefault(); setProblemsOpen(false); setSimOpen(false); setFlowOpen(false); return; }
-      if (picking || simOpen || flowOpen) return;
+      if (picking || simOpen || flowOpen || comparison || translatePath || useOpen) return;
       if (mod && event.shiftKey && key === "m") { event.preventDefault(); event.stopImmediatePropagation(); void checkProblems(); return; }
       if (mod && ["o", "s", "z", "y", "d"].includes(key)) {
         if (typing && (key === "z" || key === "y")) return;
@@ -459,7 +518,7 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [active, checkProblems, choose, file, flowOpen, picking, problemsOpen, redo, simOpen, saveAs, saveCurrent, trigger, triggerAction, undo]);
+  }, [active, checkProblems, choose, comparison, file, flowOpen, translatePath, useOpen, picking, problemsOpen, redo, simOpen, saveAs, saveCurrent, trigger, triggerAction, undo]);
 
   const showTrigger = (id: number) => {
     const found = policy?.triggers.findIndex((entry) => entry.id === id) ?? -1;
@@ -561,6 +620,7 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
             <b>Policy {policy.id}</b>
             {policy.shadowedBy !== null && <span className="tag warn" title="The server keeps the first policy of an ID">the server uses policy #{policy.shadowedBy + 1} instead</span>}
             <span className="spacer" />
+            <button className="icon-btn small" onClick={useForMonsters} disabled={busy} title="Use this policy for monsters (sets their common_strategy in the open elements.data)"><Users size={13} /></button>
             <button className="icon-btn small" onClick={() => setFlowOpen(true)} title="Flow: which triggers run, enable or disable others and which start timers"><Network size={13} /></button>
             <button className="icon-btn small" onClick={() => setSimOpen(true)} title="Simulate the policy as the server runs it"><Play size={13} /></button>
             <button className="icon-btn small" onClick={() => void cleanup(false)} disabled={busy} title="Remove sub-triggers nothing runs"><Eraser size={13} /></button>
@@ -603,6 +663,9 @@ export const AiPolicyEditor = forwardRef<AiPolicyEditorHandle, Props>(function A
         </>}
       </div>
     </div>
+    {comparison && <AiCompare summary={comparison} newer={!!catalog?.newer} describe={describeOperation} shown={policy?.index ?? null} onChooseOther={() => void compare()} onClose={closeComparison} onCopied={(result) => { applyResult(result); compareAiPolicy(null).then(setComparison).catch((problem) => setError(messageOf(problem))); }} />}
+    {translatePath && <AiTranslate path={translatePath} shown={policy?.index ?? null} onClose={() => setTranslatePath(null)} onApplied={(result, taken) => { applyResult(result); setTranslatePath(null); setNote(`Took over ${count(taken)} text${taken === 1 ? "" : "s"}. Undo brings the old ones back.`); }} />}
+    {useOpen && policy && <AiUseForMonsters policyId={policy.id} users={monstersOf(policy.id)} onClose={() => setUseOpen(false)} onApplied={(state, changed) => { onElementsEdited?.(state); setUseOpen(false); aiPolicyUsedBy().then(setUsedBy).catch(() => {}); setNote(`${count(changed)} monster${changed === 1 ? " uses" : "s use"} policy ${policy.id} now. Save elements.data (in the Elements workspace) for the server.`); }} />}
     {simOpen && policy && <AiSimulator policy={policy} newer={!!catalog?.newer} describe={describeOperation} onShowTrigger={(index) => { setTrigger(index); setSimOpen(false); }} onClose={() => setSimOpen(false)} />}
     {flowOpen && policy && <AiPolicyFlow policy={policy} onShowTrigger={(index) => { setTrigger(index); setFlowOpen(false); }} onClose={() => setFlowOpen(false)} />}
     {picking && <ValuePicker search={pickerSearch} onApply={async (value) => { const id = Number(value); if (!Number.isInteger(id) || id < 0) return "Choose an entry"; picking.apply(id); setPicking(null); return null; }} onClose={() => setPicking(null)} />}

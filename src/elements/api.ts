@@ -1,7 +1,13 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
   AiCatalog,
+  AiCompareSummary,
+  AiCopyReport,
   AiEditResult,
+  AiPolicyDiff,
+  AiTextUpdate,
+  AiTranslationPreview,
+  PolicySlot,
   AiProblem,
   AiTriggerEdit,
   AiFile,
@@ -414,6 +420,17 @@ export const aiPolicyPolicyAction = (policy: number, action: AiListAction) => in
 /** Sub-triggers nothing runs, in one policy or all: [policy position, policy ID, trigger IDs]. */
 export const aiPolicyUnusedSubtriggers = (policy: number | null) => invoke<[number, number, number[]][]>("aipolicy_unused_subtriggers", { policy });
 export const aiPolicyCleanup = (policy: number | null, shown: number | null) => invoke<AiEditResult>("aipolicy_cleanup", { policy, shown });
+/** Compares with another aipolicy.data or JSON export (`path`), or again with the one chosen before (null). */
+export const compareAiPolicy = (path: string | null) => invoke<AiCompareSummary>("compare_aipolicy", { path });
+export const aiPolicyComparePolicy = (id: number) => invoke<AiPolicyDiff>("aipolicy_compare_policy", { id });
+export const copyAiPolicy = (items: { id: number; triggers?: number[] }[], shown: number | null) => invoke<{ result: AiEditResult; report: AiCopyReport }>("copy_aipolicy", { items, shown });
+export const closeAiPolicyComparison = () => invoke<void>("close_aipolicy_comparison");
+export const exportAiPolicyJson = (target: string, policies: number[] | null) => invoke<number>("export_aipolicy_json", { target, policies });
+export const aiPolicyTranslation = (path: string) => invoke<AiTranslationPreview>("aipolicy_translation", { path });
+export const applyAiPolicyTexts = (updates: AiTextUpdate[], shown: number | null) => invoke<AiEditResult>("apply_aipolicy_texts", { updates, shown });
+/** Where the records of these Essence IDs (open elements.data) store their AI policy. */
+export const monsterPolicySlots = (ids: number[]) => invoke<PolicySlot[]>("monster_policy_slots", { ids });
+export const setMonsterPolicies = (places: [number, number, number, number][], policy: number) => invoke<EditState>("set_monster_policies", { places, policy });
 export const aiPolicyUndo = () => invoke<AiEditResult>("aipolicy_undo");
 export const aiPolicyRedo = () => invoke<AiEditResult>("aipolicy_redo");
 export const aiPolicySave = (target: string | null, backup: boolean, replaceChanged: boolean) => invoke<{ path: string; size: number; backup: string | null }>("aipolicy_save", { target, backup, replaceChanged });

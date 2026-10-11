@@ -2453,6 +2453,76 @@ export interface AiCatalog {
   targets: [number, string][];
 }
 
+export type AiDiffStatus = "same" | "changed" | "here" | "there";
+
+export interface AiTriggerPair {
+  id: number;
+  /** Positions in the open file's and the other file's policy. */
+  here: number | null;
+  there: number | null;
+  status: AiDiffStatus;
+}
+
+export interface AiCompareRow {
+  id: number;
+  here: number | null;
+  there: number | null;
+  status: AiDiffStatus;
+  changed: number;
+  added: number;
+  removed: number;
+  reordered: boolean;
+}
+
+export interface AiCompareSummary {
+  path: string;
+  newer: boolean;
+  rows: AiCompareRow[];
+}
+
+export interface AiPolicyDiff {
+  here: AiPolicyView | null;
+  there: AiPolicyView | null;
+  triggers: AiTriggerPair[];
+}
+
+export interface AiCopyReport {
+  policiesAdded: number;
+  policiesReplaced: number;
+  triggersAdded: number;
+  triggersReplaced: number;
+  skipped: string[];
+}
+
+export interface AiTextUpdate {
+  policy: number;
+  policyId: number;
+  trigger: number;
+  triggerId: number;
+  /** The operation; none for the trigger's name. */
+  operation: number | null;
+  group: "name" | "talk" | "summon";
+  current: string;
+  text: string;
+}
+
+export interface AiTranslationPreview {
+  updates: AiTextUpdate[];
+  skippedTriggers: number;
+  tooLong: number;
+}
+
+/** Where a record stores its AI policy (elements.data). */
+export interface PolicySlot {
+  id: number;
+  name: string;
+  list: number;
+  row: number;
+  off: number;
+  field: string;
+  policy: number;
+}
+
 export interface AiProblem {
   severity: "error" | "warning" | "note";
   policy: number | null;

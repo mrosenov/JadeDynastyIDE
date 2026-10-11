@@ -1216,13 +1216,26 @@ impl Document {
     }
 
     fn set_task_id_places(&mut self, places: &[(usize, usize, usize, u32)], new: u32, label: &str) -> Result<EditState, String> {
+        self.set_u32_places(places, new, label, "quest ID")
+    }
+
+    /// Sets AI policies of records at (list, row, offset, policy it should hold now), as one undo step.
+    pub fn set_policy_places(&mut self, places: &[(usize, usize, usize, u32)], policy: u32) -> Result<EditState, String> {
+        let count = places.len();
+        self.set_u32_places(places, policy, &format!("Use AI policy {policy} for {count} record{}", if count == 1 { "" } else { "s" }), "AI policy")
+    }
+
+    fn set_u32_places(&mut self, places: &[(usize, usize, usize, u32)], new: u32, label: &str, what: &str) -> Result<EditState, String> {
         let mut ops = Vec::new();
         for &(list, row, off, old) in places {
             let uid = self.uid_at(list, row)?;
             let record = self.file.record(list, row).ok_or("No such record")?;
             let current = record.get(off..off + 4).ok_or("The field runs past the record")?;
             if current != old.to_le_bytes() {
-                return Err(format!("List {list} record {row} no longer holds quest ID {old}; preview again"));
+                return Err(format!("List {list} record {row} no longer holds {what} {old}; check again"));
+            }
+            if old == new {
+                continue;
             }
             ops.push(Op::Set { list, uid, off, old: current.to_vec(), new: new.to_le_bytes().to_vec() });
         }
@@ -1267,6 +1280,31 @@ mod task_id_tests {
     use super::*;
     use crate::elements::format::Catalog;
     use std::sync::Arc;
+
+    #[test]
+    fn sets_ai_policies_on_monsters_as_one_step() {
+        let path = r"E:/Game Dev/JD/zxserver/zgame/gs/config/elements.data";
+        if !std::path::Path::new(path).is_file() {
+            return;
+        }
+        let mut doc = Document::open(path.into(), Arc::new(Catalog::load(None))).unwrap();
+        let by_policy = doc.monsters_by_policy();
+        let (&policy, users) = by_policy.iter().find(|(_, users)| users.len() >= 2).unwrap();
+        let ids: Vec<u32> = users.iter().take(2).map(|(id, _)| *id).collect();
+        let slots = doc.policy_slots(&ids);
+        assert_eq!(slots.len(), 2);
+        assert!(slots.iter().all(|slot| slot.policy == policy && slot.field == "common_strategy"));
+        let before = doc.file.data.clone();
+        let places: Vec<_> = slots.iter().map(|slot| (slot.list, slot.row, slot.off, slot.policy)).collect();
+        doc.set_policy_places(&places, 4_321).unwrap();
+        assert!(doc.policy_slots(&ids).iter().all(|slot| slot.policy == 4_321));
+        assert_eq!(doc.monsters_by_policy()[&4_321].len(), 2);
+        assert!(doc.set_policy_places(&places, 7).is_err(), "stale places are refused");
+        doc.undo();
+        assert_eq!(doc.file.data, before);
+        // Records without a policy field are left out.
+        assert!(doc.policy_slots(&[0]).is_empty());
+    }
 
     #[test]
     fn finds_and_replaces_quest_ids_as_one_step() {
