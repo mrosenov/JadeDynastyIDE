@@ -2676,3 +2676,55 @@ export interface DynObjectCheck {
   npcgen: string | null;
   client: boolean;
 }
+
+/** One territory of a domain*.data file (coordinates are map image pixels). */
+export interface DomainEntry {
+  name: string;
+  /** The stored name slot, kept while it still says the name. */
+  nameRaw: number[];
+  id: number;
+  /** 0 none, 1–3 first to third class. */
+  type: number;
+  /** Money per week. */
+  reward: number;
+  center: [number, number];
+  verts: [number, number][];
+  faces: [number, number, number][];
+  neighbours: number[];
+}
+
+export interface DomainData {
+  magic: boolean;
+  domains: DomainEntry[];
+  /** Battle times [day (0 = Monday), hour, minute]; null when the file has no list. */
+  times: [number, number, number][] | null;
+  /** Battles per time slot. */
+  timeMax: number;
+}
+
+export interface DomainFile {
+  path: string;
+  name: string;
+  /** What the client uses it for. */
+  label: string;
+  size: number;
+  token: string;
+  data: DomainData;
+}
+
+/** A row of configs\\land.txt or landwar.txt: what the client uses instead of the file's own values. */
+export interface LandRow {
+  id: number;
+  name: string;
+  level: number;
+  item: number;
+  lower: number;
+  upper: number;
+  neighbours: number[];
+}
+
+export interface DomainProblem {
+  severity: "error" | "warning" | "note";
+  domain: number | null;
+  message: string;
+}

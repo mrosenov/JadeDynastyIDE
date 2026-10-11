@@ -1016,6 +1016,38 @@ store (for example the phase before version 14) shows "not in vN" and cannot be 
 the file reads back exactly, can back up the old file and warns when another program changed it. All
 519 npcgen.data files of the sample servers read and write back byte-for-byte.
 
+## Domain files editor (territory maps)
+
+**Domains** in the activity bar edits the client's territory maps, all together, one tab per file:
+**domain.data** (guild map), **domain1.data** (territory war), **domain2.data**, **domain3.data** and
+**domain4.data** (the world map's cross-server, overall and ancient-world layers) and **domainlandwar.data** (land
+war). Choosing any of them opens every `domain*.data` file of its folder. **Only the client reads them**; the
+territory war server reads `domain.sev` (exported from domain1.data; an export is planned).
+
+- **The map** draws each domain as the client does (its triangles filled by class, its outline, the name at
+  its center); wheel zooms, dragging moves, double-click fits. Click a domain to select it; drag the selected
+  domain's center (where the faction icon goes) to move it. Lines show its neighbours. Coordinates are pixels of
+  the map image. Outlines are shown but not editable yet.
+- **The form**: name (at most 15 characters), ID (changing it also changes it in the other domains' neighbour
+  lists), class (none, first to third), reward per week (money), center, and neighbours (chips; add from the
+  file's other domains, click one to select it). **Clone** (Ctrl+D) copies a domain with the next free ID;
+  **Delete** (Del) also removes it from the neighbour lists. domain.data IDs are also the map editor's precinct
+  cities.
+- **Battle times** (per file): day (Monday–Sunday, counted from Monday 00:00), hour, minute, and battles per time
+  slot (the server always puts 8 in the first slot).
+- **land.txt**: the client takes domain1.data's names, classes, declaration items (with item and min–max) and
+  neighbours from `configs\land.txt` in configs.pck. With a client configured, the editor shows those values
+  (in the list, on the map and in a "What the client uses" box) and marks the overridden fields. domainlandwar.data
+  is matched to `configs\landwar.txt` the same way (newer clients; our source does not show that loader).
+- **Problems** (Ctrl+Shift+M): repeated IDs, names over 15 characters and triangles pointing past the outline
+  points are errors; unknown classes, missing neighbours, a domain listing itself and battle times outside a
+  week are warnings; neighbours that do not list the domain back, centers outside their area and land.txt rows
+  without a domain (or the reverse) are notes. Neighbour 0 is an empty entry.
+- **Save** (Ctrl+S) writes the shown file, **Save all** (Ctrl+Shift+S) every changed one, asking first when a
+  file has errors. Files keep the `MOXB` marker of newer clients when they have it; every file must read back
+  exactly, one 7z backup holds the replaced files, and another program's changes are noticed. Undo/redo cover
+  every tab. All 23 sample files (XtremeJade, ForsakenJD, HDN, zxserver, 1559) read back byte for byte.
+
 ## DynamicObjects.data editor (dynamic objects)
 
 **Objects** in the activity bar edits the client's `element\data\DynamicObjects.data`: the model (`.ecm`) or

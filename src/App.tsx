@@ -28,6 +28,7 @@ import { SaveDialog } from "./components/SaveDialog";
 import { UnsavedDialog } from "./components/UnsavedDialog";
 import { PathDataEditor, type PathDataEditorHandle, type PathDataEditorState } from "./components/PathDataEditor";
 import { DynObjectsEditor, type DynObjectsEditorHandle, type DynObjectsEditorState } from "./components/DynObjectsEditor";
+import { DomainEditor, type DomainEditorHandle, type DomainEditorState } from "./components/DomainEditor";
 import { DynTasksEditor, type DynTasksEditorHandle, type DynTasksEditorState } from "./components/DynTasksEditor";
 import { TaskNpcEditor, type TaskNpcEditorHandle, type TaskNpcEditorState } from "./components/TaskNpcEditor";
 import { VipAwardEditor, type VipAwardEditorHandle, type VipAwardEditorState } from "./components/VipAwardEditor";
@@ -65,6 +66,7 @@ import {
   Table2,
   Crown,
   Box,
+  Castle,
   Brain,
   Type,
   FileText,
@@ -95,7 +97,7 @@ function editCountOf(e: EditState): number {
 
 /** What the left side of the workspace shows. */
 type Panel = "lists" | "search" | "problems" | "compare" | "coverage" | "history";
-type DataWorkspace = "elements" | "paths" | "objects" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
+type DataWorkspace = "elements" | "paths" | "objects" | "domains" | "tasks" | "dyn" | "npc" | "gen" | "shop" | "vip" | "ai";
 
 /** The last Find: its hits are stepped through with F3 / Shift+F3. */
 interface LastFind {
@@ -187,6 +189,10 @@ export default function App() {
   const [objectsEditorState, setObjectsEditorState] = useState<DynObjectsEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, objects: 0 });
   const objectsEditorStateRef = useRef(objectsEditorState);
   objectsEditorStateRef.current = objectsEditorState;
+  const domainEditor = useRef<DomainEditorHandle>(null);
+  const [domainEditorState, setDomainEditorState] = useState<DomainEditorState>({ loaded: false, dirty: false, canUndo: false, canRedo: false, path: null, files: 0 });
+  const domainEditorStateRef = useRef(domainEditorState);
+  domainEditorStateRef.current = domainEditorState;
   const tasksEditor = useRef<TasksEditorHandle>(null);
   const [tasksEditorState, setTasksEditorState] = useState<TasksEditorState>({ loaded: false, path: null, summary: null, unsupported: null, analysis: null, comparison: null, fieldCandidates: null, layoutPatch: null, referencePath: null, dirty: false, canUndo: false, canRedo: false, edits: { changedRoots: [] }, selection: null });
   const tasksEditorStateRef = useRef(tasksEditorState);
@@ -223,7 +229,7 @@ export default function App() {
   }, [pendingPolicy, workspace]);
   useEffect(() => {
     if (!pendingOpen || workspace !== pendingOpen.workspace) return;
-    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, objects: objectsEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
+    const editors: Partial<Record<DataWorkspace, { current: { openPath: (path: string) => void } | null }>> = { dyn: dynEditor, shop: shopEditor, gen: genEditor, paths: pathEditor, objects: objectsEditor, domains: domainEditor, npc: npcEditor, vip: vipEditor, ai: aiEditor };
     const editor = editors[workspace]?.current;
     if (!editor) return;
     setPendingOpen(null);
@@ -355,6 +361,10 @@ export default function App() {
         event.preventDefault();
         return;
       }
+      if (domainEditorStateRef.current.dirty && !window.confirm("The domain files have unsaved changes. Close JD IDE and discard them?")) {
+        event.preventDefault();
+        return;
+      }
       if (tasksEditorStateRef.current.dirty && !window.confirm("tasks.data has unsaved changes. Close JD IDE and discard them?")) {
         event.preventDefault();
         return;
@@ -450,6 +460,7 @@ export default function App() {
       if (event.payload.type === "drop" && event.payload.paths.length) {
         if (workspaceRef.current === "paths") pathEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "objects") objectsEditor.current?.openPath(event.payload.paths[0]);
+        else if (workspaceRef.current === "domains") domainEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "tasks") tasksEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "dyn") dynEditor.current?.openPath(event.payload.paths[0]);
         else if (workspaceRef.current === "npc") npcEditor.current?.openPath(event.payload.paths[0]);
@@ -1097,6 +1108,36 @@ export default function App() {
         { label: "Export all policies as JSON…", icon: Download, onSelect: () => aiEditor.current?.exportJson(true), disabled: !aiEditorState.loaded },
       ],
     },
+  ] : workspace === "domains" ? [
+    {
+      label: "File",
+      accessKey: "f",
+      items: [
+        { label: "Open domain files…", icon: FolderOpen, shortcut: "Ctrl+O", onSelect: () => domainEditor.current?.choose() },
+        { label: "Save", icon: Save, shortcut: "Ctrl+S", onSelect: () => domainEditor.current?.save(), disabled: !domainEditorState.loaded || !domainEditorState.dirty },
+        { label: "Save all", icon: SaveAll, shortcut: "Ctrl+Shift+S", onSelect: () => domainEditor.current?.saveAll(), disabled: !domainEditorState.loaded || !domainEditorState.dirty },
+        "separator",
+        { label: "Settings…", icon: Settings, onSelect: () => setSettingsOpen(true) },
+      ],
+    },
+    {
+      label: "Edit",
+      accessKey: "e",
+      items: [
+        { label: "Undo", icon: Undo2, shortcut: "Ctrl+Z", onSelect: () => domainEditor.current?.undo(), disabled: !domainEditorState.canUndo },
+        { label: "Redo", icon: Redo2, shortcut: "Ctrl+Y", onSelect: () => domainEditor.current?.redo(), disabled: !domainEditorState.canRedo },
+        "separator",
+        { label: "Clone domain", icon: Copy, shortcut: "Ctrl+D", onSelect: () => domainEditor.current?.cloneSelected(), disabled: !domainEditorState.loaded },
+        { label: "Delete domain…", icon: Trash2, shortcut: "Del", onSelect: () => domainEditor.current?.deleteSelected(), disabled: !domainEditorState.loaded },
+      ],
+    },
+    {
+      label: "Tools",
+      accessKey: "t",
+      items: [
+        { label: "Check problems…", icon: CircleAlert, shortcut: "Ctrl+Shift+M", onSelect: () => domainEditor.current?.openProblems(), disabled: !domainEditorState.loaded },
+      ],
+    },
   ] : workspace === "objects" ? [
     {
       label: "File",
@@ -1230,6 +1271,11 @@ export default function App() {
       if (!window.confirm("Leave the path.data editor and discard its unsaved changes?")) return;
       setPathEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
     }
+    // So do the domain files.
+    if (workspace === "domains" && domainEditorState.dirty) {
+      if (!window.confirm("Leave the domain editor and discard its unsaved changes?")) return;
+      setDomainEditorState((current) => ({ ...current, dirty: false, canUndo: false, canRedo: false }));
+    }
     // The dynamic object table lives in its editor too.
     if (workspace === "objects" && objectsEditorState.dirty) {
       if (!window.confirm("Leave the DynamicObjects.data editor and discard its unsaved changes?")) return;
@@ -1262,6 +1308,11 @@ export default function App() {
         <Box size={18} />
         <span className="activity-label">Objects</span>
         {objectsEditorState.dirty && <span className="activity-dirty" />}
+      </button>
+      <button className={"activity" + (workspace === "domains" ? " active" : "")} onClick={() => switchWorkspace("domains")} title="Domain files editor (guild map, territory war, world map, land war)" aria-label="domain files">
+        <Castle size={18} />
+        <span className="activity-label">Domains</span>
+        {domainEditorState.dirty && <span className="activity-dirty" />}
       </button>
       <button className={"activity" + (workspace === "tasks" ? " active" : "")} onClick={() => switchWorkspace("tasks")} title="tasks.data editor" aria-label="tasks.data">
         <FileStack size={18} />
@@ -1448,7 +1499,7 @@ export default function App() {
           onSaved={onSettingsSaved}
           onOpenFile={(file) => {
             // The other editors open the file once their workspace is shown (they mount with it).
-            const others: Record<string, DataWorkspace> = { "dyn tasks": "dyn", gshop: "shop", npcgen: "gen", path: "paths", "dynamic objects": "objects", "task npc": "npc", "vip awards": "vip", "ai policy": "ai" };
+            const others: Record<string, DataWorkspace> = { "dyn tasks": "dyn", gshop: "shop", npcgen: "gen", path: "paths", "dynamic objects": "objects", domain: "domains", "task npc": "npc", "vip awards": "vip", "ai policy": "ai" };
             if (others[file.kind]) {
               setPendingOpen({ workspace: others[file.kind], path: file.path });
               setWorkspace(others[file.kind]);
@@ -1541,6 +1592,16 @@ export default function App() {
             defaultPath={pathEditorState.path ?? (settingsView?.client?.hasPathData ? `${settingsView.client.elementDir}\\data\\path.data` : null)}
             onStateChange={setPathEditorState}
             onClientReloaded={() => getSettings().then(onSettingsSaved).catch((problem) => setError(String(problem)))}
+          />
+        </main>
+      ) : workspace === "domains" ? (
+        <main className="workspace path-data-workspace">
+          {activityBar}
+          <DomainEditor
+            ref={domainEditor}
+            active
+            defaultPath={domainEditorState.path ?? settingsView?.client?.dataFiles.find((file) => file.name.toLowerCase() === "domain.data")?.path ?? null}
+            onStateChange={setDomainEditorState}
           />
         </main>
       ) : workspace === "objects" ? (
@@ -1827,6 +1888,14 @@ export default function App() {
             {pathEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
             <span className="spacer" />
             <span>PMID resource path table</span>
+          </>
+        ) : workspace === "domains" ? (
+          <>
+            <span>Domain files</span>
+            {domainEditorState.path && <span className="mono truncate" title={domainEditorState.path}>{domainEditorState.path}</span>}
+            {domainEditorState.dirty && <span className="status-edits"><span className="changed-dot" /> unsaved changes</span>}
+            <span className="spacer" />
+            {domainEditorState.loaded && <span>{count(domainEditorState.files)} files</span>}
           </>
         ) : workspace === "objects" ? (
           <>

@@ -1,7 +1,11 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import type {
   AiCatalog,
+  DomainData,
+  DomainFile,
+  DomainProblem,
   DynObjectCheck,
+  LandRow,
   AiCompareSummary,
   AiCopyReport,
   AiEditResult,
@@ -436,6 +440,12 @@ export const setMonsterPolicies = (places: [number, number, number, number][], p
 export const aiPolicyHistory = () => invoke<AiHistoryRow[]>("aipolicy_history");
 export const aiPolicyRevertEntry = (id: number, shown: number | null) => invoke<AiEditResult>("aipolicy_revert_entry", { id, shown });
 export const aiPolicyRevertAll = () => invoke<AiEditResult>("aipolicy_revert_all");
+/** Every domain*.data file in the folder of a domain file (or the folder itself). */
+export const openDomains = (path: string) => invoke<DomainFile[]>("open_domains", { path });
+/** The configured client's land.txt / landwar.txt rows, by the domain file they override. */
+export const domainLandTables = () => invoke<Record<string, LandRow[]>>("domain_land_tables");
+export const domainProblems = (name: string, data: DomainData, land: LandRow[] | null) => invoke<DomainProblem[]>("domain_problems", { name, data, land });
+export const saveDomains = (files: { path: string; token: string | null; data: DomainData }[], backup: boolean, replaceChanged: boolean) => invoke<{ files: [string, number, string][]; backup: string | null }>("save_domains", { files, backup, replaceChanged });
 /** DynamicObjects.data: the path.data table format with its own rules. */
 export const openDynObjects = (path: string) => invoke<PathDataFile>("open_dyn_objects", { path });
 export const saveDynObjects = (request: PathDataSaveRequest) => invoke<PathDataSaveReport>("save_dyn_objects", { request });

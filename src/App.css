@@ -4967,6 +4967,192 @@ select.sf-control {
 .path-data-table th:nth-child(1) { width: 120px; }
 .path-data-table th:nth-child(3) { width: 82px; }
 .path-data-table th:nth-child(4) { width: 42px; }
+/* Domain files: tabs per file, list | map | form. */
+.domain-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 4px 10px 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+}
+.domain-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.domain-tab:hover {
+  background: var(--bg-hover);
+}
+.domain-tab.active {
+  border-color: var(--border);
+  background: var(--bg-pane);
+  box-shadow: inset 0 2px 0 var(--accent);
+}
+.domain-body {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 250px minmax(0, 1fr) 360px;
+  min-height: 0;
+}
+.domain-body > .dyn-task-list {
+  border-right: 1px solid var(--border);
+}
+.domain-row {
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+}
+.domain-map-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-pane);
+}
+.domain-map {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.domain-shape {
+  cursor: pointer;
+}
+.domain-shape:hover path:first-child {
+  fill-opacity: 0.38;
+}
+.domain-center circle {
+  fill: var(--text-dim);
+  stroke: var(--bg-pane);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+}
+.domain-center.active circle {
+  fill: var(--accent);
+  cursor: move;
+}
+.domain-center text {
+  fill: var(--text);
+  paint-order: stroke;
+  stroke: var(--bg-pane);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.domain-center.active text {
+  font-weight: 700;
+}
+.domain-link {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+  pointer-events: none;
+}
+.domain-legend {
+  padding: 4px 10px;
+  border-top: 1px solid var(--border);
+}
+.domain-swatch {
+  opacity: 0.7;
+}
+.domain-swatch.type-0 { background: #8a979e; }
+.domain-swatch.type-1 { background: #d9534f; }
+.domain-swatch.type-2 { background: #e0a03a; }
+.domain-swatch.type-3 { background: #3b82c4; }
+.domain-form {
+  min-height: 0;
+  padding: 10px 12px;
+  overflow: auto;
+  border-left: 1px solid var(--border);
+}
+.domain-form h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+.domain-form h4 {
+  margin: 14px 0 6px;
+  font-size: 12px;
+}
+.domain-fields {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px 8px;
+  font-size: 12px;
+}
+.domain-fields > label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-dim);
+}
+.domain-inline {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.domain-inline .dyn-input {
+  width: 90px;
+}
+.domain-neighbours {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.domain-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px 2px 1px 7px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 11px;
+}
+.domain-add {
+  max-width: 160px;
+}
+.domain-land {
+  margin-top: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-pane);
+  font-size: 12px;
+}
+.domain-land h4 {
+  margin-top: 0;
+}
+.domain-land dl {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 3px 8px;
+  margin: 0;
+}
+.domain-land dt {
+  color: var(--text-dim);
+}
+.domain-land dd {
+  margin: 0;
+}
+.domain-times .dyn-table .dyn-input {
+  width: 56px;
+}
 /* DynamicObjects.data: ID, file, kind, client, npcgen, delete. */
 .dyn-objects-table th:nth-child(3) { width: 96px; }
 .dyn-objects-table th:nth-child(4) { width: 70px; }

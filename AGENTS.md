@@ -12,7 +12,7 @@ versions v66–v176: browse, search, check, compare, export, edit, and save. A s
 activity-bar workspace edits the client's `path.data`. The `tasks.data` workspace supports
 verified v165, v172 and v184 task sets, including browsing, schema analysis, safe editing,
 hierarchy operations and saving. Further workspaces edit dyn_tasks.data, task_npc.data, npcgen.data,
-the gshop shops, vipaward.data, aipolicy.data (monster AI) and DynamicObjects.data.
+the gshop shops, vipaward.data, aipolicy.data (monster AI), DynamicObjects.data and the domain files.
 
 A previous Laravel/PHP version of the same idea lives in `C:/Users/mitko/Herd/jdide`. It is
 a reference for ideas only; JD IDE replaces it.
@@ -37,7 +37,7 @@ a reference for ideas only; JD IDE replaces it.
 npm install
 npx tsc --noEmit            # type-check the UI
 npx vite build              # build the UI (also `npm run build`)
-cd src-tauri && cargo test --lib   # Rust tests (216 at last run, ~6–7 min with the real task fixtures)
+cd src-tauri && cargo test --lib   # Rust tests (219 at last run, ~6–7 min with the real task fixtures)
 ```
 
 Environment quirks (Windows 11, Git Bash):
@@ -79,6 +79,7 @@ Environment quirks (Windows 11, Git Bash):
 | `client/strings.rs` | `configs.pck` string tables and item name colours. |
 | `client/titles.rs` | `interfaces.pck` `title_def_u.lua` title names/descriptions (parsed, never executed). |
 | `path_data.rs` | Strict `path.data` PMID/GBK reader, validator and atomic writer; `Table::DynamicObjects` for DynamicObjects.data (same loader, one empty path allowed). |
+| `domain.rs` | domain.data, domain1–4.data, domainlandwar.data: reader/writer (optional `MOXB` marker), land.txt/landwar.txt rows, problems, multi-file save. |
 | `dyn_objects.rs` | DynamicObjects.data: object kinds, client file checks (`models.pck`, `gfx.pck` + `gfx\`), problems, the client's model/effect list for the picker. |
 | `gshop/mod.rs`, `gshop/layout.rs`, `gshop/compare.rs`, `gshop/texts.rs`, `gshop/align.rs` | gshop.data / gshop1.data / gshop2.data: item layouts (built-in `formats/gshop/*.json` + user), reader/writer, document with journal, categories, problems, save; compare/copy and JSON export. |
 | `npcgen.rs` | `npcgen.data` (one server map's spawns): versions 1–14 reader/writer, document with journal (whole-item Replace/Insert/Remove per section), save. |
@@ -604,6 +605,31 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   the player's VIP level, special at or below; nothing 0:00–6:00. `Document::essence_number` reads
   `pile_num_max`. `problems` allows types 2 only in 172-byte files and VIP levels 7–8 there.
 - UI `VipAwardEditor.tsx` follows TaskNpcEditor (rows and undo in the component; save sends rows with `raw`).
+
+## Domain files editor
+
+- Format (ZCommon/globaldataman.cpp `LoadDomainData`, written by `globaldata_save_to`): [u32 `MOXB` 0x42584f4d in
+  newer files; our source predates it] i32 count; per domain WORD name[16], i32 id, type (DOMAIN_TYPE 0–3), reward,
+  A3DPOINT2 center (two i32), i32 n + n points, i32 n + n × 3 i32 faces, i32 n + n neighbours; then i32 n +
+  n × BattleTime {day, hour, minute} and i32 battles per slot. The client reads the time list only from domain and
+  domain1, but every sample has one (HDN domain4: empty). `times: None` when a file ends after the domains.
+- Client globals: domain.data → infos (DlgGuildMap, NPC services, precinct cities in ZElementEditor
+  ScenePrecinctObject), domain1 → infos2 (DlgTerrWarMap, DlgBattleTerr), domain2/3/4 → infos3/4/5 (DlgWorldMap
+  layers; 5 also DlgMapTransfer). domainlandwar is newer than the source. Points are map image pixels (DlgTerrWarMap
+  divides by its scale and draws the triangles with A3DFlatCollector). After loading, `configs\land.txt`
+  (`sscanf("%d %s %d %d %d %d %s")`, header skipped) overrides domain1's type, challenge item, item limits,
+  neighbours and name; newer clients also have `configs\landwar.txt` (same columns), assumed to do the same for
+  domainlandwar. ElementLocalize (CDomainInforTemplate) translates domain/domain1 names.
+- Server: gdeliveryd reads `domain.sev` (id, type, item lower/upper, neighbours, times, max), written by the client
+  with `globalsave` from domain1 (it writes 0 as the max: `nTimeMax` is never set). The zx_18 server replaces the
+  times with defaults. BattleTime day = days after Monday 00:00 (territorymanager.cpp `t_base`); the max is the
+  battles per slot (`TimingSet(tmax)`, the first slot 8). The .data copies in server config folders are leftovers.
+- Samples: 23 files round-trip (XtremeJade domain/domain1 have no marker). XtremeJade/zxserver domain1 list only
+  neighbour 0 (land.txt supplies them): 0 is skipped as an empty entry. Official files have no errors.
+- UI `DomainEditor.tsx` (all files' data in one undo history, `DomainMap.tsx` SVG map with pan/zoom and center
+  drag; `effective` names/classes from land.txt). Commands `open_domains` (the folder of a domain file),
+  `domain_land_tables` (configs.pck), `domain_problems`, `save_domains` (several files, one backup).
+  Next (agreed): outline editing (re-triangulate), `domain.sev` export at the end.
 
 ## DynamicObjects.data editor
 

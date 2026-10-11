@@ -1,6 +1,7 @@
 mod aipolicy;
 mod backup;
 mod client;
+mod domain;
 mod dyn_objects;
 mod dyn_tasks;
 mod elements;
@@ -845,6 +846,29 @@ async fn client_maps(state: State<'_, AppState>) -> Result<Vec<ClientMap>, Strin
     })
     .await
     .map_err(|error| error.to_string())?
+}
+
+/// Every domain*.data file in the folder of `path` (a domain file or the folder).
+#[tauri::command]
+async fn open_domains(path: String) -> Result<Vec<domain::DomainFile>, String> {
+    tauri::async_runtime::spawn_blocking(move || domain::open_folder(std::path::Path::new(&path))).await.map_err(|error| error.to_string())?
+}
+
+/// The configured client's configs\land.txt and landwar.txt rows, by the domain file they override.
+#[tauri::command]
+async fn domain_land_tables(state: State<'_, AppState>) -> Result<HashMap<String, Vec<domain::LandRow>>, String> {
+    let Some(resources) = state.resources() else { return Ok(HashMap::new()) };
+    tauri::async_runtime::spawn_blocking(move || domain::land_tables(&resources)).await.map_err(|error| error.to_string())
+}
+
+#[tauri::command]
+fn domain_problems(name: String, data: domain::DomainData, land: Option<Vec<domain::LandRow>>) -> Vec<domain::Problem> {
+    domain::problems(&name, &data, land.as_deref())
+}
+
+#[tauri::command]
+async fn save_domains(files: Vec<domain::SaveFile>, backup: bool, replace_changed: bool) -> Result<domain::SaveReport, String> {
+    tauri::async_runtime::spawn_blocking(move || domain::save(&files, backup, replace_changed)).await.map_err(|error| error.to_string())?
 }
 
 /// DynamicObjects.data: the path.data reader with that table's rules.
@@ -2561,6 +2585,10 @@ pub fn run() {
             aipolicy_policy_action,
             aipolicy_unused_subtriggers,
             aipolicy_cleanup,
+            open_domains,
+            domain_land_tables,
+            domain_problems,
+            save_domains,
             open_dyn_objects,
             save_dyn_objects,
             export_dyn_objects_json,
