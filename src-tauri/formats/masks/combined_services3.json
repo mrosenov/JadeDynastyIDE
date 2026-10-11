@@ -111,6 +111,53 @@
       "bit": 21,
       "label": "Guild ingot mall",
       "description": "帮派元宝商城"
+    },
+    {
+      "bit": 22,
+      "label": "Pre-Faction Change"
+    },
+    {
+      "bit": 23,
+      "label": "Register for the Clash of the Seven",
+      "description": "[Tuesday] Bamboo Peak"
+    },
+    {
+      "bit": 24,
+      "label": "Register for the Clash of the Seven",
+      "description": "[Monday] Bamboo Heights"
+    },
+    {
+      "bit": 25,
+      "label": "Register for the Clash of the Seven",
+      "description": "[Wednesday] Sunrise Peak"
+    },
+    {
+      "bit": 26,
+      "label": "Register for the Clash of the Seven",
+      "description": "[Thursday] Dawnglow Peak"
+    },
+    {
+      "bit": 27,
+      "label": "Register for the Clash of the Seven",
+      "description": "[Friday] Windtrail Peak"
+    },
+    {
+      "bit": 28,
+      "label": "Register for the Clash of the Seven",
+      "description": "[Saturday] Dragonfang Peak"
+    },
+    {
+      "bit": 29,
+      "label": "Register for the Clash of the Seven",
+      "description": "[Sunday] Peak of Widows"
+    },
+    {
+      "bit": 30,
+      "label": "Register for the Clash of the Seven Finals"
+    },
+    {
+      "bit": 31,
+      "label": "Zuolo Plains"
     }
   ]
 }

@@ -4,17 +4,17 @@
   "flags": [
     {
       "bit": 0,
-      "label": "Sage",
+      "label": "Dagos",
       "description": "仙"
     },
     {
       "bit": 1,
-      "label": "Demon",
+      "label": "Felkin",
       "description": "魔"
     },
     {
       "bit": 2,
-      "label": "Buddha",
+      "label": "Fuwa",
       "description": "佛"
     },
     {

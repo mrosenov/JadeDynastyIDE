@@ -1,0 +1,10 @@
+{
+  "key": "npc_services_4",
+  "label": "NPC Services 4",
+  "flags": [
+    {
+      "bit": 0,
+      "label": "Zuolo Plains"
+    }
+  ]
+}

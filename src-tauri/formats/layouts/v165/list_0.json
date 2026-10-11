@@ -1,6 +1,6 @@
 {
   "key": "equipment_addon",
-  "name": "Equipment Addon",
+  "name": "EQUIPMENT_ADDON",
   "struct": "EQUIPMENT_ADDON",
   "size": 88,
   "fields": [
@@ -45,6 +45,7 @@
         "k": "i32"
       },
       "c": "第1个参数，可以是浮点数",
+      "display": "skill",
       "when": [
         {
           "field": "type",

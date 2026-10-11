@@ -1,5 +1,5 @@
 {
-  "name": "Special Id Config",
+  "name": "SPECIAL_ID_CONFIG",
   "struct": "SPECIAL_ID_CONFIG",
   "size": 496,
   "fields": [
@@ -30,42 +30,58 @@
       "off": 72,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "JINFASHEN_TO_MONEY_CONFIG"
+      ]
     },
     {
       "name": "monster_drop_prob",
       "off": 76,
       "t": {
         "k": "f32"
-      }
+      },
+      "display": "probability"
     },
     {
       "name": "id_money_matter",
       "off": 80,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MATERIAL_ESSENCE"
+      ]
     },
     {
       "name": "id_speaker",
       "off": 84,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MATERIAL_ESSENCE"
+      ]
     },
     {
       "name": "id_destroying_matter",
       "off": 88,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "DESTROYING_ESSENCE"
+      ]
     },
     {
       "name": "id_townscroll",
       "off": 92,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TOWNSCROLL_ESSENCE"
+      ]
     },
     {
       "name": "id_attacker_droptable",
@@ -86,140 +102,182 @@
       "off": 104,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MATERIAL_ESSENCE"
+      ]
     },
     {
       "name": "fee_talisman_merge",
       "off": 108,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "fee_talisman_enchant",
       "off": 112,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "id_war_material1",
       "off": 116,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MATERIAL_ESSENCE"
+      ]
     },
     {
       "name": "id_war_material2",
       "off": 120,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MATERIAL_ESSENCE"
+      ]
     },
     {
       "name": "fee_pet_gained",
       "off": 124,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "fee_pet_free",
       "off": 128,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "fee_pet_refine",
       "off": 132,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "fee_pet_rename",
       "off": 136,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "id_male_war_statue",
       "off": 140,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "NPC_ESSENCE"
+      ]
     },
     {
       "name": "id_female_war_statue",
       "off": 144,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "NPC_ESSENCE"
+      ]
     },
     {
       "name": "id_vehicle_upgrade_item",
       "off": 148,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "fee_lock",
       "off": 152,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "fee_unlock",
       "off": 156,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "unlock_item_id",
       "off": 160,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "unlocking_item_id",
       "off": 164,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "DESTROYING_ESSENCE"
+      ]
     },
     {
       "name": "id_damaged_item",
       "off": 168,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "DESTROYING_ESSENCE"
+      ]
     },
     {
       "name": "id_repair_damaged_item",
       "off": 172,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "id_bleed_identity_host_item",
       "off": 176,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "fee_restore_soul",
       "off": 180,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "id_lowgrade_soul_stone",
@@ -744,24 +802,31 @@
       "off": 480,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "money"
     },
     {
       "name": "id_change_face_item_2",
       "off": 484,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
       "name": "id_change_face_item_3",
       "off": 488,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "TASKNORMALMATTER_ESSENCE"
+      ]
     },
     {
-      "name": "unknown_3",
+      "name": "special_related",
       "off": 492,
       "t": {
         "k": "i32"

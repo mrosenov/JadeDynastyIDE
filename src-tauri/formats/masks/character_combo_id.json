@@ -78,6 +78,11 @@
       "description": "c14: 鬼王宗5 (official: c14:鬼王宗5)"
     },
     {
+      "bit": 15,
+      "label": "Reserved",
+      "description": "Reserved"
+    },
+    {
       "bit": 16,
       "label": "Lupin Tier 4",
       "description": "c16: 合欢派4 (official: c16:合欢派4)"
@@ -86,6 +91,11 @@
       "bit": 17,
       "label": "Lupin Tier 5",
       "description": "c17: 合欢派5 (official: c17:合欢派5)"
+    },
+    {
+      "bit": 18,
+      "label": "Reserved",
+      "description": "Reserved"
     },
     {
       "bit": 19,
@@ -98,6 +108,11 @@
       "description": "c20: 青云门5 (official: c20:青云门5)"
     },
     {
+      "bit": 21,
+      "label": "Reserved",
+      "description": "Reserved"
+    },
+    {
       "bit": 22,
       "label": "Skysong Tier 4",
       "description": "c22: 天音寺4 (official: c22:天音寺4)"
@@ -106,6 +121,11 @@
       "bit": 23,
       "label": "Skysong Tier 5",
       "description": "c23: 天音寺5 (official: c23:天音寺5)"
+    },
+    {
+      "bit": 24,
+      "label": "Reserved",
+      "description": "Reserved"
     },
     {
       "bit": 25,
@@ -131,6 +151,16 @@
       "bit": 29,
       "label": "Modo Tier 5",
       "description": "c29: 鬼道5 (official: c29:鬼道5)"
+    },
+    {
+      "bit": 30,
+      "label": "Reserved",
+      "description": "Reserved"
+    },
+    {
+      "bit": 31,
+      "label": "Reserved",
+      "description": "Reserved"
     },
     {
       "bit": 32,
@@ -163,6 +193,10 @@
       "description": "c37: 九黎5 (official: c37:九黎5)"
     },
     {
+      "bit": 38,
+      "label": "Reserved 38"
+    },
+    {
       "bit": 39,
       "label": "Arden Tier 1",
       "description": "c39: 烈山1 (official: c39:烈山1)"
@@ -188,6 +222,10 @@
       "description": "c43: 烈山5 (official: c43:烈山5)"
     },
     {
+      "bit": 44,
+      "label": "Reserved 44"
+    },
+    {
       "bit": 45,
       "label": "Rayan Tier 1",
       "description": "c45: 怀光1 (official: c45:怀光1)"
@@ -211,6 +249,10 @@
       "bit": 49,
       "label": "Rayan Tier 5",
       "description": "c49: 怀光5 (official: c49:怀光5)"
+    },
+    {
+      "bit": 50,
+      "label": "Reserved 50"
     },
     {
       "bit": 51,
@@ -261,6 +303,18 @@
       "bit": 60,
       "label": "Voida Tier 5",
       "description": "c60"
+    },
+    {
+      "bit": 61,
+      "label": "Reserved 61"
+    },
+    {
+      "bit": 62,
+      "label": "Reserved 62"
+    },
+    {
+      "bit": 63,
+      "label": "Reserved 63"
     }
   ]
 }

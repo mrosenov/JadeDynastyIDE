@@ -1,6 +1,6 @@
 {
   "key": "reciperoll_major_type",
-  "name": "Reciperoll Major Type",
+  "name": "RECIPEROLL_MAJOR_TYPE",
   "struct": "RECIPEROLL_MAJOR_TYPE",
   "size": 68,
   "fields": [

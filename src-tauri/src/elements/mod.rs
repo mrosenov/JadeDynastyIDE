@@ -1462,6 +1462,8 @@ mod tests {
 
     #[test]
     fn problems_scan_the_whole_file() {
+        // The zxserver file has no problems once every mask bit is named; the scan must still find some in one file.
+        let mut found = 0;
         for rel in ["Game Dev/JD/zxserver/zgame/gs/config/elements.data", "Game Dev/JD/1792/gamed/config/elements.data"] {
             let Some(doc) = open(rel) else { continue };
             let r = doc.problems();
@@ -1473,7 +1475,10 @@ mod tests {
             assert!(!r.problems.iter().any(|p| p.kind == problems::Kind::BrokenRef && p.field.as_deref().is_some_and(|f| f.contains("id_obj"))));
             // Masks are reported per field and bit pattern, not per record.
             assert!(r.kinds.iter().find(|k| k.kind == problems::Kind::UnnamedBits).unwrap().count < 500);
-            assert!(r.kinds.iter().any(|k| k.count > 0));
+            found += r.kinds.iter().map(|k| k.count).sum::<usize>();
+        }
+        if std::path::Path::new("E:/Game Dev/JD/1792/gamed/config/elements.data").is_file() {
+            assert!(found > 0);
         }
     }
 

@@ -1,6 +1,6 @@
 {
   "key": "npc_war_towerbuild_service",
-  "name": "Npc War Towerbuild Service",
+  "name": "NPC_WAR_TOWERBUILD_SERVICE",
   "struct": "NPC_WAR_TOWERBUILD_SERVICE",
   "size": 148,
   "fields": [

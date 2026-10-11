@@ -1,0 +1,54 @@
+{
+  "key": "dye_colors",
+  "label": "Dye Colors",
+  "values": [
+    {
+      "value": 0,
+      "label": "Red"
+    },
+    {
+      "value": 1,
+      "label": "Orange"
+    },
+    {
+      "value": 2,
+      "label": "Yellow"
+    },
+    {
+      "value": 3,
+      "label": "Green"
+    },
+    {
+      "value": 4,
+      "label": "Cyan"
+    },
+    {
+      "value": 5,
+      "label": "Blue"
+    },
+    {
+      "value": 6,
+      "label": "Purple"
+    },
+    {
+      "value": 7,
+      "label": "Black"
+    },
+    {
+      "value": 8,
+      "label": "White"
+    },
+    {
+      "value": 9,
+      "label": "Brown"
+    },
+    {
+      "value": 10,
+      "label": "Pink"
+    },
+    {
+      "value": 11,
+      "label": "Gray"
+    }
+  ]
+}

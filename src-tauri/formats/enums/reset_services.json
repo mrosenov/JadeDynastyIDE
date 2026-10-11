@@ -1,0 +1,18 @@
+{
+  "key": "reset_services",
+  "label": "Reset Services",
+  "values": [
+    {
+      "value": 0,
+      "label": "Rest all skills"
+    },
+    {
+      "value": 1,
+      "label": "Reset current tier"
+    },
+    {
+      "value": 2,
+      "label": "Reset all tome points"
+    }
+  ]
+}

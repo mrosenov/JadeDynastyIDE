@@ -1,0 +1,10 @@
+{
+  "key": "sale_promo_requirement_type",
+  "label": "Sale Promo Requirement Type",
+  "values": [
+    {
+      "value": 3,
+      "label": "Jadens"
+    }
+  ]
+}

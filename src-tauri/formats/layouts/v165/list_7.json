@@ -1,6 +1,6 @@
 {
   "key": "material_major_type",
-  "name": "Material Major Type",
+  "name": "MATERIAL_MAJOR_TYPE",
   "struct": "MATERIAL_MAJOR_TYPE",
   "size": 68,
   "fields": [

@@ -133,7 +133,11 @@ Environment quirks (Windows 11, Git Bash):
   `rerun-if-changed=formats`: `include_dir!` does not track files, so new set or layout files were
   missing from `tauri dev` builds until a `.rs` file changed.
 - User overlays (schema editor, enums/masks editor): `%APPDATA%\com.jdide.app\layouts\…`,
-  `enums\`, `masks\`. They override one list or one set; everything else stays built-in.
+  `enums\`, `masks\`. They override one list or one set; everything else stays built-in. They are not part of a
+  build: on Oct 11 2026 the user's overlays were promoted into `formats/` for release 1.0 (v112 list_3, v156 list_169,
+  v160 list_34, 145 v165 lists, 7 enums, 7 masks, gshop `source-custom`), merged field by field with later built-in
+  improvements (NPC portrait `image`, money/path roles, comments, `god_devil_mask`; v112 sets stay dropped on purpose).
+  The user's own overlay copies still win on their machine until removed.
 - `tools/*.mjs` — layout generation/import pipeline (see README "Regenerating layouts").
   `tools/type-rules.json` holds `rules` (conditional types), `sets` (enum/mask by field
   name), `roles` (display roles) and `refs` (reference fixes); apply with
@@ -520,7 +524,8 @@ talk      u32 count, then TALK_PROC records (variable length) up to EOF
   Monster link: `MONSTER_ESSENCE.common_strategy` → `trigger_policy` (template_loader.cpp; missing → printed, set to
   0). `id_strategy` is `primary_strategy`, the attack strategy (1–6). Load failure = gs -300. Display role
   `aipolicy` (schema editor; built-in on common_strategy, v160 `AIPolicy`, added by hand to the five list_21
-  files: running apply-type-rules.mjs would also apply never-applied v160 rules (money roles, sets, a ref fix)).
+  files; v165 has it on `AIPolicy` at offset 300 (5,024 of 5,069 HDN monsters equal their ForsakenJD v160 value; the
+  old built-in v165 put `common_strategy` at 308, which is `Adjust_EXP`): running apply-type-rules.mjs would also apply never-applied v160 rules (money roles, sets, a ref fix)).
   `Document::monsters_by_policy` reads role fields (fallback: the field name); `get_record` hints them
   (`annotate_policies`, aipolicy lock after the document's); the hint opens the AI editor (`showPolicy`).
 - Parameters: `condition_fields`/`operation_fields(kind, version)` (`FieldSpec` key, label, `FieldKind` u32/i32/f32/

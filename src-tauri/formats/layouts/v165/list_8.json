@@ -1,6 +1,6 @@
 {
   "key": "material_sub_type",
-  "name": "Material Sub Type",
+  "name": "MATERIAL_SUB_TYPE",
   "struct": "MATERIAL_SUB_TYPE",
   "size": 68,
   "fields": [

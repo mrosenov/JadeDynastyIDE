@@ -1,6 +1,6 @@
 {
   "key": "monster_type",
-  "name": "Monster Type",
+  "name": "MONSTER_TYPE",
   "struct": "MONSTER_TYPE",
   "size": 68,
   "fields": [

@@ -1,6 +1,6 @@
 {
   "key": "recipe_major_type",
-  "name": "Recipe Major Type",
+  "name": "RECIPE_MAJOR_TYPE",
   "struct": "RECIPE_MAJOR_TYPE",
   "size": 68,
   "fields": [

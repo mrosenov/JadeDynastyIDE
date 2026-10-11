@@ -1,6 +1,6 @@
 {
   "key": "npc_sell_service",
-  "name": "Npc Sell Service",
+  "name": "NPC_SELL_SERVICE",
   "struct": "NPC_SELL_SERVICE",
   "size": 1768,
   "fields": [

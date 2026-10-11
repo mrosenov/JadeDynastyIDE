@@ -28,6 +28,14 @@
       "description": "c68: 焚香5 (official: c68:焚香5)"
     },
     {
+      "bit": 5,
+      "label": "Reserved 5"
+    },
+    {
+      "bit": 6,
+      "label": "Reserved 6"
+    },
+    {
       "bit": 7,
       "label": "Seira Tier 1",
       "description": "c71"
@@ -51,6 +59,86 @@
       "bit": 11,
       "label": "Seira Tier 5",
       "description": "c75"
+    },
+    {
+      "bit": 12,
+      "label": "Reserved 12"
+    },
+    {
+      "bit": 13,
+      "label": "Reserved 13"
+    },
+    {
+      "bit": 14,
+      "label": "Reserved 14"
+    },
+    {
+      "bit": 15,
+      "label": "Reserved 15"
+    },
+    {
+      "bit": 16,
+      "label": "Reserved 16"
+    },
+    {
+      "bit": 17,
+      "label": "Reserved 17"
+    },
+    {
+      "bit": 18,
+      "label": "Reserved 18"
+    },
+    {
+      "bit": 19,
+      "label": "Reserved 19"
+    },
+    {
+      "bit": 20,
+      "label": "Reserved 20"
+    },
+    {
+      "bit": 21,
+      "label": "Reserved 21"
+    },
+    {
+      "bit": 22,
+      "label": "Reserved 22"
+    },
+    {
+      "bit": 23,
+      "label": "Reserved 23"
+    },
+    {
+      "bit": 24,
+      "label": "Reserved 24"
+    },
+    {
+      "bit": 25,
+      "label": "Reserved 25"
+    },
+    {
+      "bit": 26,
+      "label": "Reserved 26"
+    },
+    {
+      "bit": 27,
+      "label": "Reserved 27"
+    },
+    {
+      "bit": 28,
+      "label": "Reserved 28"
+    },
+    {
+      "bit": 29,
+      "label": "Reserved 29"
+    },
+    {
+      "bit": 30,
+      "label": "Reserved 30"
+    },
+    {
+      "bit": 31,
+      "label": "Reserved 31"
     },
     {
       "bit": 32,
@@ -78,6 +166,10 @@
       "description": "c100: 太昊5 (official: c100:太昊5)"
     },
     {
+      "bit": 37,
+      "label": "Reserved 37"
+    },
+    {
       "bit": 38,
       "label": "Psychea Tier 1",
       "description": "c102"
@@ -101,6 +193,10 @@
       "bit": 42,
       "label": "Psychea Tier 5",
       "description": "c106"
+    },
+    {
+      "bit": 43,
+      "label": "Reserved 43"
     },
     {
       "bit": 44,
@@ -128,6 +224,22 @@
       "description": "c112"
     },
     {
+      "bit": 49,
+      "label": "Reserved 49"
+    },
+    {
+      "bit": 50,
+      "label": "Reserved 50"
+    },
+    {
+      "bit": 51,
+      "label": "Reserved 51"
+    },
+    {
+      "bit": 52,
+      "label": "Reserved 52"
+    },
+    {
       "bit": 53,
       "label": "Hydran Tier 1",
       "description": "c117"
@@ -151,6 +263,30 @@
       "bit": 57,
       "label": "Hydran Tier 5",
       "description": "c121"
+    },
+    {
+      "bit": 58,
+      "label": "Reserved 58"
+    },
+    {
+      "bit": 59,
+      "label": "Reserved 59"
+    },
+    {
+      "bit": 60,
+      "label": "Reserved 60"
+    },
+    {
+      "bit": 61,
+      "label": "Reserved 61"
+    },
+    {
+      "bit": 62,
+      "label": "Reserved 62"
+    },
+    {
+      "bit": 63,
+      "label": "Reserved 63"
     }
   ]
 }

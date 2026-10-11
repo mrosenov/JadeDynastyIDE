@@ -1,6 +1,6 @@
 {
   "key": "equipment_sub_type",
-  "name": "Equipment Sub Type",
+  "name": "EQUIPMENT_SUB_TYPE",
   "struct": "EQUIPMENT_SUB_TYPE",
   "size": 68,
   "fields": [

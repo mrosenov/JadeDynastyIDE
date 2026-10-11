@@ -1,0 +1,42 @@
+{
+  "key": "medicine_type",
+  "label": "Medicine Type",
+  "values": [
+    {
+      "value": 0,
+      "label": "Health Battery"
+    },
+    {
+      "value": 1,
+      "label": "Spirit Battery"
+    },
+    {
+      "value": 2,
+      "label": "Instant HP MP"
+    },
+    {
+      "value": 3,
+      "label": "Health Potion"
+    },
+    {
+      "value": 4,
+      "label": "Spirit Potion"
+    },
+    {
+      "value": 5,
+      "label": "Disciple Potion"
+    },
+    {
+      "value": 6,
+      "label": "Instant Vigor"
+    },
+    {
+      "value": 7,
+      "label": "Vigor Potion"
+    },
+    {
+      "value": 8,
+      "label": "Combined Pool"
+    }
+  ]
+}

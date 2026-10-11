@@ -1,0 +1,74 @@
+{
+  "id": "source-custom",
+  "name": "Old client (1,252 bytes)",
+  "description": "An old GSHOP_ITEM without gifts, sale windows or keywords: one integer (always 0) after the duration instead of discount and bonus.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "u32",
+      "meaning": "id",
+      "note": "The item sold"
+    },
+    {
+      "name": "num",
+      "type": "u32",
+      "meaning": "num"
+    },
+    {
+      "name": "icon",
+      "type": "str",
+      "len": 128,
+      "meaning": "icon"
+    },
+    {
+      "name": "price",
+      "type": "u32",
+      "meaning": "price"
+    },
+    {
+      "name": "time",
+      "type": "u32",
+      "meaning": "time"
+    },
+    {
+      "name": "unknown_144",
+      "type": "i32",
+      "note": "0 in every item; possibly the discount"
+    },
+    {
+      "name": "props",
+      "type": "u32",
+      "meaning": "props",
+      "note": "0 or 3 (New + Recommended)"
+    },
+    {
+      "name": "main_type",
+      "type": "i32",
+      "meaning": "main_type"
+    },
+    {
+      "name": "sub_type",
+      "type": "i32",
+      "meaning": "sub_type"
+    },
+    {
+      "name": "local_id",
+      "type": "i32",
+      "meaning": "local_id",
+      "note": "Translation ID, different for every item"
+    },
+    {
+      "name": "description",
+      "type": "wstr",
+      "len": 512,
+      "meaning": "description"
+    },
+    {
+      "name": "name",
+      "type": "wstr",
+      "len": 32,
+      "meaning": "name"
+    }
+  ],
+  "builtin": false
+}

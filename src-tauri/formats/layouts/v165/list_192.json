@@ -7,23 +7,28 @@
     {
       "name": "id",
       "off": 0,
+      "c": "ID",
       "t": {
         "k": "u32"
-      },
-      "c": "ID"
+      }
     },
     {
       "name": "name",
       "off": 4,
+      "c": "名称，最多15个汉字",
       "t": {
         "k": "wstr",
         "n": 32
-      },
-      "c": "名称，最多15个汉字"
+      }
     },
     {
       "name": "file_mine",
       "off": 68,
+      "c": "矿路径",
+      "refs": [
+        "MINE_ESSENCE"
+      ],
+      "display": "path",
       "t": {
         "k": "array",
         "n": 3,
@@ -31,26 +36,27 @@
         "t": {
           "k": "i32"
         }
-      },
-      "c": "矿路径",
-      "display": "path"
+      }
     },
     {
       "name": "count",
       "off": 80,
+      "c": "可采集次数",
       "t": {
         "k": "i32"
-      },
-      "c": "可采集次数"
+      }
     },
     {
       "name": "file_mine_spe",
       "off": 84,
+      "c": "矿4路径",
+      "refs": [
+        "MINE_ESSENCE"
+      ],
+      "display": "path",
       "t": {
         "k": "i32"
-      },
-      "c": "矿4路径",
-      "display": "path"
+      }
     }
   ]
 }

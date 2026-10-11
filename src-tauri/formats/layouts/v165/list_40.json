@@ -1,6 +1,6 @@
 {
   "key": "param_adjust_config",
-  "name": "Param Adjust Config",
+  "name": "PARAM_ADJUST_CONFIG",
   "struct": "PARAM_ADJUST_CONFIG",
   "size": 544,
   "fields": [

@@ -1,6 +1,6 @@
 {
   "key": "droptable_type",
-  "name": "Droptable Type",
+  "name": "DROPTABLE_TYPE",
   "struct": "DROPTABLE_TYPE",
   "size": 68,
   "fields": [

@@ -1,6 +1,6 @@
 {
   "key": "refine_ticket_essence",
-  "name": "Refine Ticket Essence",
+  "name": "REFINE_TICKET_ESSENCE",
   "struct": "REFINE_TICKET_ESSENCE",
   "size": 192,
   "fields": [
@@ -61,10 +61,11 @@
       "t": {
         "k": "u32"
       },
-      "c": "是否新模式"
+      "c": "是否新模式",
+      "e": "bool"
     },
     {
-      "name": "refine_level",
+      "name": "max_applicable_refinery",
       "off": 88,
       "t": {
         "k": "i32"
@@ -77,10 +78,11 @@
       "t": {
         "k": "u32"
       },
-      "c": "炼器后绑定装备，默认为0"
+      "c": "炼器后绑定装备，默认为0",
+      "e": "bool"
     },
     {
-      "name": "new_succeed_prob",
+      "name": "Refinery_Levels",
       "off": 96,
       "t": {
         "k": "array",

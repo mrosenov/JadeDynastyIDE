@@ -1,5 +1,5 @@
 {
-  "name": "Monster Essence",
+  "name": "MONSTER_ESSENCE",
   "struct": "MONSTER_ESSENCE",
   "size": 944,
   "fields": [
@@ -11,8 +11,11 @@
       }
     },
     {
-      "name": "id_type",
+      "name": "type",
       "off": 4,
+      "refs": [
+        "MONSTER_TYPE"
+      ],
       "t": {
         "k": "i32"
       }
@@ -26,23 +29,20 @@
       }
     },
     {
-      "name": "prop",
+      "name": "Descriptions",
       "off": 72,
       "t": {
-        "k": "wstr",
-        "n": 16
+        "k": "array",
+        "n": 2,
+        "stride": 32,
+        "t": {
+          "k": "wstr",
+          "n": 16
+        }
       }
     },
     {
-      "name": "desc",
-      "off": 104,
-      "t": {
-        "k": "wstr",
-        "n": 16
-      }
-    },
-    {
-      "name": "monster_desc",
+      "name": "title",
       "off": 136,
       "t": {
         "k": "wstr",
@@ -71,8 +71,9 @@
       }
     },
     {
-      "name": "file_model",
+      "name": "model_path",
       "off": 180,
+      "display": "path",
       "t": {
         "k": "i32"
       }
@@ -80,6 +81,7 @@
     {
       "name": "head_icon",
       "off": 184,
+      "display": "path",
       "t": {
         "k": "i32"
       }
@@ -87,6 +89,7 @@
     {
       "name": "big_icon",
       "off": 188,
+      "display": "path",
       "t": {
         "k": "i32"
       }
@@ -99,14 +102,14 @@
       }
     },
     {
-      "name": "name_color",
+      "name": "color_name",
       "off": 196,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "id_strategy",
+      "name": "strategy_id",
       "off": 200,
       "t": {
         "k": "i32"
@@ -155,50 +158,51 @@
       }
     },
     {
-      "name": "is_boss",
+      "name": "is_it_boss",
       "off": 228,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "killed_exp",
+      "name": "Kill_EXP",
       "off": 232,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "killed_drop",
+      "name": "Kill_Drop",
       "off": 236,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "is_drop_adjustby_skill",
+      "name": "Is_Drop_Adjust_By_Skill",
       "off": 240,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "immune_type",
+      "name": "Immunity",
       "off": 244,
-      "t": {
-        "k": "i32"
-      },
-      "e": "immune_type"
-    },
-    {
-      "name": "unknown_1",
-      "off": 248,
+      "e": "immune_type",
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "sight_range",
+      "name": "monster_related",
+      "off": 248,
+      "c": "New or unidentified bytes found while aligning an older schema",
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Sight_Range",
       "off": 252,
       "t": {
         "k": "f32"
@@ -212,170 +216,191 @@
       }
     },
     {
-      "name": "aggressive_mode",
+      "name": "Aggressive",
       "off": 260,
+      "e": "bool",
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "monster_faction_ask_help",
+      "name": "Monster_Faction_Ask_Help",
       "off": 264,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "monster_faction_can_help",
+      "name": "Monster_Faction_Can_Help",
       "off": 268,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "aggro_range",
+      "name": "Aggressive_Range",
       "off": 272,
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "aggro_time",
+      "name": "Aggressive_Time",
       "off": 276,
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "dead_aggro_time",
+      "name": "Death_Aggressive_Time",
       "off": 280,
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "patroll_mode",
+      "name": "Patrol_Mode",
       "off": 284,
+      "e": "zx_patroll_mode",
       "t": {
         "k": "i32"
-      },
-      "e": "zx_patroll_mode"
+      }
     },
     {
-      "name": "stand_mode",
+      "name": "Stand_Mode",
       "off": 288,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "walk_speed",
+      "name": "Walk_Speed",
       "off": 292,
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "run_speed",
+      "name": "Run_Speed",
       "off": 296,
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "unknown_2",
+      "name": "AIPolicy",
       "off": 300,
+      "display": "aipolicy",
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_3",
+      "name": "After_Death",
       "off": 304,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "common_strategy",
+      "name": "Adjust_EXP",
       "off": 308,
       "t": {
         "k": "i32"
-      },
-      "display": "aipolicy"
+      }
     },
     {
-      "name": "after_death",
+      "name": "field_87",
       "off": 312,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "adjust_exp",
+      "name": "field_86",
       "off": 316,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "can_catch",
+      "name": "Captureable",
       "off": 320,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "player_cannot_attack",
+      "name": "Player_Cannot_Atk",
       "off": 324,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "exp",
+      "name": "EXP",
       "off": 328,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "money_average",
+      "name": "Gold",
       "off": 332,
       "t": {
-        "k": "i32"
+        "k": "struct",
+        "fields": [
+          {
+            "name": "gold_min",
+            "off": 0,
+            "t": {
+              "k": "i32"
+            },
+            "display": "money"
+          },
+          {
+            "name": "gold_variable",
+            "off": 4,
+            "t": {
+              "k": "i32"
+            },
+            "display": "money"
+          }
+        ]
       }
     },
     {
-      "name": "money_var",
-      "off": 336,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "hp",
+      "name": "Health",
       "off": 340,
       "t": {
-        "k": "i32"
+        "k": "struct",
+        "fields": [
+          {
+            "name": "health",
+            "off": 0,
+            "t": {
+              "k": "i32"
+            }
+          },
+          {
+            "name": "health_bars",
+            "off": 4,
+            "t": {
+              "k": "i32"
+            }
+          }
+        ]
       }
     },
     {
-      "name": "hp_disp_lv",
-      "off": 344,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "mp",
+      "name": "spirit",
       "off": 348,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "dmg",
+      "name": "attack_power",
       "off": 352,
       "t": {
         "k": "i32"
@@ -389,1022 +414,492 @@
       }
     },
     {
-      "name": "extra_damage",
+      "name": "Bonus_Damage",
       "off": 360,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "extra_defence",
+      "name": "Damage_Reduce",
       "off": 364,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "attack",
+      "name": "Accuracy",
       "off": 368,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "armor",
+      "name": "Evasion",
       "off": 372,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "crit_rate",
+      "name": "Criti_Rate",
       "off": 376,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "crit_damage",
+      "name": "Criti_Bonus",
       "off": 380,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "anti_stunt",
+      "name": "Stun_Resis",
       "off": 384,
+      "g": "Resistences",
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "anti_weak",
+      "name": "Weaken_Resis",
       "off": 388,
+      "g": "Resistences",
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "anti_slow",
+      "name": "Paralyze_Resis",
       "off": 392,
+      "g": "Resistences",
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "anti_silence",
+      "name": "Silence_Resis",
       "off": 396,
+      "g": "Resistences",
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "anti_sleep",
+      "name": "Sleep_Resis",
       "off": 400,
+      "g": "Resistences",
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "anti_twist",
+      "name": "Slow_Resis",
       "off": 404,
+      "g": "Resistences",
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "lvlup_exp",
+      "name": "Experience",
       "off": 408,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_money_average",
+      "name": "level_up_gold",
       "off": 412,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_money_var",
+      "name": "level_up_gold_variable",
       "off": 416,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_hp",
+      "name": "level_up_health",
       "off": 420,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_mp",
+      "name": "level_up_spirit",
       "off": 424,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_dmg",
+      "name": "level_up_attack_power",
       "off": 428,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_defense",
+      "name": "level_up_defense",
       "off": 432,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_attack",
+      "name": "level_up_accuracy",
       "off": 436,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_armor",
+      "name": "level_up_evasion",
       "off": 440,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_crit_rate",
+      "name": "level_up_criti_rate",
       "off": 444,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_crit_damage",
+      "name": "level_up_criti_bonus",
       "off": 448,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_anti_stunt",
+      "name": "level_up_stun_resis",
       "off": 452,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_anti_weak",
+      "name": "level_up_weaken_resis",
       "off": 456,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_anti_slow",
+      "name": "level_up_paralyze_resis",
       "off": 460,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_anti_silence",
+      "name": "level_up_silence_resis",
       "off": 464,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_anti_sleep",
+      "name": "level_up_sleep_resis",
       "off": 468,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "lvlup_anti_twist",
+      "name": "level_up_slow_resis",
       "off": 472,
+      "g": "Level Up",
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "hp_gen1",
+      "name": "Health_Regen",
       "off": 476,
       "t": {
-        "k": "i32"
+        "k": "array",
+        "n": 2,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
       }
     },
     {
-      "name": "hp_gen2",
-      "off": 480,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "mp_gen1",
+      "name": "Spirit_Regen",
       "off": 484,
       "t": {
-        "k": "i32"
+        "k": "array",
+        "n": 2,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
       }
     },
     {
-      "name": "mp_gen2",
-      "off": 488,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "role_in_war",
+      "name": "War_Role",
       "off": 492,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "drop_times",
+      "name": "Drop Settings",
       "off": 496,
       "t": {
-        "k": "i32"
+        "k": "struct",
+        "fields": [
+          {
+            "name": "drop_count",
+            "off": 0,
+            "t": {
+              "k": "i32"
+            }
+          },
+          {
+            "name": "drop_table_settings",
+            "off": 4,
+            "t": {
+              "k": "array",
+              "n": 3,
+              "stride": 8,
+              "t": {
+                "k": "struct",
+                "fields": [
+                  {
+                    "name": "drop_table_id",
+                    "off": 0,
+                    "t": {
+                      "k": "i32"
+                    },
+                    "refs": [
+                      "DROPTABLE_ESSENCE"
+                    ]
+                  },
+                  {
+                    "name": "drop_table_probability",
+                    "off": 4,
+                    "t": {
+                      "k": "f32"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
       }
     },
     {
-      "name": "drop_table_1_id_drop_table",
-      "off": 500,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "drop_table_1_prop_drop_table",
-      "off": 504,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "drop_table_2_id_drop_table",
-      "off": 508,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "drop_table_2_prop_drop_table",
-      "off": 512,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "drop_table_3_id_drop_table",
-      "off": 516,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "drop_table_3_prop_drop_table",
-      "off": 520,
-      "t": {
-        "k": "f32"
-      }
-    },
-    {
-      "name": "skills_1_id_skill",
+      "name": "Skills",
       "off": 524,
       "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_1_level",
-      "off": 528,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_2_id_skill",
-      "off": 532,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_2_level",
-      "off": 536,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_3_id_skill",
-      "off": 540,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_3_level",
-      "off": 544,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_4_id_skill",
-      "off": 548,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_4_level",
-      "off": 552,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_5_id_skill",
-      "off": 556,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_5_level",
-      "off": 560,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_6_id_skill",
-      "off": 564,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_6_level",
-      "off": 568,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_7_id_skill",
-      "off": 572,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_7_level",
-      "off": 576,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_8_id_skill",
-      "off": 580,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_8_level",
-      "off": 584,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_9_id_skill",
-      "off": 588,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_9_level",
-      "off": 592,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_10_id_skill",
-      "off": 596,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_10_level",
-      "off": 600,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_11_id_skill",
-      "off": 604,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_11_level",
-      "off": 608,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_12_id_skill",
-      "off": 612,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_12_level",
-      "off": 616,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_13_id_skill",
-      "off": 620,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_13_level",
-      "off": 624,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_14_id_skill",
-      "off": 628,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_14_level",
-      "off": 632,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_15_id_skill",
-      "off": 636,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_15_level",
-      "off": 640,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_16_id_skill",
-      "off": 644,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_16_level",
-      "off": 648,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_17_id_skill",
-      "off": 652,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_17_level",
-      "off": 656,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_18_id_skill",
-      "off": 660,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_18_level",
-      "off": 664,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_19_id_skill",
-      "off": 668,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_19_level",
-      "off": 672,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_20_id_skill",
-      "off": 676,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_20_level",
-      "off": 680,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_21_id_skill",
-      "off": 684,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_21_level",
-      "off": 688,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_22_id_skill",
-      "off": 692,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_22_level",
-      "off": 696,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_23_id_skill",
-      "off": 700,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_23_level",
-      "off": 704,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_24_id_skill",
-      "off": 708,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_24_level",
-      "off": 712,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_25_id_skill",
-      "off": 716,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_25_level",
-      "off": 720,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_26_id_skill",
-      "off": 724,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_26_level",
-      "off": 728,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_27_id_skill",
-      "off": 732,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_27_level",
-      "off": 736,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_28_id_skill",
-      "off": 740,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_28_level",
-      "off": 744,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_29_id_skill",
-      "off": 748,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_29_level",
-      "off": 752,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_30_id_skill",
-      "off": 756,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_30_level",
-      "off": 760,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_31_id_skill",
-      "off": 764,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_31_level",
-      "off": 768,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_32_id_skill",
-      "off": 772,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "skills_32_level",
-      "off": 776,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_4",
+        "k": "array",
+        "n": 32,
+        "stride": 8,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "skill_id",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              },
+              "display": "skill"
+            },
+            {
+              "name": "skill_level",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "monster_related_unk",
       "off": 780,
       "t": {
-        "k": "i32"
+        "k": "array",
+        "n": 20,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
       }
     },
     {
-      "name": "unknown_5",
-      "off": 784,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_6",
-      "off": 788,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_7",
-      "off": 792,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_8",
-      "off": 796,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_9",
-      "off": 800,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_10",
-      "off": 804,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_11",
-      "off": 808,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_12",
-      "off": 812,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_13",
-      "off": 816,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_14",
-      "off": 820,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_15",
-      "off": 824,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_16",
-      "off": 828,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_17",
-      "off": 832,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_18",
-      "off": 836,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_19",
-      "off": 840,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_20",
-      "off": 844,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_21",
-      "off": 848,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_22",
-      "off": 852,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "unknown_23",
-      "off": 856,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "dec_crit_rate",
+      "name": "decrease_criti_rate",
       "off": 860,
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "dec_crit_dmg",
+      "name": "decrease_criti_bonus",
       "off": 864,
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "armor_prop",
+      "name": "Def_Prop",
       "off": 868,
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "attack_prop",
+      "name": "Atk_Prop",
       "off": 872,
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "tick_stratege",
+      "name": "Task_Strategy",
       "off": 876,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "task_share",
+      "name": "Task_Share",
       "off": 880,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "item_drop_share",
+      "name": "Item_Drop_Share",
       "off": 884,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "buff_area_id",
+      "name": "Buff_Area_ID",
       "off": 888,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_24",
+      "name": "monster_related_1",
       "off": 892,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_25",
+      "name": "monster_related_2",
       "off": 896,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_26",
+      "name": "field_75",
       "off": 900,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_27",
+      "name": "field_76",
       "off": 904,
       "t": {
-        "k": "i32"
+        "k": "f32"
       }
     },
     {
-      "name": "unknown_28",
+      "name": "field_77",
       "off": 908,
       "t": {
-        "k": "i32"
+        "k": "f32"
       }
     },
     {
-      "name": "unknown_29",
+      "name": "field_78",
       "off": 912,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_30",
+      "name": "field_79",
       "off": 916,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_31",
+      "name": "field_80",
       "off": 920,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_32",
+      "name": "field_81",
       "off": 924,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_33",
+      "name": "field_82",
       "off": 928,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_34",
+      "name": "field_83",
       "off": 932,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_35",
+      "name": "field_84",
       "off": 936,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_36",
+      "name": "field_85",
       "off": 940,
       "t": {
         "k": "i32"

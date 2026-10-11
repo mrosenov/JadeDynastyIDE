@@ -1,58 +1,58 @@
 {
   "key": "recipe_essence",
-  "name": "Recipe Essence",
-  "struct": "RECIPE_ESSENCE",
+  "name": "CRAFTING_RECIPE",
+  "struct": "CRAFTING_RECIPE",
   "size": 224,
   "fields": [
     {
       "name": "id",
       "off": 0,
+      "c": "配方本体ID",
       "t": {
         "k": "u32"
-      },
-      "c": "配方本体ID"
+      }
     },
     {
-      "name": "id_major_type",
+      "name": "type",
       "off": 4,
-      "t": {
-        "k": "u32"
-      },
       "c": "配方大类别ID",
       "refs": [
         "RECIPE_MAJOR_TYPE"
-      ]
-    },
-    {
-      "name": "id_sub_type",
-      "off": 8,
+      ],
       "t": {
         "k": "u32"
-      },
+      }
+    },
+    {
+      "name": "Subtype",
+      "off": 8,
       "c": "配方小类别ID",
       "refs": [
         "RECIPE_SUB_TYPE"
-      ]
+      ],
+      "t": {
+        "k": "u32"
+      }
     },
     {
       "name": "name",
       "off": 12,
+      "c": "配方本体名称",
       "t": {
         "k": "wstr",
         "n": 32
-      },
-      "c": "配方本体名称"
+      }
     },
     {
-      "name": "level",
+      "name": "crafting level",
       "off": 76,
+      "c": "配方段数，生产时根据当前生产技能段数和此数值判断是否能够生产",
       "t": {
         "k": "i32"
-      },
-      "c": "配方段数，生产时根据当前生产技能段数和此数值判断是否能够生产"
+      }
     },
     {
-      "name": "products",
+      "name": "results",
       "off": 80,
       "t": {
         "k": "array",
@@ -62,7 +62,7 @@
           "k": "struct",
           "fields": [
             {
-              "name": "probability",
+              "name": "chance",
               "off": 0,
               "t": {
                 "k": "f32"
@@ -70,15 +70,95 @@
               "c": "生成概率（无自动归一化）"
             },
             {
-              "name": "id_to_make",
+              "name": "itemid",
               "off": 4,
               "t": {
                 "k": "u32"
               },
-              "c": "生成的东西ID"
+              "c": "生成的东西ID",
+              "refs": [
+                "TASKMATTER_ESSENCE",
+                "TASKNORMALMATTER_ESSENCE",
+                "EQUIPMENT_ESSENCE",
+                "MATERIAL_ESSENCE",
+                "MEDICINE_ESSENCE",
+                "SKILLMATTER_ESSENCE",
+                "TALISMAN_MERGEKATALYST_ESSENCE",
+                "TASKDICE_ESSENCE",
+                "AIRCRAFT_ESSENCE",
+                "AMULET_ESSENCE",
+                "AMULET_STONE_ESSENCE",
+                "BABY_BOOK_ESSENCE",
+                "BABY_ESSENCE",
+                "BABY_FOOD_ESSENCE",
+                "BABY_TOY_ESSENCE",
+                "BOOK_ESSENCE",
+                "BOOTH_FIGURE_ITEM_ESSENCE",
+                "BUILDING_ESSENCE",
+                "CAMRECORDER_ESSENCE",
+                "CASH_MEDIC_MERGE_ITEM_ESSENCE",
+                "CHANGE_SHAPE_CARD_ESSENCE",
+                "CHANGE_SHAPE_STONE_ESSENCE",
+                "COLORANT_ITEM_ESSENCE",
+                "COMPOUND_MINE_ESSENCE",
+                "COUPLE_JUMPTO_ESSENCE",
+                "DESTROYING_ESSENCE",
+                "DOUBLE_EXP_ESSENCE",
+                "EQUIP_SOUL_ESSENCE",
+                "ESTONE_ESSENCE",
+                "FIREWORKS_ESSENCE",
+                "FLAG_BUFF_ITEM_ESSENCE",
+                "FLY_ENERGYFOOD_ESSENCE",
+                "GEM_DUST_ESSENCE",
+                "GEM_ESSENCE",
+                "GEM_SEAL_ESSENCE",
+                "GENERAL_ARTICLE_ESSENCE",
+                "GIFT_BAG_ESSENCE",
+                "GIFT_BAG_LOTTERY_DELIVER_ESSENCE",
+                "GIFT_PACK_ITEM_ESSENCE",
+                "GM_GENERATOR_ESSENCE",
+                "INTERACTION_OBJECT_ESSENCE",
+                "LOTTERY_ESSENCE",
+                "LOTTERY_TANGYUAN_ITEM_ESSENCE",
+                "LOTTERY2_ESSENCE",
+                "LOTTERY3_ESSENCE",
+                "LUCKYROLL_ESSENCE",
+                "MATRIX_CARD_ESSENCE",
+                "MATRIX_EQUIP_ESSENCE",
+                "MERCENARY_CREDENTIAL_ESSENCE",
+                "MINE_ESSENCE",
+                "NEW_TOWNSCROLL_ESSENCE",
+                "OFFLINE_TRUSTEE_ESSENCE",
+                "PET_ARMOR_ESSENCE",
+                "PET_ASSIST_REFINE_ESSENCE",
+                "PET_AUTO_FOOD_ESSENCE",
+                "PET_BEDGE_ESSENCE",
+                "PET_FOOD_ESSENCE",
+                "PET_REFINE_ESSENCE",
+                "PET_SKILL_ESSENCE",
+                "POTENTIAL_TOME_ESSENCE",
+                "PROP_ADD_ITEM_ESSENCE",
+                "PROP_ADD_MATERIAL_ITEM_ESSENCE",
+                "PSTONE_ESSENCE",
+                "RECIPE_ESSENCE",
+                "RED_PACKETS_ESSENCE",
+                "REFINE_TICKET_ESSENCE",
+                "REVIVESCROLL_ESSENCE",
+                "REGION_BLOCK_ESSENCE",
+                "RUNE_SLOT_ESSENCE",
+                "RUNE2013_ITEM_ESSENCE",
+                "SALE_PROMOTION_ITEM_ESSENCE",
+                "SIEGE_ARTILLERY_SCROLL_ESSENCE",
+                "NEW_FASHION_PACK_ESSENCE",
+                "HEADFRAME_ESSENCE",
+                "UPGRADE_EQUIP_STONE_ESSENCE",
+                "TITLE_ITEM_ESSENCE",
+                "TALENT_SCROLL_ESSENCE",
+                "TALISMAN_MAINPART_ESSENCE"
+              ]
             },
             {
-              "name": "min_num_make",
+              "name": "min_quantity",
               "off": 8,
               "t": {
                 "k": "i32"
@@ -86,7 +166,7 @@
               "c": "生成的东西数目下限"
             },
             {
-              "name": "max_num_make",
+              "name": "max_quantity",
               "off": 12,
               "t": {
                 "k": "i32"
@@ -100,19 +180,19 @@
     {
       "name": "price",
       "off": 128,
+      "c": "生产的费用",
+      "display": "money",
       "t": {
         "k": "i32"
-      },
-      "c": "生产的费用",
-      "display": "money"
+      }
     },
     {
-      "name": "duration",
+      "name": "craft time",
       "off": 132,
+      "c": "生产的时间",
       "t": {
         "k": "f32"
-      },
-      "c": "生产的时间"
+      }
     },
     {
       "name": "materials",
@@ -125,15 +205,31 @@
           "k": "struct",
           "fields": [
             {
-              "name": "id",
+              "name": "itemid",
               "off": 0,
               "t": {
                 "k": "u32"
               },
-              "c": "原料id"
+              "c": "原料id",
+              "refs": [
+                "MATERIAL_ESSENCE",
+                "MEDICINE_ESSENCE",
+                "EQUIPMENT_ESSENCE",
+                "PSTONE_ESSENCE",
+                "ESTONE_ESSENCE",
+                "PET_ARMOR_ESSENCE",
+                "TASKNORMALMATTER_ESSENCE",
+                "EQUIP_SOUL_ESSENCE",
+                "SKILLMATTER_ESSENCE",
+                "UPGRADE_EQUIP_STONE_ESSENCE",
+                "PET_REFINE_ESSENCE",
+                "TALISMAN_EXPFOOD_ESSENCE",
+                "LOTTERY3_ESSENCE",
+                "GENERAL_ARTICLE_ESSENCE"
+              ]
             },
             {
-              "name": "num",
+              "name": "quantity",
               "off": 4,
               "t": {
                 "k": "i32"
@@ -145,36 +241,81 @@
       }
     },
     {
-      "name": "recipe_class",
+      "name": "crafting_type",
       "off": 184,
+      "c": "配方类型",
+      "e": "crafting_config_type",
       "t": {
         "k": "i32"
-      },
-      "c": "配方类型"
-    },
-    {
-      "name": "required",
-      "off": 188,
-      "t": {
-        "k": "array",
-        "n": 7,
-        "stride": 4,
-        "t": {
-          "k": "i32"
-        }
       }
     },
     {
-      "name": "cool_time",
-      "off": 216,
+      "name": "require_farming",
+      "off": 188,
+      "g": "require_petgear",
       "t": {
         "k": "i32"
-      },
-      "c": "冷却时间（毫秒）",
-      "display": "duration"
+      }
     },
     {
-      "name": "cool_type",
+      "name": "require_woodwork",
+      "off": 192,
+      "g": "require_petgear",
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "require_hunting",
+      "off": 196,
+      "g": "require_petgear",
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "require_fishing",
+      "off": 200,
+      "g": "require_petgear",
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "require_mining",
+      "off": 204,
+      "g": "require_petgear",
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "require_treasure",
+      "off": 208,
+      "g": "require_petgear",
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "require_development",
+      "off": 212,
+      "g": "require_petgear",
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cooldown",
+      "off": 216,
+      "c": "冷却时间（毫秒）",
+      "display": "duration_ms",
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "cooldown_type",
       "off": 220,
       "t": {
         "k": "i32"

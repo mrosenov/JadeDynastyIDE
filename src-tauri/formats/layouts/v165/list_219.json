@@ -1,0 +1,329 @@
+{
+  "name": "MULTI_TOWER_PROPERTY_CONFIG",
+  "struct": "MULTI_TOWER_PROPERTY_CONFIG",
+  "size": 568,
+  "fields": [
+    {
+      "name": "id",
+      "off": 0,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "name",
+      "off": 4,
+      "t": {
+        "k": "wstr",
+        "n": 32
+      }
+    },
+    {
+      "name": "tower_layer",
+      "off": 68,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Monster Generate Probability",
+      "off": 72,
+      "t": {
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      },
+      "display": "probability"
+    },
+    {
+      "name": "Monster Range Center",
+      "off": 88,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      }
+    },
+    {
+      "name": "monster_range_radius",
+      "off": 100,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Ascenstion Position",
+      "off": 104,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 4,
+        "t": {
+          "k": "f32"
+        }
+      }
+    },
+    {
+      "name": "success_controller_id",
+      "off": 116,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Monster Attributes",
+      "off": 120,
+      "t": {
+        "k": "array",
+        "n": 3,
+        "stride": 80,
+        "t": {
+          "k": "struct",
+          "fields": [
+            {
+              "name": "health",
+              "off": 0,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "spirit",
+              "off": 4,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "attack",
+              "off": 8,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "defence",
+              "off": 12,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "damage",
+              "off": 16,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "damage_reduction",
+              "off": 20,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "accuracy",
+              "off": 24,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "evasion",
+              "off": 28,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "critical_rate",
+              "off": 32,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "critical_damage",
+              "off": 36,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "Resistance",
+              "off": 40,
+              "t": {
+                "k": "array",
+                "n": 6,
+                "stride": 4,
+                "t": {
+                  "k": "i32"
+                }
+              }
+            },
+            {
+              "name": "anti_crit_rate",
+              "off": 64,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "anti_crit_damage",
+              "off": 68,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "skill_evasion",
+              "off": 72,
+              "t": {
+                "k": "i32"
+              }
+            },
+            {
+              "name": "skill_accuracy",
+              "off": 76,
+              "t": {
+                "k": "i32"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Monsters IDs",
+      "off": 360,
+      "t": {
+        "k": "array",
+        "n": 32,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
+      },
+      "refs": [
+        "MONSTER_ESSENCE"
+      ]
+    },
+    {
+      "name": "Life Time Awards List",
+      "off": 488,
+      "t": {
+        "k": "struct",
+        "fields": [
+          {
+            "name": "Awards",
+            "off": 0,
+            "t": {
+              "k": "array",
+              "n": 5,
+              "stride": 8,
+              "t": {
+                "k": "struct",
+                "fields": [
+                  {
+                    "name": "award_id",
+                    "off": 0,
+                    "t": {
+                      "k": "i32"
+                    },
+                    "refs": [
+                      "TASKDICE_ESSENCE",
+                      "TASKNORMALMATTER_ESSENCE",
+                      "DOUBLE_EXP_ESSENCE",
+                      "PET_FOOD_ESSENCE",
+                      "SCROLL_DIG_COUNT_INC_ESSENCE",
+                      "GENERAL_ARTICLE_ESSENCE",
+                      "TALISMAN_ENERGYFOOD_ESSENCE",
+                      "TALENT_SCROLL_ESSENCE",
+                      "GIFT_BAG_ESSENCE",
+                      "LOTTERY3_ESSENCE",
+                      "LOTTERY2_ESSENCE",
+                      "LOTTERY_ESSENCE",
+                      "CONSTELLATION_STARS_ESSENCE",
+                      "PROP_ADD_ITEM_ESSENCE",
+                      "PROP_ADD_MATERIAL_ITEM_ESSENCE",
+                      "TITLE_ITEM_ESSENCE"
+                    ]
+                  },
+                  {
+                    "name": "award_count",
+                    "off": 4,
+                    "t": {
+                      "k": "i32"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Single Time Awards List",
+      "off": 528,
+      "t": {
+        "k": "struct",
+        "fields": [
+          {
+            "name": "Awards",
+            "off": 0,
+            "t": {
+              "k": "array",
+              "n": 5,
+              "stride": 8,
+              "t": {
+                "k": "struct",
+                "fields": [
+                  {
+                    "name": "award_id",
+                    "off": 0,
+                    "t": {
+                      "k": "i32"
+                    },
+                    "refs": [
+                      "TASKDICE_ESSENCE",
+                      "DOUBLE_EXP_ESSENCE",
+                      "TASKNORMALMATTER_ESSENCE",
+                      "PET_FOOD_ESSENCE",
+                      "SCROLL_DIG_COUNT_INC_ESSENCE",
+                      "GENERAL_ARTICLE_ESSENCE",
+                      "TALISMAN_ENERGYFOOD_ESSENCE",
+                      "TALENT_SCROLL_ESSENCE",
+                      "GIFT_BAG_ESSENCE",
+                      "LOTTERY3_ESSENCE",
+                      "LOTTERY2_ESSENCE",
+                      "LOTTERY_ESSENCE",
+                      "CONSTELLATION_STARS_ESSENCE",
+                      "PROP_ADD_ITEM_ESSENCE",
+                      "PROP_ADD_MATERIAL_ITEM_ESSENCE",
+                      "TITLE_ITEM_ESSENCE"
+                    ]
+                  },
+                  {
+                    "name": "award_count",
+                    "off": 4,
+                    "t": {
+                      "k": "i32"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

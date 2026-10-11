@@ -855,7 +855,7 @@ mod tests {
     fn built_in_layouts_are_valid_and_sized() {
         let layouts = layout::builtin();
         let sizes: Vec<(String, usize)> = layouts.iter().map(|layout| (layout.id.clone(), layout.size())).collect();
-        assert_eq!(sizes, vec![("source".to_string(), 2630), ("forsakenjd".to_string(), 2635), ("hdn".to_string(), 2660), ("luckybag".to_string(), 357)]);
+        assert_eq!(sizes, vec![("source".to_string(), 2630), ("forsakenjd".to_string(), 2635), ("hdn".to_string(), 2660), ("luckybag".to_string(), 357), ("source-custom".to_string(), 1252)]);
         for layout in &layouts {
             layout.validate().unwrap();
             let text = serde_json::to_string(layout).unwrap();

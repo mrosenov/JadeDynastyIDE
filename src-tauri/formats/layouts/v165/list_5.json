@@ -1,6 +1,6 @@
 {
   "key": "medicine_sub_type",
-  "name": "Medicine Sub Type",
+  "name": "MEDICINE_SUB_TYPE",
   "struct": "MEDICINE_SUB_TYPE",
   "size": 68,
   "fields": [

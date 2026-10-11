@@ -487,7 +487,7 @@ pub fn describe(layout: &Layout, record: &[u8]) -> Vec<(String, String, String)>
 
 // ── Built-in and user layouts ──
 
-const BUILTIN: &[&str] = &[include_str!("../../formats/gshop/source.json"), include_str!("../../formats/gshop/forsakenjd.json"), include_str!("../../formats/gshop/hdn.json"), include_str!("../../formats/gshop/luckybag.json")];
+const BUILTIN: &[&str] = &[include_str!("../../formats/gshop/source.json"), include_str!("../../formats/gshop/forsakenjd.json"), include_str!("../../formats/gshop/hdn.json"), include_str!("../../formats/gshop/luckybag.json"), include_str!("../../formats/gshop/source-custom.json")];
 
 pub fn builtin() -> Vec<Layout> {
     BUILTIN

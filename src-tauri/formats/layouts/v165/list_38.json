@@ -1,6 +1,6 @@
 {
   "key": "enemy_faction_config",
-  "name": "Enemy Faction Config",
+  "name": "ENEMY_FACTION_CONFIG",
   "struct": "ENEMY_FACTION_CONFIG",
   "size": 196,
   "fields": [

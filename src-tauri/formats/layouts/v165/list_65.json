@@ -1,18 +1,21 @@
 {
-  "name": "Skillmatter Essence",
+  "key": "skillmatter_essence",
+  "name": "SKILLMATTER_ESSENCE",
   "struct": "SKILLMATTER_ESSENCE",
   "size": 136,
   "fields": [
     {
       "name": "id",
       "off": 0,
+      "c": "(类型)ID",
       "t": {
-        "k": "i32"
+        "k": "u32"
       }
     },
     {
       "name": "name",
       "off": 4,
+      "c": "名称, 最多15个汉字",
       "t": {
         "k": "wstr",
         "n": 32
@@ -21,6 +24,8 @@
     {
       "name": "file_matter",
       "off": 68,
+      "c": "掉在地上的模型路径名",
+      "display": "path",
       "t": {
         "k": "i32"
       }
@@ -28,6 +33,8 @@
     {
       "name": "file_icon",
       "off": 72,
+      "c": "图标路径名",
+      "display": "icon",
       "t": {
         "k": "i32"
       }
@@ -35,6 +42,7 @@
     {
       "name": "level_required",
       "off": 76,
+      "c": "等级限制",
       "t": {
         "k": "i32"
       }
@@ -42,6 +50,7 @@
     {
       "name": "renascence_count",
       "off": 80,
+      "c": "转生次数要求",
       "t": {
         "k": "i32"
       }
@@ -49,14 +58,16 @@
     {
       "name": "id_skill",
       "off": 84,
+      "c": "技能ID",
+      "display": "skill",
       "t": {
         "k": "i32"
-      },
-      "display": "skill"
+      }
     },
     {
       "name": "level_skill",
       "off": 88,
+      "c": "技能等级",
       "t": {
         "k": "i32"
       }
@@ -64,13 +75,15 @@
     {
       "name": "only_in_war",
       "off": 92,
+      "c": "是否城战专用",
       "t": {
-        "k": "i32"
+        "k": "u32"
       }
     },
     {
       "name": "cool_type",
       "off": 96,
+      "c": "冷却时间的类别",
       "t": {
         "k": "i32"
       }
@@ -78,59 +91,66 @@
     {
       "name": "permenent",
       "off": 100,
+      "c": "使用后不消失，false-消失，true-不消失",
       "t": {
-        "k": "i32"
+        "k": "u32"
       }
     },
     {
       "name": "cast_skill",
       "off": 104,
+      "c": "0只能自身使用，1可对非自身目标使用",
+      "display": "skill",
       "t": {
-        "k": "i32"
-      },
-      "display": "skill"
+        "k": "u32"
+      }
     },
     {
-      "name": "god_devil_mask",
+      "name": "field_18",
       "off": 108,
+      "e": "god_devil_mask",
       "t": {
         "k": "i32"
-      },
-      "e": "god_devil_mask"
+      }
     },
     {
-      "name": "unknown_1",
+      "name": "field_19",
       "off": 112,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "unknown_2",
+      "name": "god_devil_mask",
       "off": 116,
+      "c": "仙魔 造化限制仙/佛/魔/备选1/2/3",
+      "e": "god_devil_mask",
       "t": {
-        "k": "i32"
+        "k": "u32"
       }
     },
     {
       "name": "price",
       "off": 120,
+      "c": "卖店价",
+      "display": "money",
       "t": {
         "k": "i32"
-      },
-      "display": "money"
+      }
     },
     {
       "name": "shop_price",
       "off": 124,
+      "c": "店卖价",
+      "display": "money",
       "t": {
         "k": "i32"
-      },
-      "display": "money"
+      }
     },
     {
       "name": "pile_num_max",
       "off": 128,
+      "c": "堆叠上限",
       "t": {
         "k": "i32"
       }
@@ -138,10 +158,11 @@
     {
       "name": "proc_type",
       "off": 132,
+      "c": "是以下几种方式的组合: 死亡时是否掉落，是否可以扔在地上，是否可以卖给NPC，是人民币物品，是否可以玩家间交易，是否任务相关物品，是否装备后绑定，保留勿选中，产生GUID",
+      "e": "trade_behavior",
       "t": {
-        "k": "i32"
-      },
-      "e": "trade_behavior"
+        "k": "u32"
+      }
     }
   ]
 }

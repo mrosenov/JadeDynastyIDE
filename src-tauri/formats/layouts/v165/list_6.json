@@ -1,5 +1,5 @@
 {
-  "name": "Medicine Essence",
+  "name": "MEDICINE_ESSENCE",
   "struct": "MEDICINE_ESSENCE",
   "size": 192,
   "fields": [
@@ -11,18 +11,24 @@
       }
     },
     {
-      "name": "id_major_type",
+      "name": "type",
       "off": 4,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MEDICINE_MAJOR_TYPE"
+      ]
     },
     {
-      "name": "id_sub_type",
+      "name": "sub_type",
       "off": 8,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "MEDICINE_SUB_TYPE"
+      ]
     },
     {
       "name": "name",
@@ -33,35 +39,37 @@
       }
     },
     {
-      "name": "file_matter",
+      "name": "matter_path",
       "off": 76,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
-      "name": "file_icon",
+      "name": "icon_path",
       "off": 80,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "icon"
     },
     {
-      "name": "require_level",
+      "name": "Req_Level",
       "off": 84,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "renascence_count",
+      "name": "Req_Ascended",
       "off": 88,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "cool_time",
+      "name": "Cooldown",
       "off": 92,
       "t": {
         "k": "i32"
@@ -69,147 +77,77 @@
       "display": "duration_ms"
     },
     {
-      "name": "only_in_war",
+      "name": "Only_in_War",
       "off": 96,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "type",
+      "name": "Recovery_Type",
       "off": 100,
       "t": {
         "k": "i32"
-      }
+      },
+      "e": "medicine_type"
     },
     {
-      "name": "hp_1",
+      "name": "Health",
       "off": 104,
       "t": {
-        "k": "i32"
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
       }
     },
     {
-      "name": "hp_2",
-      "off": 108,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "hp_3",
-      "off": 112,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "hp_4",
-      "off": 116,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "mp_1",
+      "name": "Spirit",
       "off": 120,
       "t": {
-        "k": "i32"
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
       }
     },
     {
-      "name": "mp_2",
-      "off": 124,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "mp_3",
-      "off": 128,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "mp_4",
-      "off": 132,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "dp_1",
+      "name": "Vigor",
       "off": 136,
       "t": {
-        "k": "i32"
+        "k": "array",
+        "n": 4,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
       }
     },
     {
-      "name": "dp_2",
-      "off": 140,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "dp_3",
-      "off": 144,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "dp_4",
-      "off": 148,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "hmp",
+      "name": "Health_Spirit_Pool",
       "off": 152,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "map_restrict_1",
+      "name": "Map_Restrictions",
       "off": 156,
       "t": {
-        "k": "i32"
+        "k": "array",
+        "n": 5,
+        "stride": 4,
+        "t": {
+          "k": "i32"
+        }
       }
     },
     {
-      "name": "map_restrict_2",
-      "off": 160,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "map_restrict_3",
-      "off": 164,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "map_restrict_4",
-      "off": 168,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "map_restrict_5",
-      "off": 172,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "price",
+      "name": "sell_price",
       "off": 176,
       "t": {
         "k": "i32"
@@ -217,7 +155,7 @@
       "display": "money"
     },
     {
-      "name": "shop_price",
+      "name": "buy_price",
       "off": 180,
       "t": {
         "k": "i32"

@@ -1,6 +1,6 @@
 {
   "key": "revivescroll_essence",
-  "name": "Revivescroll Essence",
+  "name": "REVIVESCROLL_ESSENCE",
   "struct": "REVIVESCROLL_ESSENCE",
   "size": 100,
   "fields": [
@@ -48,7 +48,7 @@
       "c": "使用时间（秒）"
     },
     {
-      "name": "cool_time",
+      "name": "cooldown",
       "off": 80,
       "t": {
         "k": "i32"

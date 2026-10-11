@@ -1,0 +1,90 @@
+{
+  "key": "fatecharm_type",
+  "label": "Fatecharm Type",
+  "values": [
+    {
+      "value": 0,
+      "label": "Attack Power"
+    },
+    {
+      "value": 1,
+      "label": "Defense"
+    },
+    {
+      "value": 2,
+      "label": "Health"
+    },
+    {
+      "value": 3,
+      "label": "Spirit"
+    },
+    {
+      "value": 4,
+      "label": "Attack"
+    },
+    {
+      "value": 6,
+      "label": "CritStrike Rate"
+    },
+    {
+      "value": 7,
+      "label": "CritNull"
+    },
+    {
+      "value": 10,
+      "label": "Skill Accuracy"
+    },
+    {
+      "value": 11,
+      "label": "Skill Evasion"
+    },
+    {
+      "value": 23,
+      "label": "Stun Mastery"
+    },
+    {
+      "value": 24,
+      "label": "Sil. Mastery"
+    },
+    {
+      "value": 25,
+      "label": "Sle. Mastery"
+    },
+    {
+      "value": 26,
+      "label": "Wea. Mastery"
+    },
+    {
+      "value": 27,
+      "label": "Par. Mastery"
+    },
+    {
+      "value": 28,
+      "label": "Stun Recovery"
+    },
+    {
+      "value": 29,
+      "label": "Sil. Recovery"
+    },
+    {
+      "value": 30,
+      "label": "Sle. Recovery"
+    },
+    {
+      "value": 31,
+      "label": "Wea. Recovery"
+    },
+    {
+      "value": 32,
+      "label": "Par. Recovery"
+    },
+    {
+      "value": 33,
+      "label": "Movement Speed"
+    },
+    {
+      "value": 34,
+      "label": "Mount Speed"
+    }
+  ]
+}

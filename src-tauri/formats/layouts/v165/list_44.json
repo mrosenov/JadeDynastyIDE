@@ -1,6 +1,6 @@
 {
   "key": "mine_type",
-  "name": "Mine Type",
+  "name": "MINE_TYPE",
   "struct": "MINE_TYPE",
   "size": 68,
   "fields": [

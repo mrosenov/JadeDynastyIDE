@@ -1,6 +1,6 @@
 {
   "key": "npc_task_out_service",
-  "name": "Npc Task Out Service",
+  "name": "NPC_TASK_OUT_SERVICE",
   "struct": "NPC_TASK_OUT_SERVICE",
   "size": 1100,
   "fields": [

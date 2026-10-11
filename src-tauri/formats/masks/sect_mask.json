@@ -4,37 +4,37 @@
   "flags": [
     {
       "bit": 0,
-      "label": "Novice",
+      "label": "Initiate",
       "description": "少侠"
     },
     {
       "bit": 1,
-      "label": "Guiwang",
+      "label": "Vim",
       "description": "鬼王宗"
     },
     {
       "bit": 2,
-      "label": "Hehuan",
+      "label": "Lupin",
       "description": "合欢派"
     },
     {
       "bit": 3,
-      "label": "Qingyun",
+      "label": "Jadeon",
       "description": "青云门"
     },
     {
       "bit": 4,
-      "label": "Tianyin",
+      "label": "Skysong",
       "description": "天音寺"
     },
     {
       "bit": 5,
-      "label": "Guidao",
+      "label": "Modo",
       "description": "鬼道"
     },
     {
       "bit": 6,
-      "label": "Fenxiang",
+      "label": "Inc. Mage",
       "description": "焚香"
     },
     {
@@ -49,42 +49,42 @@
     },
     {
       "bit": 9,
-      "label": "Jiuli",
+      "label": "Balo",
       "description": "九黎"
     },
     {
       "bit": 10,
-      "label": "Lieshan",
+      "label": "Arden",
       "description": "烈山"
     },
     {
       "bit": 11,
-      "label": "Taihao",
+      "label": "Forta",
       "description": "太昊"
     },
     {
       "bit": 12,
-      "label": "Huaiguang",
+      "label": "Rayan",
       "description": "怀光"
     },
     {
       "bit": 13,
-      "label": "Dongyi",
+      "label": "Voida",
       "description": "东夷"
     },
     {
       "bit": 14,
-      "label": "Tianhua",
+      "label": "Celan",
       "description": "天华"
     },
     {
       "bit": 15,
-      "label": "Loli body",
+      "label": "Psychea",
       "description": "萝莉"
     },
     {
       "bit": 16,
-      "label": "Quadruped",
+      "label": "Kytos",
       "description": "四足"
     },
     {

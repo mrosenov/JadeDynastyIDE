@@ -1,30 +1,30 @@
 {
   "name": "Equipment",
-  "size": 484,
+  "size": 276,
   "fields": [
     {
-      "name": "ID",
+      "name": "id",
       "off": 0,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Type",
+      "name": "type",
       "off": 4,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "SubType",
+      "name": "sub_type",
       "off": 8,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Name",
+      "name": "name",
       "off": 12,
       "t": {
         "k": "wstr",
@@ -32,43 +32,67 @@
       }
     },
     {
-      "name": "GearSlot",
+      "name": "equip_type",
+      "off": 76,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "equip_mask",
       "off": 80,
       "t": {
         "k": "i32"
-      },
-      "e": "equip_mask"
+      }
     },
     {
-      "name": "PathID1",
+      "name": "medium_male",
       "off": 84,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
-      "name": "PathID2",
+      "name": "medium_female",
       "off": 88,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
-      "name": "DropPathID",
+      "name": "matter_path",
       "off": 92,
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
-      "name": "IconPathID",
+      "name": "icon_path",
       "off": 96,
+      "t": {
+        "k": "i32"
+      },
+      "display": "icon"
+    },
+    {
+      "name": "equip_location",
+      "off": 100,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "Title",
+      "name": "action_type",
+      "off": 104,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "title",
       "off": 108,
       "t": {
         "k": "wstr",
@@ -76,90 +100,147 @@
       }
     },
     {
-      "name": "RequiredGender",
+      "name": "level",
+      "off": 140,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "char_combo_id",
+      "off": 144,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "char_combo_id2",
+      "off": 152,
+      "t": {
+        "k": "i64"
+      }
+    },
+    {
+      "name": "Req_Gender",
       "off": 160,
       "t": {
         "k": "i32"
-      },
-      "e": "gender"
+      }
     },
     {
-      "name": "RequiredLevel",
+      "name": "Req_Level",
       "off": 164,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "RequiredFaction",
+      "name": "Req_Faction",
       "off": 168,
       "t": {
         "k": "i32"
-      },
-      "e": "sect_mask"
+      }
     },
     {
-      "name": "RequiredLastFaction",
+      "name": "Req_Faction2",
       "off": 172,
       "t": {
         "k": "i32"
-      },
-      "e": "sect_mask"
+      }
     },
     {
-      "name": "RequiredLastLastFaction",
+      "name": "Req_Faction3",
       "off": 176,
       "t": {
         "k": "i32"
-      },
-      "e": "sect_mask"
+      }
     },
     {
-      "name": "RequiredLastLastLastFaction",
+      "name": "Req_Faction4",
       "off": 180,
       "t": {
         "k": "i32"
-      },
-      "e": "sect_mask"
+      }
     },
     {
-      "name": "RequiredTier",
+      "name": "Req_Title",
       "off": 184,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "RequiredAscended",
+      "name": "Req_Reputation_1",
       "off": 188,
       "t": {
         "k": "i32"
-      },
-      "e": "bool"
+      }
+    },
+    {
+      "name": "Req_Reputation_Amt_1",
+      "off": 192,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_Reputation_2",
+      "off": 196,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_Reputation_Amt_2",
+      "off": 200,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Req_Territory",
+      "off": 204,
+      "t": {
+        "k": "i32"
+      }
     },
     {
       "name": "Health",
-      "off": 216,
+      "off": 208,
       "t": {
         "k": "i32"
       }
     },
     {
       "name": "Spirit",
+      "off": 212,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Vigor",
+      "off": 216,
+      "t": {
+        "k": "i32"
+      }
+    },
+    {
+      "name": "Chroma_Power",
       "off": 220,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "MinAttack",
+      "name": "Min_Atk_Power",
       "off": 224,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "MaxAttack",
+      "name": "Max_Atk_Power",
       "off": 228,
       "t": {
         "k": "i32"
@@ -187,82 +268,60 @@
       }
     },
     {
-      "name": "Range",
+      "name": "Atack_Range",
       "off": 244,
       "t": {
         "k": "f32"
       }
     },
     {
-      "name": "SellPrice",
+      "name": "Sell_Price",
       "off": 248,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "BuyPrice",
+      "name": "Buy_Price",
       "off": 252,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "BonusAttrib1",
+      "name": "Bonus_Attribute_1",
       "off": 256,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "BonusAttrib2",
+      "name": "Bonus_Attribute_2",
       "off": 260,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "BonusAttrib3",
+      "name": "Bonus_Attribute_3",
       "off": 264,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "BonusAttrib4",
+      "name": "Bonus_Attribute_4",
       "off": 268,
       "t": {
         "k": "i32"
       }
     },
     {
-      "name": "BonusAttrib5",
+      "name": "Bonus_Attribute_5",
       "off": 272,
       "t": {
         "k": "i32"
       }
-    },
-    {
-      "name": "RefineTalismanID",
-      "off": 296,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "StackAmount",
-      "off": 476,
-      "t": {
-        "k": "i32"
-      }
-    },
-    {
-      "name": "TradeBehavior",
-      "off": 480,
-      "t": {
-        "k": "i32"
-      },
-      "e": "trade_behavior"
     }
   ]
 }

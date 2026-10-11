@@ -1,0 +1,19 @@
+{
+  "key": "crafting_config_type",
+  "label": "Crafting Config Type",
+  "values": [
+    {
+      "value": 0,
+      "label": "Gear"
+    },
+    {
+      "value": 1,
+      "label": "Pet Gear"
+    },
+    {
+      "value": 2,
+      "label": "Addon",
+      "description": "Seals, Order"
+    }
+  ]
+}

@@ -58,10 +58,10 @@
     {
       "name": "profile_path_id",
       "off": 116,
-      "display": "image",
       "t": {
         "k": "i32"
-      }
+      },
+      "display": "path"
     },
     {
       "name": "Monster_Source",
@@ -186,7 +186,10 @@
       "off": 688,
       "t": {
         "k": "i32"
-      }
+      },
+      "refs": [
+        "NPC_TRANSMIT_SERVICE"
+      ]
     },
     {
       "name": "Proxy_Service",
