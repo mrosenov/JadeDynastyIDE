@@ -89,6 +89,8 @@ import type {
   ClientInfo,
   Settings,
   SettingsView,
+  LocaleCatalogs,
+  SaveLocaleRequest,
   NamedSet,
   SetDetail,
   SetKind,
@@ -378,6 +380,8 @@ export const analyzeListFromReference = (referencePath: string, sourceLayout: st
   invoke<LayoutAnalysis>("analyze_list_from_reference", { referencePath, sourceLayout, list });
 
 export const getSettings = () => invoke<SettingsView>("get_settings");
+export const getLocaleCatalogs = () => invoke<LocaleCatalogs>("locale_catalogs");
+export const saveLocaleCatalog = (request: SaveLocaleRequest) => invoke<LocaleCatalogs>("save_locale_catalog", { request });
 
 export const saveSettings = (settings: Settings) => invoke<SettingsView>("save_settings", { settings });
 

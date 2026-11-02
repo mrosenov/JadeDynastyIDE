@@ -1,6 +1,6 @@
 import { createContext, forwardRef, useCallback, useContext, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, ArrowDown, ArrowUp, CircleAlert, Copy, FolderOpen, Gift, GitCompareArrows, History, Loader2, Plus, Redo2, Save, Search, Table2, Trash2, Undo2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, CircleAlert, Copy, FolderOpen, Gift, GitCompareArrows, History, Loader2, Plus, Redo2, Save, Search, Server, Table2, Trash2, Undo2, X } from "lucide-react";
 import { cloneDynTask, closeDynComparison, compareDynTasks, copyDynTasks, deleteDynTask, dynTaskLabels, dynTaskOverview, dynTaskProblems, dynTasksView, getDynTask, openDynTasks, pickEssence, redoDynTask, saveDynTasks, setDynTask, undoDynTask } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatMoney, parseMoney } from "../elements/money";
@@ -9,6 +9,7 @@ import type { DynCandidate, DynCompareRow, DynComparison, DynItem, DynLabels, Dy
 import { DialogTreeEditor } from "./TaskDialogEditor";
 import { ValuePicker } from "./ValuePicker";
 import { loadSet } from "./TaskForm";
+import { SaveConfirmDialog } from "./SaveConfirmDialog";
 
 export interface DynTasksEditorState {
   loaded: boolean;
@@ -849,15 +850,18 @@ export const DynTasksEditor = forwardRef<DynTasksEditorHandle, Props>(function D
       </div>
     </div>
     {picking && pickSearch && <ValuePicker search={pickSearch} icon={icon} onApply={async (value) => { picking.resolve(Number(value)); return null; }} onClose={() => { picking.resolve(null); setPicking(null); }} />}
-    {saving && <div className="modal-backdrop" onMouseDown={() => !busy && setSaving(null)}>
-      <div className="modal dyn-save-dialog" onMouseDown={(event) => event.stopPropagation()}>
-        <h3>Save dyn_tasks.data</h3>
-        <p className="mono truncate" title={saving.target ?? view.path}>{saving.target ?? view.path}</p>
-        <p className="muted small">Saving sets the time mark to now. The server sends the new pack to every client on their next login, so save the <b>server's</b> copy (for example <span className="mono">gamed/config/dyn_tasks.data</span>) and restart or reload the server.</p>
-        {saving.changed && <div className="path-data-message error"><AlertTriangle size={14} /> Another program changed this file since it was opened. Replacing it discards those changes.</div>}
-        <label className="small"><input type="checkbox" checked={backup} onChange={(event) => { setBackup(event.target.checked); try { localStorage.setItem(BACKUP_KEY, event.target.checked ? "1" : "0"); } catch { /* Remembering is optional. */ } }} /> Back up the existing file first (a .7z in <span className="mono">jdide_backups</span> next to it, once per session)</label>
-        <footer><span className="spacer" /><button className="btn" onClick={() => setSaving(null)} disabled={busy}>Cancel</button><button className="btn primary" onClick={() => void writeTo(saving.target, saving.changed)} disabled={busy}>{busy ? <Loader2 size={14} className="spin" /> : <Save size={14} />} {saving.changed ? "Replace anyway" : "Save"}</button></footer>
-      </div>
-    </div>}
+    {saving && <SaveConfirmDialog
+      fileName="dyn_tasks.data"
+      path={saving.target ?? view.path}
+      busy={busy}
+      changedOnDisk={saving.changed}
+      backup={backup}
+      onBackupChange={(value) => { setBackup(value); try { localStorage.setItem(BACKUP_KEY, value ? "1" : "0"); } catch { /* Remembering is optional. */ } }}
+      onCancel={() => setSaving(null)}
+      onConfirm={() => void writeTo(saving.target, saving.changed)}
+      facts={<><span className="tag">{count(view.rows.length)} tasks</span><span className="muted small">Server dynamic task pack</span></>}
+    >
+      <div className="save-note muted"><Server size={15} /><div>Saving sets the time mark to now. Save the <b>server's</b> copy (for example <span className="mono">gamed/config/dyn_tasks.data</span>) and restart or reload the server. Clients download the new pack on their next login.</div></div>
+    </SaveConfirmDialog>}
   </section>;
 });

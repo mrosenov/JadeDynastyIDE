@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
 import { X } from "lucide-react";
 import logo from "../assets/logo.png";
+import { useI18n } from "../i18n";
 
 /** About JD IDE: who made it, what it is built on, and that it is free. */
 export function AboutDialog({ onClose }: { onClose: () => void }) {
+  const { t } = useI18n();
   const [version, setVersion] = useState<string | null>(null);
   useEffect(() => { getVersion().then(setVersion).catch(() => setVersion(null)); }, []);
   useEffect(() => {
@@ -14,7 +16,7 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
   }, [onClose]);
   return <div className="modal-backdrop" onMouseDown={onClose}>
     <div className="modal about-dialog" role="dialog" aria-label="About JD IDE" onMouseDown={(event) => event.stopPropagation()}>
-      <button className="icon-btn about-close" onClick={onClose} aria-label="Close"><X size={16} /></button>
+      <button className="icon-btn about-close" onClick={onClose} aria-label={t("common.close")}><X size={16} /></button>
       <div className="about-head">
         <img src={logo} alt="" draggable={false} />
         <div>
@@ -27,7 +29,7 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
       <p>Built with the help of the available source code of the game client, the server and the official tools, studied so that every file is read and written exactly as the game itself does.</p>
       <div className="about-free">This product is <b>FREE</b>.</div>
       <p className="muted small">Jade Dynasty (Zhu Xian) belongs to its publishers; JD IDE is an independent tool and is not affiliated with them. It uses open-source software including Tauri, React, luaparse and fengari.</p>
-      <footer><span className="spacer" /><button className="btn primary" onClick={onClose}>Close</button></footer>
+      <footer><span className="spacer" /><button className="btn primary" onClick={onClose}>{t("common.close")}</button></footer>
     </div>
   </div>;
 }

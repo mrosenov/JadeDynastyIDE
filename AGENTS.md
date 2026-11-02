@@ -108,6 +108,7 @@ Environment quirks (Windows 11, Git Bash):
 ### UI (`src/`)
 
 - `App.tsx` — app shell: menus (File/Edit/Tools, then About for every workspace: a `Menu` without items and with `onSelect` acts as a button; `AboutDialog.tsx`), panels, tabs, shortcuts, edit/save flow.
+- `i18n.tsx`, `locales/en.json`, `components/LocaleEditor.tsx` — interface-language context, built-in English fallback and the user-facing locale editor. `settings::locale_catalogs` writes an always-current `_english-template.json` and loads user catalogs from `%APPDATA%\com.jdide.app\locales`; `save_locale_catalog` creates/updates them and validates placeholders. Partial catalogs fall back field by field. The chosen code is stored in `settings.json`. Common controls are localized while game/schema terminology stays unchanged.
 - `elements/api.ts` — one function per Tauri command. `elements/types.ts` mirrors the Rust
   structs (serde `camelCase`). **When you add a Rust command, add it to
   `generate_handler!` in `lib.rs`, to `api.ts`, and its types to `types.ts`.**
@@ -118,6 +119,7 @@ Environment quirks (Windows 11, Git Bash):
   `TaskNpcEditor` follows `PathDataEditor` (rows and undo history in the component).
   `NpcGenEditor` keeps the map in the backend (files up to ~1.4 MB) and fetches one item at a time; it
   reuses `NumberInput`, `TextInput`, `Field` and `VertInput` exported from `DynTasksEditor`.
+  Format-specific editors use `SaveConfirmDialog` for the shared first-save confirmation layout; do not add another bare save modal.
 - `schema/model.ts` — schema editor draft model; `schema/fieldList.ts` — pasted
   sELedit/Jade Editor field lists → fields.
 - `elements/money.ts`, `time.ts`, `text.ts`, `talk.ts` — display helpers.

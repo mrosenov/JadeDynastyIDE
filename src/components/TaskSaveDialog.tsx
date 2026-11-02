@@ -4,6 +4,7 @@ import { Archive, FileWarning, FolderOpen, Loader2, Save, ShieldCheck, TriangleA
 import { saveTasks, taskSavePlan } from "../elements/api";
 import type { TaskSaveOptions, TaskSavePlan, TaskSaveReport } from "../elements/types";
 import { bytes } from "../elements/format";
+import { useI18n } from "../i18n";
 
 interface Props {
   path: string;
@@ -26,6 +27,7 @@ function writeBackup(value: boolean) {
 }
 
 export function TaskSaveDialog({ path: initialPath, onCancel, onSaved }: Props) {
+  const { t } = useI18n();
   const [path, setPath] = useState(initialPath);
   const [backup, setBackup] = useState(readBackup);
   const [plan, setPlan] = useState<TaskSavePlan | null>(null);
@@ -69,10 +71,10 @@ export function TaskSaveDialog({ path: initialPath, onCancel, onSaved }: Props) 
   };
 
   return <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && !saving && onCancel()}>
-    <div className="modal save-dialog" role="dialog" aria-label="Save tasks.data">
-      <header className="modal-head"><Save size={16} className="accent-icon" /><h3>Save {fileName(path)}</h3><span className="spacer"/><button className="icon-btn" onClick={onCancel} disabled={saving} aria-label="Close"><X size={18}/></button></header>
+    <div className="modal save-dialog" role="dialog" aria-label={t("save.title", { file: "tasks.data" })}>
+      <header className="modal-head"><Save size={16} className="accent-icon" /><h3>{t("save.title", { file: fileName(path) })}</h3><span className="spacer"/><button className="icon-btn" onClick={onCancel} disabled={saving} aria-label={t("common.close")}><X size={18}/></button></header>
       <div className="save-body">
-        <div className="save-target"><div className="save-target-path mono truncate" title={path}>{path}</div><button className="btn small" onClick={pick} disabled={saving}><FolderOpen size={13}/> Save as…</button></div>
+        <div className="save-target"><div className="save-target-path mono truncate" title={path}>{path}</div><button className="btn small" onClick={pick} disabled={saving}><FolderOpen size={13}/> {t("common.saveAs")}</button></div>
         {!plan && !error && <div className="muted small"><Loader2 size={13} className="spin"/> Inspecting the task set…</div>}
         {plan && <>
           <div className="save-facts"><span className={"tag" + (plan.replaces ? " warn" : "")}>{plan.replaces ? (plan.sameFile ? "Replaces the open task set" : "Replaces an existing task set") : "New task set"}</span><span className="muted small">{bytes(plan.size)}</span><span className="spacer"/><span className="small">{plan.changedRoots} changed root{plan.changedRoots === 1 ? "" : "s"} · {plan.changedPacks} changed pack{plan.changedPacks === 1 ? "" : "s"} · {plan.packCount} pack{plan.packCount === 1 ? "" : "s"} total</span></div>
@@ -84,7 +86,7 @@ export function TaskSaveDialog({ path: initialPath, onCancel, onSaved }: Props) 
         </>}
         {error && <div className="se-problems">{error}</div>}
       </div>
-      <footer className="modal-foot"><span className="muted small">{plan?.clearsHistory ? "Undo history is cleared after saving." : "Undo remains available after saving."}</span><span className="spacer"/><button className="btn" onClick={onCancel} disabled={saving}>Cancel</button><button className="btn primary" onClick={() => void run()} disabled={!plan || plan.changedOnDisk || saving}>{saving ? <Loader2 size={14} className="spin"/> : <Save size={14}/>} {saving ? "Validating and saving…" : "Save"}</button></footer>
+      <footer className="modal-foot"><span className="muted small">{plan?.clearsHistory ? "Undo history is cleared after saving." : "Undo remains available after saving."}</span><span className="spacer"/><button className="btn" onClick={onCancel} disabled={saving}>{t("common.cancel")}</button><button className="btn primary" onClick={() => void run()} disabled={!plan || plan.changedOnDisk || saving}>{saving ? <Loader2 size={14} className="spin"/> : <Save size={14}/>} {saving ? t("common.saving") : t("common.save")}</button></footer>
     </div>
   </div>;
 }

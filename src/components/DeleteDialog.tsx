@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link2, Loader2, Trash2, TriangleAlert, X } from "lucide-react";
 import { referencedBy } from "../elements/api";
 import type { ListSummary, ReferencedBy } from "../elements/types";
+import { useI18n } from "../i18n";
 
 interface Props {
   list: ListSummary;
@@ -18,6 +19,7 @@ interface Props {
  * its ID (they would point at nothing afterwards).
  */
 export function DeleteDialog({ list, row, name, id, lists, onConfirm, onCancel }: Props) {
+  const { t } = useI18n();
   const [refs, setRefs] = useState<ReferencedBy | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,7 +47,7 @@ export function DeleteDialog({ list, row, name, id, lists, onConfirm, onCancel }
           <Trash2 size={16} className="danger-icon" />
           <h3 className="truncate">Delete {name || `record #${row}`}?</h3>
           <span className="spacer" />
-          <button className="icon-btn" onClick={onCancel} aria-label="Close">
+          <button className="icon-btn" onClick={onCancel} aria-label={t("common.close")}>
             <X size={18} />
           </button>
         </header>
@@ -86,10 +88,10 @@ export function DeleteDialog({ list, row, name, id, lists, onConfirm, onCancel }
         <footer className="modal-foot">
           <span className="spacer" />
           <button className="btn" onClick={onCancel} autoFocus>
-            Cancel
+            {t("common.cancel")}
           </button>
           <button className="btn danger-solid" onClick={onConfirm} disabled={!refs && !error}>
-            <Trash2 size={14} /> {broken ? "Delete anyway" : "Delete"}
+            <Trash2 size={14} /> {broken ? t("common.deleteAnyway") : t("common.deleteNow")}
           </button>
         </footer>
       </div>

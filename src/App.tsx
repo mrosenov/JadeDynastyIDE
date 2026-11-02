@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { cloneRecord, setExtraDropsSource, deleteRecord, editRecord, editTalkText, fileSummary, getRecord, getSettings, getTalk, iconUrl, imageUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, revertTalk, saveElements, undoEdit } from "./elements/api";
+import { cloneRecord, setExtraDropsSource, deleteRecord, editRecord, editTalkText, fileSummary, getLocaleCatalogs, getRecord, getSettings, getTalk, iconUrl, imageUrl, listRecords, listTalks, openElements, redoEdit, revertEdits, revertTalk, saveElements, undoEdit } from "./elements/api";
 import type { EditState, Saved, SaveOptions, ExportSource, FieldEdit, FileSummary, FindHit, ListSummary, RecordDetail, RecordRow, SettingsView, TalkDetail, TalkTextEdit } from "./elements/types";
 import { bytes, count } from "./elements/format";
 import { ListPicker, type ListPickerHandle } from "./components/ListPicker";
@@ -44,6 +44,7 @@ import { TasksEditor, type TasksEditorHandle, type TasksEditorState } from "./co
 import type { FieldSpec } from "./schema/model";
 import { DIALOGS, EMPTY_TABS, type Location, type Tab, loadTabs, makeTab, saveTabs, tabsReducer } from "./tabs";
 import { applyTheme } from "./theme";
+import { normalizeLocale, useI18n } from "./i18n";
 import "./App.css";
 import logo from "./assets/logo.png";
 import {
@@ -190,6 +191,7 @@ function parseLabel(summary: FileSummary): { text: string; tone: "ok" | "warn" |
 }
 
 export default function App() {
+  const { installLocales, setLocale } = useI18n();
   const [workspace, setWorkspace] = useState<DataWorkspace>("elements");
   const workspaceRef = useRef(workspace);
   workspaceRef.current = workspace;
@@ -458,19 +460,22 @@ export default function App() {
   useEffect(() => {
     if (started.current) return;
     started.current = true;
-    getSettings()
-      .then((view) => {
+    Promise.all([getSettings(), getLocaleCatalogs().catch(() => null)])
+      .then(([view, catalogs]) => {
         applyTheme(view.settings.theme);
+        if (catalogs) installLocales(catalogs);
+        setLocale(normalizeLocale(view.settings.language));
         setSettingsView(view);
         const elements = view.client?.elementsPath;
         if (view.settings.openOnStart && elements) loadFile(elements);
       })
       .catch((e) => setError(String(e)));
-  }, [loadFile]);
+  }, [installLocales, loadFile, setLocale]);
 
   // New client settings: reload rows and the record so icons and paths appear.
   const onSettingsSaved = (view: SettingsView) => {
     applyTheme(view.settings.theme);
+    setLocale(normalizeLocale(view.settings.language));
     setSettingsView(view);
     rowsCache.current.clear();
     setSummary((s) => (s ? { ...s } : s));

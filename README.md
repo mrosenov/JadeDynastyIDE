@@ -45,7 +45,15 @@ The schema editor can give either heading an optional colour; the colour stays o
 
 Settings (gear icon, top right) take the game client folder: the client root or its `element`
 folder. The Appearance setting follows the Windows theme by default or forces the light or dark
-theme. The discovered data-file and package lists stay collapsed until clicked. JD IDE then:
+theme. **Interface language** localizes common application controls. English is built in; **Create
+locale** opens a small two-column editor with the English text beside each translation. Blank entries
+fall back to English, and the editor checks that placeholders such as `{file}` are kept. Select a
+user locale and choose **Edit selected** to update it later. The resulting JSON catalogs live in
+`%APPDATA%\com.jdide.app\locales`, so advanced users can still edit or share them directly and use
+**Reload locales** after an external change. **Open locale folder** also keeps an always-current
+`_english-template.json` available. Game data, schema field names and technical
+format explanations keep their original wording so translations cannot change the meaning of a file.
+The discovered data-file and package lists stay collapsed until clicked. JD IDE then:
 
 - lists the client's data files (`element\data\*.data`) and opens `elements.data`, `tasks.data`,
   `dyn_tasks.data`, `task_npc.data`, `path.data`, `npcgen.data` and the gshop files from there, each
@@ -1410,6 +1418,11 @@ Values are edited in the inspector. Edits stay in memory until the file is saved
   don't save or cancel.
 
 ## Saving
+
+Editors that need confirmation before their first save use one shared save dialog: the file path,
+format-specific notes, changed-on-disk warning, backup choice and Cancel/Save actions stay in the
+same aligned positions in every workspace. Common dialog controls follow the selected interface
+language.
 
 **File › Save** (Ctrl+S) writes the open file, **Save as…** (Ctrl+Shift+S) another one. The file is
 written the way the official tools write it (`elementdataman::save_data`): the data as edited, the

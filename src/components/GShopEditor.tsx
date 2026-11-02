@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { Archive, ArrowDown, ArrowUp, CircleAlert, Copy, Download, FileWarning, FolderOpen, Server, Gift, Loader2, Plus, Redo2, Save, Search, ShoppingCart, Trash2, TriangleAlert, Undo2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, CircleAlert, Copy, Download, FolderOpen, Server, Gift, Loader2, Plus, Redo2, Save, Search, ShoppingCart, Trash2, TriangleAlert, Undo2, X } from "lucide-react";
 import { closeGShopComparison, cloneGShopItem, compareGShop, copyGShop, deleteGShopItem, exportGShopJson, dynTaskLabels, editGShopCategories, getGShopItem, gshopLayouts, gshopProblems, gshopView, moveGShopItem, openGShop, pickEssence, redoGShop, resourceImageUrl, saveGShop, setGShopItem, undoGShop } from "../elements/api";
 import { bytes, count } from "../elements/format";
 import { formatDuration } from "../elements/time";
@@ -12,6 +12,7 @@ import { GShopTextUpdate } from "./GShopTextUpdate";
 import { NumberInput, TextInput } from "./DynTasksEditor";
 import { GameText } from "./GameText";
 import { ValuePicker } from "./ValuePicker";
+import { SaveConfirmDialog } from "./SaveConfirmDialog";
 
 export interface GShopEditorState {
   loaded: boolean;
@@ -696,33 +697,19 @@ export const GShopEditor = forwardRef<GShopEditorHandle, Props>(function GShopEd
     {saving && (() => {
       const changedItems = view.items.filter((entry) => entry.changed).length;
       const name = view.path.split(/[\\/]/).pop() ?? "gshop.data";
-      return <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && !busy && setSaving(null)}>
-        <div className="modal save-dialog" role="dialog" aria-label="Save the shop">
-          <header className="modal-head"><Save size={16} className="accent-icon" /><h3 className="truncate">Save {name}</h3><span className="spacer" /><button className="icon-btn" onClick={() => setSaving(null)} disabled={busy} aria-label="Close"><X size={16} /></button></header>
-          <div className="save-body">
-            <div className="save-target"><div className="save-target-path mono truncate" title={view.path}>{view.path}</div></div>
-            <div className="save-facts">
-              <span className="tag">{view.kind}</span>
-              <span className="muted small">{count(view.items.length)} items · read with {view.layout.name}</span>
-              <span className="spacer" />
-              <span className="save-changes small">{changedItems > 0 ? <span className="chg changed">{count(changedItems)} changed item{changedItems === 1 ? "" : "s"}</span> : view.dirty ? <span className="chg changed">Unsaved changes</span> : <span className="muted">No changes since the last save</span>}</span>
-            </div>
-            {saving.changed && <div className="save-note danger"><FileWarning size={15} /><div><b>The file was changed by another program</b> since JD IDE read it. Saving replaces those changes with what is open here.</div></div>}
-            <div className="save-note muted"><Server size={15} /><div>Saving gives the shop a new timestamp, and the client only opens the mall when the server has the same one. <b>Copy the saved file to the server's config folder</b> (e.g. <span className="mono">gamed/config/{name}</span>) and restart the server.</div></div>
-            <label className="save-backup">
-              <input type="checkbox" checked={backup} disabled={busy} onChange={(event) => { setBackup(event.target.checked); try { localStorage.setItem(BACKUP_KEY, event.target.checked ? "1" : "0"); } catch { /* optional */ } }} />
-              <Archive size={14} />
-              <span>Keep a backup of the replaced file<span className="muted small save-backup-name"> · jdide_backups\{name}_<i>date-time</i>.7z, once per session</span></span>
-            </label>
-          </div>
-          <footer className="modal-foot">
-            <span className="muted small">Undo keeps working after saving.</span>
-            <span className="spacer" />
-            <button className="btn" onClick={() => setSaving(null)} disabled={busy}>Cancel</button>
-            <button className="btn primary" onClick={() => void writeOut(saving.changed)} disabled={busy} autoFocus>{busy ? <Loader2 size={14} className="spin" /> : <Save size={14} />} {busy ? "Saving…" : saving.changed ? "Replace anyway" : "Save"}</button>
-          </footer>
-        </div>
-      </div>;
+      return <SaveConfirmDialog
+        fileName={name}
+        path={view.path}
+        busy={busy}
+        changedOnDisk={saving.changed}
+        backup={backup}
+        onBackupChange={(value) => { setBackup(value); try { localStorage.setItem(BACKUP_KEY, value ? "1" : "0"); } catch { /* optional */ } }}
+        onCancel={() => setSaving(null)}
+        onConfirm={() => void writeOut(saving.changed)}
+        facts={<><span className="tag">{view.kind}</span><span className="muted small">{count(view.items.length)} items · read with {view.layout.name}</span><span className="spacer" /><span className="save-changes small">{changedItems > 0 ? <span className="chg changed">{count(changedItems)} changed item{changedItems === 1 ? "" : "s"}</span> : view.dirty ? <span className="chg changed">Unsaved changes</span> : <span className="muted">No changes since the last save</span>}</span></>}
+      >
+        <div className="save-note muted"><Server size={15} /><div>Saving gives the shop a new timestamp, and the client only opens the mall when the server has the same one. <b>Copy the saved file to the server's config folder</b> (e.g. <span className="mono">gamed/config/{name}</span>) and restart the server.</div></div>
+      </SaveConfirmDialog>;
     })()}
   </section>;
 });

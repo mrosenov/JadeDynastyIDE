@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronRight, type LucideIcon } from "lucide-react";
+import { systemLabel, useI18n } from "../i18n";
 
 export interface MenuItem {
   label: string;
@@ -30,6 +31,7 @@ export interface Menu {
 
 /** A desktop-style menu bar: click a menu, hover to switch, Esc or a click outside closes. */
 export function MenuBar({ menus }: { menus: Menu[] }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState<number | null>(null);
   const [sub, setSub] = useState<number | null>(null);
   const bar = useRef<HTMLDivElement>(null);
@@ -78,6 +80,7 @@ export function MenuBar({ menus }: { menus: Menu[] }) {
 
   const row = (item: MenuItem, i: number, nested: boolean) => {
     const Icon = item.icon;
+    const label = systemLabel(item.label, t);
     return (
       <div key={item.label} className="menu-item-wrap" onMouseEnter={() => !nested && setSub(item.submenu ? i : null)}>
         <button
@@ -90,7 +93,7 @@ export function MenuBar({ menus }: { menus: Menu[] }) {
         >
           <span className="menu-icon">{item.checked ? <Check size={14} /> : Icon ? <Icon size={14} /> : null}</span>
           <span className="menu-label">
-            <span className="truncate">{item.label}</span>
+            <span className="truncate">{label}</span>
             {item.badges?.map((b) => (
               <span key={b.tone} className={`menu-badge ${b.tone}`}>
                 {b.text}
@@ -128,9 +131,9 @@ export function MenuBar({ menus }: { menus: Menu[] }) {
               setSub(null);
             }}
             onMouseEnter={() => open !== null && open !== i && m.items.length > 0 && (setOpen(i), setSub(null))}
-            title={`${m.label} (Alt+${m.accessKey.toUpperCase()})`}
+            title={`${systemLabel(m.label, t)} (Alt+${m.accessKey.toUpperCase()})`}
           >
-            {m.label}
+            {systemLabel(m.label, t)}
           </button>
           {open === i && (
             <div className="menu-pop" role="menu">

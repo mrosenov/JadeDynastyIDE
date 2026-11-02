@@ -3,6 +3,7 @@ import { open, save } from "@tauri-apps/plugin-dialog";
 import { Archive, CircleCheck, FileWarning, FolderOpen, Loader2, Save, ShieldCheck, ShieldAlert, ShieldQuestion, TriangleAlert, X } from "lucide-react";
 import { saveElements, savePlan } from "../elements/api";
 import type { ChecksumCheck, Saved, SaveOptions, SavePlan } from "../elements/types";
+import { useI18n } from "../i18n";
 
 interface Props {
   /** Where to save (the open file, or a path picked with Save as). */
@@ -39,6 +40,7 @@ const plural = (n: number, word: string) => `${n.toLocaleString()} ${word}${n ==
  * client checks (with which path.data) and whether to keep a backup.
  */
 export function SaveDialog({ path: initialPath, pathData: initialPathData, onCancel, onSaved }: Props) {
+  const { t } = useI18n();
   const [path, setPath] = useState(initialPath);
   const [pathData, setPathData] = useState<string | undefined>(initialPathData);
   const [backup, setBackup] = useState(readBackup);
@@ -113,12 +115,12 @@ export function SaveDialog({ path: initialPath, pathData: initialPathData, onCan
 
   return (
     <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && !saving && onCancel()}>
-      <div className="modal save-dialog" role="dialog" aria-label="Save elements.data">
+      <div className="modal save-dialog" role="dialog" aria-label={t("save.title", { file: "elements.data" })}>
         <header className="modal-head">
           <Save size={16} className="accent-icon" />
-          <h3 className="truncate">Save {fileName(path)}</h3>
+          <h3 className="truncate">{t("save.title", { file: fileName(path) })}</h3>
           <span className="spacer" />
-          <button className="icon-btn" onClick={onCancel} disabled={saving} aria-label="Close">
+          <button className="icon-btn" onClick={onCancel} disabled={saving} aria-label={t("common.close")}>
             <X size={18} />
           </button>
         </header>
@@ -129,7 +131,7 @@ export function SaveDialog({ path: initialPath, pathData: initialPathData, onCan
               {path}
             </div>
             <button className="btn small" onClick={pickTarget} disabled={saving} title="Save to another file (Save as)">
-              <FolderOpen size={13} /> Save as…
+              <FolderOpen size={13} /> {t("common.saveAs")}
             </button>
           </div>
 
@@ -199,10 +201,10 @@ export function SaveDialog({ path: initialPath, pathData: initialPathData, onCan
           <span className="muted small">Undo keeps working after saving.</span>
           <span className="spacer" />
           <button className="btn" onClick={onCancel} disabled={saving}>
-            Cancel
+            {t("common.cancel")}
           </button>
           <button className="btn primary" onClick={run} disabled={!plan || saving} autoFocus>
-            {saving ? <Loader2 size={14} className="spin" /> : <Save size={14} />} {saving ? "Saving…" : "Save"}
+            {saving ? <Loader2 size={14} className="spin" /> : <Save size={14} />} {saving ? t("common.saving") : t("common.save")}
           </button>
         </footer>
       </div>

@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { ChevronRight, CircleAlert, CircleCheck, Database, Eye, EyeOff, FolderSearch, KeyRound, Loader2, Monitor, Moon, Package, Settings as SettingsIcon, Sparkles, Sun, X } from "lucide-react";
-import { inspectClient, saveSettings } from "../elements/api";
-import type { ClientInfo, DataFile, SettingsView, Theme } from "../elements/types";
+import { revealItemInDir } from "@tauri-apps/plugin-opener";
+import { ChevronRight, CircleAlert, CircleCheck, Database, Eye, EyeOff, FilePlus2, FolderSearch, KeyRound, Languages, Loader2, Monitor, Moon, Package, Pencil, RefreshCw, Settings as SettingsIcon, Sparkles, Sun, X } from "lucide-react";
+import { getLocaleCatalogs, inspectClient, saveSettings } from "../elements/api";
+import type { ClientInfo, DataFile, LocaleCatalog, SettingsView, Theme } from "../elements/types";
 import { bytes } from "../elements/format";
 import { applyTheme } from "../theme";
+import { normalizeLocale, useI18n, type Locale } from "../i18n";
+import { LocaleEditor } from "./LocaleEditor";
 
 interface Props {
   view: SettingsView;
@@ -15,10 +18,16 @@ interface Props {
 
 /** App settings: the game client folder and what was found in it. */
 export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
+  const { installLocales, localeFiles, locales, t } = useI18n();
   const defaultAiEndpoint = "https://api.openai.com/v1/responses";
   const [dir, setDir] = useState(view.settings.clientDir ?? "");
   const [openOnStart, setOpenOnStart] = useState(view.settings.openOnStart);
   const [theme, setTheme] = useState<Theme>(view.settings.theme);
+  const savedLanguage = normalizeLocale(view.settings.language);
+  const [language, setLanguage] = useState<Locale>(locales.some((locale) => locale.code === savedLanguage) ? savedLanguage : "en");
+  const [localeBusy, setLocaleBusy] = useState(false);
+  const [localeProblem, setLocaleProblem] = useState<string | null>(null);
+  const [localeEditor, setLocaleEditor] = useState<{ catalog: LocaleCatalog | null } | null>(null);
   const [aiEndpoint, setAiEndpoint] = useState(view.settings.aiEndpoint ?? defaultAiEndpoint);
   const [aiModel, setAiModel] = useState(view.settings.aiModel ?? "");
   const [aiApiKey, setAiApiKey] = useState(view.settings.aiApiKey ?? "");
@@ -72,16 +81,37 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.stopPropagation();
-        onClose();
+        if (!localeEditor) onClose();
       }
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [onClose]);
+  }, [localeEditor, onClose]);
 
   const browse = async () => {
     const picked = await open({ directory: true, multiple: false, title: "Pick the game client folder" });
     if (typeof picked === "string") setDir(picked);
+  };
+
+  const reloadLocales = async () => {
+    setLocaleBusy(true);
+    setLocaleProblem(null);
+    try {
+      const catalogs = await getLocaleCatalogs();
+      installLocales(catalogs);
+      if (language !== "en" && !catalogs.locales.some((locale) => locale.code === language)) setLanguage("en");
+      return catalogs;
+    } catch (problem) {
+      setLocaleProblem(String(problem));
+      return null;
+    } finally {
+      setLocaleBusy(false);
+    }
+  };
+
+  const openLocaleFolder = async () => {
+    const catalogs = localeFiles ?? await reloadLocales();
+    if (catalogs) await revealItemInDir(catalogs.templatePath).catch((problem) => setLocaleProblem(String(problem)));
   };
 
   const save = async () => {
@@ -91,6 +121,7 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
         clientDir: dir.trim() || null,
         openOnStart,
         theme,
+        language,
         aiEndpoint: aiEndpoint.trim() || null,
         aiModel: aiModel.trim() || null,
         aiApiKey: aiApiKey.trim() || null,
@@ -109,40 +140,61 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
     (view.settings.clientDir ?? "") !== dir.trim() ||
     view.settings.openOnStart !== openOnStart ||
     view.settings.theme !== theme ||
+    normalizeLocale(view.settings.language) !== language ||
     (view.settings.aiEndpoint ?? defaultAiEndpoint) !== aiEndpoint.trim() ||
     (view.settings.aiModel ?? "") !== aiModel.trim() ||
     (view.settings.aiApiKey ?? "") !== aiApiKey.trim();
   const aiStarted = Boolean(aiModel.trim() || aiApiKey.trim());
   const aiComplete = Boolean(aiEndpoint.trim() && aiModel.trim() && aiApiKey.trim());
   const canSave = !saving && !checking && (!dir.trim() || client !== null);
+  const selectedLocale = localeFiles?.locales.find((catalog) => catalog.code === language) ?? null;
 
   return (
+    <>
     <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal settings-dialog" role="dialog" aria-label="Settings">
+      <div className="modal settings-dialog" role="dialog" aria-label={t("settings.title")}>
         <header className="modal-head">
           <SettingsIcon size={17} />
-          <h3>Settings</h3>
+          <h3>{t("settings.title")}</h3>
           <span className="spacer" />
-          <button className="icon-btn" onClick={onClose} aria-label="Close">
+          <button className="icon-btn" onClick={onClose} aria-label={t("common.close")}>
             <X size={18} />
           </button>
         </header>
 
         <div className="modal-body scroll">
           <section className="settings-section">
-            <h4>Appearance</h4>
-            <div className="settings-theme" role="radiogroup" aria-label="Theme">
+            <h4>{t("settings.appearance")}</h4>
+            <div className="settings-theme" role="radiogroup" aria-label={t("settings.theme")}>
               {([
-                ["system", Monitor, "System"],
-                ["light", Sun, "Light"],
-                ["dark", Moon, "Dark"],
+                ["system", Monitor, t("settings.themeSystem")],
+                ["light", Sun, t("settings.themeLight")],
+                ["dark", Moon, t("settings.themeDark")],
               ] as const).map(([value, Icon, label]) => (
                 <button type="button" role="radio" aria-checked={theme === value} className={theme === value ? "active" : ""} onClick={() => setTheme(value)} key={value}>
                   <Icon size={15} /> {label}
                 </button>
               ))}
             </div>
-            <p className="muted small settings-theme-note">System follows the light or dark preference in Windows.</p>
+            <p className="muted small settings-theme-note">{t("settings.themeNote")}</p>
+          </section>
+
+          <section className="settings-section">
+            <h4><Languages size={15} /> {t("settings.language")}</h4>
+            <label className="settings-field settings-language">
+              <select className="se-input" value={language} onChange={(event) => setLanguage(normalizeLocale(event.target.value))}>
+                {locales.map((locale) => <option value={locale.code} key={locale.code}>{locale.code === "en" ? t("language.en") : locale.name}</option>)}
+              </select>
+            </label>
+            <p className="muted small settings-theme-note">{t("settings.languageNote")}</p>
+            <div className="settings-locale-actions">
+              <button className="btn" onClick={() => setLocaleEditor({ catalog: null })}><FilePlus2 size={14} /> {t("settings.createLocale")}</button>
+              <button className="btn" onClick={() => selectedLocale && setLocaleEditor({ catalog: selectedLocale })} disabled={!selectedLocale}><Pencil size={14} /> {t("settings.editLocale")}</button>
+              <button className="btn" onClick={() => void openLocaleFolder()} disabled={localeBusy}><FolderSearch size={14} /> {t("settings.openLocaleFolder")}</button>
+              <button className="btn" onClick={() => void reloadLocales()} disabled={localeBusy}>{localeBusy ? <Loader2 size={14} className="spin" /> : <RefreshCw size={14} />} {t("settings.reloadLocales")}</button>
+              {localeFiles && <span className="mono muted small truncate" title={localeFiles.directory}>{localeFiles.directory}</span>}
+            </div>
+            {(localeProblem || localeFiles?.errors.length) && <div className="settings-status bad"><CircleAlert size={14} /><div>{localeProblem || <>{t("settings.localeErrors")}<ul>{localeFiles!.errors.map((error) => <li key={error}>{error}</li>)}</ul></>}</div></div>}
           </section>
 
           <section className="settings-section">
@@ -183,7 +235,7 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
           </section>
 
           <section className="settings-section">
-            <h4>Game client</h4>
+            <h4>{t("settings.gameClient")}</h4>
             <p className="muted small">
               The client folder holds the data files (element\data) and the resource packages (element\*.pck). JD IDE
               reads path.data and the item icons from it.
@@ -197,11 +249,11 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
                 spellCheck={false}
               />
               <button className="btn" onClick={browse}>
-                <FolderSearch size={15} /> Browse…
+                <FolderSearch size={15} /> {t("common.browse")}
               </button>
               {dir && (
                 <button className="btn" onClick={() => setDir("")} title="Forget the client folder">
-                  Clear
+                  {t("common.clear")}
                 </button>
               )}
             </div>
@@ -293,16 +345,26 @@ export function SettingsDialog({ view, onSaved, onOpenFile, onClose }: Props) {
         </div>
 
         <footer className="modal-foot">
-          <span className="muted small">Settings are saved in the app's config folder.</span>
+          <span className="muted small">{t("settings.savedInConfig")}</span>
           <span className="spacer" />
           <button className="btn" onClick={onClose}>
-            Cancel
+            {t("common.cancel")}
           </button>
           <button className="btn primary" onClick={save} disabled={!canSave || !changed}>
-            {saving ? "Saving…" : "Save"}
+            {saving ? t("common.saving") : t("common.save")}
           </button>
         </footer>
       </div>
     </div>
+    {localeEditor && <LocaleEditor
+      catalog={localeEditor.catalog}
+      onClose={() => setLocaleEditor(null)}
+      onSaved={(catalogs, code) => {
+        installLocales(catalogs);
+        setLanguage(code);
+        setLocaleEditor(null);
+      }}
+    />}
+    </>
   );
 }

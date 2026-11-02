@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Save, TriangleAlert, X } from "lucide-react";
+import { useI18n } from "../i18n";
 
 interface Props {
   /** What happens after: "close the app", "open another file". */
@@ -18,6 +19,7 @@ const plural = (n: number, word: string) => `${n.toLocaleString()} ${word}${n ==
 
 /** Asks what to do with edits that are not saved: save, drop or stay. */
 export function UnsavedDialog({ action, fileName, changed, added, deleted, dialogs, onSave, onDiscard, onCancel }: Props) {
+  const { t } = useI18n();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCancel();
@@ -35,7 +37,7 @@ export function UnsavedDialog({ action, fileName, changed, added, deleted, dialo
           <TriangleAlert size={16} className="warn-icon" />
           <h3 className="truncate">Save changes to {fileName}?</h3>
           <span className="spacer" />
-          <button className="icon-btn" onClick={onCancel} aria-label="Close">
+          <button className="icon-btn" onClick={onCancel} aria-label={t("common.close")}>
             <X size={18} />
           </button>
         </header>
@@ -47,13 +49,13 @@ export function UnsavedDialog({ action, fileName, changed, added, deleted, dialo
         <footer className="modal-foot">
           <span className="spacer" />
           <button className="btn" onClick={onCancel}>
-            Cancel
+            {t("common.cancel")}
           </button>
           <button className="btn danger-outline" onClick={onDiscard}>
-            Don't save
+            {t("common.dontSave")}
           </button>
           <button className="btn primary" onClick={onSave} autoFocus>
-            <Save size={14} /> Save…
+            <Save size={14} /> {t("common.saveEllipsis")}
           </button>
         </footer>
       </div>

@@ -2445,6 +2445,16 @@ async fn get_settings(state: State<'_, AppState>) -> Result<SettingsView, String
     Ok(state.settings_view(client, error))
 }
 
+#[tauri::command]
+async fn locale_catalogs(state: State<'_, AppState>) -> Result<settings::LocaleCatalogs, String> {
+    settings::locale_catalogs(&state.user_dir)
+}
+
+#[tauri::command]
+async fn save_locale_catalog(request: settings::SaveLocaleRequest, state: State<'_, AppState>) -> Result<settings::LocaleCatalogs, String> {
+    settings::save_locale(&state.user_dir, request)
+}
+
 /// Checks a client folder without saving it (for the settings dialog).
 #[tauri::command]
 async fn inspect_client(dir: String) -> Result<ClientInfo, String> {
@@ -2931,6 +2941,8 @@ pub fn run() {
             analyze_list_layout,
             analyze_list_from_reference,
             get_settings,
+            locale_catalogs,
+            save_locale_catalog,
             inspect_client,
             save_settings,
             find_records,

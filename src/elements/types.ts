@@ -248,6 +248,7 @@ export interface Settings {
   clientDir: string | null;
   openOnStart: boolean;
   theme: Theme;
+  language: string | null;
   aiEndpoint: string | null;
   aiModel: string | null;
   aiApiKey: string | null;
@@ -284,6 +285,27 @@ export interface SettingsView {
   clientError: string | null;
   /** Part of icon URLs; changes when the client changes. */
   iconGeneration: number;
+}
+
+export interface LocaleCatalog {
+  code: string;
+  name: string;
+  path: string;
+  messages: Record<string, string>;
+}
+
+export interface LocaleCatalogs {
+  directory: string;
+  templatePath: string;
+  locales: LocaleCatalog[];
+  errors: string[];
+}
+
+export interface SaveLocaleRequest {
+  originalCode: string | null;
+  code: string;
+  name: string;
+  messages: Record<string, string>;
 }
 
 // ---------------------------------------------------------------- path.data
